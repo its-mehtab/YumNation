@@ -4,7 +4,7 @@ import Blog from "./pages/blog/Blog";
 import Contact from "./pages/contact/Contact";
 import { Route, Routes } from "react-router-dom";
 import Shop from "./pages/shop/Shop";
-import Login from "./pages/login/login";
+import Login from "./pages/login/Login";
 import Signup from "./pages/sign-up/SignUp";
 
 function App() {
