@@ -15,7 +15,7 @@ import {
   PizzasIcon,
   SaladIcon,
   ShushiIcon,
-} from "../../assets/icon/categoryIcons";
+} from "../../assets/icon/CategoryIcons";
 import Button from "../../components/button/Button";
 import { ArrowLeft, ArrowRight } from "../../assets/icon/Icons";
 
