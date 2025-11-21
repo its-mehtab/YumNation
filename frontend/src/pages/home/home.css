@@ -1,0 +1,92 @@
+.menu {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /* padding: 10vh 0 25vh; */
+  --marquee-width: 100vw;
+  --offset: 20vw;
+  --move-initial: calc(-25% + var(--offset));
+  --move-final: calc(-50% + var(--offset));
+  --item-font-size: 10vw;
+  counter-reset: menu;
+}
+
+.marquee {
+  position: absolute;
+  bottom: -60px;
+  left: -20px;
+  right: -20px;
+  width: var(--marquee-width);
+  width: calc(100% + 30px);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.marquee__inner {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  position: relative;
+  transform: translate3d(var(--move-initial), 0, 0);
+  animation: marquee 12s linear infinite;
+  animation-play-state: paused;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+/* Normal marquee animation (left → right) */
+.marquee .marquee__inner {
+  animation-play-state: running;
+  opacity: 1;
+  transition-duration: 0.9s;
+}
+
+/* Reverse animation (right → left) */
+.marquee.reverse .marquee__inner {
+  animation: marquee-reverse 15s linear infinite;
+}
+
+/* Text inside */
+.marquee span {
+  text-align: center;
+  white-space: nowrap;
+  padding: 0 2vw;
+}
+
+/* Original animation (left → right) */
+@keyframes marquee {
+  0% {
+    transform: translate3d(var(--move-initial), 0, 0);
+  }
+  100% {
+    transform: translate3d(var(--move-final), 0, 0);
+  }
+}
+
+/* New reverse animation (right → left) */
+@keyframes marquee-reverse {
+  0% {
+    transform: translate3d(var(--move-final), 0, 0);
+  }
+  100% {
+    transform: translate3d(var(--move-initial), 0, 0);
+  }
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #fb9300;
+  background: #fff;
+  border-radius: 999px;
+  padding: 8px;
+  position: static;
+}
+
+@media (max-width: 767px) {
+  .marquee {
+    bottom: 0px;
+  }
+}

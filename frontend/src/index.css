@@ -1,0 +1,42 @@
+@import url("./assets/fonts/fonts.css");
+@import "tailwindcss";
+
+body {
+  font-family: "Quicksand", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Bangers", sans-serif;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+
+.form-control:active,
+.form-control:focus,
+.form-control:focus-visible {
+  border: 1px solid #fff;
+  background-color: #252734;
+  box-shadow: none;
+  color: currentColor;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition: background-color 0s 600000s, color 0s 600000s !important;
+}
+
+#root {
+  overflow-x: hidden;
+}
