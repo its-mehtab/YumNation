@@ -195,11 +195,13 @@ const Header = () => {
                 </Link>
               </li>
 
-              <li className="relative text-white hover:text-[#3f9065] transition-all cursor-pointer flex gap-0.5">
-                <WishlistIcon />
-                <span className="w-4 h-4 rounded-full text-xs flex justify-center items-center bg-[#3f9065] text-white font-bold mt-0.5">
-                  1
-                </span>
+              <li className="relative text-white hover:text-[#3f9065] transition-all cursor-pointer">
+                <Link to="/wishlist" className="flex gap-0.5">
+                  <WishlistIcon />
+                  <span className="w-4 h-4 rounded-full text-xs flex justify-center items-center bg-[#3f9065] text-white font-bold mt-0.5">
+                    1
+                  </span>
+                </Link>
               </li>
 
               <li
@@ -261,7 +263,7 @@ const Header = () => {
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4 md:mt-8 max-w-5xl mx-auto h-full md:max-h-50 overflow-y-scroll">
           {products.map((currProd) => {
             return (
-              <div key={currProd.id} className="flex gap-4 items-center">
+              <div key={currProd._id} className="flex gap-4 items-center">
                 <div className="w-24 h-24 rounded-xl">
                   <img src={currProd.img} alt="" className="w-full" />
                 </div>
@@ -313,8 +315,8 @@ const Header = () => {
           <ul>
             {products.map((currProd) => {
               return (
-                <li key={currProd.id} className="flex gap-4 items-center mb-2">
-                  <div className="w-20 h-20 rounded-xl">
+                <li key={currProd._id} className="flex gap-4 items-center mb-2">
+                  <div className="w-20 min-w-20 h-20 rounded-xl">
                     <img src={currProd.img} alt="" className="w-full" />
                   </div>
                   <div>

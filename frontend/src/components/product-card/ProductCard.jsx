@@ -18,10 +18,7 @@ const ProductCard = ({ currProduct }) => {
               </h3>
             </Link>
             <span
-              on
-              onClick={() => {
-                setWishlistActive(!wishlistActive);
-              }}
+              onClick={() => setWishlistActive(!wishlistActive)}
               className="text-[#B7B7B7] hover:text-[#027a36] cursor-pointer"
             >
               {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}

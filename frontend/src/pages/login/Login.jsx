@@ -1,9 +1,31 @@
-import React from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { assets } from "../../assets/assets";
 import { FacebookIcon, GoogleIcon } from "../../assets/icon/Icons";
+import { useValidate } from "../../context/ValidateContext";
 
 const Login = () => {
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const { validate } = useValidate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setLoginData({ ...loginData, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    console.log(validate(loginData));
+
+    console.log(loginData);
+  };
+
   return (
     <section
       className="bg-cover bg-center flex items-center justify-center pt-34 pb-28"
@@ -12,24 +34,31 @@ const Login = () => {
       <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl w-full max-w-md shadow-xl border border-white/20 mx-auto">
         <h2 className="text-3xl text-center text-white mb-6">Welcome Back</h2>
 
-        {/* Email */}
-        <input
-          type="email"
-          placeholder="Email Address"
-          className="w-full p-3 mb-4 rounded-lg bg-white/10 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#FB9300]"
-        />
+        <form onSubmit={handleSubmit}>
+          <input
+            name="email"
+            placeholder="Email Address"
+            className="w-full p-3 mb-4 rounded-lg border border-white/50 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#FB9300]"
+            value={loginData.email}
+            onChange={handleChange}
+          />
 
-        {/* Password */}
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-3 mb-4 rounded-lg bg-white/10 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#FB9300]"
-        />
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            className="w-full p-3 mb-4 rounded-lg border border-white/50 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#FB9300]"
+            value={loginData.password}
+            onChange={handleChange}
+          />
 
-        {/* Login Button */}
-        <button className="w-full bg-[#FB9300] text-white font-semibold py-3 rounded-lg hover:bg-white hover:text-black cursor-pointer transition">
-          Login
-        </button>
+          <button
+            type="submit"
+            className="w-full bg-[#FB9300] text-white font-semibold py-3 rounded-lg hover:bg-white hover:text-black cursor-pointer transition"
+          >
+            Login
+          </button>
+        </form>
 
         {/* OAuth */}
         <div className="mt-6">

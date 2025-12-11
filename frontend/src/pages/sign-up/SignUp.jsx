@@ -2,110 +2,201 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { assets } from "../../assets/assets";
 import { FacebookIcon, GoogleIcon } from "../../assets/icon/Icons";
+import Input from "../../components/input/Input";
+import { useValidate } from "../../context/ValidateContext";
+import axios from "axios";
 
 const Signup = () => {
-  const [role, setRole] = useState("user");
+  const [signUpData, setSignUpData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "user",
+  });
+  const [matchPassword, setMatchPassword] = useState(true);
+  const [error, setError] = useState({});
+  const [backendError, setBackendError] = useState("");
+
+  const { validate } = useValidate();
+
+  const URL = "http://localhost:4000/";
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setSignUpData({ ...signUpData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setBackendError("");
+    setError({});
+    setMatchPassword(true);
+
+    const isValidData = validate(signUpData);
+    const doesPasswordMatch =
+      signUpData.password === signUpData.confirmPassword;
+
+    if (!isValidData.email || !isValidData.password) {
+      setError(isValidData);
+    } else if (!doesPasswordMatch) {
+      setMatchPassword(doesPasswordMatch);
+    } else {
+      try {
+        const data = await axios.post(
+          URL + "api/signUp",
+          {
+            firstName: signUpData.firstName,
+            lastName: signUpData.lastName,
+            email: signUpData.email,
+            password: signUpData.password,
+            role: signUpData.role,
+          },
+          { withCredentials: true }
+        );
+
+        setSignUpData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          role: "user",
+        });
+        console.log(data);
+      } catch (error) {
+        setBackendError(error.response.data.message);
+      }
+
+      // console.log(signUpData);
+      // console.log(matchPassword);
+    }
+  };
 
   return (
     <section
       className="bg-cover bg-center flex items-center justify-center pt-34 pb-28"
       style={{ backgroundImage: `url(${assets.bannerBg})` }}
     >
-      <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl w-full max-w-md shadow-xl border border-white/20">
-        <h2 className="text-3xl text-center text-white mb-6">Create Account</h2>
+      <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl w-full max-w-lg shadow-xl border border-white/20">
+        <form onSubmit={handleSubmit}>
+          <h2 className="text-3xl text-center text-white mb-6">
+            Create Account
+          </h2>
+          {backendError && (
+            <div className="text-red-600 mb-2">{backendError}</div>
+          )}
+          <div className="grid grid-cols-2 gap-3">
+            <Input
+              name="firstName"
+              placeholder="First Name"
+              value={signUpData.firstName}
+              onChange={handleChange}
+            />
+            <Input
+              name="lastName"
+              placeholder="Last Name"
+              value={signUpData.lastName}
+              onChange={handleChange}
+            />
+          </div>
+          {error.email && (
+            <div className="text-red-600 mb-2">{error.email}</div>
+          )}
+          <Input
+            name="email"
+            placeholder="Email Address"
+            value={signUpData.email}
+            onChange={handleChange}
+          />
+          {error.password && (
+            <div className="text-red-600 mb-2">{error.password}</div>
+          )}
+          <Input
+            name="password"
+            type="password"
+            placeholder="Password"
+            value={signUpData.password}
+            onChange={handleChange}
+          />
+          {matchPassword || (
+            <div className="text-red-600 mb-2">Password does not match</div>
+          )}
+          <Input
+            name="confirmPassword"
+            type="password"
+            placeholder="Confirm Password"
+            value={signUpData.confirmPassword}
+            onChange={handleChange}
+          />
 
-        {/* Name */}
-        <input
-          type="text"
-          placeholder="Full Name"
-          className="w-full p-3 mb-4 rounded-lg bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#FB9300]"
-        />
+          <div className="mb-6">
+            <p className="text-white mb-2">Select your role:</p>
 
-        {/* Email */}
-        <input
-          type="email"
-          placeholder="Email Address"
-          className="w-full p-3 mb-4 rounded-lg bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#FB9300]"
-        />
+            <div className="flex gap-4">
+              <div
+                onClick={() => setSignUpData({ ...signUpData, role: "user" })}
+                className={`
+          flex-1 cursor-pointer p-3 rounded-lg text-center font-semibold transition border 
+          ${
+            signUpData.role === "user"
+              ? "bg-white text-black border-[#FB9300]"
+              : "border-white/50 text-white hover:bg-white/30"
+          }
+        `}
+              >
+                Normal User
+              </div>
 
-        {/* Password */}
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-3 mb-4 rounded-lg bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#FB9300]"
-        />
-
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          className="w-full p-3 mb-4 rounded-lg bg-white/20 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#FB9300]"
-        />
-
-        {/* Role Selection */}
-        <div className="mb-6">
-          <p className="text-white mb-2">Select your role:</p>
-
-          <div className="flex gap-4">
-            {/* USER BOX */}
-            <div
-              onClick={() => setRole("user")}
-              className={`
-        flex-1 cursor-pointer p-3 rounded-lg text-center font-semibold transition border 
-        ${
-          role === "user"
-            ? "bg-white text-black border-[#FB9300]"
-            : "bg-white/20 text-white border-white/30 hover:bg-white/30"
-        }
-      `}
-            >
-              Normal User
-            </div>
-
-            {/* ADMIN BOX */}
-            <div
-              onClick={() => setRole("admin")}
-              className={`
-        flex-1 cursor-pointer p-3 rounded-lg text-center font-semibold transition border 
-        ${
-          role === "admin"
-            ? "bg-white text-black border-[#FB9300]"
-            : "bg-white/20 text-white border-white/30 hover:bg-white/30"
-        }
-      `}
-            >
-              Admin
+              <div
+                onClick={() => setSignUpData({ ...signUpData, role: "admin" })}
+                className={`
+          flex-1 cursor-pointer p-3 rounded-lg text-center font-semibold transition border 
+          ${
+            signUpData.role === "admin"
+              ? "bg-white text-black border-[#FB9300]"
+              : "border-white/50 text-white hover:bg-white/30"
+          }
+        `}
+              >
+                Admin
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Signup Button */}
-        <button className="w-full bg-[#FB9300] text-white font-semibold py-3 rounded-lg hover:bg-white hover:text-black cursor-pointer transition">
-          Sign Up
-        </button>
+          <button
+            type="submit"
+            className="w-full bg-[#FB9300] text-white font-semibold py-3 rounded-lg hover:bg-white hover:text-black cursor-pointer transition"
+          >
+            Sign Up
+          </button>
 
-        {/* OAuth */}
-        <div className="mt-6">
-          <p className="text-center text-white mb-3">Or sign up with</p>
+          {/* OAuth */}
+          <div className="mt-6">
+            <p className="text-center text-white mb-3">Or sign up with</p>
 
-          <div className="flex gap-4">
-            <button className="w-1/2 bg-white text-black font-semibold py-2 rounded-lg flex justify-center items-center gap-2 hover:bg-gray-200 transition cursor-pointer">
-              <GoogleIcon />
-              Google
-            </button>
-            <button className="w-1/2 bg-[#1877F2] text-white font-semibold py-2 rounded-lg flex justify-center items-center gap-2 hover:bg-[#0f5ec7] transition cursor-pointer">
-              <FacebookIcon />
-              Facebook
-            </button>
+            <div className="flex gap-4">
+              <button className="w-1/2 bg-white text-black font-semibold py-2 rounded-lg flex justify-center items-center gap-2 hover:bg-gray-200 transition cursor-pointer">
+                <GoogleIcon />
+                Google
+              </button>
+              <button className="w-1/2 bg-[#1877F2] text-white font-semibold py-2 rounded-lg flex justify-center items-center gap-2 hover:bg-[#0f5ec7] transition cursor-pointer">
+                <FacebookIcon />
+                Facebook
+              </button>
+            </div>
           </div>
-        </div>
 
-        {/* Login Link */}
-        <p className="text-center text-white mt-6">
-          Already have an account?{" "}
-          <Link to="/login" className="text-white font-medium">
-            Login
-          </Link>
-        </p>
+          {/* Login Link */}
+          <p className="text-center text-white mt-6">
+            Already have an account?{" "}
+            <Link to="/login" className="text-white font-medium">
+              Login
+            </Link>
+          </p>
+        </form>
       </div>
     </section>
   );

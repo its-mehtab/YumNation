@@ -1,0 +1,30 @@
+import express from "express";
+import dotenv from "dotenv";
+dotenv.config();
+import connectDb from "./config/db.js";
+import cors from "cors";
+import authRouter from "./routes/auth.routes.js";
+import cookieParser from "cookie-parser";
+
+const app = express();
+const port = process.env.PORT || 8000;
+
+app.use(express.json());
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // your frontend origin
+    credentials: true,
+  })
+);
+app.use("/api", authRouter);
+
+app.get("/", (req, res) => {
+  console.log(req.user);
+  res.status(200).json({ message: "Home Page" });
+});
+
+app.listen(port, async () => {
+  await connectDb();
+  console.log(`server is running on port ${port}`);
+});
