@@ -15,7 +15,6 @@ const Signup = () => {
     confirmPassword: "",
     role: "user",
   });
-  const [matchPassword, setMatchPassword] = useState(true);
   const [error, setError] = useState({});
   const [backendError, setBackendError] = useState("");
 
@@ -33,46 +32,49 @@ const Signup = () => {
     e.preventDefault();
     setBackendError("");
     setError({});
-    setMatchPassword(true);
 
-    const isValidData = validate(signUpData);
-    const doesPasswordMatch =
-      signUpData.password === signUpData.confirmPassword;
+    const trimmedData = {
+      ...signUpData,
+      firstName: signUpData.firstName.trim(),
+      lastName: signUpData.lastName.trim(),
+      email: signUpData.email.trim(),
+    };
 
-    if (!isValidData.email || !isValidData.password) {
-      setError(isValidData);
-    } else if (!doesPasswordMatch) {
-      setMatchPassword(doesPasswordMatch);
-    } else {
-      try {
-        const data = await axios.post(
-          URL + "api/signUp",
-          {
-            firstName: signUpData.firstName,
-            lastName: signUpData.lastName,
-            email: signUpData.email,
-            password: signUpData.password,
-            role: signUpData.role,
-          },
-          { withCredentials: true }
-        );
+    const validationErrors = validate(trimmedData);
 
-        setSignUpData({
-          firstName: "",
-          lastName: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-          role: "user",
-        });
-        console.log(data);
-      } catch (error) {
-        setBackendError(error.response.data.message);
-      }
-
-      // console.log(signUpData);
-      // console.log(matchPassword);
+    if (Object.keys(validationErrors).length > 0) {
+      setError(validationErrors);
+      return;
     }
+
+    try {
+      const data = await axios.post(
+        URL + "api/signUp",
+        {
+          firstName: trimmedData.firstName.toLocaleLowerCase(),
+          lastName: trimmedData.lastName.toLocaleLowerCase(),
+          email: trimmedData.email.toLocaleLowerCase(),
+          password: trimmedData.password,
+          role: trimmedData.role,
+        },
+        { withCredentials: true }
+      );
+
+      setSignUpData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        role: "user",
+      });
+      console.log(data);
+    } catch (error) {
+      setBackendError(error.response?.data?.message || error.message);
+    }
+
+    // console.log(signUpData);
+    // console.log(matchPassword);
   };
 
   return (
@@ -87,6 +89,9 @@ const Signup = () => {
           </h2>
           {backendError && (
             <div className="text-red-600 mb-2">{backendError}</div>
+          )}
+          {error.firstName && (
+            <div className="text-red-600 mb-2">{error.firstName}</div>
           )}
           <div className="grid grid-cols-2 gap-3">
             <Input
@@ -121,8 +126,8 @@ const Signup = () => {
             value={signUpData.password}
             onChange={handleChange}
           />
-          {matchPassword || (
-            <div className="text-red-600 mb-2">Password does not match</div>
+          {error.confirmPassword && (
+            <div className="text-red-600 mb-2">{error.confirmPassword}</div>
           )}
           <Input
             name="confirmPassword"

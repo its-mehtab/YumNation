@@ -3,14 +3,19 @@ import { Link } from "react-router-dom";
 import { assets } from "../../assets/assets";
 import { FacebookIcon, GoogleIcon } from "../../assets/icon/Icons";
 import { useValidate } from "../../context/ValidateContext";
+import axios from "axios";
 
 const Login = () => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
+  const [error, setError] = useState({});
+  const [backendError, setBackendError] = useState("");
 
-  const { validate } = useValidate();
+  const URL = "http://localhost:4000/";
+
+  const { validateLogin } = useValidate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,12 +23,41 @@ const Login = () => {
     setLoginData({ ...loginData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setBackendError("");
+    setError({});
 
-    console.log(validate(loginData));
+    const trimmedData = {
+      ...loginData,
+      email: loginData.email.trim(),
+    };
 
-    console.log(loginData);
+    const validationErrors = validateLogin(trimmedData);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setError(validationErrors);
+      return;
+    }
+
+    try {
+      const data = await axios.post(
+        URL + "api/login",
+        {
+          email: trimmedData.email.toLocaleLowerCase(),
+          password: trimmedData.password,
+        },
+        { withCredentials: true }
+      );
+
+      setLoginData({
+        email: "",
+        password: "",
+      });
+      console.log(data);
+    } catch (error) {
+      setBackendError(error.response?.data?.message || error.message);
+    }
   };
 
   return (
@@ -35,6 +69,12 @@ const Login = () => {
         <h2 className="text-3xl text-center text-white mb-6">Welcome Back</h2>
 
         <form onSubmit={handleSubmit}>
+          {error.email && (
+            <div className="text-red-600 mb-2">{error.email}</div>
+          )}
+          {backendError && (
+            <div className="text-red-600 mb-2">{backendError}</div>
+          )}
           <input
             name="email"
             placeholder="Email Address"
@@ -42,7 +82,9 @@ const Login = () => {
             value={loginData.email}
             onChange={handleChange}
           />
-
+          {error.password && (
+            <div className="text-red-600 mb-2">{error.password}</div>
+          )}
           <input
             name="password"
             type="password"
