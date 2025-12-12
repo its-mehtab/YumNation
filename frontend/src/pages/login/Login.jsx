@@ -4,6 +4,7 @@ import { assets } from "../../assets/assets";
 import { FacebookIcon, GoogleIcon } from "../../assets/icon/Icons";
 import { useValidate } from "../../context/ValidateContext";
 import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 const Login = () => {
   const [loginData, setLoginData] = useState({
@@ -13,7 +14,7 @@ const Login = () => {
   const [error, setError] = useState({});
   const [backendError, setBackendError] = useState("");
 
-  const URL = "http://localhost:4000/";
+  const { serverURL, getUserData, setUser } = useAuth();
 
   const { validateLogin } = useValidate();
 
@@ -41,14 +42,17 @@ const Login = () => {
     }
 
     try {
-      const data = await axios.post(
-        URL + "api/login",
+      const { data } = await axios.post(
+        serverURL + "api/login",
         {
           email: trimmedData.email.toLocaleLowerCase(),
           password: trimmedData.password,
         },
         { withCredentials: true }
       );
+
+      setUser(data);
+      getUserData();
 
       setLoginData({
         email: "",

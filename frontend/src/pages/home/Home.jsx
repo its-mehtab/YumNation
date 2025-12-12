@@ -18,6 +18,7 @@ import {
 } from "../../assets/icon/CategoryIcons";
 import Button from "../../components/button/Button";
 import { ArrowLeft, ArrowRight } from "../../assets/icon/Icons";
+import { useAuth } from "../../context/AuthContext";
 
 const products = [
   {
@@ -147,6 +148,9 @@ const categories = [
 const Home = () => {
   const [categoryName, setCategoryName] = useState("BURGERS");
 
+  const { user } = useAuth();
+  console.log(user);
+
   return (
     <>
       <section
@@ -155,7 +159,7 @@ const Home = () => {
       >
         <div className="mx-auto max-w-[1340px] px-4 sm:px-6 lg:px-8">
           <h1 className="text-white xl:text-[210px] md:text-9xl text-8xl text-center">
-            Pizza Paradise
+            {user.firstName} Pizza Paradise
           </h1>
           <img
             src={assets.bannerImg}

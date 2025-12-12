@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { assets } from "../../assets/assets";
 import { FacebookIcon, GoogleIcon } from "../../assets/icon/Icons";
 import Input from "../../components/input/Input";
 import { useValidate } from "../../context/ValidateContext";
 import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 const Signup = () => {
   const [signUpData, setSignUpData] = useState({
@@ -19,8 +20,13 @@ const Signup = () => {
   const [backendError, setBackendError] = useState("");
 
   const { validate } = useValidate();
+  const { serverURL, user, setUser, getUserData } = useAuth();
 
-  const URL = "http://localhost:4000/";
+  console.log(user);
+
+  useEffect(() => {
+    getUserData();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,8 +54,8 @@ const Signup = () => {
     }
 
     try {
-      const data = await axios.post(
-        URL + "api/signUp",
+      const { data } = await axios.post(
+        serverURL + "api/signUp",
         {
           firstName: trimmedData.firstName.toLocaleLowerCase(),
           lastName: trimmedData.lastName.toLocaleLowerCase(),
@@ -59,6 +65,9 @@ const Signup = () => {
         },
         { withCredentials: true }
       );
+
+      setUser(data);
+      getUserData();
 
       setSignUpData({
         firstName: "",
