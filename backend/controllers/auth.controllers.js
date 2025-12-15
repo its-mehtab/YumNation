@@ -6,7 +6,7 @@ export const signUp = async (req, res) => {
   try {
     const { firstName, lastName, email, password, role } = req.body;
 
-    if (!firstName || !lastName || !email || !password || !role) {
+    if (!firstName || !email || !password || !role) {
       return res.status(400).json({ message: "Send all details" });
     }
 

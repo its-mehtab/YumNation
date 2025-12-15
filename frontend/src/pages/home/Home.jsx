@@ -158,7 +158,7 @@ const Home = () => {
       >
         <div className="mx-auto max-w-[1340px] px-4 sm:px-6 lg:px-8">
           <h1 className="text-white xl:text-[210px] md:text-9xl text-8xl text-center">
-            {loading ? "loading..." : user?.firstName} Pizza Paradise
+            Pizza Paradise
           </h1>
           <img
             src={assets.bannerImg}

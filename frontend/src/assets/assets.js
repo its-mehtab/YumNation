@@ -26,6 +26,7 @@ import offerBg3 from "./offer-bg3.png";
 import achievmentSecBg from "./achievment-bg.png";
 import pizzaMan from "./pizza-man.png";
 import newsletterBg from "./newsletter-bg.png";
+import avatar from "./avatar.jpg";
 
 export const assets = {
   logo,
@@ -46,6 +47,7 @@ export const assets = {
   achievmentSecBg,
   pizzaMan,
   newsletterBg,
+  avatar,
 };
 
 export const Icon = {

@@ -7,8 +7,8 @@ const authContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-  const location = useLocation();
+  // const navigate = useNavigate();
+  // const location = useLocation();
   const serverURL = "http://localhost:4000/";
 
   const getUserData = async () => {
@@ -19,11 +19,6 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data);
     } catch (error) {
       console.log("Auth Error:", error?.response?.data || error.message);
-
-      if (location.pathname !== "/login") {
-        navigate("/login");
-      }
-
       setUser(null);
     } finally {
       setLoading(false);

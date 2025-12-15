@@ -189,15 +189,15 @@ const Header = () => {
               >
                 <SearchIcon />
               </li>
-              <li className="hidden md:block relative text-white hover:text-[#3f9065] transition-all cursor-pointer">
+              <li className="hidden md:block relative text-white transition-all cursor-pointer">
                 <Dropdown />
               </li>
 
-              <li className="relative text-white hover:text-[#3f9065] transition-all cursor-pointer">
+              {/* <li className="relative text-white hover:text-[#3f9065] transition-all cursor-pointer">
                 <Link to="/login">
                   <UserIcon />
                 </Link>
-              </li>
+              </li> */}
 
               <li className="relative text-white hover:text-[#3f9065] transition-all cursor-pointer">
                 <Link to="/wishlist" className="flex gap-0.5">
