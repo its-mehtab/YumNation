@@ -20,13 +20,7 @@ const Signup = () => {
   const [backendError, setBackendError] = useState("");
 
   const { validate } = useValidate();
-  const { serverURL, user, setUser, getUserData } = useAuth();
-
-  console.log(user);
-
-  useEffect(() => {
-    getUserData();
-  }, []);
+  const { serverURL, setUser, getUserData } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;

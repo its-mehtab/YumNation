@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { assets, Icon } from "../../assets/assets";
 import "./home.css";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -148,8 +148,7 @@ const categories = [
 const Home = () => {
   const [categoryName, setCategoryName] = useState("BURGERS");
 
-  const { user } = useAuth();
-  console.log(user);
+  const { user, loading } = useAuth();
 
   return (
     <>
@@ -159,7 +158,7 @@ const Home = () => {
       >
         <div className="mx-auto max-w-[1340px] px-4 sm:px-6 lg:px-8">
           <h1 className="text-white xl:text-[210px] md:text-9xl text-8xl text-center">
-            {user.firstName} Pizza Paradise
+            {loading ? "loading..." : user?.firstName} Pizza Paradise
           </h1>
           <img
             src={assets.bannerImg}

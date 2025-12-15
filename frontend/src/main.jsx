@@ -10,14 +10,14 @@ import { ValidateProvider } from "./context/ValidateContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <AuthProvider>
-      <ValidateProvider>
-        <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
+        <ValidateProvider>
           <Header />
           <App />
           <Footer />
-        </BrowserRouter>
-      </ValidateProvider>
-    </AuthProvider>
+        </ValidateProvider>
+      </AuthProvider>
+    </BrowserRouter>
   </StrictMode>
 );

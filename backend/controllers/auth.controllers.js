@@ -7,7 +7,7 @@ export const signUp = async (req, res) => {
     const { firstName, lastName, email, password, role } = req.body;
 
     if (!firstName || !lastName || !email || !password || !role) {
-      return res.status(400).json({ message: "send all details" });
+      return res.status(400).json({ message: "Send all details" });
     }
 
     const userExists = await User.findOne({ email: email });
@@ -36,9 +36,7 @@ export const signUp = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res
-      .status(201)
-      .json({ message: "User created", firstName, lastName, email, role });
+    res.status(201).json({ firstName, lastName, email, role });
   } catch (error) {
     res
       .status(500)
@@ -72,7 +70,6 @@ export const login = async (req, res) => {
     });
 
     res.status(200).json({
-      message: "Logged in",
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
@@ -107,7 +104,7 @@ export const getUserData = async (req, res) => {
       return res.status(401).json({ message: "User ID not found" });
     }
 
-    const user = await findById(userId);
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(400).json({ message: "User not found" });

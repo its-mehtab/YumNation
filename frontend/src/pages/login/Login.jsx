@@ -58,7 +58,6 @@ const Login = () => {
         email: "",
         password: "",
       });
-      console.log(data);
     } catch (error) {
       setBackendError(error.response?.data?.message || error.message);
     }

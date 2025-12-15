@@ -9,6 +9,7 @@ import {
   WishlistIcon,
 } from "../../assets/icon/Icons";
 import Button from "../button/Button";
+import Dropdown from "../dropdown/Dropdown";
 
 const navigations = [
   { name: "Home", href: "/" },
@@ -187,6 +188,9 @@ const Header = () => {
                 className="hidden md:block relative text-white hover:text-[#3f9065] transition-all cursor-pointer"
               >
                 <SearchIcon />
+              </li>
+              <li className="hidden md:block relative text-white hover:text-[#3f9065] transition-all cursor-pointer">
+                <Dropdown />
               </li>
 
               <li className="relative text-white hover:text-[#3f9065] transition-all cursor-pointer">

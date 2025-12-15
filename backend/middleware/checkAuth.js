@@ -3,7 +3,8 @@ import jwt from "jsonwebtoken";
 
 export const checkAuth = (req, res, next) => {
   try {
-    const token = req.cookie.token;
+    const token = req.cookies.token;
+
     if (!token) {
       return res.status(401).json({ message: "User is not authenticated" });
     }
@@ -15,6 +16,6 @@ export const checkAuth = (req, res, next) => {
 
     next();
   } catch (error) {
-    res.status(500), json({ message: "Internal server issue" });
+    res.status(500).json({ message: "Internal server issue" });
   }
 };
