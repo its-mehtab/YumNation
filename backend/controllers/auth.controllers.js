@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import User from "../models/user.modal.js";
 import generateToken from "../config/token.js";
+import { sendOtpMail } from "../utils/mail.js";
+import crypto from "crypto";
 
 export const signUp = async (req, res) => {
   try {
@@ -113,5 +115,48 @@ export const getUserData = async (req, res) => {
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: error });
+  }
+};
+
+export const sendOtp = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      res.status(400).json({ message: "user does not exists" });
+    }
+
+    const otp = crypto.randomInt(100000, 1000000).toString();
+
+    user.resetOtp = otp;
+    user.resetOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
+    user.isOtpVerified = false;
+
+    await user.save();
+    await sendOtpMail(email, otp);
+
+    res.status(200).json({ message: "Otp Sent!" });
+  } catch (error) {
+    res.status(500).json({ message: `Send otp error: ${error}` });
+  }
+};
+
+export const verifyOtp = async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      res.status(400).json({ message: "user does not exists" });
+    }
+
+    if (user.resetOtp !== otp) {
+      res.status(400).json({ message: "Wrong Otp" });
+    }
+    console.log(resetOtpExpires);
+
+    // if(user.resetOtpExpires)
+  } catch (error) {
+    res.status(500).json({ message: `Verify otp error: ${error}` });
   }
 };

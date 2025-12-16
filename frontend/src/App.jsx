@@ -9,6 +9,7 @@ import Signup from "./pages/sign-up/SignUp";
 import Wishlist from "./pages/wishlist/Wishlist";
 import { useAuth } from "./context/AuthContext";
 import { Navigate } from "react-router-dom";
+import ForgotPassword from "./pages/forgot-password/ForgotPassword";
 
 function App() {
   const { user } = useAuth();
@@ -29,6 +30,7 @@ function App() {
           path="/signup"
           element={!user ? <Signup /> : <Navigate to="/" />}
         />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/wishlist" element={<Wishlist />} />
       </Routes>
     </>

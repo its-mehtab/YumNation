@@ -5,6 +5,7 @@ import { FacebookIcon, GoogleIcon } from "../../assets/icon/Icons";
 import { useValidate } from "../../context/ValidateContext";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import Input from "../../components/input/Input";
 
 const Login = () => {
   const [loginData, setLoginData] = useState({
@@ -78,24 +79,29 @@ const Login = () => {
           {backendError && (
             <div className="text-red-600 mb-2">{backendError}</div>
           )}
-          <input
+          <Input
             name="email"
             placeholder="Email Address"
-            className="w-full p-3 mb-4 rounded-lg border border-white/50 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#FB9300]"
             value={loginData.email}
             onChange={handleChange}
           />
           {error.password && (
             <div className="text-red-600 mb-2">{error.password}</div>
           )}
-          <input
+          <Input
             name="password"
             type="password"
             placeholder="Password"
-            className="w-full p-3 mb-4 rounded-lg border border-white/50 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-[#FB9300]"
             value={loginData.password}
             onChange={handleChange}
           />
+
+          <Link
+            to="/forgot-password"
+            className="text-white mb-2.5 float-right inline-block"
+          >
+            Forgot Password?
+          </Link>
 
           <button
             type="submit"

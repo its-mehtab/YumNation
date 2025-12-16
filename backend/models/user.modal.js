@@ -26,7 +26,20 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
+      enam: ["user", "admin"],
       required: true,
+    },
+    resetOtp: {
+      type: String,
+      default: null,
+    },
+    resetOtpExpires: {
+      type: Date,
+      default: null,
+    },
+    isOtpVerified: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }
