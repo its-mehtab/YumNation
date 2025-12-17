@@ -14,6 +14,7 @@ const Login = () => {
   });
   const [error, setError] = useState({});
   const [backendError, setBackendError] = useState("");
+  const [loading, setLoading] = useState();
 
   const { serverURL, getUserData, setUser } = useAuth();
 
@@ -32,7 +33,7 @@ const Login = () => {
 
     const trimmedData = {
       ...loginData,
-      email: loginData.email.trim(),
+      email: loginData.email.trim().toLowerCase(),
     };
 
     const validationErrors = validateLogin(trimmedData);
@@ -42,11 +43,12 @@ const Login = () => {
       return;
     }
 
+    setLoading(true);
     try {
       const { data } = await axios.post(
         serverURL + "api/login",
         {
-          email: trimmedData.email.toLocaleLowerCase(),
+          email: trimmedData.email,
           password: trimmedData.password,
         },
         { withCredentials: true }
@@ -61,6 +63,8 @@ const Login = () => {
       });
     } catch (error) {
       setBackendError(error.response?.data?.message || error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -103,11 +107,22 @@ const Login = () => {
             Forgot Password?
           </Link>
 
-          <button
+          {/* <button
             type="submit"
             className="w-full bg-[#FB9300] text-white font-semibold py-3 rounded-lg hover:bg-white hover:text-black cursor-pointer transition"
           >
             Login
+          </button> */}
+          <button
+            type="submit"
+            className={`w-full font-semibold py-3 rounded-lg transition-all duration-200 ${
+              loading
+                ? "bg-white text-black cursor-not-allowed"
+                : "bg-[#FB9300] text-white hover:bg-white hover:text-black cursor-pointer"
+            }`}
+            disabled={loading}
+          >
+            {!loading ? "Login" : "Loading..."}
           </button>
         </form>
 

@@ -3,6 +3,7 @@ import {
   getUserData,
   login,
   logout,
+  resetNewPassword,
   sendOtp,
   signUp,
   verifyOtp,
@@ -17,6 +18,6 @@ authRouter.post("/logout", logout);
 authRouter.get("/getuserdata", checkAuth, getUserData);
 authRouter.post("/sendotp", sendOtp);
 authRouter.post("/verifyotp", verifyOtp);
-// authRouter.post("/resetpassword", resetPassword);
+authRouter.post("/resetpassword", resetNewPassword);
 
 export default authRouter;

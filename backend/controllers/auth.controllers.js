@@ -33,12 +33,12 @@ export const signUp = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENVIREMENT === "production",
-      sameSite: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.status(201).json({ firstName, lastName, email, role });
+    return res.status(201).json({ firstName, lastName, email, role });
   } catch (error) {
     res
       .status(500)
@@ -66,12 +66,12 @@ export const login = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENVIREMENT === "production",
+      secure: process.env.NODE_ENV === "production",
       sameSite: true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
@@ -88,11 +88,11 @@ export const logout = async (req, res) => {
   try {
     res.clearCookie("token");
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Logout Succesfull",
     });
   } catch (error) {
-    res
+    return res
       .status(500)
       .json({ message: "Internal server error", error: error.message });
   }
@@ -112,9 +112,9 @@ export const getUserData = async (req, res) => {
       return res.status(400).json({ message: "User not found" });
     }
 
-    res.status(200).json(user);
+    return res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: error });
+    return res.status(500).json({ message: error });
   }
 };
 
@@ -123,7 +123,7 @@ export const sendOtp = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      res.status(400).json({ message: "user does not exists" });
+      return res.status(400).json({ message: "user does not exists" });
     }
 
     const otp = crypto.randomInt(100000, 1000000).toString();
@@ -135,9 +135,9 @@ export const sendOtp = async (req, res) => {
     await user.save();
     await sendOtpMail(email, otp);
 
-    res.status(200).json({ message: "Otp Sent!" });
+    return res.status(200).json({ message: "Otp Sent!" });
   } catch (error) {
-    res.status(500).json({ message: `Send otp error: ${error}` });
+    return res.status(500).json({ message: `Send otp error: ${error}` });
   }
 };
 
@@ -147,16 +147,51 @@ export const verifyOtp = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      res.status(400).json({ message: "user does not exists" });
+      return res.status(400).json({ message: "user does not exists" });
     }
 
+    if (user.resetOtpExpires <= Date.now()) {
+      return res.status(400).json({ message: "Otp Expired" });
+    }
     if (user.resetOtp !== otp) {
-      res.status(400).json({ message: "Wrong Otp" });
+      return res.status(400).json({ message: "Wrong Otp" });
     }
-    console.log(resetOtpExpires);
 
-    // if(user.resetOtpExpires)
+    user.resetOtp = null;
+    user.isOtpVerified = true;
+    await user.save();
+
+    return res.status(200).json({ message: "Otp verified successfull" });
   } catch (error) {
-    res.status(500).json({ message: `Verify otp error: ${error}` });
+    return res.status(500).json({ message: `Verify otp error: ${error}` });
+  }
+};
+
+export const resetNewPassword = async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ message: "user does not exists" });
+    }
+
+    if (user.resetOtpExpires <= Date.now() || !user.isOtpVerified) {
+      return res
+        .status(400)
+        .json({ message: "Session expired reverify email" });
+    }
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    user.password = hashedPassword;
+    user.resetOtpExpires = null;
+    user.isOtpVerified = false;
+    await user.save();
+
+    return res.status(200).json({ message: "Password reset successfull" });
+  } catch (error) {
+    return res.status(500).json({ message: `Password reset error: ${error}` });
   }
 };

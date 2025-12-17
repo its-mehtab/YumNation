@@ -33,15 +33,27 @@ export const ValidateProvider = ({ children }) => {
     }
     if (!values.password) {
       errors.password = "Password is required";
+    } else if (values.password.length < 6) {
+      errors.password = "Password must be 6 characters or more";
     }
     return errors;
+  };
+
+  const validateEmail = (value) => {
+    const error = {};
+    if (!value || !value.trim()) {
+      error.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(value.trim())) {
+      error.email = "Email address is invalid";
+    }
+    return error;
   };
 
   const validate = (values = {}) => validateSignup(values);
 
   return (
     <ValidateContext.Provider
-      value={{ validate, validateLogin, validateSignup }}
+      value={{ validate, validateLogin, validateSignup, validateEmail }}
     >
       {children}
     </ValidateContext.Provider>

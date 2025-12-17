@@ -18,6 +18,7 @@ const Signup = () => {
   });
   const [error, setError] = useState({});
   const [backendError, setBackendError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { validate } = useValidate();
   const { serverURL, setUser, getUserData } = useAuth();
@@ -35,9 +36,9 @@ const Signup = () => {
 
     const trimmedData = {
       ...signUpData,
-      firstName: signUpData.firstName.trim(),
-      lastName: signUpData.lastName.trim(),
-      email: signUpData.email.trim(),
+      firstName: signUpData.firstName.trim().toLowerCase(),
+      lastName: signUpData.lastName.trim().toLowerCase(),
+      email: signUpData.email.trim().toLowerCase(),
     };
 
     const validationErrors = validate(trimmedData);
@@ -47,13 +48,14 @@ const Signup = () => {
       return;
     }
 
+    setLoading(true);
     try {
       const { data } = await axios.post(
         serverURL + "api/signUp",
         {
-          firstName: trimmedData.firstName.toLocaleLowerCase(),
-          lastName: trimmedData.lastName.toLocaleLowerCase(),
-          email: trimmedData.email.toLocaleLowerCase(),
+          firstName: trimmedData.firstName,
+          lastName: trimmedData.lastName,
+          email: trimmedData.email,
           password: trimmedData.password,
           role: trimmedData.role,
         },
@@ -74,6 +76,8 @@ const Signup = () => {
       console.log(data);
     } catch (error) {
       setBackendError(error.response?.data?.message || error.message);
+    } finally {
+      setLoading(false);
     }
 
     // console.log(signUpData);
@@ -176,9 +180,14 @@ const Signup = () => {
 
           <button
             type="submit"
-            className="w-full bg-[#FB9300] text-white font-semibold py-3 rounded-lg hover:bg-white hover:text-black cursor-pointer transition"
+            className={`w-full font-semibold py-3 rounded-lg transition-all duration-200 ${
+              loading
+                ? "bg-white text-black cursor-not-allowed"
+                : "bg-[#FB9300] text-white hover:bg-white hover:text-black cursor-pointer"
+            }`}
+            disabled={loading}
           >
-            Sign Up
+            {!loading ? "Sign Up" : "Loading..."}
           </button>
 
           {/* OAuth */}
