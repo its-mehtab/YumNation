@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import slugGenerator from "../utils/slugGenerator";
+import slugGenerator from "../utils/slugGenerator.js";
 
 const productSchema = new Schema(
   {

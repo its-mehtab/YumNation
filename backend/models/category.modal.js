@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import slugGenerator from "../utils/slugGenerator.js";
 
 const categorySchema = new Schema(
   {
@@ -11,13 +12,14 @@ const categorySchema = new Schema(
 
     slug: {
       type: String,
-      required: true,
+      // required: true,
       unique: true,
       lowercase: true,
     },
 
     description: {
       type: String,
+      required: true,
     },
 
     image: {
@@ -27,12 +29,6 @@ const categorySchema = new Schema(
     isActive: {
       type: Boolean,
       default: true,
-    },
-
-    parentCategory: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
-      default: null,
     },
 
     createdBy: {

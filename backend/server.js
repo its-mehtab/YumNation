@@ -19,7 +19,7 @@ app.use(
   })
 );
 app.use("/api", authRouter);
-app.use("/api", categoryRouter);
+app.use("/api/categories", categoryRouter);
 
 app.get("/", (req, res) => {
   console.log(req.user);

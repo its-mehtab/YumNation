@@ -1,4 +1,4 @@
-const slugGenerator = (next) => {
+const slugGenerator = function (next) {
   if (!this.isModified("name")) return next();
 
   this.slug = this.name
