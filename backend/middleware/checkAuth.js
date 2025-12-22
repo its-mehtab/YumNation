@@ -23,10 +23,3 @@ export const checkAuth = (req, res, next) => {
     res.status(500).json({ message: "Internal server issue" });
   }
 };
-
-export const adminOnly = (req, res, next) => {
-  if (req.user.role !== "admin") {
-    return res.status(403).json({ message: "Access denied" });
-  }
-  next();
-};

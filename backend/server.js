@@ -6,6 +6,7 @@ import cors from "cors";
 import authRouter from "./routes/auth.routes.js";
 import cookieParser from "cookie-parser";
 import categoryRouter from "./routes/category.routes.js";
+import productRouter from "./routes/product.routes.js";
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -20,6 +21,7 @@ app.use(
 );
 app.use("/api", authRouter);
 app.use("/api/categories", categoryRouter);
+app.use("/api/products", productRouter);
 
 app.get("/", (req, res) => {
   console.log(req.user);
