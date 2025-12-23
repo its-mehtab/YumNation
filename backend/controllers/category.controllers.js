@@ -1,4 +1,5 @@
 import Category from "../models/category.modal.js";
+import slugGenerator from "../utils/slugGenerator.js";
 
 export const getCategories = async (req, res) => {
   try {
@@ -42,6 +43,8 @@ export const createCategory = async (req, res) => {
       .json({ message: "category description is required" });
   }
 
+  const slug = slugGenerator(name);
+
   try {
     const categoryExists = await Category.findOne({ name });
 
@@ -51,10 +54,9 @@ export const createCategory = async (req, res) => {
         .json({ message: `category named ${name} already exists` });
     }
 
-    console.log();
-
     const category = await Category.create({
       name,
+      slug,
       description,
       createdBy: req.userId,
     });
@@ -81,20 +83,20 @@ export const updateCategory = async (req, res) => {
       .json({ message: "name, description and image is required" });
   }
 
+  const slug = slugGenerator(name);
+
   try {
-    const category = await Category.findById(id);
+    const category = await Category.findByIdAndUpdate(
+      id,
+      { ...req.body, slug },
+      { new: true }
+    );
 
     if (!category) {
       return res.status(404).json({ message: "Category Not Found" });
     }
 
-    category.name = name;
-    category.description = description;
-    category.image = image;
-    category.isActive = isActive;
-    await category.save();
-
-    return res.status(200).json({ category });
+    return res.status(200).json(category);
   } catch (error) {
     return res
       .status(500)

@@ -1,5 +1,5 @@
-import { Router } from "express";
 import Product from "../models/product.modal.js";
+import slugGenerator from "../utils/slugGenerator.js";
 
 export const getProducts = async (req, res) => {
   try {
@@ -32,6 +32,11 @@ export const getProductBySlug = async (req, res) => {
   }
 };
 
+export const getFilteredProducts = async (req, res) => {
+  const query = res.query;
+  console.log(query);
+};
+
 export const createProduct = async (req, res) => {
   const { name, price, description, images, category, variants, ingredients } =
     req.body;
@@ -51,6 +56,8 @@ export const createProduct = async (req, res) => {
     });
   }
 
+  const slug = slugGenerator(name);
+
   try {
     const productExists = await Product.findOne({ name });
 
@@ -59,6 +66,7 @@ export const createProduct = async (req, res) => {
     }
     const product = await Product.create({
       ...req.body,
+      slug,
       createdBy: req.userId,
     });
 
@@ -90,18 +98,12 @@ export const updateProduct = async (req, res) => {
     });
   }
 
+  const slug = slugGenerator(name);
+
   try {
     const product = await Product.findByIdAndUpdate(
       id,
-      {
-        name,
-        price,
-        description,
-        images,
-        category,
-        variants,
-        ingredients,
-      },
+      { ...req.body, slug },
       { new: true }
     );
     console.log(product);
@@ -136,7 +138,9 @@ export const deleteProduct = async (req, res) => {
         .json({ message: "product not found. Nothing deleted" });
     }
 
-    return res.status(200).json(product);
+    return res
+      .status(200)
+      .json({ message: "product deleted successfully", product });
   } catch (error) {
     return res
       .status(500)

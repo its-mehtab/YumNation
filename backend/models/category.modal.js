@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import slugGenerator from "../utils/slugGenerator.js";
 
 const categorySchema = new Schema(
   {
@@ -37,8 +36,6 @@ const categorySchema = new Schema(
   },
   { timestamps: true }
 );
-
-categorySchema.pre("save", slugGenerator);
 
 const Category = mongoose.model("Category", categorySchema);
 
