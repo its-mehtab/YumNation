@@ -19,6 +19,7 @@ import {
 import Button from "../../components/button/Button";
 import { ArrowLeft, ArrowRight } from "../../assets/icon/Icons";
 import { useAuth } from "../../context/AuthContext";
+import { useCategory } from "../../context/categoryContext";
 
 const products = [
   {
@@ -102,7 +103,7 @@ const products = [
       "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
   },
 ];
-const categories = [
+const categoriess = [
   {
     _id: 1,
     name: "BURGERS",
@@ -146,9 +147,10 @@ const categories = [
 ];
 
 const Home = () => {
-  const [categoryName, setCategoryName] = useState("BURGERS");
+  const [categoryName, setCategoryName] = useState("Burgers");
 
   const { user, loading } = useAuth();
+  const { categories, loading: catLoading } = useCategory();
 
   return (
     <>
@@ -204,7 +206,7 @@ const Home = () => {
             Our Best <span className="text-[#3F9065]">product</span>
           </h1>
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:flex gap-3.5 items-center justify-center">
-            {categories.map((currCat) => {
+            {categories?.map((currCat) => {
               return (
                 <span
                   key={currCat._id}
@@ -217,7 +219,7 @@ const Home = () => {
                       : "bg-[#fff7ea] text-[#212121] hover:bg-[#fb9300] hover:text-white"
                   }   px-5 py-3 rounded-lg text-xl font-[bangers] cursor-pointer flex items-center gap-2 justify-center`}
                 >
-                  <span>{<currCat.icon />}</span>
+                  {/* <span>{<currCat.icon />}</span> */}
                   {currCat.name}
                 </span>
               );

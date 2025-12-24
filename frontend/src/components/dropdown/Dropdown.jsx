@@ -27,7 +27,7 @@ const Dropdown = () => {
   const logout = async () => {
     try {
       const { data } = await axios.post(
-        serverURL + "api/logout",
+        serverURL + "/api/logout",
         {},
         {
           withCredentials: true,

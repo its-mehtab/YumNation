@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import slugGenerator from "../utils/slugGenerator.js";
 
 const productSchema = new Schema(
   {
@@ -89,6 +90,8 @@ const productSchema = new Schema(
   },
   { timestamps: true }
 );
+
+productSchema.pre("save", slugGenerator);
 
 const Product = mongoose.model("Product", productSchema);
 

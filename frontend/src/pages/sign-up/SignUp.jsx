@@ -51,7 +51,7 @@ const Signup = () => {
     setLoading(true);
     try {
       const { data } = await axios.post(
-        serverURL + "api/signUp",
+        serverURL + "/api/signUp",
         {
           firstName: trimmedData.firstName,
           lastName: trimmedData.lastName,

@@ -1,9 +1,9 @@
 import { Router } from "express";
 import {
   createCategory,
-  deleteCategory,
   getCategories,
   getCategoryBySlug,
+  hardDeleteCategory,
   updateCategory,
 } from "../controllers/category.controllers.js";
 import { checkAuth } from "../middleware/checkAuth.js";
@@ -15,6 +15,6 @@ categoryRouter.get("/:slug", getCategoryBySlug);
 
 categoryRouter.post("/", checkAuth, createCategory);
 categoryRouter.put("/:id", checkAuth, updateCategory);
-categoryRouter.delete("/:id", checkAuth, deleteCategory);
+categoryRouter.delete("/:id", checkAuth, hardDeleteCategory);
 
 export default categoryRouter;

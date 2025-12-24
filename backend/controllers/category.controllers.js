@@ -1,5 +1,5 @@
 import Category from "../models/category.modal.js";
-import slugGenerator from "../utils/slugGenerator.js";
+import product from "../models/product.modal.js";
 
 export const getCategories = async (req, res) => {
   try {
@@ -20,7 +20,7 @@ export const getCategoryBySlug = async (req, res) => {
   try {
     const data = await Category.findOne({ slug });
     if (!data) {
-      res.status(404).json({ message: "category does not exists" });
+      return res.status(404).json({ message: "category does not exists" });
     }
 
     return res.status(200).json(data);
@@ -32,40 +32,32 @@ export const getCategoryBySlug = async (req, res) => {
 };
 
 export const createCategory = async (req, res) => {
-  const { name, description } = req.body;
+  const { name, description, image, parentCategory } = req.body;
 
-  if (!name) {
-    return res.status(400).json({ message: "category name is required" });
+  if (!name || !description) {
+    return res.status(400).json({
+      message: "Name and description are required",
+    });
   }
-  if (!description) {
-    return res
-      .status(400)
-      .json({ message: "category description is required" });
-  }
-
-  const slug = slugGenerator(name);
 
   try {
-    const categoryExists = await Category.findOne({ name });
-
-    if (categoryExists) {
-      return res
-        .status(400)
-        .json({ message: `category named ${name} already exists` });
-    }
-
     const category = await Category.create({
       name,
-      slug,
       description,
+      image,
       createdBy: req.userId,
     });
 
     return res.status(201).json(category);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Create category failed", error: error.message });
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "Category already exists" });
+    }
+
+    return res.status(500).json({
+      message: "Create category failed",
+      error: error.message,
+    });
   }
 };
 
@@ -77,56 +69,62 @@ export const updateCategory = async (req, res) => {
     return res.status(400).json({ message: "ID is required" });
   }
 
-  if (!name || !description || !image) {
-    return res
-      .status(400)
-      .json({ message: "name, description and image is required" });
-  }
-
-  const slug = slugGenerator(name);
-
   try {
-    const category = await Category.findByIdAndUpdate(
-      id,
-      { ...req.body, slug },
-      { new: true }
-    );
+    const category = await Category.findById(id);
 
     if (!category) {
       return res.status(404).json({ message: "Category Not Found" });
     }
 
+    if (name && category.name !== name) category.name = name;
+    if (description && category.description !== description)
+      category.description = description;
+    if (image !== undefined) category.image = image;
+    if (isActive !== undefined) category.isActive = isActive;
+
+    await category.save();
+
     return res.status(200).json(category);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Unable to update category", error: error.message });
+    if (error.code === 11000) {
+      return res.status(400).json({
+        message: "Category with this name already exists",
+      });
+    }
+
+    return res.status(500).json({
+      message: "Unable to update category",
+      error: error.message,
+    });
   }
 };
 
-export const deleteCategory = async (req, res) => {
-  const id = req.params.id;
-
-  if (!id) {
-    return res.status(400).json({ message: "ID is required" });
-  }
+export const hardDeleteCategory = async (req, res) => {
+  const { id } = req.params;
 
   try {
-    const category = await Category.findByIdAndDelete(id);
-
+    const category = await Category.findById(id);
     if (!category) {
-      return res
-        .status(404)
-        .json({ message: "Category not found. Nothing deleted." });
+      return res.status(404).json({ message: "Category not found" });
     }
 
+    const productCount = await Product.countDocuments({ category: id });
+
+    if (productCount > 0) {
+      return res.status(400).json({
+        message: `Cannot delete category. ${productCount} products still use it.`,
+      });
+    }
+
+    await Category.findByIdAndDelete(id);
+
     return res.status(200).json({
-      message: "Category deleted successfully",
-      category,
+      message: "Category permanently deleted",
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Unable to delete category", error: error.message });
+    return res.status(500).json({
+      message: "Hard delete failed",
+      error: error.message,
+    });
   }
 };
