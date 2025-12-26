@@ -9,6 +9,7 @@ import { AuthProvider } from "./context/AuthContext.jsx";
 import { ValidateProvider } from "./context/ValidateContext.jsx";
 import { CategoryProvider } from "./context/CategoryContext.jsx";
 
+// Fixed
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
