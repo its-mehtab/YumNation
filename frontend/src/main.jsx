@@ -7,19 +7,22 @@ import Header from "./components/header/Header.jsx";
 import Footer from "./components/footer/Footer.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ValidateProvider } from "./context/ValidateContext.jsx";
-import { CategoryProvider } from "./context/categoryContext.jsx";
+import { CategoryProvider } from "./context/CategoryContext.jsx";
+import { ProductProvider } from "./context/ProductContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <CategoryProvider>
-          <ValidateProvider>
-            <Header />
-            <App />
-            <Footer />
-          </ValidateProvider>
-        </CategoryProvider>
+        <ProductProvider>
+          <CategoryProvider>
+            <ValidateProvider>
+              <Header />
+              <App />
+              <Footer />
+            </ValidateProvider>
+          </CategoryProvider>
+        </ProductProvider>
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>

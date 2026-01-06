@@ -19,9 +19,10 @@ import {
 import Button from "../../components/button/Button";
 import { ArrowLeft, ArrowRight } from "../../assets/icon/Icons";
 import { useAuth } from "../../context/AuthContext";
-import { useCategory } from "../../context/categoryContext";
+import { useCategory } from "../../context/CategoryContext";
+import { useProduct } from "../../context/ProductContext";
 
-const products = [
+const productss = [
   {
     _id: 1,
     name: "LOADED FRIES",
@@ -151,6 +152,12 @@ const Home = () => {
 
   const { user, loading } = useAuth();
   const { categories, loading: catLoading } = useCategory();
+  const { products } = useProduct();
+  console.log(products);
+
+  const categoryProducts = products?.filter(
+    (currItem) => currItem.category.name === categoryName
+  );
 
   return (
     <>
@@ -220,6 +227,7 @@ const Home = () => {
                   }   px-5 py-3 rounded-lg text-xl font-[bangers] cursor-pointer flex items-center gap-2 justify-center`}
                 >
                   {/* <span>{<currCat.icon />}</span> */}
+                  <span>{<BurgersmIcon />}</span>
                   {currCat.name}
                 </span>
               );
@@ -234,7 +242,7 @@ const Home = () => {
             }}
             className="mySwiper"
           >
-            {products.map((currProduct) => {
+            {categoryProducts?.map((currProduct) => {
               return (
                 <SwiperSlide key={currProduct._id}>
                   <ProductCard currProduct={currProduct} />
@@ -388,7 +396,7 @@ const Home = () => {
           }}
           className="mySwiper"
         >
-          {products.map((currProduct) => {
+          {products?.map((currProduct) => {
             return (
               <SwiperSlide key={currProduct._id}>
                 <ProductCard currProduct={currProduct} />

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Icon } from "../../assets/assets";
+import { assets, Icon } from "../../assets/assets";
 import { Link } from "react-router-dom";
 import { WishlistIcon, WishlistIconRed } from "../../assets/icon/Icons";
 
@@ -9,7 +9,8 @@ const ProductCard = ({ currProduct }) => {
   return (
     <div className="p-2 sm:p-4 mt-3.5">
       <div className="relative after:content-[''] after:absolute after:top-2/6 after:bottom-0 after:right-0 after:w-full after:rounded-3xl after:bg-[#FFF7EA] after:-z-10 hover:after:shadow-[2px_2px_0px_4px_rgba(0,0,0)] hover:after:top-0 after:transition-all after:duration-400">
-        <img src={currProduct.img} alt="" className="w-full" />
+        {/* <img src={currProduct.img} alt="" className="w-full" /> */}
+        <img src={assets.product2} alt="" className="w-full" />
         <div className="p-8 pt-0">
           <div className="flex justify-between place-items-center">
             <Link to={"/"}>
