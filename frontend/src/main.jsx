@@ -8,12 +8,8 @@ import Footer from "./components/footer/Footer.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ValidateProvider } from "./context/ValidateContext.jsx";
 import { CategoryProvider } from "./context/CategoryContext.jsx";
-<<<<<<< HEAD
 import { ProductProvider } from "./context/ProductContext.jsx";
-=======
->>>>>>> d22451bbae1894d8bab3142a77f00122fbbd3d77
 
-// Fixed
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>

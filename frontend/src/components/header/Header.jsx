@@ -108,7 +108,7 @@ const Header = () => {
   const [openCartModal, setOpenCartModal] = useState(false);
 
   return (
-    <header className="absolute z-50 top-0 left-0 right-0">
+    <header className="absolute z-50 top-0 left-0 right-0 bg-[#fb9300]">
       <div className="mx-auto max-w-[1340px] px-4 sm:px-6 lg:px-8">
         <nav>
           <div className="relative flex items-center justify-between py-4 md:py-8">

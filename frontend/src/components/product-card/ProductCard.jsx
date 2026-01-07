@@ -13,7 +13,7 @@ const ProductCard = ({ currProduct }) => {
         <img src={assets.product2} alt="" className="w-full" />
         <div className="p-8 pt-0">
           <div className="flex justify-between place-items-center">
-            <Link to={"/"}>
+            <Link to={"/product"}>
               <h3 className="text-xl text-[#000006] hover:text-[#fb9300] transition-all">
                 {currProduct.name}
               </h3>
@@ -30,7 +30,7 @@ const ProductCard = ({ currProduct }) => {
           </p>
           <div className="flex justify-between place-items-center">
             <h3 className="text-2xl text-[#ED1B2E]">
-              ${currProduct.price.toFixed(2)}
+              <Link to={`/product`}>${currProduct.price.toFixed(2)}</Link>
             </h3>
             <span className="w-12 h-12 flex items-center justify-center bg-[#110A00] rounded-lg hover:bg-[#fb9300] cursor-pointer transition-all">
               {<Icon.CartIcon />}
