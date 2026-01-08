@@ -1,13 +1,13 @@
 import Category from "../models/category.modal.js";
-import product from "../models/product.modal.js";
+import Product from "../models/product.modal.js";
 
 export const getCategories = async (req, res) => {
   try {
     const data = await Category.find();
-    console.log(data);
+    // console.log(data);
     return res.status(200).json(data);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res
       .status(500)
       .json({ message: "unable to find categories", error: error.message });

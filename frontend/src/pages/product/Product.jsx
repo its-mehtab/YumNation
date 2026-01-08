@@ -2,18 +2,20 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { WishlistIcon, WishlistIconRed } from "../../assets/icon/Icons";
 import ProductTab from "../../components/product-tab/ProductTab";
+import "./product.css";
+import ProductGallery from "./ProductGallery";
 
 const Product = () => {
   const [size, setSize] = useState("s");
-  const [addOns, setAddOns] = useState([]);
+  //   const [addOns, setAddOns] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [wishlistActive, setWishlistActive] = useState(false);
 
   return (
     <>
-      <section className="py-20 my-20">
+      <section className="pt-5 mt-24">
         <div className="mx-auto max-w-[1340px] px-4 sm:px-6 lg:px-8">
-          <ul className="flex mb-5">
+          <ul className="flex mb-5 text-gray-600">
             <li>
               <Link href="/" className="text-md">
                 Home
@@ -21,8 +23,8 @@ const Product = () => {
             </li>
             <li className="text-md before:content-['/'] before:mx-2">Shop</li>
           </ul>
-          <div className="grid grid-cols-2">
-            <div></div>
+          <div className="grid grid-cols-2 gap-8">
+            <ProductGallery />
             <div className="md:pr-5">
               <h2 className="text-5xl leading-tight">
                 SAUSAGE, EGG & CHEESE CROISSAN’WICH
@@ -106,36 +108,21 @@ const Product = () => {
                 </ul> */}
               <h3 className="mt-1 mb-1">Size: {size}</h3>
               <div className="flex items-center text-lg">
-                <span
-                  onClick={() => setSize("s")}
-                  className={`uppercase w-12 h-12 flex items-center justify-center cursor-pointer ${
-                    size === "s"
-                      ? "border-2 border-y-gray-950"
-                      : "border border-gray-300"
-                  }`}
-                >
-                  s
-                </span>
-                <span
-                  onClick={() => setSize("m")}
-                  className={`uppercase w-12 h-12 flex items-center justify-center cursor-pointer ${
-                    size === "m"
-                      ? "border-2 border-y-gray-950"
-                      : "border border-gray-300"
-                  }`}
-                >
-                  m
-                </span>
-                <span
-                  onClick={() => setSize("l")}
-                  className={`uppercase w-12 h-12 flex items-center justify-center cursor-pointer ${
-                    size === "l"
-                      ? "border-2 border-y-gray-950"
-                      : "border border-gray-300"
-                  }`}
-                >
-                  l
-                </span>
+                {["s", "m", "l"].map((curr) => {
+                  return (
+                    <span
+                      key={curr}
+                      onClick={() => setSize(curr)}
+                      className={`uppercase w-12 h-12 flex items-center justify-center cursor-pointer ${
+                        size === curr
+                          ? "border-2 border-y-gray-950"
+                          : "border border-gray-300"
+                      }`}
+                    >
+                      {curr}
+                    </span>
+                  );
+                })}
               </div>
               {/* <div className="flex gap-2 items-center capitalize py-5">
                     {["extra cheese"]}
