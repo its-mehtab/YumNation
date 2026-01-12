@@ -20,6 +20,7 @@ export const getUserCart = async (req, res) => {
 
 export const addCart = async (req, res) => {
   const userId = req.userId;
+
   const { product, name, image, price, quantity, variant, addOns } = req.body;
 
   try {
@@ -83,18 +84,23 @@ export const updateCartQuantity = async (req, res) => {
 
 export const removeFromCart = async (req, res) => {
   const userId = req.userId;
-  const id = req;
-  console.log(req.params);
+  const { id } = req.params;
 
   try {
-    const cartToDelete = await Cart.findOne({
+    const cartToDelete = await Cart.findOneAndDelete({
       user: userId,
       "items.product": id,
     });
 
-    // console.log(cartToDelete);
+    if (!cartToDelete) {
+      return res
+        .status(404)
+        .json({ message: "cart not found. Nothing deleted" });
+    }
 
-    // return res.status(200).json(cart);
+    return res
+      .status(200)
+      .json({ message: "cart deleted successfully", cartToDelete });
   } catch (error) {
     return res
       .status(500)

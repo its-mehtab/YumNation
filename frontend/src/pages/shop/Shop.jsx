@@ -2,91 +2,94 @@ import React from "react";
 import { assets } from "../../assets/assets";
 import { Link } from "react-router-dom";
 import ProductCard from "../../components/product-card/ProductCard";
+import { useProduct } from "../../context/ProductContext";
 
-const products = [
-  {
-    _id: 1,
-    name: "LOADED FRIES",
-    price: 2.26,
-    img: assets.product1,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 2,
-    name: "ORIGINAL RECIPE CHICKEN",
-    price: 5.0,
-    img: assets.product2,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 3,
-    name: "WHOPPER BURGER KING",
-    price: 12.39,
-    img: assets.product3,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 4,
-    name: "TACO SUPREME",
-    price: 8.32,
-    img: assets.product4,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 5,
-    name: "SPICY CHICKEN SANDWICH",
-    price: 12.46,
-    img: assets.product5,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 6,
-    name: "LOADED FRIES",
-    price: 2.26,
-    img: assets.product1,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 7,
-    name: "ORIGINAL RECIPE CHICKEN",
-    price: 5.0,
-    img: assets.product2,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 8,
-    name: "WHOPPER BURGER KING",
-    price: 12.39,
-    img: assets.product3,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 9,
-    name: "TACO SUPREME",
-    price: 8.32,
-    img: assets.product4,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 10,
-    name: "SPICY CHICKEN SANDWICH",
-    price: 12.46,
-    img: assets.product5,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-];
+// const productss = [
+//   {
+//     _id: 1,
+//     name: "LOADED FRIES",
+//     price: 2.26,
+//     img: assets.product1,
+//     description:
+//       "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
+//   },
+//   {
+//     _id: 2,
+//     name: "ORIGINAL RECIPE CHICKEN",
+//     price: 5.0,
+//     img: assets.product2,
+//     description:
+//       "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
+//   },
+//   {
+//     _id: 3,
+//     name: "WHOPPER BURGER KING",
+//     price: 12.39,
+//     img: assets.product3,
+//     description:
+//       "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
+//   },
+//   {
+//     _id: 4,
+//     name: "TACO SUPREME",
+//     price: 8.32,
+//     img: assets.product4,
+//     description:
+//       "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
+//   },
+//   {
+//     _id: 5,
+//     name: "SPICY CHICKEN SANDWICH",
+//     price: 12.46,
+//     img: assets.product5,
+//     description:
+//       "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
+//   },
+//   {
+//     _id: 6,
+//     name: "LOADED FRIES",
+//     price: 2.26,
+//     img: assets.product1,
+//     description:
+//       "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
+//   },
+//   {
+//     _id: 7,
+//     name: "ORIGINAL RECIPE CHICKEN",
+//     price: 5.0,
+//     img: assets.product2,
+//     description:
+//       "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
+//   },
+//   {
+//     _id: 8,
+//     name: "WHOPPER BURGER KING",
+//     price: 12.39,
+//     img: assets.product3,
+//     description:
+//       "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
+//   },
+//   {
+//     _id: 9,
+//     name: "TACO SUPREME",
+//     price: 8.32,
+//     img: assets.product4,
+//     description:
+//       "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
+//   },
+//   {
+//     _id: 10,
+//     name: "SPICY CHICKEN SANDWICH",
+//     price: 12.46,
+//     img: assets.product5,
+//     description:
+//       "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
+//   },
+// ];
 
 const Shop = () => {
+  const { products } = useProduct();
+
   return (
     <>
       <section
@@ -112,7 +115,7 @@ const Shop = () => {
       <section className="py-28">
         <div className="mx-auto max-w-[1340px] px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-4">
-            {products.map((currProduct) => {
+            {products?.map((currProduct) => {
               return (
                 <div key={currProduct._id}>
                   <ProductCard currProduct={currProduct} />

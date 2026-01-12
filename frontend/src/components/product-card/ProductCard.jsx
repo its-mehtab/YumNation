@@ -6,6 +6,7 @@ import { WishlistIcon, WishlistIconRed } from "../../assets/icon/Icons";
 const ProductCard = ({ currProduct }) => {
   const [wishlistActive, setWishlistActive] = useState(false);
   // const [size, setSize] = useState("s");
+  console.log(currProduct);
 
   return (
     <div className="p-2 sm:p-4 mt-3.5">
@@ -14,7 +15,7 @@ const ProductCard = ({ currProduct }) => {
         <img src={assets.product2} alt="" className="w-full" />
         <div className="p-8 pt-0">
           <div className="flex justify-between place-items-center">
-            <Link to={"/product"}>
+            <Link to={`/product/${currProduct.slug}`}>
               <h3 className="text-xl text-[#000006] hover:text-[#fb9300] transition-all">
                 {currProduct.name}
               </h3>

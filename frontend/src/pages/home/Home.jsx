@@ -153,8 +153,9 @@ const Home = () => {
   const { user, loading } = useAuth();
   const { categories, loading: catLoading } = useCategory();
   const { products } = useProduct();
-  console.log(products);
 
+  // console.log(categories);
+  // console.log(products);
   const categoryProducts = products?.filter(
     (currItem) => currItem.category.name === categoryName
   );
@@ -208,7 +209,7 @@ const Home = () => {
         </nav>
       </section>
       <section className="py-16 lg:py-28">
-        <div className="mx-auto max-w-[1340px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-335 px-4 sm:px-6 lg:px-8">
           <h1 className="text-[#000006] text-6xl mb-8 text-center">
             Our Best <span className="text-[#3F9065]">product</span>
           </h1>
