@@ -6,10 +6,11 @@ import "./product.css";
 import ProductGallery from "./ProductGallery";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
-// import { useCart } from "../../context/CartContext";
+import { useCart } from "../../context/CartContext";
+import { Bounce, ToastContainer, toast } from "react-toastify";
 
 const Product = () => {
-  const [size, setSize] = useState("");
+  const [variation, setVariation] = useState("");
   //   const [addOns, setAddOns] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [wishlistActive, setWishlistActive] = useState(false);
@@ -17,40 +18,68 @@ const Product = () => {
 
   const { slug } = useParams();
   const { serverURL } = useAuth();
-  // const { setCart } = useCart();
+  const { setCart, loading, setLoading } = useCart();
+
+  const notify = () => toast("Added to Cart !");
+
   const getMainProduct = async () => {
     const { data } = await axios.get(`${serverURL}/api/products/${slug}`);
 
     setMainProduct(data);
 
-    setSize(data.variants[0].name);
+    setVariation(data.variants[0].name);
   };
 
   const handleAddCart = async () => {
-    const res = await axios.post(
-      `${serverURL}/api/cart`,
-      {
-        product: mainProduct._id,
-        name: mainProduct.name,
-        image: "kjgdh.jpg",
-        price: mainProduct.price,
-        quantity,
-        variant: size,
-      },
-      { withCredentials: true }
-    );
+    notify();
+    setLoading(true);
+    try {
+      const { data } = await axios.post(
+        `${serverURL}/api/cart`,
+        {
+          product: mainProduct._id,
+          name: mainProduct.name,
+          image: "kjgdh.jpg",
+          price: mainProduct?.variants.find((curr) => curr.name === variation)
+            .price,
+          quantity,
+          variant: variation,
+        },
+        { withCredentials: true }
+      );
 
-    console.log(res);
+      setCart(data);
+    } catch (error) {
+      console.log("Cart Error:", error?.response?.data || error.message);
+      setCart(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     getMainProduct();
-  }, []);
+  }, [slug]);
 
   return (
     <>
       <section className="pt-5 mt-24">
         <div className="mx-auto max-w-335 px-4 sm:px-6 lg:px-8">
+          <ToastContainer
+            toastClassName="rounded-full"
+            // bodyClassName="text-sm font-white font-medium block p-3"
+            position="bottom-left"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick={false}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            transition={Bounce}
+          />
           <ul className="flex mb-5 text-gray-600">
             <li>
               <Link href="/" className="text-md">
@@ -137,7 +166,7 @@ const Product = () => {
               <h4 className="inline-block py-4 text-3xl text-[#ed1b2e]">
                 $
                 {mainProduct?.variants
-                  .find((curr) => curr.name === size)
+                  .find((curr) => curr.name === variation)
                   .price.toFixed(2)}
               </h4>
               {/* <ul>
@@ -145,7 +174,7 @@ const Product = () => {
                   <li>30 days easy returns if you change your mind</li>
                   <li>Order before noon for same day dispatch</li>
                 </ul> */}
-              <h3 className="mt-1 mb-1">Size: {size}</h3>
+              <h3 className="mt-1 mb-1">variation: {variation}</h3>
               <div className="flex gap-3 items-center text-lg">
                 {mainProduct?.variants.map((curr) => {
                   // console.log(curr);
@@ -153,9 +182,9 @@ const Product = () => {
                   return (
                     <span
                       key={curr._id}
-                      onClick={() => setSize(curr.name)}
+                      onClick={() => setVariation(curr.name)}
                       className={`uppercase px-4 h-12 flex items-center justify-center cursor-pointer ${
-                        size === curr.name
+                        variation === curr.name
                           ? "border-2 border-y-gray-950"
                           : "border border-gray-300"
                       }`}
@@ -230,12 +259,15 @@ const Product = () => {
                     </svg>
                   </span>
                 </div>
-                <div
+                <button
                   onClick={handleAddCart}
-                  className="inline-block bg-[#fb9300] text-white font-[bangers] px-12 py-4 rounded-xl transition-all duration-300 ease-in-out hover:bg-[#df8302] cursor-pointer"
+                  className={`inline-block bg-[#fb9300] text-white font-[bangers] px-12 py-4 rounded-xl transition-all duration-300 ease-in-out hover:bg-[#df8302] ${
+                    loading ? "cursor-not-allowed" : " cursor-pointer"
+                  }`}
+                  disabled={loading}
                 >
                   Add to Cart
-                </div>
+                </button>
                 <span
                   onClick={() => setWishlistActive(!wishlistActive)}
                   className="bg-lime-100 p-4 rounded-lg text-gray-700 hover:text-[#027a36] cursor-pointer"

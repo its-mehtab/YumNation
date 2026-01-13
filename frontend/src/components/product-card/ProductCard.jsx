@@ -6,7 +6,6 @@ import { WishlistIcon, WishlistIconRed } from "../../assets/icon/Icons";
 const ProductCard = ({ currProduct }) => {
   const [wishlistActive, setWishlistActive] = useState(false);
   // const [size, setSize] = useState("s");
-  console.log(currProduct);
 
   return (
     <div className="p-2 sm:p-4 mt-3.5">

@@ -4,7 +4,10 @@ export const getUserCart = async (req, res) => {
   const userId = req.userId;
 
   try {
-    const cart = await Cart.findOne({ user: userId }).populate("items.product");
+    const cart = await Cart.findOne({ user: userId }).populate(
+      "items.product",
+      "name slug"
+    );
 
     if (!cart) {
       return res.status(200).json([]);
@@ -53,7 +56,7 @@ export const addCart = async (req, res) => {
       });
     }
 
-    return res.status(201).json(cart);
+    return res.status(201).json(cart.items);
   } catch (error) {
     return res
       .status(500)
@@ -65,10 +68,14 @@ export const updateCartQuantity = async (req, res) => {
   const { quantity, productId, variant } = req.body;
   const userId = req.userId;
 
+  if (!productId || quantity === undefined) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
   try {
     const cart = await Cart.findOneAndUpdate(
       { user: userId, "items.product": productId, "items.variant": variant },
-      { $set: { "items.$.quantity": quantity } }, // The '$' targets the matched item
+      { $set: { "items.$.quantity": quantity } },
       { new: true }
     );
 

@@ -36,7 +36,6 @@ export const getProductBySlug = async (req, res) => {
 
 export const getFilteredProducts = async (req, res) => {
   const query = res.query;
-  console.log(query);
 };
 
 export const createProduct = async (req, res) => {

@@ -10,7 +10,7 @@ const Footer = () => {
       <footer className="pt-15 lg:pt-20 relative before:content-[''] before:absolute before:left-0 before:right-0 before:-top-20 before:bottom-0 before:bg-[#FFF7EA] before:-z-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid sm:grid-cols-2 md:grid-cols-10 gap-6 md:gap-2">
-            <div className="lg:col-span-3">
+            <div className="md:col-span-3">
               <Link>
                 <img src={assets.logoYellow} alt="Yum Nation" />
               </Link>
@@ -20,7 +20,7 @@ const Footer = () => {
               <p className="font-medium text-[#333338]">support@example.com</p>
               <Link className="font-bold text-black mt-2">+(084) 456-0789</Link>
             </div>
-            <div className="lg:col-span-2">
+            <div className="md:col-span-2">
               <h3 className="text-xl text-black md:pb-4">QUICK LINKS</h3>
               <ul className="font-medium text-[#333338] capitalize gap-x-8 gap-y-4">
                 <li className="mt-4">
@@ -37,7 +37,7 @@ const Footer = () => {
                 </li>
               </ul>
             </div>
-            <div className="lg:col-span-3">
+            <div className="md:col-span-3">
               <h3 className="text-xl text-black md:pb-4">Products</h3>
               <ul className="font-medium text-[#333338] grid grid-cols-2 capitalize gap-x-8 gap-y-0">
                 <li className="mt-4">
@@ -66,7 +66,7 @@ const Footer = () => {
                 </li>
               </ul>
             </div>
-            <div className="lg:col-span-2">
+            <div className="md:col-span-2">
               <h3 className="text-xl text-black md:pb-4">OPENING HOURS</h3>
               <p className="font-medium text-[#333338] capitalize mt-4">
                 Monday - Friday:{" "}
