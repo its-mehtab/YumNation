@@ -20,7 +20,8 @@ const Product = () => {
   const { serverURL } = useAuth();
   const { setCart, loading, setLoading } = useCart();
 
-  const notify = () => toast("Added to Cart !");
+  const notifyAdd = () => toast("Added to Cart !");
+  const notifyError = () => toast("Login First !");
 
   const getMainProduct = async () => {
     const { data } = await axios.get(`${serverURL}/api/products/${slug}`);
@@ -31,7 +32,6 @@ const Product = () => {
   };
 
   const handleAddCart = async () => {
-    notify();
     setLoading(true);
     try {
       const { data } = await axios.post(
@@ -49,9 +49,11 @@ const Product = () => {
       );
 
       setCart(data);
+      notifyAdd();
     } catch (error) {
       console.log("Cart Error:", error?.response?.data || error.message);
       setCart(null);
+      notifyError();
     } finally {
       setLoading(false);
     }

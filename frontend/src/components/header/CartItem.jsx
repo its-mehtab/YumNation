@@ -58,6 +58,23 @@ const CartItem = ({ currProd, products }) => {
     }
   };
 
+  const handleDeleteCart = async () => {
+    try {
+      const { data } = await axios.delete(`${serverURL}/api/cart`, {
+        data: {
+          productId: currProd.product._id,
+          variant: currProd.variant,
+        },
+        withCredentials: true,
+      });
+
+      setCart(data.cart.items);
+    } catch (error) {
+      console.log("Delete Cart Error:", error?.response?.data || error.message);
+      setQuantity(quantity);
+    }
+  };
+
   return (
     <li key={currProd._id} className="flex gap-4 items-center mb-2">
       <Link
@@ -115,7 +132,10 @@ const CartItem = ({ currProd, products }) => {
               </svg>
             </span>
           </div>
-          <span className="cursor-pointer p-1 ml-auto text-sm text-gray-800 hover:text-black underline">
+          <span
+            onClick={handleDeleteCart}
+            className="cursor-pointer p-1 ml-auto text-sm text-gray-800 hover:text-black underline"
+          >
             remove
           </span>
         </div>

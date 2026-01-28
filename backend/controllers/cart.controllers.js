@@ -56,7 +56,11 @@ export const addCart = async (req, res) => {
       });
     }
 
-    return res.status(201).json(cart.items);
+    const updatedCart = await Cart.findOne({ user: userId }).populate(
+      "items.product"
+    );
+
+    return res.status(201).json(updatedCart.items);
   } catch (error) {
     return res
       .status(500)
@@ -65,19 +69,19 @@ export const addCart = async (req, res) => {
 };
 
 export const updateCartQuantity = async (req, res) => {
-  const { quantity, productId, variant } = req.body;
+  const { action, productId, variant } = req.body;
   const userId = req.userId;
 
-  if (!productId || quantity === undefined) {
+  if (!productId || action === undefined) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
   try {
-    const cart = await Cart.findOneAndUpdate(
-      { user: userId, "items.product": productId, "items.variant": variant },
-      { $set: { "items.$.quantity": quantity } },
-      { new: true }
-    );
+    const cart = await Cart.findOne({
+      user: userId,
+      "items.product": productId,
+      "items.variant": variant,
+    });
 
     if (!cart)
       return res.status(404).json({ message: "Item not found in cart" });
@@ -91,26 +95,34 @@ export const updateCartQuantity = async (req, res) => {
 
 export const removeFromCart = async (req, res) => {
   const userId = req.userId;
-  const { id } = req.params;
+  const { productId, variant } = req.body;
 
   try {
-    const cartToDelete = await Cart.findOneAndDelete({
-      user: userId,
-      "items.product": id,
-    });
+    const cart = await Cart.findOneAndUpdate(
+      { user: userId },
+      {
+        $pull: {
+          items: {
+            product: productId,
+            variant: variant,
+          },
+        },
+      },
+      { new: true }
+    ).populate("items.product", "name slug");
 
-    if (!cartToDelete) {
-      return res
-        .status(404)
-        .json({ message: "cart not found. Nothing deleted" });
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
     }
 
-    return res
-      .status(200)
-      .json({ message: "cart deleted successfully", cartToDelete });
+    return res.status(200).json({
+      message: "Item removed from cart",
+      cart,
+    });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Delete cart error", error: error.message });
+    return res.status(500).json({
+      message: "Remove from cart error",
+      error: error.message,
+    });
   }
 };

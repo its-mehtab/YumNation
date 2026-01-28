@@ -5,7 +5,7 @@ import { useAuth } from "./AuthContext";
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState(null);
+  const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const { serverURL } = useAuth();

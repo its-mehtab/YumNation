@@ -38,32 +38,39 @@ const CartModal = ({ openCartModal, setOpenCartModal, products }) => {
         </div>
         <div className="px-5 pt-3 h-[calc(100%-170px)] overflow-y-scroll">
           <ul>
-            {cart?.map((currProd) => {
-              return (
-                <CartItem
-                  currProd={currProd}
-                  products={products}
-                  key={currProd._id}
-                />
-              );
-            })}
+            {cart?.length > 0 ? (
+              cart.map((currProd) => {
+                return (
+                  <CartItem
+                    currProd={currProd}
+                    products={products}
+                    key={currProd._id}
+                  />
+                );
+              })
+            ) : (
+              <li>Cart is Empty</li>
+            )}
           </ul>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 px-5 py-4 border-t border-gray-300 bg-white flex gap-2 justify-between items-center">
-          <div className="flex gap-2 flex-col">
-            <span className="text-xl font-extrabold">Subtotal:</span>
-            <span className="text-xl font-medium">
-              $
-              {cart?.reduce((acc, currCart) => {
-                return currCart.price * currCart.quantity + acc;
-              }, 0)}
-            </span>
+        {cart?.length > 0 && (
+          <div className="absolute bottom-0 left-0 right-0 px-5 py-4 border-t border-gray-300 bg-white flex gap-2 justify-between items-center">
+            <div className="flex gap-2 flex-col">
+              <span className="text-xl font-extrabold">Subtotal:</span>
+              <span className="text-xl font-medium">
+                $
+                {cart?.length > 0 &&
+                  cart.reduce((acc, currCart) => {
+                    return currCart.price * currCart.quantity + acc;
+                  }, 0)}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 justify-between">
+              <Button btnName="Checkout" />
+              {/* <Button /> */}
+            </div>
           </div>
-          <div className="flex items-center gap-2 justify-between">
-            <Button btnName="Checkout" />
-            {/* <Button /> */}
-          </div>
-        </div>
+        )}
       </div>
 
       <span

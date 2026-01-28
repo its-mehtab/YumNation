@@ -219,7 +219,7 @@ const Header = () => {
               >
                 <CartIcon1 />
                 <span className="w-4 h-4 rounded-full text-xs flex justify-center items-center bg-[#3f9065] text-white font-bold mt-0.5">
-                  {cart?.length}
+                  {cart?.length || "0"}
                 </span>
               </li>
             </ul>

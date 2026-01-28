@@ -92,7 +92,7 @@ const Shop = () => {
 
   return (
     <>
-      <section
+      {/* <section
         className="bg-cover bg-center  pt-34 pb-28"
         style={{ backgroundImage: `url(${assets.bannerBg})` }}
       >
@@ -111,9 +111,9 @@ const Shop = () => {
             </li>
           </ul>
         </div>
-      </section>
+      </section> */}
       <section className="py-28">
-        <div className="mx-auto max-w-[1340px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-335 px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-4">
             {products?.map((currProduct) => {
               return (
