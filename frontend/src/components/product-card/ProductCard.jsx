@@ -1,31 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { assets, Icon } from "../../assets/assets";
 import { Link } from "react-router-dom";
 import { WishlistIcon, WishlistIconRed } from "../../assets/icon/Icons";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import axios from "axios";
-import { Bounce, ToastContainer, toast } from "react-toastify";
+// import { Bounce, ToastContainer, toast } from "react-toastify";
 
 const ProductCard = ({ currProduct }) => {
   const [wishlistActive, setWishlistActive] = useState(false);
 
   const { serverURL } = useAuth();
-  const { setCart, loading, setLoading } = useCart();
+  const { cart, setCart, loading, setLoading } = useCart();
 
-  const notifyAdd = () => toast("Added to Cart !");
-  const notifyError = () => toast("Login First !");
+  // const notifyAdd = () => toast("Added to Cart !");
+  // const notifyError = () => toast("Login First !");
 
   const handleAddCart = async () => {
     setLoading(true);
-    console.log({
-      product: currProduct._id,
-      name: currProduct.name,
-      image: "kjgdh.jpg",
-      price: currProduct.price,
-      quantity: 1,
-      variant: currProduct.variants[0].name,
-    });
 
     try {
       const { data } = await axios.post(
@@ -36,17 +28,19 @@ const ProductCard = ({ currProduct }) => {
           image: "kjgdh.jpg",
           price: currProduct.price,
           quantity: 1,
-          variant: currProduct.variants[0],
+          variant: currProduct.variants[0].name,
         },
         { withCredentials: true }
       );
 
-      setCart(data);
-      notifyAdd();
+      console.log([...data]);
+      setCart([...data]);
+
+      // notifyAdd();
     } catch (error) {
       console.log("Cart Error:", error?.response?.data || error.message);
       setCart(null);
-      notifyError();
+      // notifyError();
     } finally {
       setLoading(false);
     }
@@ -54,7 +48,7 @@ const ProductCard = ({ currProduct }) => {
 
   return (
     <>
-      <ToastContainer
+      {/* <ToastContainer
         toastClassName="rounded-full"
         // bodyClassName="text-sm font-white font-medium block p-3"
         position="bottom-left"
@@ -68,7 +62,7 @@ const ProductCard = ({ currProduct }) => {
         pauseOnHover
         theme="light"
         transition={Bounce}
-      />
+      /> */}
       <div className="p-2 sm:p-4 mt-3.5">
         <div className="relative after:content-[''] after:absolute after:top-2/6 after:bottom-0 after:right-0 after:w-full after:rounded-3xl after:bg-[#FFF7EA] after:-z-10 hover:after:shadow-[2px_2px_0px_4px_rgba(0,0,0)] hover:after:top-0 after:transition-all after:duration-400">
           {/* <img src={currProduct.img} alt="" className="w-full" /> */}

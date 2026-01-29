@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
@@ -74,6 +74,10 @@ const CartItem = ({ currProd, products }) => {
       setQuantity(quantity);
     }
   };
+
+  useEffect(() => {
+    setQuantity(currProd.quantity);
+  }, [currProd.quantity]);
 
   return (
     <li key={currProd._id} className="flex gap-4 items-center mb-2">

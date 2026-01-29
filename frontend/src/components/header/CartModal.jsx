@@ -44,7 +44,7 @@ const CartModal = ({ openCartModal, setOpenCartModal, products }) => {
                   <CartItem
                     currProd={currProd}
                     products={products}
-                    key={currProd._id}
+                    key={`${currProd.product._id}-${currProd.variant}`}
                   />
                 );
               })

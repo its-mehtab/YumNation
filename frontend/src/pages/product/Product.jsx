@@ -235,14 +235,17 @@ const Product = () => {
                       </g>
                     </svg>
                   </span>
-                  <input
+                  {/* <input
                     type="number"
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
                     min={1}
                     max={10}
                     className="w-14 text-center text-xl outline-0"
-                  />
+                  /> */}
+                  <span className="w-14 text-center text-xl outline-0">
+                    {quantity}
+                  </span>
                   <span
                     className="cursor-pointer px-1 py-4 flex items-center"
                     onClick={() => {
