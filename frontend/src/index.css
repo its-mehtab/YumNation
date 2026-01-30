@@ -40,3 +40,12 @@ input:-webkit-autofill:focus {
 #root {
   overflow-x: hidden;
 }
+
+.custom-toast {
+  /* border-radius: 9999px !important; */
+  padding: 0.5rem 0.8rem !important;
+  min-height: unset !important;
+  min-width: unset !important;
+  width: fit-content !important;
+  display: inline-flex !important;
+}

@@ -366,7 +366,7 @@ const Home = () => {
         className="py-16 lg:py-30 bg-cover bg-center"
         style={{ backgroundImage: `url(${assets.bgYellow})` }}
       >
-        <div className="mx-auto max-w-[1340px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-335 px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
             <h1 className="text-[#000006] text-6xl">
               Best selling <span className="text-[#3F9065]">dishes</span>

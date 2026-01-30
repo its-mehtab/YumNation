@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
+import { notifySuccess } from "../../utils/toast";
 
 const CartItem = ({ currProd, products }) => {
   const [quantity, setQuantity] = useState(currProd.quantity);
@@ -12,22 +13,20 @@ const CartItem = ({ currProd, products }) => {
 
   const handleQuantityMinus = async () => {
     if (quantity <= 1) return;
-
-    const newQuantity = quantity - 1;
-    setQuantity(newQuantity);
+    setQuantity(quantity - 1);
 
     try {
       const { data } = await axios.patch(
         `${serverURL}/api/cart`,
         {
-          quantity: newQuantity,
-          productId: currProd.product,
+          action: "decrease",
+          productId: currProd.product._id,
           variant: currProd.variant,
         },
         { withCredentials: true }
       );
 
-      setCart(data.items);
+      setCart(data);
     } catch (error) {
       setQuantity(quantity);
       console.error(error);
@@ -36,22 +35,20 @@ const CartItem = ({ currProd, products }) => {
 
   const handleQuantityPlus = async () => {
     if (quantity >= 10) return;
-
-    const newQuantity = quantity + 1;
-    setQuantity(newQuantity);
+    setQuantity(quantity + 1);
 
     try {
       const { data } = await axios.patch(
         `${serverURL}/api/cart`,
         {
-          quantity: newQuantity,
-          productId: currProd.product,
+          action: "increase",
+          productId: currProd.product._id,
           variant: currProd.variant,
         },
         { withCredentials: true }
       );
 
-      setCart(data.items);
+      setCart(data);
     } catch (error) {
       console.log("Cart Error:", error?.response?.data || error.message);
       setQuantity(quantity);
@@ -69,6 +66,7 @@ const CartItem = ({ currProd, products }) => {
       });
 
       setCart(data.cart.items);
+      notifySuccess(`${currProd.name} removed from cart`);
     } catch (error) {
       console.log("Delete Cart Error:", error?.response?.data || error.message);
       setQuantity(quantity);

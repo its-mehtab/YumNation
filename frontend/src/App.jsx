@@ -11,6 +11,7 @@ import { useAuth } from "./context/AuthContext";
 import { Navigate } from "react-router-dom";
 import ForgotPassword from "./pages/forgot-password/ForgotPassword";
 import Product from "./pages/product/Product";
+import { Bounce, ToastContainer } from "react-toastify";
 
 function App() {
   const { user } = useAuth();
@@ -35,6 +36,21 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/wishlist" element={<Wishlist />} />
       </Routes>
+      <ToastContainer
+        toastClassName="custom-toast"
+        position="top-center"
+        autoClose={5000}
+        closeButton={false}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick={true}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
     </>
   );
 }

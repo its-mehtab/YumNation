@@ -59,10 +59,11 @@ const CartModal = ({ openCartModal, setOpenCartModal, products }) => {
               <span className="text-xl font-extrabold">Subtotal:</span>
               <span className="text-xl font-medium">
                 $
-                {cart?.length > 0 &&
-                  cart.reduce((acc, currCart) => {
+                {cart
+                  .reduce((acc, currCart) => {
                     return currCart.price * currCart.quantity + acc;
-                  }, 0)}
+                  }, 0)
+                  .toFixed(2)}
               </span>
             </div>
             <div className="flex items-center gap-2 justify-between">

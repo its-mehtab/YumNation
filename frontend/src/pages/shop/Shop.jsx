@@ -114,7 +114,7 @@ const Shop = () => {
       </section> */}
       <section className="py-28">
         <div className="mx-auto max-w-335 px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-4">
+          <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2">
             {products?.map((currProduct) => {
               return (
                 <div key={currProduct._id}>

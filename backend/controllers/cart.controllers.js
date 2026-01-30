@@ -72,20 +72,42 @@ export const updateCartQuantity = async (req, res) => {
   const { action, productId, variant } = req.body;
   const userId = req.userId;
 
-  if (!productId || action === undefined) {
+  if (!productId || !variant || !action) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
   try {
-    const cart = await Cart.findOne({
-      user: userId,
-      "items.product": productId,
-      "items.variant": variant,
-    });
+    const cart = await Cart.findOne({ user: userId });
 
-    if (!cart)
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
+
+    console.log(productId, variant, action);
+
+    // console.log(cart);
+
+    const item = cart.items.find(
+      (i) => i.product.toString() === productId && i.variant === variant
+    );
+
+    if (!item) {
       return res.status(404).json({ message: "Item not found in cart" });
-    return res.status(200).json(cart);
+    }
+
+    if (action === "decrease") {
+      item.quantity = Math.max(1, item.quantity - 1);
+    }
+
+    if (action === "increase") {
+      item.quantity += 1;
+    }
+
+    await cart.save(); // 🔥 THIS WAS MISSING
+
+    const updatedCart = await cart.populate("items.product");
+
+    return res.status(200).json(updatedCart.items);
   } catch (error) {
     return res
       .status(500)

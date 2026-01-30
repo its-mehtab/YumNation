@@ -7,7 +7,7 @@ import ProductGallery from "./ProductGallery";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
-import { Bounce, ToastContainer, toast } from "react-toastify";
+import { notifyError, notifySuccess } from "../../utils/toast";
 
 const Product = () => {
   const [variation, setVariation] = useState("");
@@ -19,9 +19,6 @@ const Product = () => {
   const { slug } = useParams();
   const { serverURL } = useAuth();
   const { setCart, loading, setLoading } = useCart();
-
-  const notifyAdd = () => toast("Added to Cart !");
-  const notifyError = () => toast("Login First !");
 
   const getMainProduct = async () => {
     const { data } = await axios.get(`${serverURL}/api/products/${slug}`);
@@ -49,11 +46,11 @@ const Product = () => {
       );
 
       setCart(data);
-      notifyAdd();
+      notifySuccess(`${mainProduct.name} added to cart`);
     } catch (error) {
       console.log("Cart Error:", error?.response?.data || error.message);
       setCart(null);
-      notifyError();
+      notifyError(error?.response?.data?.message || "Failed to add item");
     } finally {
       setLoading(false);
     }
@@ -67,21 +64,6 @@ const Product = () => {
     <>
       <section className="pt-5 mt-24">
         <div className="mx-auto max-w-335 px-4 sm:px-6 lg:px-8">
-          <ToastContainer
-            toastClassName="rounded-full"
-            // bodyClassName="text-sm font-white font-medium block p-3"
-            position="bottom-left"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick={false}
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-            transition={Bounce}
-          />
           <ul className="flex mb-5 text-gray-600">
             <li>
               <Link href="/" className="text-md">
