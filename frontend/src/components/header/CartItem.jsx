@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
-import { notifySuccess } from "../../utils/toast";
+import { notifyError, notifySuccess } from "../../utils/toast";
 
 const CartItem = ({ currProd, products }) => {
   const [quantity, setQuantity] = useState(currProd.quantity);
@@ -69,6 +69,7 @@ const CartItem = ({ currProd, products }) => {
       notifySuccess(`${currProd.name} removed from cart`);
     } catch (error) {
       console.log("Delete Cart Error:", error?.response?.data || error.message);
+      notifyError(error?.response?.data || error.message);
       setQuantity(quantity);
     }
   };

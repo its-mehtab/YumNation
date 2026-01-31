@@ -10,22 +10,25 @@ import { ValidateProvider } from "./context/ValidateContext.jsx";
 import { CategoryProvider } from "./context/CategoryContext.jsx";
 import { ProductProvider } from "./context/ProductContext.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
+import { WishlistProvider } from "./context/WishlistContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <CartProvider>
-          <ProductProvider>
-            <CategoryProvider>
-              <ValidateProvider>
-                <Header />
-                <App />
-                <Footer />
-              </ValidateProvider>
-            </CategoryProvider>
-          </ProductProvider>
-        </CartProvider>
+        <WishlistProvider>
+          <CartProvider>
+            <ProductProvider>
+              <CategoryProvider>
+                <ValidateProvider>
+                  <Header />
+                  <App />
+                  <Footer />
+                </ValidateProvider>
+              </CategoryProvider>
+            </ProductProvider>
+          </CartProvider>
+        </WishlistProvider>
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>

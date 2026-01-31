@@ -83,10 +83,6 @@ export const updateCartQuantity = async (req, res) => {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-    console.log(productId, variant, action);
-
-    // console.log(cart);
-
     const item = cart.items.find(
       (i) => i.product.toString() === productId && i.variant === variant
     );
@@ -103,7 +99,7 @@ export const updateCartQuantity = async (req, res) => {
       item.quantity += 1;
     }
 
-    await cart.save(); // 🔥 THIS WAS MISSING
+    await cart.save();
 
     const updatedCart = await cart.populate("items.product");
 

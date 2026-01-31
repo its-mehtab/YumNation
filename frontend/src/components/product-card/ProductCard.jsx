@@ -35,9 +35,34 @@ const ProductCard = ({ currProduct }) => {
       notifySuccess(`${currProduct.name} added to cart`);
     } catch (error) {
       console.log("Cart Error:", error?.response?.data || error.message);
+      notifyError(error?.response?.data || error.message);
       setCart(null);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleWishlist = async () => {
+    console.log(currProduct);
+
+    try {
+      const { data } = await axios.post(
+        `${serverURL}/api/wishlist`,
+        {
+          productId: currProduct._id,
+          name: currProduct.name,
+          image: "kjgdh.jpg",
+          price: currProduct.price,
+        },
+        { withCredentials: true }
+      );
+
+      console.log(data);
+      setWishlistActive(!wishlistActive);
+    } catch (error) {
+      // console.log("Cart Error:", error?.response?.data || error.message);
+      notifyError(error?.response?.data || error.message);
+      // setCart(null);
     }
   };
 
@@ -55,7 +80,7 @@ const ProductCard = ({ currProduct }) => {
                 </h3>
               </Link>
               <span
-                onClick={() => setWishlistActive(!wishlistActive)}
+                onClick={handleWishlist}
                 className="text-[#B7B7B7] hover:text-[#027a36] cursor-pointer"
               >
                 {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}
