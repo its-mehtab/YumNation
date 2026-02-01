@@ -43,7 +43,7 @@ const ProductCard = ({ currProduct }) => {
   };
 
   const handleWishlist = async () => {
-    console.log(currProduct);
+    console.log(currProduct._id, currProduct.name, currProduct.price);
 
     try {
       const { data } = await axios.post(

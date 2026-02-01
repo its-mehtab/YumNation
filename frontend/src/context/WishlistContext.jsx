@@ -14,7 +14,7 @@ export const WishlistProvider = ({ children }) => {
       const { data } = await axios.get(`${serverURL}/api/wishlist`, {
         withCredentials: true,
       });
-      console.log(data);
+      //   console.log(data);
 
       setWishlist(data);
     } catch (error) {
@@ -33,4 +33,4 @@ export const WishlistProvider = ({ children }) => {
   );
 };
 
-// export const useWishlist = () => useContext(WishlistContext);
+export const useWishlist = () => useContext(WishlistContext);

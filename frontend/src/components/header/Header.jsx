@@ -13,6 +13,7 @@ import Dropdown from "../dropdown/Dropdown";
 import CartModal from "./CartModal";
 import SearchModal from "./SearchModal";
 import { useCart } from "../../context/CartContext";
+import { useWishlist } from "../../context/WishlistContext";
 
 const navigations = [
   { name: "Home", href: "/" },
@@ -111,6 +112,7 @@ const Header = () => {
   const [openCartModal, setOpenCartModal] = useState(false);
 
   const { cart } = useCart();
+  const { wishlist } = useWishlist();
 
   return (
     <header className="absolute z-50 top-0 left-0 right-0 bg-[#fb9300]">
@@ -208,7 +210,7 @@ const Header = () => {
                 <Link to="/wishlist" className="flex gap-0.5">
                   <WishlistIcon />
                   <span className="w-4 h-4 rounded-full text-xs flex justify-center items-center bg-[#3f9065] text-white font-bold mt-0.5">
-                    1
+                    {wishlist?.length || "0"}
                   </span>
                 </Link>
               </li>

@@ -21,20 +21,55 @@ export const getUserWishlist = async (req, res) => {
   }
 };
 
+// export const toggleWishlist = async (req, res) => {
+//   const userId = req.userId;
+//   const { productId } = req.body;
+//   console.log(productId);
+
+//   try {
+//     let wishlist = await Wishlist.findOne({ user: userId });
+
+//     if (!wishlist) {
+//       wishlist = await Wishlist.create({
+//         user: userId,
+//         items: [{ product: productId }],
+//       });
+//     } else {
+//       const index = wishlist.items.findIndex(
+//         (item) => item.product.toString() === productId
+//       );
+
+//       if (index > -1) {
+//         wishlist.items.splice(index, 1);
+//       } else {
+//         wishlist.items.push({ product: productId });
+//       }
+
+//       await wishlist.save();
+//     }
+
+//     const updatedWishlist = await wishlist.populate(
+//       "items.product",
+//       "name slug"
+//     );
+
+//     return res.status(201).json(updatedWishlist.items);
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: "internal server error",
+//       error: error.message,
+//     });
+//   }
+// };
+
 export const toggleWishlist = async (req, res) => {
   const userId = req.userId;
-  const { productId } = req.body;
-  console.log(productId);
+  const { productId, name, image, price } = req.body;
 
   try {
     let wishlist = await Wishlist.findOne({ user: userId });
 
-    if (!wishlist) {
-      wishlist = await Wishlist.create({
-        user: userId,
-        items: [{ product: productId }],
-      });
-    } else {
+    if (wishlist) {
       const index = wishlist.items.findIndex(
         (item) => item.product.toString() === productId
       );
@@ -42,22 +77,26 @@ export const toggleWishlist = async (req, res) => {
       if (index > -1) {
         wishlist.items.splice(index, 1);
       } else {
-        wishlist.items.push({ product: productId });
+        wishlist.items.push({ product: productId, name, image, price });
       }
 
       await wishlist.save();
+    } else {
+      wishlist = await Wishlist.create({
+        user: userId,
+        items: [{ product: productId, name, image, price }],
+      });
     }
 
-    const updatedWishlist = await wishlist.populate(
+    const updatedWishlist = await Wishlist.findOne({ user: userId }).populate(
       "items.product",
       "name slug"
     );
 
     return res.status(201).json(updatedWishlist.items);
   } catch (error) {
-    return res.status(500).json({
-      message: "internal server error",
-      error: error.message,
-    });
+    return res
+      .status(500)
+      .json({ message: "internal server error", error: error.message });
   }
 };
