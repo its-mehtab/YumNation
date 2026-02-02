@@ -57,7 +57,8 @@ export const addCart = async (req, res) => {
     }
 
     const updatedCart = await Cart.findOne({ user: userId }).populate(
-      "items.product"
+      "items.product",
+      "name slug"
     );
 
     return res.status(201).json(updatedCart.items);
@@ -101,7 +102,7 @@ export const updateCartQuantity = async (req, res) => {
 
     await cart.save();
 
-    const updatedCart = await cart.populate("items.product");
+    const updatedCart = await cart.populate("items.product", "name slug");
 
     return res.status(200).json(updatedCart.items);
   } catch (error) {

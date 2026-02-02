@@ -6,12 +6,19 @@ import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import axios from "axios";
 import { notifyError, notifySuccess } from "../../utils/toast";
+import { useWishlist } from "../../context/WishlistContext";
 
 const ProductCard = ({ currProduct }) => {
   const [wishlistActive, setWishlistActive] = useState(false);
 
   const { serverURL } = useAuth();
-  const { cart, setCart, loading, setLoading } = useCart();
+  const { setCart, loading, setLoading } = useCart();
+  const {
+    wishlist,
+    setWishlist,
+    loading: wishlistLoad,
+    setLoading: wishlistSetLoad,
+  } = useWishlist();
 
   const handleAddCart = async () => {
     setLoading(true);
@@ -42,8 +49,19 @@ const ProductCard = ({ currProduct }) => {
     }
   };
 
+  const syncWishlistState = async () => {
+    const isWishlisted = wishlist?.find(
+      (item) => item.product._id === currProduct._id
+    );
+
+    setWishlistActive(!!isWishlisted);
+  };
+
   const handleWishlist = async () => {
-    console.log(currProduct._id, currProduct.name, currProduct.price);
+    if (wishlistLoad) return;
+    const prevState = wishlistActive;
+    wishlistSetLoad(true);
+    setWishlistActive(!prevState);
 
     try {
       const { data } = await axios.post(
@@ -57,14 +75,25 @@ const ProductCard = ({ currProduct }) => {
         { withCredentials: true }
       );
 
-      console.log(data);
-      setWishlistActive(!wishlistActive);
+      setWishlist(data);
+
+      notifySuccess(
+        !wishlistActive
+          ? `${currProduct.name} Added to wishlist ❤️`
+          : `${currProduct.name} Removed from wishlist`
+      );
     } catch (error) {
-      // console.log("Cart Error:", error?.response?.data || error.message);
-      notifyError(error?.response?.data || error.message);
-      // setCart(null);
+      console.log("Cart Error:", error?.response?.data || error.message);
+      setWishlistActive(prevState);
+      notifyError("Wishlist update failed");
+    } finally {
+      wishlistSetLoad(false);
     }
   };
+
+  useEffect(() => {
+    syncWishlistState();
+  }, [wishlist, currProduct?._id]);
 
   return (
     <>

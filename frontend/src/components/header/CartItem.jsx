@@ -28,8 +28,9 @@ const CartItem = ({ currProd, products }) => {
 
       setCart(data);
     } catch (error) {
+      console.error("Cart Error:", error?.response?.data || error.message);
       setQuantity(quantity);
-      console.error(error);
+      notifyError("Quantity update failed");
     }
   };
 
@@ -52,6 +53,7 @@ const CartItem = ({ currProd, products }) => {
     } catch (error) {
       console.log("Cart Error:", error?.response?.data || error.message);
       setQuantity(quantity);
+      notifyError("Quantity update failed");
     }
   };
 
@@ -69,7 +71,7 @@ const CartItem = ({ currProd, products }) => {
       notifySuccess(`${currProd.name} removed from cart`);
     } catch (error) {
       console.log("Delete Cart Error:", error?.response?.data || error.message);
-      notifyError(error?.response?.data || error.message);
+      notifyError("Cart remove failed");
       setQuantity(quantity);
     }
   };
