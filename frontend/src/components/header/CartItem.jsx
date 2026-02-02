@@ -91,7 +91,9 @@ const CartItem = ({ currProd, products }) => {
       </Link>
       <div>
         <h3 className="text-lg">
-          <Link to={`product/${currProd.product.slug}`}>{currProd.name}</Link>
+          <Link to={`product/${currProd.product.slug}`}>
+            {currProd.name} ({currProd.variant})
+          </Link>
         </h3>
         <div className="flex gap-3 items-center mt-1">
           <div className="flex justify-start items-center border border-gray-300 rounded-md">
@@ -139,7 +141,7 @@ const CartItem = ({ currProd, products }) => {
           </div>
           <span
             onClick={handleDeleteCart}
-            className="cursor-pointer p-1 ml-auto text-sm text-gray-800 hover:text-black underline"
+            className="cursor-pointer p-1 text-sm text-gray-800 hover:text-black underline"
           >
             remove
           </span>
