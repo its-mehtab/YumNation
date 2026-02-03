@@ -42,7 +42,7 @@ const Product = () => {
           quantity,
           variant: variation,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       setCart(data);
@@ -66,12 +66,12 @@ const Product = () => {
         <div className="mx-auto max-w-335 px-4 sm:px-6 lg:px-8">
           <ul className="flex mb-5 text-gray-600">
             <li>
-              <Link href="/" className="text-md">
+              <Link to="/" className="text-md">
                 Home
               </Link>
             </li>
             <li className="before:content-['/'] before:mx-2">
-              <Link href="/products" className="text-md">
+              <Link to="/shop" className="text-md">
                 Shop
               </Link>
             </li>

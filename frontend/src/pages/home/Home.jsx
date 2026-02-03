@@ -156,8 +156,8 @@ const Home = () => {
 
   // console.log(categories);
   // console.log(products);
-  const categoryProducts = products?.filter(
-    (currItem) => currItem.category.name === categoryName
+  const categoryProducts = products?.products?.filter(
+    (currItem) => currItem.category.name === categoryName,
   );
 
   return (
@@ -397,7 +397,7 @@ const Home = () => {
           }}
           className="mySwiper"
         >
-          {products?.map((currProduct) => {
+          {products?.products?.map((currProduct) => {
             return (
               <SwiperSlide key={currProduct._id}>
                 <ProductCard currProduct={currProduct} />

@@ -88,7 +88,7 @@ const productSchema = new Schema(
       ref: "User",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 productSchema.pre("save", slugGenerator);
@@ -96,3 +96,9 @@ productSchema.pre("save", slugGenerator);
 const Product = mongoose.model("Product", productSchema);
 
 export default Product;
+
+productSchema.index({
+  name: "text",
+  description: "text",
+  ingredients: "text",
+});

@@ -1,7 +1,54 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { SearchIcon } from "../../assets/icon/Icons";
+import { useAuth } from "../../context/AuthContext";
+import { assets, Icon } from "../../assets/assets";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
-const SearchModal = ({ openSearchModal, setOpenSearchModal, products }) => {
+const SearchModal = ({ openSearchModal, setOpenSearchModal }) => {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+
+  const { serverURL } = useAuth();
+
+  const handleSearch = async (e) => {
+    const value = e.target.value;
+    setQuery(value);
+
+    try {
+      if (!value) {
+        setResults([]);
+        return;
+      }
+
+      const { data } = await axios.get(
+        `${serverURL}/api/products?search=${value}`,
+      );
+
+      setResults(data.products);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (!query) return;
+
+      try {
+        const { data } = await axios.get(
+          `${serverURL}/api/products?search=${query}`,
+        );
+
+        setResults(data.products);
+      } catch (error) {
+        console.log(error);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
   return (
     <>
       <div
@@ -36,7 +83,9 @@ const SearchModal = ({ openSearchModal, setOpenSearchModal, products }) => {
               <SearchIcon />
             </span>
             <input
-              type="email"
+              value={query}
+              onChange={handleSearch}
+              type="text"
               placeholder="Search..."
               className="px-12 pe-8 py-4 rounded-xl bg-white text-[#66666A] w-full outline-0 border border-gray-200"
             />
@@ -45,15 +94,29 @@ const SearchModal = ({ openSearchModal, setOpenSearchModal, products }) => {
                 </button> */}
           </div>
         </div>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 mt-4 md:mt-8 max-w-5xl mx-auto h-full md:max-h-50 overflow-y-scroll">
-          {products.map((currProd) => {
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3 items-start mt-4 md:mt-8 max-w-5xl mx-auto h-full md:max-h-50 overflow-y-scroll">
+          {results.map((currProd) => {
             return (
-              <div key={currProd._id} className="flex gap-4 items-center">
-                <div className="w-24 h-24 rounded-xl">
-                  <img src={currProd.img} alt="" className="w-full" />
-                </div>
+              <div
+                onClick={() => {
+                  setOpenSearchModal(false);
+                  setQuery("");
+                  setResults([]);
+                }}
+                key={currProd._id}
+                className="flex gap-4 items-center"
+              >
+                <Link
+                  to={`product/${currProd.slug}`}
+                  className="w-24 h-24 rounded-xl"
+                >
+                  {/* <img src={currProd.img} alt="" className="w-full" /> */}
+                  <img src={assets.product1} alt="" className="w-full" />
+                </Link>
                 <div>
-                  <h3>{currProd.name}</h3>
+                  <Link to={`product/${currProd.slug}`}>
+                    <h3>{currProd.name}</h3>
+                  </Link>
                   <div>${currProd.price.toFixed(2)}</div>
                 </div>
               </div>

@@ -2,13 +2,74 @@ import Product from "../models/product.modal.js";
 
 export const getProducts = async (req, res) => {
   try {
-    const products = await Product.find().populate("category", "name");
+    const {
+      search,
+      category,
+      minPrice,
+      maxPrice,
+      isFeatured,
+      isAvailable,
+      sort,
+      page = 1,
+      limit = 12,
+    } = req.query;
 
-    return res.status(200).json(products);
+    const query = {};
+
+    // 🔍 Search
+    if (search) {
+      query.$text = { $search: search };
+    }
+
+    // 🏷 Category
+    if (category) {
+      query.category = category;
+    }
+
+    // 💰 Price
+    if (minPrice || maxPrice) {
+      query.price = {};
+      if (minPrice) query.price.$gte = Number(minPrice);
+      if (maxPrice) query.price.$lte = Number(maxPrice);
+    }
+
+    // ⭐ Featured
+    if (isFeatured !== undefined) {
+      query.isFeatured = isFeatured === "true";
+    }
+
+    // 📦 Availability
+    if (isAvailable !== undefined) {
+      query.isAvailable = isAvailable === "true";
+    }
+
+    // ↕ Sorting
+    let sortOption = {};
+    if (sort === "price_asc") sortOption.price = 1;
+    if (sort === "price_desc") sortOption.price = -1;
+    if (sort === "rating") sortOption.rating = -1;
+    if (sort === "latest") sortOption.createdAt = -1;
+
+    const pageNum = Math.max(Number(page), 1);
+    const limitNum = Math.min(Number(limit), 50);
+
+    const products = await Product.find(query)
+      .populate("category", "name slug")
+      .sort(sortOption)
+      .skip((pageNum - 1) * limitNum)
+      .limit(limitNum)
+      .select("name price images slug rating isFeatured");
+
+    const total = await Product.countDocuments(query);
+
+    res.status(200).json({
+      products,
+      total,
+      page: pageNum,
+      pages: Math.ceil(total / limitNum),
+    });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "unable to find products", error: error.message });
+    res.status(500).json({ message: "Failed to fetch products" });
   }
 };
 
@@ -18,7 +79,7 @@ export const getProductBySlug = async (req, res) => {
   try {
     const product = await Product.findOne({ slug }).populate(
       "category",
-      "name"
+      "name",
     );
 
     if (!product) {
@@ -32,10 +93,6 @@ export const getProductBySlug = async (req, res) => {
       error: error.message,
     });
   }
-};
-
-export const getFilteredProducts = async (req, res) => {
-  const query = res.query;
 };
 
 export const createProduct = async (req, res) => {
