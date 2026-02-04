@@ -8,6 +8,7 @@ import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
+import { useWishlist } from "../../context/WishlistContext";
 
 const Product = () => {
   const [variation, setVariation] = useState("");
@@ -19,6 +20,12 @@ const Product = () => {
   const { slug } = useParams();
   const { serverURL } = useAuth();
   const { setCart, loading, setLoading } = useCart();
+  const {
+    wishlist,
+    setWishlist,
+    loading: wishlistLoad,
+    setLoading: wishlistSetLoad,
+  } = useWishlist();
 
   const getMainProduct = async () => {
     const { data } = await axios.get(`${serverURL}/api/products/${slug}`);
@@ -55,6 +62,51 @@ const Product = () => {
       setLoading(false);
     }
   };
+
+  const handleWishlist = async () => {
+    if (wishlistLoad) return;
+    const prevState = wishlistActive;
+    wishlistSetLoad(true);
+    setWishlistActive(!prevState);
+
+    try {
+      const { data } = await axios.post(
+        `${serverURL}/api/wishlist`,
+        {
+          productId: mainProduct._id,
+          name: mainProduct.name,
+          image: "kjgdh.jpg",
+          price: mainProduct.price,
+        },
+        { withCredentials: true },
+      );
+
+      setWishlist(data);
+
+      notifySuccess(
+        !wishlistActive
+          ? `${mainProduct.name} Added to wishlist ❤️`
+          : `${mainProduct.name} Removed from wishlist`,
+      );
+    } catch (error) {
+      console.log("Cart Error:", error?.response?.data || error.message);
+      setWishlistActive(prevState);
+      notifyError("Wishlist update failed");
+    } finally {
+      wishlistSetLoad(false);
+    }
+  };
+
+  const syncWishlistState = async () => {
+    const isWishlisted = wishlist?.find(
+      (item) => item.product._id === mainProduct?._id,
+    );
+
+    setWishlistActive(!!isWishlisted);
+  };
+  useEffect(() => {
+    syncWishlistState();
+  }, [wishlist, mainProduct?._id]);
 
   useEffect(() => {
     getMainProduct();
@@ -256,7 +308,7 @@ const Product = () => {
                   Add to Cart
                 </button>
                 <span
-                  onClick={() => setWishlistActive(!wishlistActive)}
+                  onClick={handleWishlist}
                   className="bg-lime-100 p-4 rounded-lg text-gray-700 hover:text-[#027a36] cursor-pointer"
                 >
                   {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}

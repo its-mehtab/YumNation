@@ -34,7 +34,9 @@ input::-webkit-inner-spin-button {
 
 input:-webkit-autofill,
 input:-webkit-autofill:focus {
-  transition: background-color 0s 600000s, color 0s 600000s !important;
+  transition:
+    background-color 0s 600000s,
+    color 0s 600000s !important;
 }
 
 #root {
@@ -42,8 +44,9 @@ input:-webkit-autofill:focus {
 }
 
 .custom-toast {
-  border-radius: 10px !important;
-  padding: 0.3rem 0.5rem !important;
+  border-radius: 8px !important;
+  padding: 0.3rem 0.6rem !important;
+  border-left: 4px solid #3f9065;
   min-height: unset !important;
   min-width: unset !important;
   width: fit-content !important;
