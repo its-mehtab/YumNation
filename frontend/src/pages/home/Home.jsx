@@ -22,131 +22,6 @@ import { useAuth } from "../../context/AuthContext";
 import { useCategory } from "../../context/CategoryContext";
 import { useProduct } from "../../context/ProductContext";
 
-const productss = [
-  {
-    _id: 1,
-    name: "LOADED FRIES",
-    price: 2.26,
-    img: assets.product1,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 2,
-    name: "ORIGINAL RECIPE CHICKEN",
-    price: 5.0,
-    img: assets.product2,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 3,
-    name: "WHOPPER BURGER KING",
-    price: 12.39,
-    img: assets.product3,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 4,
-    name: "TACO SUPREME",
-    price: 8.32,
-    img: assets.product4,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 5,
-    name: "SPICY CHICKEN SANDWICH",
-    price: 12.46,
-    img: assets.product5,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 6,
-    name: "LOADED FRIES",
-    price: 2.26,
-    img: assets.product1,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 7,
-    name: "ORIGINAL RECIPE CHICKEN",
-    price: 5.0,
-    img: assets.product2,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 8,
-    name: "WHOPPER BURGER KING",
-    price: 12.39,
-    img: assets.product3,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 9,
-    name: "TACO SUPREME",
-    price: 8.32,
-    img: assets.product4,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 10,
-    name: "SPICY CHICKEN SANDWICH",
-    price: 12.46,
-    img: assets.product5,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-];
-const categoriess = [
-  {
-    _id: 1,
-    name: "BURGERS",
-    icon: BurgersmIcon,
-  },
-  {
-    _id: 2,
-    name: "PIZZA",
-    icon: PizzasIcon,
-  },
-  {
-    _id: 3,
-    name: "SUSHI",
-    icon: ShushiIcon,
-  },
-  {
-    _id: 4,
-    name: "SALADS",
-    icon: SaladIcon,
-  },
-  {
-    _id: 5,
-    name: "BURRITOS",
-    icon: BurritoIcon,
-  },
-  {
-    _id: 6,
-    name: "BEVERAGES",
-    icon: BeverageIcon,
-  },
-  {
-    _id: 7,
-    name: "PASTA",
-    icon: PastaIcon,
-  },
-  {
-    _id: 8,
-    name: "DESSERTS",
-    icon: DessertIcon,
-  },
-];
-
 const Home = () => {
   const [categoryName, setCategoryName] = useState("Burgers");
 
@@ -155,7 +30,7 @@ const Home = () => {
   const { products } = useProduct();
 
   // console.log(categories);
-  // console.log(products);
+  // console.log(products?.products);
   const categoryProducts = products?.products?.filter(
     (currItem) => currItem.category.name === categoryName,
   );

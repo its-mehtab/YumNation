@@ -7,6 +7,7 @@ import { useCart } from "../../context/CartContext";
 import axios from "axios";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { useWishlist } from "../../context/WishlistContext";
+import ProductModal from "../product-modal/ProductModal";
 
 const ProductCard = ({ currProduct }) => {
   const [wishlistActive, setWishlistActive] = useState(false);
@@ -23,6 +24,7 @@ const ProductCard = ({ currProduct }) => {
   const handleAddCart = async () => {
     setLoading(true);
 
+    console.log(currProduct);
     try {
       const { data } = await axios.post(
         `${serverURL}/api/cart`,
@@ -34,13 +36,15 @@ const ProductCard = ({ currProduct }) => {
           quantity: 1,
           variant: currProduct.variants[0].name,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       setCart([...data]);
 
       notifySuccess(`${currProduct.name} added to cart`);
     } catch (error) {
+      console.log(error);
+
       console.log("Cart Error:", error?.response?.data || error.message);
       notifyError(error?.response?.data || error.message);
       setCart(null);
@@ -51,7 +55,7 @@ const ProductCard = ({ currProduct }) => {
 
   const syncWishlistState = async () => {
     const isWishlisted = wishlist?.find(
-      (item) => item.product._id === currProduct._id
+      (item) => item.product._id === currProduct._id,
     );
 
     setWishlistActive(!!isWishlisted);
@@ -72,7 +76,7 @@ const ProductCard = ({ currProduct }) => {
           image: "kjgdh.jpg",
           price: currProduct.price,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       setWishlist(data);
@@ -80,7 +84,7 @@ const ProductCard = ({ currProduct }) => {
       notifySuccess(
         !wishlistActive
           ? `${currProduct.name} Added to wishlist ❤️`
-          : `${currProduct.name} Removed from wishlist`
+          : `${currProduct.name} Removed from wishlist`,
       );
     } catch (error) {
       console.log("Cart Error:", error?.response?.data || error.message);
@@ -115,6 +119,7 @@ const ProductCard = ({ currProduct }) => {
                 {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}
               </span>
             </div>
+            {console.log(currProduct)}
             <p className="text-sm text-[#66666A] my-3">
               {currProduct.description}
             </p>

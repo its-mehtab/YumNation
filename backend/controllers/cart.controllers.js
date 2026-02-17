@@ -6,7 +6,7 @@ export const getUserCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({ user: userId }).populate(
       "items.product",
-      "name slug"
+      "name slug",
     );
 
     if (!cart) {
@@ -32,7 +32,7 @@ export const addCart = async (req, res) => {
     if (cart) {
       const itemIndex = cart.items.findIndex(
         (item) =>
-          item.product.toString() === product && item.variant === variant
+          item.product.toString() === product && item.variant === variant,
       );
 
       if (itemIndex > -1) {
@@ -58,7 +58,7 @@ export const addCart = async (req, res) => {
 
     const updatedCart = await Cart.findOne({ user: userId }).populate(
       "items.product",
-      "name slug"
+      "name slug",
     );
 
     return res.status(201).json(updatedCart.items);
@@ -85,7 +85,7 @@ export const updateCartQuantity = async (req, res) => {
     }
 
     const item = cart.items.find(
-      (i) => i.product.toString() === productId && i.variant === variant
+      (i) => i.product.toString() === productId && i.variant === variant,
     );
 
     if (!item) {
@@ -127,7 +127,7 @@ export const removeFromCart = async (req, res) => {
           },
         },
       },
-      { new: true }
+      { new: true },
     ).populate("items.product", "name slug");
 
     if (!cart) {

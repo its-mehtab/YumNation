@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { assets } from "../../assets/assets";
 import Button from "../button/Button";
 import { ArrowRight } from "../../assets/icon/Icons";
+import ProductModal from "../product-modal/ProductModal";
 
 const Footer = () => {
   return (
@@ -86,6 +87,8 @@ const Footer = () => {
           </div>
         </div>
       </footer>
+
+      {/* <ProductModal /> */}
     </>
   );
 };

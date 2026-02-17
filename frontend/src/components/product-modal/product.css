@@ -1,0 +1,40 @@
+.gallery-thumbs {
+  float: left;
+  width: calc(16% - 20px);
+  height: 340px;
+  margin-right: 20px;
+}
+
+.gallery-thumbs .swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  cursor: pointer;
+  border: 2px solid rgba(27, 27, 27, 0);
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+.gallery-thumbs .swiper-slide-thumb-active {
+  border: 2px solid rgb(27, 27, 27);
+  opacity: 1;
+}
+
+.gallery-thumbs .swiper-slide:hover {
+  opacity: 1;
+}
+
+.gallery-top {
+  float: right;
+  width: 84%;
+  /* height: 280px; */
+}
+
+.gallery-top .swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  /* border: 1px solid grey; */
+}

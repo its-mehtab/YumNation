@@ -23,7 +23,8 @@ export const getProducts = async (req, res) => {
 
     // 🏷 Category
     if (category) {
-      query.category = category;
+      const categoriesArray = category.split(",");
+      query.category = { $in: categoriesArray };
     }
 
     // 💰 Price
@@ -58,7 +59,7 @@ export const getProducts = async (req, res) => {
       .sort(sortOption)
       .skip((pageNum - 1) * limitNum)
       .limit(limitNum)
-      .select("name price images slug rating isFeatured");
+      .select("name price images slug description rating isFeatured variants");
 
     const total = await Product.countDocuments(query);
 
