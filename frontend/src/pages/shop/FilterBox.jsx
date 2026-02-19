@@ -2,20 +2,23 @@ import React, { useState, useEffect } from "react";
 import RangeSlider from "./RangeSlider";
 import { useProduct } from "../../context/ProductContext";
 import { useCategory } from "../../context/CategoryContext";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 const FilterBox = () => {
   const [filters, setFilters] = useState({
     category: [],
-    sort: "",
-    minPrice: "",
-    maxPrice: "",
+    // sort: "",
+    minPrice: null,
+    maxPrice: null,
     inStock: false,
-    isFeatured: "",
-    isAvailable: "",
+    isFeatured: null,
+    isAvailable: true,
     page: 1,
   });
 
-  const { products, setproducts } = useProduct();
+  const { serverURL } = useAuth();
+  const { products, setProducts } = useProduct();
   const { categories } = useCategory();
 
   const handleCategory = (id) => {
@@ -32,26 +35,23 @@ const FilterBox = () => {
     });
   };
 
-  //   useEffect(() => {
-  //     if (!filter)
-  //       return;
-  //
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const params = { ...filters, category: filters.category.join(",") };
+        console.log(params);
 
-  //     const timer = setTimeout(async () => {
-  //       try {
-  //         const { data } = await axios.get(
-  //           `${serverURL}/api/products?search=${query}`,
-  //         );
+        const { data } = await axios.get(`${serverURL}/api/products`, {
+          params,
+        });
 
-  //         setResults(data.products);
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-  //     }, 500);
-
-  //     return () => clearTimeout(timer);
-  //   }, [query]);
-
+        setProducts(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchProducts();
+  }, [filters]);
   return (
     <div>
       <h3 className="text-xl text-[#000006] border-b border-gray-200 pb-4 mb-5.5">
