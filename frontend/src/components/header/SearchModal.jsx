@@ -14,27 +14,15 @@ const SearchModal = ({ openSearchModal, setOpenSearchModal }) => {
   const handleSearch = async (e) => {
     const value = e.target.value;
     setQuery(value);
-
-    try {
-      if (!value) {
-        setResults([]);
-        return;
-      }
-
-      const { data } = await axios.get(
-        `${serverURL}/api/products?search=${value}`,
-      );
-
-      setResults(data.products);
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   useEffect(() => {
-    const timer = setTimeout(async () => {
-      if (!query) return;
+    if (!query.trim()) {
+      setResults([]);
+      return;
+    }
 
+    const timer = setTimeout(async () => {
       try {
         const { data } = await axios.get(
           `${serverURL}/api/products?search=${query}`,

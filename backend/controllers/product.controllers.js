@@ -11,7 +11,7 @@ export const getProducts = async (req, res) => {
       isAvailable,
       sort,
       page = 1,
-      limit = 12,
+      limit = 5,
     } = req.query;
 
     const query = {};

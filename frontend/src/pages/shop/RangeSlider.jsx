@@ -31,7 +31,7 @@ const RangeSlider = () => {
         disableSwap
       />
 
-      <div className="flex gap-4.5 items-center">
+      {/* <div className="flex gap-4.5 items-center">
         <div className="flex items-center gap-2 border border-gray-300 px-2 py-1.5 w-1/2">
           <span className="text-gray-600">$</span>
           <input type="number" value={range[0]} className="text-end w-full" />
@@ -41,7 +41,7 @@ const RangeSlider = () => {
           <span className="text-gray-600">$</span>
           <input type="number" value={range[1]} className="text-end w-full" />
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

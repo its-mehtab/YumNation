@@ -119,7 +119,6 @@ const ProductCard = ({ currProduct }) => {
                 {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}
               </span>
             </div>
-            {console.log(currProduct)}
             <p className="text-sm text-[#66666A] my-3">
               {currProduct.description}
             </p>
