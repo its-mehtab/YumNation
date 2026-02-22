@@ -7,8 +7,7 @@ export const getProducts = async (req, res) => {
       category,
       minPrice,
       maxPrice,
-      isFeatured,
-      isAvailable,
+      availability,
       sort,
       page = 1,
       limit = 5,
@@ -16,6 +15,7 @@ export const getProducts = async (req, res) => {
 
     const query = {};
 
+    console.log({ availability });
     // 🔍 Search
     if (search) {
       query.$text = { $search: search };
@@ -34,14 +34,33 @@ export const getProducts = async (req, res) => {
       if (maxPrice) query.price.$lte = Number(maxPrice);
     }
 
-    // ⭐ Featured
-    if (isFeatured !== undefined) {
-      query.isFeatured = isFeatured === "true";
-    }
-
     // 📦 Availability
-    if (isAvailable !== undefined) {
-      query.isAvailable = isAvailable === "true";
+    if (availability) {
+      const values = availability.split(",");
+      const conditions = [];
+
+      if (values.includes("availableNow")) {
+        conditions.push({
+          isAvailable: true,
+          stock: { $gt: 0 },
+        });
+      }
+
+      if (values.includes("recommended")) {
+        conditions.push({
+          isFeatured: true,
+        });
+      }
+
+      if (values.includes("soldOut")) {
+        conditions.push({
+          stock: { $lte: 0 },
+        });
+      }
+
+      if (conditions.length) {
+        query.$or = conditions;
+      }
     }
 
     // ↕ Sorting

@@ -6,16 +6,30 @@ function valuetext(value) {
   return `${value}°C`;
 }
 
-const minDistance = 100;
+const minDistance = 10;
 
-const RangeSlider = () => {
-  const [range, setRange] = useState([0, 500]);
+const RangeSlider = ({ filters, setFilters }) => {
+  const [range, setRange] = useState([0, 100]);
 
   const handleChange = (event, newValue, activeThumb) => {
     if (activeThumb === 0) {
       setRange([Math.min(newValue[0], range[1] - minDistance), range[1]]);
+
+      setFilters((prev) => {
+        return {
+          ...prev,
+          minPrice: Math.min(newValue[0], range[1] - minDistance),
+        };
+      });
     } else {
       setRange([range[0], Math.max(newValue[1], range[0] + minDistance)]);
+
+      setFilters((prev) => {
+        return {
+          ...prev,
+          maxPrice: Math.max(newValue[1], range[0] + minDistance),
+        };
+      });
     }
   };
 
@@ -27,7 +41,7 @@ const RangeSlider = () => {
         onChange={handleChange}
         valueLabelDisplay="auto"
         getAriaValueText={valuetext}
-        max={500}
+        max={100}
         disableSwap
       />
 

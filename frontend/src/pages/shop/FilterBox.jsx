@@ -1,24 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import RangeSlider from "./RangeSlider";
-import { useProduct } from "../../context/ProductContext";
 import { useCategory } from "../../context/CategoryContext";
-import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
 
-const FilterBox = () => {
-  const [filters, setFilters] = useState({
-    category: [],
-    // sort: "",
-    minPrice: null,
-    maxPrice: null,
-    inStock: false,
-    isFeatured: null,
-    isAvailable: true,
-    page: 1,
-  });
-
-  const { serverURL } = useAuth();
-  const { products, setProducts } = useProduct();
+const FilterBox = ({ filters, setFilters, initialState }) => {
   const { categories } = useCategory();
 
   const handleCategory = (id) => {
@@ -35,23 +19,19 @@ const FilterBox = () => {
     });
   };
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const params = { ...filters, category: filters.category.join(",") };
-        console.log(params);
+  const handleAvailability = (itemName) => {
+    setFilters((prev) => {
+      const ItemExists = prev.availability.includes(itemName);
 
-        const { data } = await axios.get(`${serverURL}/api/products`, {
-          params,
-        });
+      return {
+        ...prev,
+        availability: ItemExists
+          ? prev.availability.filter((i) => i !== itemName)
+          : [...prev.availability, itemName],
+      };
+    });
+  };
 
-        setProducts(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchProducts();
-  }, [filters]);
   return (
     <div>
       <h3 className="text-xl text-[#000006] border-b border-gray-200 pb-4 mb-5.5">
@@ -115,26 +95,43 @@ const FilterBox = () => {
           </label>
         );
       })}
-
       <h3 className="text-xl text-[#000006] border-b border-gray-200 mt-7 pb-4 mb-5.5">
         Availability
       </h3>
       <label className="flex items-center gap-2 cursor-pointer">
-        <input name="stock" type="checkbox" className="w-4 h-4 accent-black" />
-        In stock (23)
-      </label>
-      <label className="flex items-center gap-2 cursor-pointer">
-        <input name="stock" type="checkbox" className="w-4 h-4 accent-black" />
-        In Featured (23)
+        <input
+          checked={filters.availability.includes("availableNow")}
+          onChange={() => handleAvailability("availableNow")}
+          name="stock"
+          type="checkbox"
+          className="w-4 h-4 accent-black"
+        />
+        Available Now
       </label>
       <label className="flex items-center gap-2 cursor-pointer mt-2">
-        <input name="Out" type="checkbox" className="w-4 h-4 accent-black" />
-        Out of stock (1)
+        <input
+          checked={filters.availability.includes("recommended")}
+          onChange={() => handleAvailability("recommended")}
+          name="stock"
+          type="checkbox"
+          className="w-4 h-4 accent-black"
+        />
+        Recommended
+      </label>
+      <label className="flex items-center gap-2 cursor-pointer mt-2">
+        <input
+          checked={filters.availability.includes("soldOut")}
+          onChange={() => handleAvailability("soldOut")}
+          name="Out"
+          type="checkbox"
+          className="w-4 h-4 accent-black"
+        />
+        Sold Out
       </label>
       <h3 className="text-xl text-[#000006] border-b border-gray-200 mt-7 pb-4 mb-5.5">
         Price
       </h3>
-      <RangeSlider />
+      <RangeSlider filters={filters} setFilters={setFilters} />
     </div>
   );
 };
