@@ -2,16 +2,8 @@
 @import "tailwindcss";
 
 body {
-  font-family: "Quicksand", sans-serif;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: "Bangers", sans-serif;
+  font-family: "Poppins", sans-serif;
+  background-color: #fb9300;
 }
 
 /* Chrome, Safari, Edge, Opera */

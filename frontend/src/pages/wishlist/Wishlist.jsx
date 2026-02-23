@@ -18,7 +18,7 @@ const Wishlist = () => {
     try {
       const { data } = await axios.delete(
         `${serverURL}/api/wishlist/${currProd.product._id}`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       setWishlist(data);
@@ -46,7 +46,7 @@ const Wishlist = () => {
           quantity: 1,
           variant: currProduct.product.variants[0].name,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       setCart([...data]);
@@ -89,7 +89,7 @@ const Wishlist = () => {
                     <div className="ml-auto flex gap-5 md:gap-10 items-center">
                       <div
                         onClick={() => handleAddCart(currProd)}
-                        className="hidden md:block px-8 py-4 rounded-xl font-[bangers] bg-[#FB9300] text-white cursor-pointer hover:bg-[#c57300] transition"
+                        className="hidden md:block px-8 py-4 rounded-xl  bg-[#FB9300] text-white cursor-pointer hover:bg-[#c57300] transition"
                       >
                         Move to Cart
                       </div>

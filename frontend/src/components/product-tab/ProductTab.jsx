@@ -10,7 +10,7 @@ const ProductTab = () => {
           {["description", "Additional information", "Reviews"].map((curr) => {
             return (
               <button
-                className={`px-8 py-3 rounded-md capitalize cursor-pointer text-lg font-[bangers] ${
+                className={`px-8 py-3 rounded-md capitalize cursor-pointer text-lg  ${
                   activeTab === curr ? "bg-[#3f9065] text-white" : ""
                 }`}
                 key={curr}

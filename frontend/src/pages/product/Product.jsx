@@ -300,7 +300,7 @@ const Product = () => {
                 </div>
                 <button
                   onClick={handleAddCart}
-                  className={`inline-block bg-[#fb9300] text-white font-[bangers] px-12 py-4 rounded-xl transition-all duration-300 ease-in-out hover:bg-[#df8302] ${
+                  className={`inline-block bg-[#fb9300] text-white  px-12 py-4 rounded-xl transition-all duration-300 ease-in-out hover:bg-[#df8302] ${
                     loading ? "cursor-not-allowed" : " cursor-pointer"
                   }`}
                   disabled={loading}

@@ -161,7 +161,7 @@ const CartItem = ({ currProd, products }) => {
           </span>
         </div>
       </div>
-      <div className="ml-auto text-xl font-[bangers] text-[#ed1b2e]">
+      <div className="ml-auto text-xl  text-[#ed1b2e]">
         ${(currProd.price * currProd.quantity).toFixed(2)}
       </div>
     </li>

@@ -12,12 +12,20 @@ import { Navigate } from "react-router-dom";
 import ForgotPassword from "./pages/forgot-password/ForgotPassword";
 import Product from "./pages/product/Product";
 import { Bounce, ToastContainer } from "react-toastify";
+import Aside from "./components/aside/Aside";
+// import Grid3x3OutlinedIcon from "@mui/icons-material/Grid3x3Outlined";
 
 function App() {
   const { user } = useAuth();
 
   return (
     <>
+      <main className="w-full h-dvh bg-white rounded-t-4xl rounded-tr-4xl mt-20">
+        <div className="grid grid-cols-11">
+          <Aside />
+          <section className="grid-cols-9"></section>
+        </div>
+      </main>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />

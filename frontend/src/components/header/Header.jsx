@@ -15,14 +15,6 @@ import SearchModal from "./SearchModal";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 
-const navigations = [
-  { name: "Home", href: "/" },
-  { name: "About Us", href: "/about" },
-  { name: "Shop", href: "/shop" },
-  { name: "Blog", href: "/blog" },
-  { name: "Contact", href: "/contact" },
-];
-
 const products = [
   {
     _id: 1,
@@ -115,10 +107,10 @@ const Header = () => {
   const { wishlist } = useWishlist();
 
   return (
-    <header className="absolute z-50 top-0 left-0 right-0 bg-[#fb9300]">
+    <header className="absolute z-50 top-0 left-0 right-0">
       <div className="mx-auto max-w-335 px-4 sm:px-6 lg:px-8">
         <nav>
-          <div className="relative flex items-center justify-between py-4 md:py-8">
+          <div className="relative flex items-center justify-between py-4 md:py-6">
             <div className="inset-y-0 flex items-center md:hidden">
               <button
                 type="button"
@@ -158,7 +150,7 @@ const Header = () => {
 
               <div
                 className={`
-                      md:static md:block mx-auto font-[Bangers]
+                      md:static md:block mx-auto 
                       bg-[#fc9401] md:bg-transparent
       
                       absolute top-full left-0 right-0
@@ -170,23 +162,7 @@ const Header = () => {
                           : "max-h-0 opacity-0 md:max-h-none md:opacity-100"
                       }
                     `}
-              >
-                <div className="block md:flex space-y-4 md:space-y-0 md:space-x-6 lg:space-x-10 p-5 md:p-0">
-                  {navigations.map((currOpion) => (
-                    <NavLink
-                      key={currOpion.href}
-                      to={currOpion.href}
-                      className={({ isActive }) =>
-                        isActive
-                          ? "text-lg text-white block border-b border-white"
-                          : "text-lg text-white block"
-                      }
-                    >
-                      {currOpion.name}
-                    </NavLink>
-                  ))}
-                </div>
-              </div>
+              ></div>
             </div>
 
             <ul className="flex items-center gap-3 sm:gap-6">

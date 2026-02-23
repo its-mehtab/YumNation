@@ -80,9 +80,8 @@ const Footer = () => {
           </div>
           <div className="copyright-content mt-15 lg:mt-20 py-5 sm:py-10 border-t border-[#FFECD0]">
             <p className="text-sm text-[#66666A]">
-              ©2025{" "}
-              <span className="text-black font-[bangers]">Yum Nation</span>. All
-              Rights Reserved
+              ©2025 <span className="text-black ">Yum Nation</span>. All Rights
+              Reserved
             </p>
           </div>
         </div>
