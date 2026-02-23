@@ -15,7 +15,6 @@ export const getProducts = async (req, res) => {
 
     const query = {};
 
-    console.log({ availability });
     // 🔍 Search
     if (search) {
       query.$text = { $search: search };

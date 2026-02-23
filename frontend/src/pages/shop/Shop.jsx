@@ -8,16 +8,15 @@ import { useAuth } from "../../context/AuthContext";
 
 const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialState = {
+
+  const [filters, setFilters] = useState({
     category: searchParams.get("category")?.split(",") || [],
     sort: searchParams.get("sort") || "",
     minPrice: searchParams.get("minPrice") || null,
     maxPrice: searchParams.get("maxPrice") || null,
     availability: searchParams.get("availability")?.split(",") || [],
     page: 1,
-  };
-
-  const [filters, setFilters] = useState(initialState);
+  });
 
   const { serverURL } = useAuth();
   const { products, setProducts } = useProduct();
@@ -67,11 +66,7 @@ const Shop = () => {
         <div className="mx-auto max-w-335 px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-7 sm:grid-cols-10 gap-6">
             <div className="lg:col-span-2 sm:col-span-4">
-              <FilterBox
-                filters={filters}
-                setFilters={setFilters}
-                initialState={initialState}
-              />
+              <FilterBox filters={filters} setFilters={setFilters} />
             </div>
             <div className="lg:col-span-5 sm:col-span-6">
               <div className="flex justify-between gap-3">

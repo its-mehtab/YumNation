@@ -1,8 +1,9 @@
 import React from "react";
 import RangeSlider from "./RangeSlider";
 import { useCategory } from "../../context/CategoryContext";
+import Chip from "./Chip";
 
-const FilterBox = ({ filters, setFilters, initialState }) => {
+const FilterBox = ({ filters, setFilters }) => {
   const { categories } = useCategory();
 
   const handleCategory = (id) => {
@@ -34,48 +35,61 @@ const FilterBox = ({ filters, setFilters, initialState }) => {
 
   return (
     <div>
-      <h3 className="text-xl text-[#000006] border-b border-gray-200 pb-4 mb-5.5">
-        Filters
-      </h3>
-      <div className="flex items-center gap-2.5 mt-2">
-        <span className="px-3 py-2 bg-gray-200 flex gap-1.5 items-center text-md">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-            className="h-4 w-4"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-          In Stock
-        </span>
-        <span className="px-3 py-2 bg-gray-200 flex gap-1.5 items-center text-md">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-            className="h-4 w-4"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-          In Stock
-        </span>
-        <span className="text-gray-600 underline hover:text-gray-900 transition-all cursor-pointer">
-          Clear all
-        </span>
-      </div>
+      {(filters.category?.length > 0 ||
+        filters.availability?.length > 0 ||
+        (filters.minPrice || filters.maxPrice) !== null) && (
+        <>
+          <h3 className="text-xl text-[#000006] border-b border-gray-200 pb-4 mb-5.5">
+            Filters
+          </h3>
+          <div className="flex items-center gap-2.5 mt-2 flex-wrap">
+            {filters.category?.length > 0 && (
+              <Chip
+                chipName={
+                  categories?.find((cat) => cat._id === filters.category[0])
+                    .name
+                }
+              />
+            )}
+            {filters.category?.length > 1 && (
+              <>
+                <span>+ {filters.category.length - 1}</span>
+              </>
+            )}
+            {filters.availability?.length > 0 && (
+              <Chip chipName={filters.availability[0]} />
+            )}
+            {filters.availability?.length > 1 && (
+              <>
+                <span>+ {filters.availability.length - 1}</span>
+              </>
+            )}
+            {(filters.minPrice || filters.maxPrice) !== null && (
+              <>
+                <Chip
+                  chipName={`$${filters.minPrice} - $${filters.maxPrice}`}
+                />
+              </>
+            )}
+            <span
+              onClick={() =>
+                setFilters({
+                  category: [],
+                  sort: "",
+                  minPrice: null,
+                  maxPrice: null,
+                  availability: [],
+                  page: 1,
+                })
+              }
+              className="text-gray-600 underline hover:text-gray-900 transition-all cursor-pointer"
+            >
+              Clear all
+            </span>
+          </div>
+        </>
+      )}
+
       <h3 className="text-xl text-[#000006] border-b border-gray-200 mt-7 pb-4 mb-5.5">
         Product categories
       </h3>
