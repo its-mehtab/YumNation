@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { assets, Icon } from "../../assets/assets";
 import { Link } from "react-router-dom";
-import { WishlistIcon, WishlistIconRed } from "../../assets/icon/Icons";
+import {
+  PlusIcon,
+  WishlistIcon,
+  WishlistIconRed,
+} from "../../assets/icon/Icons";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import axios from "axios";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { useWishlist } from "../../context/WishlistContext";
 import ProductModal from "../product-modal/ProductModal";
+import { StarIcon } from "../../assets/icon/Icons";
 
 const ProductCard = ({ currProduct }) => {
   const [wishlistActive, setWishlistActive] = useState(false);
@@ -101,53 +106,49 @@ const ProductCard = ({ currProduct }) => {
 
   return (
     <>
-      <div className="p-2 sm:p-4 mt-3.5">
-        <div className="relative after:content-[''] after:absolute after:top-2/6 after:bottom-0 after:right-0 after:w-full after:rounded-3xl after:bg-[#FFF7EA] after:-z-10 hover:after:shadow-[2px_2px_0px_4px_rgba(0,0,0)] hover:after:top-0 after:transition-all after:duration-400">
-          {/* <img src={currProduct.img} alt="" className="w-full" /> */}
-          <img src={assets.product2} alt="" className="w-full" />
-          <div className="p-8 pt-0">
-            <div className="flex justify-between place-items-center">
-              <Link to={`/product/${currProduct.slug}`}>
-                <h3 className="text-xl text-[#000006] hover:text-[#fb9300] transition-all">
-                  {currProduct.name}
-                </h3>
-              </Link>
-              <span
-                onClick={handleWishlist}
-                className="text-[#B7B7B7] hover:text-[#027a36] cursor-pointer"
-              >
-                {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}
-              </span>
-            </div>
-            <p className="text-sm text-[#66666A] my-3">
-              {currProduct.description}
-            </p>
-            <div className="flex justify-between place-items-center">
-              <h3 className="text-2xl text-[#ED1B2E]">
-                <Link to={`/product`}>${currProduct.price.toFixed(2)}</Link>
-              </h3>
-              {/* <select
-                name="size"
-                className="text-lg w-13 h-12 outline-0 cursor-pointer px-2 py-2 border border-gray-300 rounded-lg capitalize ml-auto mr-3"
-              >
-                {["s", "m", "l"].map((curr) => {
-                  return (
-                    <option key={curr} value={curr}>
-                      {curr}
-                    </option>
-                  );
-                })}
-              </select> */}
+      <div className="border border-[#b2b2b2] rounded-lg py-4 px-3.5 relative overflow-hidden">
+        {/* <div className="border border-[#b2b2b2] rounded-lg py-4 px-3.5 relative overflow-hidden grayscale"> */}
+        {/* <img src={currProduct.img} alt="" className="w-full" /> */}
 
-              <span
-                onClick={handleAddCart}
-                className="w-12 h-12 flex items-center justify-center bg-[#110A00] rounded-lg hover:bg-[#fb9300] cursor-pointer transition-all"
-              >
-                {<Icon.CartIcon />}
-              </span>
-            </div>
-          </div>
+        <span className="bg-[#eb5757] text-white text-sm absolute -top-0.5 -left-0.5 rounded-br-md px-2.5 py-0.5">
+          15% Off
+        </span>
+        <span
+          onClick={handleWishlist}
+          className="text-[#B7B7B7] hover:text-[#027a36] cursor-pointer absolute top-4 right-4"
+        >
+          {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}
+        </span>
+        <img src={assets.product2} alt="" className="h-31.5 mx-auto mb-3" />
+        <div className="flex gap-1 items-center mb-2">
+          <StarIcon size={18} color={"text-[#fc8019]"} />
+          <StarIcon size={18} color={"text-[#fc8019]"} />
+          <StarIcon size={18} color={"text-[#fc8019]"} />
+          <StarIcon size={18} color={"text-gray-300"} />
+          <StarIcon size={18} color={"text-gray-300"} />
         </div>
+        <div className="flex items-end gap-2 justify-between">
+          <div>
+            <Link to={`/product/${currProduct.slug}`}>
+              <h3 className="text font-semibold text-gray-700 hover:text-[#fc8019] transition-all">
+                {currProduct.name}
+              </h3>
+            </Link>
+            <h3 className="text-xl font-bold text-[#fc8019] mt-0.5">
+              <Link to={`/product`}>${currProduct.price.toFixed(2)}</Link>
+            </h3>
+          </div>
+          <span
+            onClick={handleAddCart}
+            className="w-9 h-9 flex items-center  justify-center bg-[#fc8019] rounded-md hover:bg-[#fc8019] cursor-pointer transition-all"
+          >
+            {<PlusIcon size={20} color={"text-white"} />}
+          </span>
+        </div>
+
+        {/* <span className="bg-[#fc8019] text-white text-md absolute top-1/2 left-0 -translate-y-1/2 right-0 text-center px-2.5 py-1.5">
+          Sold Out
+        </span> */}
       </div>
     </>
   );

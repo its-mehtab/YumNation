@@ -47,7 +47,7 @@ const SearchModal = ({ openSearchModal, setOpenSearchModal }) => {
         <div className="flex items-center justify-end">
           <div
             onClick={() => setOpenSearchModal(false)}
-            className="w-10 h-10 bg-[#fb9300] hover:bg-orange-500 text-white rounded-lg cursor-pointer flex justify-center items-center transition-all duration-300"
+            className="w-10 h-10 bg-[#fc8019] hover:bg-orange-500 text-white rounded-lg cursor-pointer flex justify-center items-center transition-all duration-300"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +77,7 @@ const SearchModal = ({ openSearchModal, setOpenSearchModal }) => {
               placeholder="Search..."
               className="px-12 pe-8 py-4 rounded-xl bg-white text-[#66666A] w-full outline-0 border border-gray-200"
             />
-            {/* <button className="flex justify-center items-center absolute top-1/2 -translate-y-1/2 right-2 w-10 h-10 bg-[#3f9065] text-white hover:bg-[#fb9300] rounded-lg cursor-pointer">
+            {/* <button className="flex justify-center items-center absolute top-1/2 -translate-y-1/2 right-2 w-10 h-10 bg-[#3f9065] text-white hover:bg-[#fc8019] rounded-lg cursor-pointer">
                   <ArrowRight />
                 </button> */}
           </div>

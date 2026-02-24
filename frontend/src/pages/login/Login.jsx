@@ -51,7 +51,7 @@ const Login = () => {
           email: trimmedData.email,
           password: trimmedData.password,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       setUser(data);
@@ -109,7 +109,7 @@ const Login = () => {
 
           {/* <button
             type="submit"
-            className="w-full bg-[#FB9300] text-white font-semibold py-3 rounded-lg hover:bg-white hover:text-black cursor-pointer transition"
+            className="w-full bg-[#fc8019] text-white font-semibold py-3 rounded-lg hover:bg-white hover:text-black cursor-pointer transition"
           >
             Login
           </button> */}
@@ -118,7 +118,7 @@ const Login = () => {
             className={`w-full font-semibold py-3 rounded-lg transition-all duration-200 ${
               loading
                 ? "bg-white text-black cursor-not-allowed"
-                : "bg-[#FB9300] text-white hover:bg-white hover:text-black cursor-pointer"
+                : "bg-[#fc8019] text-white hover:bg-white hover:text-black cursor-pointer"
             }`}
             disabled={loading}
           >

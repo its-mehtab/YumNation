@@ -23,7 +23,7 @@ createRoot(document.getElementById("root")).render(
                 <ValidateProvider>
                   <Header />
                   <App />
-                  <Footer />
+                  {/* <Footer /> */}
                 </ValidateProvider>
               </CategoryProvider>
             </ProductProvider>
@@ -31,5 +31,5 @@ createRoot(document.getElementById("root")).render(
         </WishlistProvider>
       </AuthProvider>
     </BrowserRouter>
-  </StrictMode>
+  </StrictMode>,
 );

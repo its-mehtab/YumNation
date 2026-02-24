@@ -1,6 +1,4 @@
 import Home from "./pages/home/Home";
-import About from "./pages/about/About";
-import Blog from "./pages/blog/Blog";
 import Contact from "./pages/contact/Contact";
 import { Route, Routes } from "react-router-dom";
 import Shop from "./pages/shop/Shop";
@@ -20,30 +18,32 @@ function App() {
 
   return (
     <>
-      <main className="w-full h-dvh bg-white rounded-t-4xl rounded-tr-4xl mt-20">
+      <main className="w-full h-[87dvh] bg-white rounded-t-4xl rounded-tr-4xl mt-20">
         <div className="grid grid-cols-11">
           <Aside />
-          <section className="grid-cols-9"></section>
+          <div className="col-span-9">
+            <div className="mx-auto px-4 sm:px-6 lg:pl-10 lg:pr-6 py-10 max-h-[87dvh] overflow-scroll">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/shop" element={<Shop />} />
+                <Route path="/product/:slug" element={<Product />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route
+                  path="/login"
+                  element={!user ? <Login /> : <Navigate to="/" />}
+                />
+                <Route
+                  path="/signup"
+                  element={!user ? <Signup /> : <Navigate to="/" />}
+                />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/wishlist" element={<Wishlist />} />
+              </Routes>
+            </div>
+          </div>
         </div>
       </main>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/shop" element={<Shop />} />
-        <Route path="/product/:slug" element={<Product />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route
-          path="/login"
-          element={!user ? <Login /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/signup"
-          element={!user ? <Signup /> : <Navigate to="/" />}
-        />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/wishlist" element={<Wishlist />} />
-      </Routes>
+
       <ToastContainer
         toastClassName="custom-toast"
         position="bottom-left"

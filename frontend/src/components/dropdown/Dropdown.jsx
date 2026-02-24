@@ -31,7 +31,7 @@ const Dropdown = () => {
         {},
         {
           withCredentials: true,
-        }
+        },
       );
       setUser(null);
     } catch (error) {
@@ -55,7 +55,7 @@ const Dropdown = () => {
       {isOpen && (
         <div
           id="dropdownInformation"
-          className="z-10 bg-[#FB9300] border border-[#f18d00] rounded-2xl shadow-lg w-72 absolute top-[calc(100%+10px)] left-1/2 -translate-x-1/2"
+          className="z-10 bg-[#fc8019] border border-[#f18d00] rounded-2xl shadow-lg w-72 absolute top-[calc(100%+10px)] left-1/2 -translate-x-1/2"
         >
           {!user ? (
             <ul

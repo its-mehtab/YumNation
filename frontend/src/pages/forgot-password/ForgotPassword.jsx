@@ -48,7 +48,7 @@ const ForgotPassword = () => {
       const res = await axios.post(
         `${serverURL}/api/sendotp`,
         { email: trimmedEmail },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       setStep(2);
@@ -82,7 +82,7 @@ const ForgotPassword = () => {
       const res = await axios.post(
         `${serverURL}/api/verifyotp`,
         { email: trimmedData.email, otp: trimmedData.otp },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       setStep(3);
@@ -125,7 +125,7 @@ const ForgotPassword = () => {
       const res = await axios.post(
         `${serverURL}/api/resetpassword`,
         { email: trimmedData.email, newPassword: trimmedData.password },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       console.log(res);
@@ -153,7 +153,7 @@ const ForgotPassword = () => {
         <div className="flex items-center gap-3 mb-6">
           <Link
             to="/login"
-            className="text-white rounded-md bg-[#FB9300] w-11 h-11 flex justify-center items-center hover:bg-white hover:text-[#3F9065] cursor-pointer transition"
+            className="text-white rounded-md bg-[#fc8019] w-11 h-11 flex justify-center items-center hover:bg-white hover:text-[#3F9065] cursor-pointer transition"
           >
             <svg
               id="Layer_2"
@@ -190,7 +190,7 @@ const ForgotPassword = () => {
               className={`w-full font-semibold py-3 rounded-lg transition-all duration-200 ${
                 loading
                   ? "bg-white text-black cursor-not-allowed"
-                  : "bg-[#FB9300] text-white hover:bg-white hover:text-black cursor-pointer"
+                  : "bg-[#fc8019] text-white hover:bg-white hover:text-black cursor-pointer"
               }`}
               disabled={loading}
             >
@@ -213,7 +213,7 @@ const ForgotPassword = () => {
               className={`w-full font-semibold py-3 rounded-lg transition-all duration-200 ${
                 loading
                   ? "bg-white text-black cursor-not-allowed"
-                  : "bg-[#FB9300] text-white hover:bg-white hover:text-black cursor-pointer"
+                  : "bg-[#fc8019] text-white hover:bg-white hover:text-black cursor-pointer"
               }`}
               disabled={loading}
             >
@@ -244,7 +244,7 @@ const ForgotPassword = () => {
               className={`w-full font-semibold py-3 rounded-lg transition-all duration-200 ${
                 loading
                   ? "bg-white text-black cursor-not-allowed"
-                  : "bg-[#FB9300] text-white hover:bg-white hover:text-black cursor-pointer"
+                  : "bg-[#fc8019] text-white hover:bg-white hover:text-black cursor-pointer"
               }`}
               disabled={loading}
             >

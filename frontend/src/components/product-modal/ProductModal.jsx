@@ -137,7 +137,7 @@ const ProductModal = () => {
               <h2 className="text-5xl leading-tight">{mainProduct?.name}</h2>
               <div className="flex items-center gap-0.5 py-3 border-b border-gray-300">
                 <svg
-                  fill="#fb9300"
+                  fill="#fc8019"
                   enableBackground="new 0 0 32 32"
                   height="20"
                   viewBox="0 0 32 32"
@@ -149,7 +149,7 @@ const ProductModal = () => {
                   </g>
                 </svg>
                 <svg
-                  fill="#fb9300"
+                  fill="#fc8019"
                   enableBackground="new 0 0 32 32"
                   height="20"
                   viewBox="0 0 32 32"
@@ -161,7 +161,7 @@ const ProductModal = () => {
                   </g>
                 </svg>
                 <svg
-                  fill="#fb9300"
+                  fill="#fc8019"
                   enableBackground="new 0 0 32 32"
                   height="20"
                   viewBox="0 0 32 32"
@@ -173,7 +173,7 @@ const ProductModal = () => {
                   </g>
                 </svg>
                 <svg
-                  fill="#fb9300"
+                  fill="#fc8019"
                   enableBackground="new 0 0 32 32"
                   height="20"
                   viewBox="0 0 32 32"
@@ -185,7 +185,7 @@ const ProductModal = () => {
                   </g>
                 </svg>
                 <svg
-                  fill="#fb9300"
+                  fill="#fc8019"
                   enableBackground="new 0 0 32 32"
                   height="20"
                   viewBox="0 0 32 32"
@@ -300,7 +300,7 @@ const ProductModal = () => {
                 </div>
                 <button
                   onClick={handleAddCart}
-                  className={`inline-block bg-[#fb9300] text-white  px-12 py-4 rounded-xl transition-all duration-300 ease-in-out hover:bg-[#df8302] ${
+                  className={`inline-block bg-[#fc8019] text-white  px-12 py-4 rounded-xl transition-all duration-300 ease-in-out hover:bg-[#df8302] ${
                     loading ? "cursor-not-allowed" : " cursor-pointer"
                   }`}
                   disabled={loading}

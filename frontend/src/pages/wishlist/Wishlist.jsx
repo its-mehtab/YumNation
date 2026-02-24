@@ -89,7 +89,7 @@ const Wishlist = () => {
                     <div className="ml-auto flex gap-5 md:gap-10 items-center">
                       <div
                         onClick={() => handleAddCart(currProd)}
-                        className="hidden md:block px-8 py-4 rounded-xl  bg-[#FB9300] text-white cursor-pointer hover:bg-[#c57300] transition"
+                        className="hidden md:block px-8 py-4 rounded-xl  bg-[#fc8019] text-white cursor-pointer hover:bg-[#c57300] transition"
                       >
                         Move to Cart
                       </div>

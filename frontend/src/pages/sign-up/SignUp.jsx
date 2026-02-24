@@ -59,7 +59,7 @@ const Signup = () => {
           password: trimmedData.password,
           role: trimmedData.role,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       setUser(data);
@@ -154,7 +154,7 @@ const Signup = () => {
           flex-1 cursor-pointer p-3 rounded-lg text-center font-semibold transition border 
           ${
             signUpData.role === "user"
-              ? "bg-white text-black border-[#FB9300]"
+              ? "bg-white text-black border-[#fc8019]"
               : "border-white/50 text-white hover:bg-white/30"
           }
         `}
@@ -168,7 +168,7 @@ const Signup = () => {
           flex-1 cursor-pointer p-3 rounded-lg text-center font-semibold transition border 
           ${
             signUpData.role === "admin"
-              ? "bg-white text-black border-[#FB9300]"
+              ? "bg-white text-black border-[#fc8019]"
               : "border-white/50 text-white hover:bg-white/30"
           }
         `}
@@ -183,7 +183,7 @@ const Signup = () => {
             className={`w-full font-semibold py-3 rounded-lg transition-all duration-200 ${
               loading
                 ? "bg-white text-black cursor-not-allowed"
-                : "bg-[#FB9300] text-white hover:bg-white hover:text-black cursor-pointer"
+                : "bg-[#fc8019] text-white hover:bg-white hover:text-black cursor-pointer"
             }`}
             disabled={loading}
           >

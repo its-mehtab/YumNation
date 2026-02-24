@@ -1,9 +1,12 @@
-@import url("./assets/fonts/fonts.css");
 @import "tailwindcss";
 
 body {
   font-family: "Poppins", sans-serif;
-  background-color: #fb9300;
+  background-color: #fc8019;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 
 /* Chrome, Safari, Edge, Opera */

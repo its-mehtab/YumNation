@@ -18,7 +18,7 @@ const CartModal = ({ openCartModal, setOpenCartModal, products }) => {
           <h3 className="text-2xl">Shopping cart</h3>
           <div
             onClick={() => setOpenCartModal(false)}
-            className="w-10 h-10 bg-[#fb9300] hover:bg-orange-500 text-white rounded-lg cursor-pointer flex justify-center items-center transition-all duration-300"
+            className="w-10 h-10 bg-[#fc8019] hover:bg-orange-500 text-white rounded-lg cursor-pointer flex justify-center items-center transition-all duration-300"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
