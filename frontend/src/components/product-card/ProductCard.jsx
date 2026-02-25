@@ -11,7 +11,6 @@ import { useCart } from "../../context/CartContext";
 import axios from "axios";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { useWishlist } from "../../context/WishlistContext";
-import ProductModal from "../product-modal/ProductModal";
 import { StarIcon } from "../../assets/icon/Icons";
 
 const ProductCard = ({ currProduct }) => {
@@ -119,7 +118,9 @@ const ProductCard = ({ currProduct }) => {
         >
           {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}
         </span>
-        <img src={assets.product2} alt="" className="h-31.5 mx-auto mb-3" />
+        <Link to={`/product/${currProduct.slug}`}>
+          <img src={assets.product2} alt="" className="h-31.5 mx-auto mb-3" />
+        </Link>
         <div className="flex gap-1 items-center mb-2">
           <StarIcon size={18} color={"text-[#FC8019]"} />
           <StarIcon size={18} color={"text-[#FC8019]"} />

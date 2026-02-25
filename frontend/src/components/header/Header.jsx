@@ -5,6 +5,7 @@ import { SearchIcon, WishlistIcon } from "../../assets/icon/Icons";
 import Dropdown from "../dropdown/Dropdown";
 import SearchModal from "./SearchModal";
 import { useWishlist } from "../../context/WishlistContext";
+import SearchBox from "../search-box/SearchBox";
 
 const products = [
   {
@@ -99,7 +100,7 @@ const Header = () => {
     <header className="absolute z-50 top-0 left-0 right-0">
       <div className="mx-auto max-w-335 px-4 sm:px-6 lg:px-8">
         <nav>
-          <div className="relative flex items-center justify-between py-4 md:py-6">
+          <div className="relative flex items-center py-4 md:py-6">
             <div className="inset-y-0 flex items-center md:hidden">
               <button
                 type="button"
@@ -132,12 +133,12 @@ const Header = () => {
               </div>
             </div>
 
-            <div className="flex flex-1 items-center justify-center md:items-stretch md:justify-start mx-5 md:mx-0">
+            <div className="flex items-center justify-center md:items-stretch md:justify-start mx-5 md:mx-0">
               <Link to="/" className="flex shrink-0 items-center">
                 <img src={assets.logo} alt="logo" className="h-8 w-auto" />
               </Link>
 
-              <div
+              {/* <div
                 className={`
                       md:static md:block mx-auto 
                       bg-[#fc9401] md:bg-transparent
@@ -151,10 +152,14 @@ const Header = () => {
                           : "max-h-0 opacity-0 md:max-h-none md:opacity-100"
                       }
                     `}
-              ></div>
+              ></div> */}
             </div>
 
-            <ul className="flex items-center gap-3 sm:gap-6">
+            <div>
+              <SearchBox />
+            </div>
+
+            <ul className="flex items-center gap-3 sm:gap-6 ml-auto">
               <li
                 onClick={() => setOpenSearchModal(true)}
                 className="hidden md:block relative text-white hover:text-[#3f9065] transition-all cursor-pointer"

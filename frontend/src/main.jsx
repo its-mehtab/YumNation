@@ -23,7 +23,6 @@ createRoot(document.getElementById("root")).render(
                 <ValidateProvider>
                   <Header />
                   <App />
-                  {/* <Footer /> */}
                 </ValidateProvider>
               </CategoryProvider>
             </ProductProvider>

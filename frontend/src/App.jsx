@@ -11,6 +11,7 @@ import ForgotPassword from "./pages/forgot-password/ForgotPassword";
 import Product from "./pages/product/Product";
 import { Bounce, ToastContainer } from "react-toastify";
 import Aside from "./components/aside/Aside";
+import Footer from "./components/footer/Footer";
 // import Grid3x3OutlinedIcon from "@mui/icons-material/Grid3x3Outlined";
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
         <div className="grid grid-cols-11">
           <Aside />
           <div className="col-span-9">
-            <div className="mx-auto px-4 sm:px-6 lg:pl-10 lg:pr-6 py-10 max-h-[87dvh] overflow-scroll">
+            <div className="mx-auto px-4 sm:px-6 lg:pl-10 lg:pr-6 pt-10 max-h-[87dvh] overflow-scroll">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/shop" element={<Shop />} />
@@ -39,6 +40,7 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/wishlist" element={<Wishlist />} />
               </Routes>
+              <Footer />
             </div>
           </div>
         </div>

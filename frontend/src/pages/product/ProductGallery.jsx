@@ -18,22 +18,22 @@ const ProductGallery = () => {
         onSwiper={setThumbsSwiper}
         direction="vertical"
         slidesPerView={4}
-        watchSlidesProgress={true} // <-- REQUIRED: This tracks slide positions
-        freeMode={true} // <-- Recommended for thumbs
+        watchSlidesProgress={true}
+        freeMode={true}
         modules={[FreeMode, Navigation, Thumbs]}
         className="gallery-thumbs"
       >
         <SwiperSlide>
-          <img src={assets.product1} />
+          <img src={assets.product2} />
         </SwiperSlide>
         <SwiperSlide>
           <img src={assets.product2} />
         </SwiperSlide>
         <SwiperSlide>
-          <img src={assets.product3} />
+          <img src={assets.product2} />
         </SwiperSlide>
         <SwiperSlide>
-          <img src={assets.product4} />
+          <img src={assets.product2} />
         </SwiperSlide>
       </Swiper>
 
@@ -45,16 +45,16 @@ const ProductGallery = () => {
         className="gallery-top"
       >
         <SwiperSlide>
-          <img src={assets.product1} />
+          <img src={assets.product2} />
         </SwiperSlide>
         <SwiperSlide>
           <img src={assets.product2} />
         </SwiperSlide>
         <SwiperSlide>
-          <img src={assets.product3} />
+          <img src={assets.product2} />
         </SwiperSlide>
         <SwiperSlide>
-          <img src={assets.product4} />
+          <img src={assets.product2} />
         </SwiperSlide>
       </Swiper>
     </div>

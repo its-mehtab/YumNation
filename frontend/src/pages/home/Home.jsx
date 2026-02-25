@@ -34,272 +34,215 @@ const Home = () => {
   const { products } = useProduct();
 
   return (
-    <>
-      <div className="mb-20">
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-7">
-            <section className="relative">
-              <div className="custom-pagination"></div>
-              <Swiper
-                pagination={{
-                  el: ".custom-pagination",
-                  clickable: true,
-                }}
-                modules={[Pagination]}
-                className="mySwiper heroSwiper"
-              >
-                <SwiperSlide>
-                  <img src={assets.bannerImg1} className="rounded-lg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img src={assets.bannerImg2} className="rounded-lg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <img src={assets.bannerImg3} className="rounded-lg" />
-                </SwiperSlide>
-              </Swiper>
-            </section>
-            <section className="py-7">
-              <div className="flex justify-between gap-3 items-center mb-2">
-                <h3 className="text-gray-700 text-lg capitalize font-semibold">
-                  Category
-                </h3>
-                <div className="flex items-center gap-3">
-                  <button className="custom-prev rounded-sm p-0.5 bg-[#fc8019] text-white cursor-pointer transition-all">
-                    <ArrowLeft />
-                  </button>
-                  <button className="custom-next rounded-sm p-0.5 bg-[#fc8019] text-white cursor-pointer transition-all">
-                    <ArrowRight />
-                  </button>
-                </div>
-              </div>
-              <Swiper
-                navigation={{
-                  nextEl: ".custom-next",
-                  prevEl: ".custom-prev",
-                }}
-                modules={[Navigation]}
-                slidesPerView={3}
-                spaceBetween={20}
-                // breakpoints={{
-                //   640: { slidesPerView: 2 },
-                //   991: { slidesPerView: 3 },
-                // }}
-                className="mySwiper"
-              >
-                {categories?.map((currCat) => {
-                  return (
-                    <SwiperSlide key={currCat._id}>
-                      <div
-                        // onClick={() => {
-                        //   setCategoryName(currCat.name);
-                        // }}
-                        className="border text-[#b2b2b2] px-5 py-6 rounded-lg text-xl cursor-pointer text-center"
-                      >
-                        {/* <span>{<currCat.icon />}</span> */}
-                        <div className="mb-2 flex justify-center">
-                          {<BurgersmIcon />}
-                        </div>
-                        <div className="mt-4 text-sm text-gray-900">
-                          {currCat.name}
-                        </div>
-                      </div>
-                    </SwiperSlide>
-                  );
-                })}
-              </Swiper>
-            </section>
-            <section className="pb-7">
-              <div className="flex justify-between gap-3 items-center mb-2">
-                <h3 className="text-gray-700 text-lg capitalize font-semibold">
-                  Popular Dishes
-                </h3>
-                <Link
-                  to="/shop"
-                  className="flex items-center gap-2 text-sm text-[#fc8019]"
-                >
-                  view all
-                  <ChevronRightIcon size={9} />
-                </Link>
-              </div>
-              <Swiper
-                slidesPerView={2}
-                spaceBetween={20}
-                // spaceBetween={0}
-                // centeredSlides={true}
-                // initialSlide={2}
-                // modules={[Navigation]}
-                // navigation={{
-                //   nextEl: ".custom-next",
-                //   prevEl: ".custom-prev",
-                // }}
-                // breakpoints={{
-                //   480: { slidesPerView: 1.5 },
-                //   767: { slidesPerView: 2.5 },
-                //   991: { slidesPerView: 3.5 },
-                //   1200: { slidesPerView: 4.2 },
-                // }}
-                className="mySwiper"
-              >
-                {products?.products?.map((currProduct) => {
-                  return (
-                    <SwiperSlide key={currProduct._id}>
-                      <ProductCard currProduct={currProduct} />
-                    </SwiperSlide>
-                  );
-                })}
-              </Swiper>
-            </section>
-            <section className="pb-7">
-              <div className="flex justify-between gap-3 items-center mb-2">
-                <h3 className="text-gray-700 text-lg capitalize font-semibold">
-                  Recent Order
-                </h3>
-                <Link
-                  to="/shop"
-                  className="flex items-center gap-2 text-sm text-[#fc8019]"
-                >
-                  view all
-                  <ChevronRightIcon size={9} />
-                </Link>
-              </div>
-              <Swiper
-                slidesPerView={2}
-                spaceBetween={20}
-                // spaceBetween={0}
-                // centeredSlides={true}
-                // initialSlide={2}
-                // modules={[Navigation]}
-                // navigation={{
-                //   nextEl: ".custom-next",
-                //   prevEl: ".custom-prev",
-                // }}
-                // breakpoints={{
-                //   480: { slidesPerView: 1.5 },
-                //   767: { slidesPerView: 2.5 },
-                //   991: { slidesPerView: 3.5 },
-                //   1200: { slidesPerView: 4.2 },
-                // }}
-                className="mySwiper"
-              >
-                {products?.products?.map((currProduct) => {
-                  return (
-                    <SwiperSlide key={currProduct._id}>
-                      <ProductCard currProduct={currProduct} />
-                    </SwiperSlide>
-                  );
-                })}
-              </Swiper>
-            </section>
-          </div>
-          <div className="col-span-5">
-            <div className="border border-[#fc8019] rounded-lg bg-[#fff2e8]">
-              <div className="p-5 border-b border-[#fc8019]">
-                <h3 className="text-[#fc8019] text-xs capitalize font-semibold">
-                  Your address
-                </h3>
-                <div className="flex items-center gap-1.5 mt-2">
-                  <LocationIcon color={"#fc8019"} />
-                  <div className="text-sm font-medium text-gray-700">
-                    No address added
-                  </div>
-                  <div className="text-xs font-medium px-3 py-1 border text-[#fc8019] border-[#fc8019] rounded ms-auto hover:text-white hover:bg-[#fc8019] transition-all cursor-pointer">
-                    Change
-                  </div>
-                </div>
-                <p className="mt-2 text-[13px] text-gray-500">
-                  Lorem ipsum dolor sit amet, consectetur elit, sed do eiusmod
-                  tempor incididunt.
-                </p>
-                <div className="flex gap-2 items-center mt-3">
-                  <Button>Add Details</Button>
-                  <Button>Add Note</Button>
-                </div>
-              </div>
-              <div className="p-5">
-                <CartBox />
-              </div>
-            </div>
-            <div className="px-5 pt-7 pb-14 mt-5 bg-[#fc8019] rounded-lg relative overflow-hidden">
-              <h4 className="font-semibold text-white max-w-54">
-                Get Discount VoucherUp To 20%
-              </h4>
-              <p className="text-xs leading-relaxed mt-2 text-white max-w-48">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              </p>
-              <img
-                src={assets.offerImg}
-                alt=""
-                className="absolute top-3 -right-6 w-64 z-10"
-              />
-              <img
-                src={assets.offerBannerBg}
-                alt=""
-                className="absolute top-0 right-0 w-72 z-0"
-              />
-              <img
-                src={assets.offerBannerBg}
-                alt=""
-                className="absolute -bottom-5 -left-20 w-56 z-0 rotate-180"
-              />
+    <div className="grid grid-cols-12 gap-6">
+      <div className="col-span-7">
+        <section className="relative">
+          <div className="custom-pagination"></div>
+          <Swiper
+            pagination={{
+              el: ".custom-pagination",
+              clickable: true,
+            }}
+            modules={[Pagination]}
+            className="mySwiper heroSwiper"
+          >
+            <SwiperSlide>
+              <img src={assets.bannerImg1} className="rounded-lg" />
+            </SwiperSlide>
+            <SwiperSlide>
+              <img src={assets.bannerImg2} className="rounded-lg" />
+            </SwiperSlide>
+            <SwiperSlide>
+              <img src={assets.bannerImg3} className="rounded-lg" />
+            </SwiperSlide>
+          </Swiper>
+        </section>
+        <section className="py-7">
+          <div className="flex justify-between gap-3 items-center mb-2">
+            <h3 className="text-gray-700 text-lg capitalize font-semibold">
+              Category
+            </h3>
+            <div className="flex items-center gap-3">
+              <button className="custom-prev rounded-sm p-0.5 bg-[#fc8019] text-white cursor-pointer transition-all">
+                <ArrowLeft />
+              </button>
+              <button className="custom-next rounded-sm p-0.5 bg-[#fc8019] text-white cursor-pointer transition-all">
+                <ArrowRight />
+              </button>
             </div>
           </div>
+          <Swiper
+            navigation={{
+              nextEl: ".custom-next",
+              prevEl: ".custom-prev",
+            }}
+            modules={[Navigation]}
+            slidesPerView={3}
+            spaceBetween={20}
+            // breakpoints={{
+            //   640: { slidesPerView: 2 },
+            //   991: { slidesPerView: 3 },
+            // }}
+            className="mySwiper"
+          >
+            {categories?.map((currCat) => {
+              return (
+                <SwiperSlide key={currCat._id}>
+                  <div
+                    // onClick={() => {
+                    //   setCategoryName(currCat.name);
+                    // }}
+                    className="border text-[#b2b2b2] px-5 py-6 rounded-lg text-xl cursor-pointer text-center"
+                  >
+                    {/* <span>{<currCat.icon />}</span> */}
+                    <div className="mb-2 flex justify-center">
+                      {<BurgersmIcon />}
+                    </div>
+                    <div className="mt-4 text-sm text-gray-900">
+                      {currCat.name}
+                    </div>
+                  </div>
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+        </section>
+        <section className="pb-7">
+          <div className="flex justify-between gap-3 items-center mb-2">
+            <h3 className="text-gray-700 text-lg capitalize font-semibold">
+              Popular Dishes
+            </h3>
+            <Link
+              to="/shop"
+              className="flex items-center gap-2 text-sm text-[#fc8019]"
+            >
+              view all
+              <ChevronRightIcon size={9} />
+            </Link>
+          </div>
+          <Swiper
+            slidesPerView={2}
+            spaceBetween={20}
+            // spaceBetween={0}
+            // centeredSlides={true}
+            // initialSlide={2}
+            // modules={[Navigation]}
+            // navigation={{
+            //   nextEl: ".custom-next",
+            //   prevEl: ".custom-prev",
+            // }}
+            // breakpoints={{
+            //   480: { slidesPerView: 1.5 },
+            //   767: { slidesPerView: 2.5 },
+            //   991: { slidesPerView: 3.5 },
+            //   1200: { slidesPerView: 4.2 },
+            // }}
+            className="mySwiper"
+          >
+            {products?.products?.map((currProduct) => {
+              return (
+                <SwiperSlide key={currProduct._id}>
+                  <ProductCard currProduct={currProduct} />
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+        </section>
+        <section className="pb-7">
+          <div className="flex justify-between gap-3 items-center mb-2">
+            <h3 className="text-gray-700 text-lg capitalize font-semibold">
+              Recent Order
+            </h3>
+            <Link
+              to="/shop"
+              className="flex items-center gap-2 text-sm text-[#fc8019]"
+            >
+              view all
+              <ChevronRightIcon size={9} />
+            </Link>
+          </div>
+          <Swiper
+            slidesPerView={2}
+            spaceBetween={20}
+            // spaceBetween={0}
+            // centeredSlides={true}
+            // initialSlide={2}
+            // modules={[Navigation]}
+            // navigation={{
+            //   nextEl: ".custom-next",
+            //   prevEl: ".custom-prev",
+            // }}
+            // breakpoints={{
+            //   480: { slidesPerView: 1.5 },
+            //   767: { slidesPerView: 2.5 },
+            //   991: { slidesPerView: 3.5 },
+            //   1200: { slidesPerView: 4.2 },
+            // }}
+            className="mySwiper"
+          >
+            {products?.products?.map((currProduct) => {
+              return (
+                <SwiperSlide key={currProduct._id}>
+                  <ProductCard currProduct={currProduct} />
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
+        </section>
+      </div>
+      <div className="col-span-5">
+        <div className="border border-[#fc8019] rounded-lg bg-[#fff2e8]">
+          <div className="p-5 border-b border-[#fc8019]">
+            <h3 className="text-[#fc8019] text-xs capitalize font-semibold">
+              Your address
+            </h3>
+            <div className="flex items-center gap-1.5 mt-2">
+              <LocationIcon color={"#fc8019"} />
+              <div className="text-sm font-medium text-gray-700">
+                No address added
+              </div>
+              <div className="text-xs font-medium px-3 py-1 border text-[#fc8019] border-[#fc8019] rounded ms-auto hover:text-white hover:bg-[#fc8019] transition-all cursor-pointer">
+                Change
+              </div>
+            </div>
+            <p className="mt-2 text-[13px] text-gray-500">
+              Lorem ipsum dolor sit amet, consectetur elit, sed do eiusmod
+              tempor incididunt.
+            </p>
+            <div className="flex gap-2 items-center mt-3">
+              <Button>Add Details</Button>
+              <Button>Add Note</Button>
+            </div>
+          </div>
+          <div className="p-5">
+            <CartBox />
+          </div>
+        </div>
+        <div className="px-5 pt-7 pb-14 mt-5 bg-[#fc8019] rounded-lg relative overflow-hidden">
+          <h4 className="font-semibold text-white max-w-54">
+            Get Discount VoucherUp To 20%
+          </h4>
+          <p className="text-xs leading-relaxed mt-2 text-white max-w-48">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          </p>
+          <img
+            src={assets.offerImg}
+            alt=""
+            className="absolute top-3 -right-6 w-64 z-10"
+          />
+          <img
+            src={assets.offerBannerBg}
+            alt=""
+            className="absolute top-0 right-0 w-72 z-0"
+          />
+          <img
+            src={assets.offerBannerBg}
+            alt=""
+            className="absolute -bottom-5 -left-20 w-56 z-0 rotate-180"
+          />
         </div>
       </div>
-
-      {/* <section
-        className="py-16 lg:py-30 bg-cover bg-center"
-        style={{ backgroundImage: `url(${assets.bgYellow})` }}
-      >
-        <div className="mx-auto max-w-335 px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center">
-            <h1 className="text-[#000006] text-6xl">
-              Best selling <span className="text-[#3F9065]">dishes</span>
-            </h1>
-            <div className="hidden sm:block">
-              <Button
-                btnName="See All"
-                btnColor="bg-white text-[#000006] hover:bg-[#000006] hover:text-white"
-              />
-            </div>
-          </div>
-        </div>
-        <Swiper
-          slidesPerView={1.2}
-          spaceBetween={0}
-          centeredSlides={true}
-          initialSlide={2}
-          modules={[Navigation]}
-          navigation={{
-            nextEl: ".custom-next",
-            prevEl: ".custom-prev",
-          }}
-          breakpoints={{
-            480: { slidesPerView: 1.5 },
-            767: { slidesPerView: 2.5 },
-            991: { slidesPerView: 3.5 },
-            1200: { slidesPerView: 4.2 },
-          }}
-          className="mySwiper"
-        >
-          {products?.products?.map((currProduct) => {
-            return (
-              <SwiperSlide key={currProduct._id}>
-                <ProductCard currProduct={currProduct} />
-              </SwiperSlide>
-            );
-          })}
-        </Swiper>
-        <div className="flex items-center justify-center gap-3 mt-7">
-          <button className="custom-prev text-[#66666A] bg-white border border-[#66666A] rounded-full p-3.5 hover:bg-[#fc8019] hover:text-white hover:border-[#fc8019] cursor-pointer transition-all">
-            <ArrowLeft />
-          </button>
-          <button className="custom-next text-[#66666A] bg-white border border-[#66666A] rounded-full p-3.5 hover:bg-[#fc8019] hover:text-white hover:border-[#fc8019] cursor-pointer transition-all">
-            <ArrowRight />
-          </button>
-        </div>
-      </section> */}
-    </>
+    </div>
   );
 };
 
