@@ -22,10 +22,12 @@ import {
   ArrowLeft,
   ArrowRight,
   ChevronRightIcon,
+  LocationIcon,
 } from "../../assets/icon/Icons";
 import { useCategory } from "../../context/CategoryContext";
 import { useProduct } from "../../context/ProductContext";
 import { Link } from "react-router-dom";
+import CartBox from "../../components/cart-box/CartBox";
 
 const Home = () => {
   const { categories, loading: catLoading } = useCategory();
@@ -191,10 +193,55 @@ const Home = () => {
             </section>
           </div>
           <div className="col-span-5">
-            <div className="border border-[#fc8019] rounded-lg p-5">
-              <h3 className="text-gray-700 text-lg capitalize font-semibold">
-                Your address
-              </h3>
+            <div className="border border-[#fc8019] rounded-lg bg-[#fff2e8]">
+              <div className="p-5 border-b border-[#fc8019]">
+                <h3 className="text-[#fc8019] text-xs capitalize font-semibold">
+                  Your address
+                </h3>
+                <div className="flex items-center gap-1.5 mt-2">
+                  <LocationIcon color={"#fc8019"} />
+                  <div className="text-sm font-medium text-gray-700">
+                    No address added
+                  </div>
+                  <div className="text-xs font-medium px-3 py-1 border text-[#fc8019] border-[#fc8019] rounded ms-auto hover:text-white hover:bg-[#fc8019] transition-all cursor-pointer">
+                    Change
+                  </div>
+                </div>
+                <p className="mt-2 text-[13px] text-gray-500">
+                  Lorem ipsum dolor sit amet, consectetur elit, sed do eiusmod
+                  tempor incididunt.
+                </p>
+                <div className="flex gap-2 items-center mt-3">
+                  <Button>Add Details</Button>
+                  <Button>Add Note</Button>
+                </div>
+              </div>
+              <div className="p-5">
+                <CartBox />
+              </div>
+            </div>
+            <div className="px-5 pt-7 pb-14 mt-5 bg-[#fc8019] rounded-lg relative overflow-hidden">
+              <h4 className="font-semibold text-white max-w-54">
+                Get Discount VoucherUp To 20%
+              </h4>
+              <p className="text-xs leading-relaxed mt-2 text-white max-w-48">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              </p>
+              <img
+                src={assets.offerImg}
+                alt=""
+                className="absolute top-3 -right-6 w-64 z-10"
+              />
+              <img
+                src={assets.offerBannerBg}
+                alt=""
+                className="absolute top-0 right-0 w-72 z-0"
+              />
+              <img
+                src={assets.offerBannerBg}
+                alt=""
+                className="absolute -bottom-5 -left-20 w-56 z-0 rotate-180"
+              />
             </div>
           </div>
         </div>

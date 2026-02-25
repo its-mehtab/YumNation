@@ -30,6 +30,9 @@ const RangeSlider = ({ filters, setFilters }) => {
   return (
     <>
       <Slider
+        sx={{
+          color: "#fc8019",
+        }}
         getAriaLabel={() => "Minimum distance"}
         value={range}
         onChange={handleChange}
@@ -40,7 +43,7 @@ const RangeSlider = ({ filters, setFilters }) => {
         disableSwap
       />
 
-      <div className="flex gap-4.5 items-center">
+      <div className="flex gap-4.5 items-center mt-2">
         <div className="flex items-center gap-2 border border-gray-300 px-2 py-1.5 w-1/2">
           <span className="text-gray-600">$</span>
           <span className="text-end w-full">{range[0]}</span>

@@ -1,18 +1,9 @@
 import React, { useState } from "react";
 import { assets } from "../../assets/assets";
 import { Link, NavLink } from "react-router-dom";
-import {
-  ArrowRight,
-  CartIcon1,
-  SearchIcon,
-  UserIcon,
-  WishlistIcon,
-} from "../../assets/icon/Icons";
-import Button from "../button/Button";
+import { SearchIcon, WishlistIcon } from "../../assets/icon/Icons";
 import Dropdown from "../dropdown/Dropdown";
-import CartModal from "./CartModal";
 import SearchModal from "./SearchModal";
-import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 
 const products = [
@@ -101,9 +92,7 @@ const products = [
 const Header = () => {
   const [navActive, setNavActive] = useState(false);
   const [openSearchModal, setOpenSearchModal] = useState(false);
-  const [openCartModal, setOpenCartModal] = useState(false);
 
-  const { cart } = useCart();
   const { wishlist } = useWishlist();
 
   return (
@@ -176,12 +165,6 @@ const Header = () => {
                 <Dropdown />
               </li>
 
-              {/* <li className="relative text-white hover:text-[#3f9065] transition-all cursor-pointer">
-                <Link to="/login">
-                  <UserIcon />
-                </Link>
-              </li> */}
-
               <li className="relative text-white hover:text-[#3f9065] transition-all cursor-pointer">
                 <Link to="/wishlist" className="flex gap-0.5">
                   <WishlistIcon />
@@ -189,16 +172,6 @@ const Header = () => {
                     {wishlist?.length || "0"}
                   </span>
                 </Link>
-              </li>
-
-              <li
-                onClick={() => setOpenCartModal(true)}
-                className="relative text-white hover:text-[#3f9065] transition-all cursor-pointer flex gap-0.5"
-              >
-                <CartIcon1 />
-                <span className="w-4 h-4 rounded-full text-xs flex justify-center items-center bg-[#3f9065] text-white font-bold mt-0.5">
-                  {cart?.length || "0"}
-                </span>
               </li>
             </ul>
           </div>
@@ -209,12 +182,6 @@ const Header = () => {
       <SearchModal
         openSearchModal={openSearchModal}
         setOpenSearchModal={setOpenSearchModal}
-        products={products}
-      />
-
-      <CartModal
-        openCartModal={openCartModal}
-        setOpenCartModal={setOpenCartModal}
         products={products}
       />
     </header>

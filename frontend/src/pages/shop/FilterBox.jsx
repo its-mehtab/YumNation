@@ -2,6 +2,9 @@ import React from "react";
 import RangeSlider from "./RangeSlider";
 import { useCategory } from "../../context/CategoryContext";
 import Chip from "./Chip";
+import Checkbox from "@mui/material/Checkbox";
+
+const label = { slotProps: { input: { "aria-label": "Checkbox demo" } } };
 
 const FilterBox = ({ filters, setFilters }) => {
   const { categories } = useCategory();
@@ -39,10 +42,10 @@ const FilterBox = ({ filters, setFilters }) => {
         filters.availability?.length > 0 ||
         (filters.minPrice || filters.maxPrice) !== null) && (
         <>
-          <h3 className="text-xl text-[#000006] border-b border-gray-200 pb-4 mb-5.5">
+          <h3 className="text-gray-700 text-lg capitalize font-semibold border-b border-gray-200 pb-2 mb-4.5">
             Filters
           </h3>
-          <div className="flex items-center gap-2.5 mt-2 flex-wrap">
+          <div className="flex items-center gap-x-2.5 gap-y-3.5 mt-2 flex-wrap mb-7">
             {filters.category?.length > 0 && (
               <Chip
                 chipName={
@@ -52,17 +55,17 @@ const FilterBox = ({ filters, setFilters }) => {
               />
             )}
             {filters.category?.length > 1 && (
-              <>
-                <span>+ {filters.category.length - 1}</span>
-              </>
+              <span className="text-sm text-gray-600">
+                + {filters.category.length - 1}
+              </span>
             )}
             {filters.availability?.length > 0 && (
               <Chip chipName={filters.availability[0]} />
             )}
             {filters.availability?.length > 1 && (
-              <>
-                <span>+ {filters.availability.length - 1}</span>
-              </>
+              <span className="text-sm text-gray-600">
+                + {filters.availability.length - 1}
+              </span>
             )}
             {(filters.minPrice || filters.maxPrice) !== null && (
               <>
@@ -82,7 +85,7 @@ const FilterBox = ({ filters, setFilters }) => {
                   page: 1,
                 })
               }
-              className="text-gray-600 underline hover:text-gray-900 transition-all cursor-pointer"
+              className="text-gray-600 underline text-sm hover:text-gray-900 transition-all cursor-pointer"
             >
               Clear all
             </span>
@@ -90,13 +93,13 @@ const FilterBox = ({ filters, setFilters }) => {
         </>
       )}
 
-      <h3 className="text-xl text-[#000006] border-b border-gray-200 mt-7 pb-4 mb-5.5">
+      <h3 className="text-gray-700 text-lg capitalize font-semibold border-b border-gray-200 pb-2 mb-4.5">
         Product categories
       </h3>
       {categories?.map((currCategory) => {
         return (
           <label
-            className="flex items-center gap-2 cursor-pointer mt-2"
+            className="flex items-center gap-2 cursor-pointer mt-3 text-gray-700 text-sm"
             key={currCategory._id}
           >
             <input
@@ -109,10 +112,10 @@ const FilterBox = ({ filters, setFilters }) => {
           </label>
         );
       })}
-      <h3 className="text-xl text-[#000006] border-b border-gray-200 mt-7 pb-4 mb-5.5">
+      <h3 className="text-gray-700 text-lg capitalize font-semibold border-b border-gray-200 mt-7 pb-2 mb-4.5">
         Availability
       </h3>
-      <label className="flex items-center gap-2 cursor-pointer">
+      <label className="flex items-center gap-2 cursor-pointer text-gray-700 text-sm">
         <input
           checked={filters.availability.includes("availableNow")}
           onChange={() => handleAvailability("availableNow")}
@@ -122,7 +125,7 @@ const FilterBox = ({ filters, setFilters }) => {
         />
         Available Now
       </label>
-      <label className="flex items-center gap-2 cursor-pointer mt-2">
+      <label className="flex items-center gap-2 cursor-pointer mt-3 text-gray-700 text-sm">
         <input
           checked={filters.availability.includes("recommended")}
           onChange={() => handleAvailability("recommended")}
@@ -132,7 +135,7 @@ const FilterBox = ({ filters, setFilters }) => {
         />
         Recommended
       </label>
-      <label className="flex items-center gap-2 cursor-pointer mt-2">
+      <label className="flex items-center gap-2 cursor-pointer mt-3 text-gray-700 text-sm">
         <input
           checked={filters.availability.includes("soldOut")}
           onChange={() => handleAvailability("soldOut")}
@@ -142,7 +145,7 @@ const FilterBox = ({ filters, setFilters }) => {
         />
         Sold Out
       </label>
-      <h3 className="text-xl text-[#000006] border-b border-gray-200 mt-7 pb-4 mb-5.5">
+      <h3 className="text-gray-700 text-lg capitalize font-semibold border-b border-gray-200 mt-7 pb-2 mb-4.5">
         Price
       </h3>
       <RangeSlider filters={filters} setFilters={setFilters} />

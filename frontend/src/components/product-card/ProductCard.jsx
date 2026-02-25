@@ -106,11 +106,11 @@ const ProductCard = ({ currProduct }) => {
 
   return (
     <>
-      <div className="border border-[#b2b2b2] rounded-lg py-4 px-3.5 relative overflow-hidden">
+      <div className="border border-[#b2b2b2] rounded-lg py-4 px-3.5 relative">
         {/* <div className="border border-[#b2b2b2] rounded-lg py-4 px-3.5 relative overflow-hidden grayscale"> */}
         {/* <img src={currProduct.img} alt="" className="w-full" /> */}
 
-        <span className="bg-[#eb5757] text-white text-sm absolute -top-0.5 -left-0.5 rounded-br-md px-2.5 py-0.5">
+        <span className="bg-[#eb5757] text-white text-sm absolute -top-0.5 -left-px rounded-tl-lg rounded-br-md px-2.5 py-0.5">
           15% Off
         </span>
         <span
@@ -121,9 +121,9 @@ const ProductCard = ({ currProduct }) => {
         </span>
         <img src={assets.product2} alt="" className="h-31.5 mx-auto mb-3" />
         <div className="flex gap-1 items-center mb-2">
-          <StarIcon size={18} color={"text-[#fc8019]"} />
-          <StarIcon size={18} color={"text-[#fc8019]"} />
-          <StarIcon size={18} color={"text-[#fc8019]"} />
+          <StarIcon size={18} color={"text-[#FC8019]"} />
+          <StarIcon size={18} color={"text-[#FC8019]"} />
+          <StarIcon size={18} color={"text-[#FC8019]"} />
           <StarIcon size={18} color={"text-gray-300"} />
           <StarIcon size={18} color={"text-gray-300"} />
         </div>
@@ -140,9 +140,9 @@ const ProductCard = ({ currProduct }) => {
           </div>
           <span
             onClick={handleAddCart}
-            className="w-9 h-9 flex items-center  justify-center bg-[#fc8019] rounded-md hover:bg-[#fc8019] cursor-pointer transition-all"
+            className="w-9 min-w-9 h-9 flex items-center  justify-center bg-[#fc8019] rounded-md hover:bg-[#fc8019] cursor-pointer transition-all"
           >
-            {<PlusIcon size={20} color={"text-white"} />}
+            {<PlusIcon size={15} color={"#fff"} />}
           </span>
         </div>
 

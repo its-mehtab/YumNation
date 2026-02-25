@@ -1,17 +1,14 @@
 import React from "react";
-// import { BtnArrowIcon } from "../../assets/icon/Icons";
 
 const Button = ({
-  btnName = "ORDER NOW",
-  btnColor = "bg-[#fc8019] text-white hover:bg-[#027a36]",
+  children,
+  btnColor = "bg-[#fc8019] text-white hover:bg-[#df6703]",
   addClass = "",
 }) => (
   <div
-    href="#"
-    className={`inline-flex gap-2.5  px-10 py-4.5 rounded-xl shadow-[2px_2px_0px_2px_rgba(0,0,0)] transition-all duration-300 ease-in-out ${btnColor} ${addClass}`}
+    className={`inline-block text-sm font-medium px-6 py-3 rounded-md transition-all ${btnColor} ${addClass} cursor-pointer`}
   >
-    {btnName}
-    {/* <BtnArrowIcon /> */}
+    {children}
   </div>
 );
 

@@ -10,7 +10,7 @@ export const getProducts = async (req, res) => {
       availability,
       sort,
       page = 1,
-      limit = 5,
+      limit = 6,
     } = req.query;
 
     const query = {};
