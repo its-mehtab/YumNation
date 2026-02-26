@@ -6,7 +6,7 @@ export const getUserCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({ user: userId }).populate(
       "items.product",
-      "name slug",
+      "name slug stock isAvailable",
     );
 
     if (!cart) {
@@ -58,7 +58,7 @@ export const addCart = async (req, res) => {
 
     const updatedCart = await Cart.findOne({ user: userId }).populate(
       "items.product",
-      "name slug",
+      "name slug stock isAvailable",
     );
 
     return res.status(201).json(updatedCart.items);
@@ -102,7 +102,10 @@ export const updateCartQuantity = async (req, res) => {
 
     await cart.save();
 
-    const updatedCart = await cart.populate("items.product", "name slug");
+    const updatedCart = await cart.populate(
+      "items.product",
+      "name slug stock isAvailable",
+    );
 
     return res.status(200).json(updatedCart.items);
   } catch (error) {
@@ -128,7 +131,7 @@ export const removeFromCart = async (req, res) => {
         },
       },
       { new: true },
-    ).populate("items.product", "name slug");
+    ).populate("items.product", "name slug stock isAvailable");
 
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });

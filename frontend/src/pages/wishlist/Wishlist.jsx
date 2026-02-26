@@ -7,6 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { useCart } from "../../context/CartContext";
 import { EmptyWishlistIcon } from "../../assets/icon/Icons";
+import { fetchAvailibility } from "../../utils/availibility";
 
 const Wishlist = () => {
   const { wishlist, setWishlist, loading, setLoading } = useWishlist();
@@ -68,6 +69,9 @@ const Wishlist = () => {
         <ul className="border border-gray-200 p-3 lg:px-6 rounded-xl">
           {wishlist?.length > 0 ? (
             wishlist?.map((currProd) => {
+              const { isSoldOut, isUnavailable, statusText } =
+                fetchAvailibility(currProd.product);
+
               return (
                 <li
                   key={currProd._id}
@@ -75,12 +79,17 @@ const Wishlist = () => {
                 >
                   <Link
                     to={`/product/${currProd.product.slug}`}
-                    className="w-20 min-w-20"
+                    className={`w-20 min-w-20 ${isSoldOut || isUnavailable ? "grayscale" : ""}`}
                   >
                     {/* <img src={currProd.img} alt="" className="w-full" /> */}
                     <img src={assets.product2} alt="" className="w-full" />
                   </Link>
                   <div>
+                    {(isSoldOut || isUnavailable) && (
+                      <p className="text-xs bg-red-500 text-white font-medium mb-2 px-2 py-0.5 inline-block rounded-sm">
+                        {statusText}
+                      </p>
+                    )}
                     <Link to={`/product/${currProd.product.slug}`}>
                       <h3 className="text-sm text-gray-700 font-semibold">
                         {currProd.name}
@@ -92,8 +101,14 @@ const Wishlist = () => {
                   </div>
                   <div className="ml-auto flex gap-5 md:gap-10 items-center">
                     <div
-                      onClick={() => handleAddCart(currProd)}
-                      className="hidden md:block px-5 py-2 rounded-md  bg-[#fc8019] text-white cursor-pointer hover:bg-[#c57300] transition"
+                      onClick={() => {
+                        if (isSoldOut || isUnavailable) {
+                          notifyError(`${currProd.name} is ${statusText}`);
+                          return;
+                        }
+                        handleAddCart(currProd);
+                      }}
+                      className={`hidden md:block px-5 py-2 rounded-md  bg-[#fc8019] text-white hover:bg-[#c57300] transition ${isSoldOut || isUnavailable ? "grayscale cursor-not-allowed" : "cursor-pointer"}`}
                     >
                       Move to Cart
                     </div>

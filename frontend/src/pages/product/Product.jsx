@@ -9,6 +9,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { useWishlist } from "../../context/WishlistContext";
+import { fetchAvailibility } from "../../utils/availibility";
 
 const Product = () => {
   const [variation, setVariation] = useState("");
@@ -36,7 +37,12 @@ const Product = () => {
   };
 
   const handleAddCart = async () => {
+    if (isSoldOut || isUnavailable) {
+      notifyError(`${mainProduct.name} is ${statusText}`);
+      return;
+    }
     setLoading(true);
+
     try {
       const { data } = await axios.post(
         `${serverURL}/api/cart`,
@@ -112,9 +118,13 @@ const Product = () => {
     getMainProduct();
   }, [slug]);
 
+  const { isSoldOut, isUnavailable, statusText } = mainProduct
+    ? fetchAvailibility(mainProduct)
+    : {};
+
   return (
     <>
-      <section className="">
+      <section className={`${isSoldOut || isUnavailable ? "grayscale" : ""}`}>
         <div className="grid grid-cols-9 gap-8">
           <div className="col-span-4">
             <ul className="flex mb-8 text-gray-600">
@@ -135,6 +145,11 @@ const Product = () => {
             <ProductGallery />
           </div>
           <div className="col-span-5 md:pr-5">
+            {(isSoldOut || isUnavailable) && (
+              <h3 className="mb-3 bg-[#fc8019] text-white px-3 py-1 rounded-md inline-block">
+                {statusText}
+              </h3>
+            )}
             <h2 className="text-2xl font-semibold text-gray-600">
               {mainProduct?.name}
             </h2>
@@ -204,7 +219,8 @@ const Product = () => {
             <p className="pt-4 text-sm text-gray-500 leading-relaxed">
               {mainProduct?.description}
             </p>
-            <h4 className="inline-block py-4 text-2xl font-bold text-[#fc8019]">
+
+            <h4 className="block py-4 text-2xl font-bold text-[#fc8019]">
               $
               {mainProduct?.variants
                 .find((curr) => curr.name === variation)

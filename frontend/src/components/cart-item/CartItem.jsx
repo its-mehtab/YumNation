@@ -5,12 +5,17 @@ import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { MinusIcon, PlusIcon } from "../../assets/icon/Icons";
+import { fetchAvailibility } from "../../utils/availibility";
 
 const CartItem = ({ currProd, products }) => {
   const [quantity, setQuantity] = useState(currProd.quantity);
 
   const { serverURL } = useAuth();
   const { setCart, loading, setLoading } = useCart();
+
+  const { isSoldOut, isUnavailable, statusText } = fetchAvailibility(
+    currProd.product,
+  );
 
   const handleQuantityMinus = async () => {
     if (loading) return;
@@ -100,12 +105,17 @@ const CartItem = ({ currProd, products }) => {
     <li key={currProd._id} className="flex gap-4 items-center mb-8">
       <Link
         to={`product/${currProd.product.slug}`}
-        className="w-17.5 min-w-17.5 h-17.5 rounded-lg border flex justify-center items-center border-[#fc8019]"
+        className={`w-17.5 min-w-17.5 h-17.5 rounded-lg border flex justify-center items-center border-[#fc8019] ${currProd.product.stock <= 0 || !currProd.product.isAvailable ? "grayscale" : ""}`}
       >
         {/* <img src={currProd.image} alt="" className="w-full" /> */}
         <img src={products[1].img} alt="" className="w-full" />
       </Link>
       <div>
+        {(isSoldOut || isUnavailable) && (
+          <p className="text-xs bg-red-500 text-white font-medium mb-2 px-2 py-0.5 inline-block rounded-sm">
+            {statusText}
+          </p>
+        )}
         <h3 className="text-sm font-semibold text-gray-700 hover:text-[#fc8019] transition-all">
           <Link to={`product/${currProd.product.slug}`}>{currProd.name}</Link>
         </h3>

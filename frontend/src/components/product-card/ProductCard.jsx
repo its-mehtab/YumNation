@@ -12,9 +12,13 @@ import axios from "axios";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { useWishlist } from "../../context/WishlistContext";
 import { StarIcon } from "../../assets/icon/Icons";
+import { fetchAvailibility } from "../../utils/availibility";
 
 const ProductCard = ({ currProduct }) => {
   const [wishlistActive, setWishlistActive] = useState(false);
+
+  const { isSoldOut, isUnavailable, statusText } =
+    fetchAvailibility(currProduct);
 
   const { serverURL } = useAuth();
   const { setCart, loading, setLoading } = useCart();
@@ -26,9 +30,12 @@ const ProductCard = ({ currProduct }) => {
   } = useWishlist();
 
   const handleAddCart = async () => {
+    if (isSoldOut || isUnavailable) {
+      notifyError(`${currProduct.name} is ${statusText}`);
+      return;
+    }
     setLoading(true);
 
-    console.log(currProduct);
     try {
       const { data } = await axios.post(
         `${serverURL}/api/cart`,
@@ -105,8 +112,9 @@ const ProductCard = ({ currProduct }) => {
 
   return (
     <>
-      <div className="border border-[#b2b2b2] rounded-lg py-4 px-3.5 relative">
-        {/* <div className="border border-[#b2b2b2] rounded-lg py-4 px-3.5 relative overflow-hidden grayscale"> */}
+      <div
+        className={`border border-[#b2b2b2] rounded-lg py-4 px-3.5 relative ${isSoldOut || isUnavailable ? "grayscale" : ""}`}
+      >
         {/* <img src={currProduct.img} alt="" className="w-full" /> */}
 
         <span className="bg-[#eb5757] text-white text-sm absolute -top-0.5 -left-px rounded-tl-lg rounded-br-md px-2.5 py-0.5">
@@ -147,9 +155,11 @@ const ProductCard = ({ currProduct }) => {
           </span>
         </div>
 
-        {/* <span className="bg-[#fc8019] text-white text-md absolute top-1/2 left-0 -translate-y-1/2 right-0 text-center px-2.5 py-1.5">
-          Sold Out
-        </span> */}
+        {(isSoldOut || isUnavailable) && (
+          <span className="bg-[#fc8019] text-white text-md absolute top-1/2 left-0 -translate-y-1/2 right-0 text-center px-2.5 py-1.5">
+            {statusText}
+          </span>
+        )}
       </div>
     </>
   );

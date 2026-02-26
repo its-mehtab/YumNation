@@ -77,7 +77,9 @@ export const getProducts = async (req, res) => {
       .sort(sortOption)
       .skip((pageNum - 1) * limitNum)
       .limit(limitNum)
-      .select("name price images slug description rating isFeatured variants");
+      .select(
+        "name price images slug description rating stock isAvailable isFeatured variants",
+      );
 
     const total = await Product.countDocuments(query);
 
