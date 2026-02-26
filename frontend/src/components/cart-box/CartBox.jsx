@@ -93,7 +93,9 @@ const CartBox = () => {
 
   return (
     <div>
-      <h3 className="text-[#fc8019] text-xs capitalize font-semibold mb-3">
+      <h3
+        className={`text-[#fc8019] text-xs capitalize font-semibold mb-3 ${!cart?.length > 0 && "text-center"}`}
+      >
         Shopping cart
       </h3>
       <div>
@@ -109,7 +111,8 @@ const CartBox = () => {
               );
             })
           ) : (
-            <li className="text-gray-500 text-sm font-medium mt-4">
+            <li className="text-gray-500 text-sm font-medium mt-4 text-center">
+              <img src={assets.EmptyCartImg} className="w-14 mb-3 mx-auto" />
               Cart is Empty
             </li>
           )}

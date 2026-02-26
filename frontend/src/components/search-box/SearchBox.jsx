@@ -1,105 +1,194 @@
-import React from "react";
-import { LocationIcon, SearchIcon } from "../../assets/icon/Icons";
-import Button from "@mui/material/Button";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import React, { useState, useRef, useEffect } from "react";
+import { SearchIcon } from "../../assets/icon/Icons";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/free-mode";
+import { useAuth } from "../../context/AuthContext";
+import axios from "axios";
+import RecentSearchWrap from "../recent-search-wrap/RecentSearchWrap";
+import ProductCardSm from "../product-card-sm/ProductCardSm";
 
 const SearchBox = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [query, setQuery] = useState("");
+  const [resultName, setResultName] = useState(null);
+  const [results, setResults] = useState([]);
+  const [popularProducts, setPopulerProducts] = useState([]);
+  const [recentSearches, setRecentSearches] = useState(
+    JSON.parse(localStorage.getItem("Recent Searches")) || [
+      "Pizza",
+      "Burger",
+      "Dessert",
+    ],
+  );
+
+  const { serverURL } = useAuth();
+  const boxRef = useRef(null);
+
+  const fetchPopularProducts = async () => {
+    try {
+      const { data } = await axios.get(`${serverURL}/api/products`, {
+        params: {
+          availability: "recommended",
+        },
+      });
+
+      setPopulerProducts(data.products);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
+  useEffect(() => {
+    fetchPopularProducts();
+  }, []);
+
+  const handleSearch = async (e) => {
+    const value = e.target.value;
+    setQuery(value);
+  };
+
+  const handleSearchSubmit = async (e, query) => {
+    e.preventDefault();
+
+    if (!query.trim()) {
+      setResults([]);
+      return;
+    }
+
+    try {
+      const { data } = await axios.get(
+        `${serverURL}/api/products?search=${query}`,
+      );
+
+      setResults(data.products);
+      setRecentSearches((prev) => {
+        return [query, ...prev];
+      });
+      setResultName(query);
+      setQuery("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (boxRef.current && !boxRef.current.contains(event.target)) {
+        setIsSearchActive(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="flex items-center w-full gap-3 px-3 py-1 relative bg-[#fc8e32] border rounded-lg border-[#ffaa64] ml-30">
-      <Button
-        sx={{
-          color: "#fff",
-          fontFamily: "Poppins",
-          fontSize: "14px",
-          fontWeight: 400,
-          ps: 3,
-          pr: 20,
-          py: 1,
-          textTransform: "capitalize",
-          display: "flex",
-          gap: 1,
-          width: 30,
-        }}
-        id="basic-button"
-        aria-controls={open ? "basic-menu" : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
-        onClick={handleClick}
+    <div
+      ref={boxRef}
+      className={`flex items-center w-full gap-3 px-3.5 py-1.5 bg-[#fc8e32] border rounded-t-lg border-[#ffa052] ml-28 max-w-2xl relative ${!isSearchActive ? "rounded-b-lg" : ""}`}
+    >
+      <span
+        onClick={(e) => handleSearchSubmit(e, query)}
+        className="border-r-2 border-white pr-5 cursor-pointer"
       >
-        <svg
-          className="min-w-[14px]"
-          width={14}
-          height={14}
-          fill="#fff"
-          version="1.1"
-          id="Layer_1"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlnsXlink="http://www.w3.org/1999/xlink"
-          x="0px"
-          y="0px"
-          viewBox="0 0 512 512"
-          xmlSpace="preserve"
-        >
-          <g>
-            <g>
-              <path
-                d="M256,0C153.755,0,70.573,83.182,70.573,185.426c0,126.888,165.939,313.167,173.004,321.035
-			c6.636,7.391,18.222,7.378,24.846,0c7.065-7.868,173.004-194.147,173.004-321.035C441.425,83.182,358.244,0,256,0z M256,278.719
-			c-51.442,0-93.292-41.851-93.292-93.293S204.559,92.134,256,92.134s93.291,41.851,93.291,93.293S307.441,278.719,256,278.719z"
-              />
-            </g>
-          </g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-          <g></g>
-        </svg>
-        India
-      </Button>
-      <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        slotProps={{
-          list: {
-            "aria-labelledby": "basic-button",
-          },
-        }}
-      >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem>
-      </Menu>
-      <span className="text-gray-300">
         <SearchIcon />
       </span>
-      <input
-        type="text"
-        placeholder="What do you want eat today"
-        className="px-8 pe-8 py-2 text-white w-full outline-0 text-sm placeholder:text-white"
-      />
+      <form onSubmit={(e) => handleSearchSubmit(e, query)} className="w-full">
+        <input
+          value={query}
+          onChange={handleSearch}
+          onFocus={() => setIsSearchActive(true)}
+          type="text"
+          placeholder="What do you want eat today"
+          className="px-3 pe-8 py-2 text-white w-full outline-0 text-sm placeholder:text-white"
+        />
+      </form>
+      {isSearchActive && (
+        <div className="rounded-b-lg bg-white text-gray-600 p-5 text-xl absolute top-full left-0 w-full border border-t-0 border-[#ffa052]">
+          {resultName && (
+            <>
+              <h3 className="text-gray-700 text-base capitalize font-semibold mb-1">
+                Search Results
+              </h3>
+              <p className="text-gray-500 text-base mb-5">
+                {results.length > 0 ? results.length : "No"} Results found for "
+                {resultName}"
+              </p>
+            </>
+          )}
+
+          {results.length > 0 && (
+            <>
+              <Swiper
+                slidesPerView={4}
+                spaceBetween={20}
+                // breakpoints={{
+                //   640: { slidesPerView: 2 },
+                //   991: { slidesPerView: 3 },
+                // }}
+                className="mySwiper"
+              >
+                {results?.map((resultItem) => {
+                  return (
+                    <SwiperSlide key={resultItem._id}>
+                      <ProductCardSm
+                        setResultName={setResultName}
+                        setResults={setResults}
+                        setIsSearchActive={setIsSearchActive}
+                        item={resultItem}
+                      />
+                    </SwiperSlide>
+                  );
+                })}
+              </Swiper>
+            </>
+          )}
+
+          {!results.length > 0 && (
+            <RecentSearchWrap
+              resultName={resultName}
+              recentSearches={recentSearches}
+              setRecentSearches={setRecentSearches}
+              setIsSearchActive={setIsSearchActive}
+              handleSearchSubmit={handleSearchSubmit}
+            />
+          )}
+
+          {results.length === 0 && (
+            <>
+              <h3 className="text-gray-700 text-base capitalize font-semibold mb-2">
+                popular Cuisines
+              </h3>
+              <Swiper
+                slidesPerView={4}
+                spaceBetween={20}
+                // breakpoints={{
+                //   640: { slidesPerView: 2 },
+                //   991: { slidesPerView: 3 },
+                // }}
+                className="mySwiper"
+              >
+                {popularProducts?.map((resultItem) => {
+                  return (
+                    <SwiperSlide key={resultItem._id}>
+                      <ProductCardSm
+                        resultName={resultName}
+                        setResultName={setResultName}
+                        setIsSearchActive={setIsSearchActive}
+                        item={resultItem}
+                      />
+                    </SwiperSlide>
+                  );
+                })}
+              </Swiper>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 };

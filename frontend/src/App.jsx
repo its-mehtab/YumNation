@@ -48,12 +48,12 @@ function App() {
 
       <ToastContainer
         toastClassName="custom-toast"
-        position="bottom-left"
+        position="top-center"
         autoClose={5000}
-        closeButton={false}
+        // closeButton={true}
         hideProgressBar={true}
         newestOnTop={false}
-        closeOnClick={true}
+        // closeOnClick={true}
         rtl={false}
         pauseOnFocusLoss
         draggable

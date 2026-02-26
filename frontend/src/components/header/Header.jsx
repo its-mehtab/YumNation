@@ -1,98 +1,13 @@
 import React, { useState } from "react";
 import { assets } from "../../assets/assets";
 import { Link, NavLink } from "react-router-dom";
-import { SearchIcon, WishlistIcon } from "../../assets/icon/Icons";
+import { WishlistIcon } from "../../assets/icon/Icons";
 import Dropdown from "../dropdown/Dropdown";
-import SearchModal from "./SearchModal";
 import { useWishlist } from "../../context/WishlistContext";
 import SearchBox from "../search-box/SearchBox";
 
-const products = [
-  {
-    _id: 1,
-    name: "LOADED FRIES",
-    price: 2.26,
-    img: assets.product1,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 2,
-    name: "ORIGINAL RECIPE CHICKEN",
-    price: 5.0,
-    img: assets.product2,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 3,
-    name: "WHOPPER BURGER KING",
-    price: 12.39,
-    img: assets.product3,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 4,
-    name: "TACO SUPREME",
-    price: 8.32,
-    img: assets.product4,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 5,
-    name: "SPICY CHICKEN SANDWICH",
-    price: 12.46,
-    img: assets.product5,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 6,
-    name: "LOADED FRIES",
-    price: 2.26,
-    img: assets.product1,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 7,
-    name: "ORIGINAL RECIPE CHICKEN",
-    price: 5.0,
-    img: assets.product2,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 8,
-    name: "WHOPPER BURGER KING",
-    price: 12.39,
-    img: assets.product3,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 9,
-    name: "TACO SUPREME",
-    price: 8.32,
-    img: assets.product4,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-  {
-    _id: 10,
-    name: "SPICY CHICKEN SANDWICH",
-    price: 12.46,
-    img: assets.product5,
-    description:
-      "Pepper Mayo Cruncher + Fries + Coleslaw + 1 Pc Chicken + Drink",
-  },
-];
-
 const Header = () => {
   const [navActive, setNavActive] = useState(false);
-  const [openSearchModal, setOpenSearchModal] = useState(false);
 
   const { wishlist } = useWishlist();
 
@@ -100,7 +15,7 @@ const Header = () => {
     <header className="absolute z-50 top-0 left-0 right-0">
       <div className="mx-auto max-w-335 px-4 sm:px-6 lg:px-8">
         <nav>
-          <div className="relative flex items-center py-4 md:py-6">
+          <div className="relative flex items-center py-4 md:py-3.5">
             <div className="inset-y-0 flex items-center md:hidden">
               <button
                 type="button"
@@ -124,15 +39,7 @@ const Header = () => {
           `}
                 ></span>
               </button>
-
-              <div
-                className="relative text-white hover:text-[#3f9065] transition-all cursor-pointer ml-5"
-                onClick={() => setOpenSearchModal(true)}
-              >
-                <SearchIcon />
-              </div>
             </div>
-
             <div className="flex items-center justify-center md:items-stretch md:justify-start mx-5 md:mx-0">
               <Link to="/" className="flex shrink-0 items-center">
                 <img src={assets.logo} alt="logo" className="h-8 w-auto" />
@@ -155,17 +62,9 @@ const Header = () => {
               ></div> */}
             </div>
 
-            <div>
-              <SearchBox />
-            </div>
+            <SearchBox />
 
             <ul className="flex items-center gap-3 sm:gap-6 ml-auto">
-              <li
-                onClick={() => setOpenSearchModal(true)}
-                className="hidden md:block relative text-white hover:text-[#3f9065] transition-all cursor-pointer"
-              >
-                <SearchIcon />
-              </li>
               <li className="hidden md:block relative text-white transition-all cursor-pointer">
                 <Dropdown />
               </li>
@@ -182,13 +81,6 @@ const Header = () => {
           </div>
         </nav>
       </div>
-
-      {/* SearchModal */}
-      <SearchModal
-        openSearchModal={openSearchModal}
-        setOpenSearchModal={setOpenSearchModal}
-        products={products}
-      />
     </header>
   );
 };
