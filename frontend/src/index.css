@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
 body {
-  font-family: "Poppins", sans-serif;
-  background-color: #fc8019;
+  font-family: "Poppins", sans-serif !important;
+}
+
+.radix-themes {
+  font-family: "Poppins", sans-serif !important;
 }
 
 ::-webkit-scrollbar {

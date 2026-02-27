@@ -108,7 +108,7 @@ const SearchBox = () => {
         />
       </form>
       {isSearchActive && (
-        <div className="rounded-b-lg bg-white text-gray-600 p-5 text-xl absolute top-full left-0 w-full border border-t-0 border-[#ffa052]">
+        <div className="rounded-b-lg bg-white text-gray-600 p-5 text-xl absolute top-full left-0 w-full border border-t-0 border-[#ffa052] z-50">
           {resultName && (
             <>
               <h3 className="text-gray-700 text-base capitalize font-semibold mb-1">

@@ -12,7 +12,7 @@ const Header = () => {
   const { wishlist } = useWishlist();
 
   return (
-    <header className="absolute z-50 top-0 left-0 right-0">
+    <header className="bg-[#fc8019]">
       <div className="mx-auto max-w-335 px-4 sm:px-6 lg:px-8">
         <nav>
           <div className="relative flex items-center py-4 md:py-3.5">
@@ -39,6 +39,7 @@ const Header = () => {
           `}
                 ></span>
               </button>
+              fc8019
             </div>
             <div className="flex items-center justify-center md:items-stretch md:justify-start mx-5 md:mx-0">
               <Link to="/" className="flex shrink-0 items-center">

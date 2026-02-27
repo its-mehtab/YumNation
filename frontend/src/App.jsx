@@ -19,7 +19,7 @@ function App() {
 
   return (
     <>
-      <main className="w-full h-[88dvh] bg-white rounded-t-4xl rounded-tr-4xl mt-18">
+      <main className="w-full h-[88dvh] bg-white rounded-t-4xl rounded-tr-4xl">
         <div className="grid grid-cols-11">
           <Aside />
           <div className="col-span-9">
