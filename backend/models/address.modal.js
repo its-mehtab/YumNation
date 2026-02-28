@@ -8,75 +8,61 @@ const addressSchema = new Schema(
       required: true,
     },
 
-    address: [
-      {
-        fullName: {
-          type: String,
-          required: true,
-        },
+    addressKey: {
+      type: String,
+      required: true,
+    },
 
-        phoneNumber: {
-          type: String,
-          required: true,
-        },
+    fullName: {
+      type: String,
+      required: true,
+    },
 
-        addressLine1: {
-          type: String,
-          required: true,
-        },
+    phoneNumber: {
+      type: String,
+      required: true,
+    },
 
-        addressLine2: {
-          type: String,
-        },
+    addressLine1: {
+      type: String,
+      required: true,
+    },
 
-        city: {
-          type: String,
-          required: true,
-        },
+    addressLine2: {
+      type: String,
+    },
 
-        state: {
-          type: String,
-          required: true,
-        },
+    city: {
+      type: String,
+      required: true,
+    },
 
-        pinCode: {
-          type: String,
-          required: true,
-        },
+    state: {
+      type: String,
+      required: true,
+    },
 
-        country: {
-          type: String,
-          required: true,
-          default: "India",
-        },
+    pinCode: {
+      type: String,
+      required: true,
+    },
 
-        addressType: {
-          type: String,
-          enum: ["home", "work", "other"],
-          default: "home",
-        },
+    country: {
+      type: String,
+      required: true,
+      default: "India",
+    },
 
-        notes: {
-          deliveryInstructions: {
-            type: String,
-            maxlength: 200,
-          },
-          landmark: {
-            type: String,
-            maxlength: 200,
-          },
-          additionalInfo: {
-            type: String,
-            maxlength: 200,
-          },
-        },
+    addressType: {
+      type: String,
+      enum: ["home", "work", "other"],
+      default: "home",
+    },
 
-        isDefault: {
-          type: Boolean,
-          default: false,
-        },
-      },
-    ],
+    isDefault: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );

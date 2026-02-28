@@ -2,15 +2,24 @@ import React from "react";
 import { Button, Dialog, Flex, Text, TextField } from "@radix-ui/themes";
 import DialogBox from "../dialog-box/DialogBox";
 
-const AddNoteDialog = () => {
+const ChangeAddressDialog = () => {
   return (
-    <DialogBox dialogBtnName={"Add Note"} btnVariant="soft">
-      <Dialog.Title>Add Note</Dialog.Title>
+    <DialogBox dialogBtnName={"Change"} btnSize={"1"} btnVariant={"outline"}>
+      <Dialog.Title>Edit profile</Dialog.Title>
       <Dialog.Description size="2" mb="4">
         Make changes to your profile.
       </Dialog.Description>
 
       <Flex direction="column" gap="3">
+        <label>
+          <Text as="div" size="2" mb="1" weight="bold">
+            Name
+          </Text>
+          <TextField.Root
+            defaultValue="Freja Johnsen"
+            placeholder="Enter your full name"
+          />
+        </label>
         <label>
           <Text as="div" size="2" mb="1" weight="bold">
             Email
@@ -36,4 +45,4 @@ const AddNoteDialog = () => {
   );
 };
 
-export default AddNoteDialog;
+export default ChangeAddressDialog;

@@ -120,6 +120,11 @@ export const createProduct = async (req, res) => {
   const { name, price, description, images, category, variants, ingredients } =
     req.body;
 
+  const userId = req.userId;
+  if (!userId) {
+    return res.status(401).json({ message: "User ID not found" });
+  }
+
   if (
     !name ||
     !price ||
@@ -143,7 +148,7 @@ export const createProduct = async (req, res) => {
     }
     const product = await Product.create({
       ...req.body,
-      createdBy: req.userId,
+      createdBy: userId,
     });
 
     return res.status(201).json({ product });

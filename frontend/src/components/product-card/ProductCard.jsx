@@ -126,7 +126,12 @@ const ProductCard = ({ currProduct }) => {
         >
           {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}
         </span>
-        <Link to={`/product/${currProduct.slug}`}>
+        <Link className="relative" to={`/product/${currProduct.slug}`}>
+          {(isSoldOut || isUnavailable) && (
+            <span className="bg-[#fc8019] text-white text-md absolute top-1/2 -left-4 -translate-y-1/2 -right-4 text-center px-2.5 py-1.5">
+              {statusText}
+            </span>
+          )}
           <img src={assets.product2} alt="" className="h-31.5 mx-auto mb-3" />
         </Link>
         <div className="flex gap-1 items-center mb-2">
@@ -154,12 +159,6 @@ const ProductCard = ({ currProduct }) => {
             {<PlusIcon size={15} color={"#fff"} />}
           </span>
         </div>
-
-        {(isSoldOut || isUnavailable) && (
-          <span className="bg-[#fc8019] text-white text-md absolute top-1/2 left-0 -translate-y-1/2 right-0 text-center px-2.5 py-1.5">
-            {statusText}
-          </span>
-        )}
       </div>
     </>
   );

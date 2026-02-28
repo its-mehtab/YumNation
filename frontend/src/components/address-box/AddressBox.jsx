@@ -1,8 +1,8 @@
 import React from "react";
 import { LocationIcon } from "../../assets/icon/Icons";
 import AddressDialog from "../address-dialog/AddressDialog";
-import AddNoteDialog from "../address-dialog/AddNoteDialog";
 import EditAddress from "../address-dialog/EditAddress";
+import ChangeAddressDialog from "../address-dialog/ChangeAddressDialog";
 
 const AddressBox = () => {
   return (
@@ -16,7 +16,7 @@ const AddressBox = () => {
           No address added
         </div>
         <div className="ms-auto">
-          <EditAddress />
+          <ChangeAddressDialog />
         </div>
         {/* <div className="text-xs font-medium px-3 py-1 border text-[#fc8019] border-[#fc8019] rounded ms-auto hover:text-white hover:bg-[#fc8019] transition-all cursor-pointer">
           Change
@@ -28,7 +28,7 @@ const AddressBox = () => {
       </p>
       <div className="flex gap-2 items-center mt-3">
         <AddressDialog />
-        <AddNoteDialog />
+        <EditAddress />
       </div>
     </>
   );

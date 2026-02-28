@@ -4,7 +4,7 @@ import DialogBox from "../dialog-box/DialogBox";
 
 const EditAddress = () => {
   return (
-    <DialogBox dialogBtnName={"Change"} btnSize={"1"} btnVariant={"outline"}>
+    <DialogBox dialogBtnName={"Edit Details"}>
       <Dialog.Title>Edit profile</Dialog.Title>
       <Dialog.Description size="2" mb="4">
         Make changes to your profile.

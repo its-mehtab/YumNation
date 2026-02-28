@@ -3,6 +3,10 @@ import Cart from "../models/cart.modal.js";
 export const getUserCart = async (req, res) => {
   const userId = req.userId;
 
+  if (!userId) {
+    return res.status(401).json({ message: "User ID not found" });
+  }
+
   try {
     const cart = await Cart.findOne({ user: userId }).populate(
       "items.product",
@@ -23,6 +27,10 @@ export const getUserCart = async (req, res) => {
 
 export const addCart = async (req, res) => {
   const userId = req.userId;
+
+  if (!userId) {
+    return res.status(401).json({ message: "User ID not found" });
+  }
 
   const { product, name, image, price, quantity, variant, addOns } = req.body;
 
@@ -73,6 +81,10 @@ export const updateCartQuantity = async (req, res) => {
   const { action, productId, variant } = req.body;
   const userId = req.userId;
 
+  if (!userId) {
+    return res.status(401).json({ message: "User ID not found" });
+  }
+
   if (!productId || !variant || !action) {
     return res.status(400).json({ message: "Missing required fields" });
   }
@@ -117,6 +129,10 @@ export const updateCartQuantity = async (req, res) => {
 
 export const removeFromCart = async (req, res) => {
   const userId = req.userId;
+  if (!userId) {
+    return res.status(401).json({ message: "User ID not found" });
+  }
+
   const { productId, variant } = req.body;
 
   try {

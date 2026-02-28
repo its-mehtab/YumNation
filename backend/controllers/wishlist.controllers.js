@@ -3,6 +3,10 @@ import Wishlist from "../models/wishlist.modal.js";
 export const getUserWishlist = async (req, res) => {
   const userId = req.userId;
 
+  if (!userId) {
+    return res.status(401).json({ message: "User ID not found" });
+  }
+
   try {
     const wishlist = await Wishlist.findOne({ user: userId }).populate(
       "items.product",
@@ -22,8 +26,12 @@ export const getUserWishlist = async (req, res) => {
 };
 
 export const toggleWishlist = async (req, res) => {
-  const userId = req.userId;
   const { productId, name, image, price } = req.body;
+  const userId = req.userId;
+
+  if (!userId) {
+    return res.status(401).json({ message: "User ID not found" });
+  }
 
   try {
     let wishlist = await Wishlist.findOne({ user: userId });
@@ -63,6 +71,10 @@ export const toggleWishlist = async (req, res) => {
 export const removeFromWishlist = async (req, res) => {
   const userId = req.userId;
   const { productId } = req.params;
+
+  if (!userId) {
+    return res.status(401).json({ message: "User ID not found" });
+  }
 
   try {
     let wishlist = await Wishlist.findOne({ user: userId });
