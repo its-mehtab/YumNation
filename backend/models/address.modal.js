@@ -70,3 +70,5 @@ const addressSchema = new Schema(
 const Address = mongoose.model("Address", addressSchema);
 
 export default Address;
+
+addressSchema.index({ user: 1, addressKey: 1 }, { unique: true });

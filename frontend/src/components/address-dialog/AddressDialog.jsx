@@ -4,7 +4,7 @@ import DialogBox from "../dialog-box/DialogBox";
 
 const AddressDialog = () => {
   return (
-    <DialogBox dialogBtnName={"Add Details"}>
+    <DialogBox dialogBtnName={"Change Address"}>
       <Dialog.Title>Edit profile</Dialog.Title>
       <Dialog.Description size="2" mb="4">
         Make changes to your profile.

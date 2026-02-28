@@ -1,17 +1,21 @@
 import Address from "../models/address.modal.js";
 
 export const getUserAddress = async (req, res) => {
-  const user = req.userId;
-  const id = req.body;
+  const userId = req.userId;
 
   if (!userId) {
     return res.status(401).json({ message: "User ID not found" });
   }
 
   try {
-    const userAddress = await Address.find({ user });
+    const addresses = await Address.find({ user: req.userId })
+      .select("-addressKey -user -__v")
+      .sort({
+        isDefault: -1,
+        createdAt: -1,
+      });
 
-    res.status(200).json(userAddress);
+    res.status(200).json(addresses);
   } catch (error) {
     return res
       .status(500)
@@ -20,145 +24,134 @@ export const getUserAddress = async (req, res) => {
 };
 
 export const createAddress = async (req, res) => {
-  const {
-    fullName,
-    phoneNumber,
-    addressLine1,
-    addressLine2,
-    city,
-    state,
-    pinCode,
-    country,
-    addressType,
-    isDefault,
-  } = req.body;
-  const userId = req.userId;
-
-  if (!userId) {
-    return res.status(401).json({ message: "User ID not found" });
-  }
-
-  const addressKey = `${fullName}-${addressLine1}-${city}-${state}-${pinCode}`
-    .toLowerCase()
-    .replace(/\s+/g, "");
-
   try {
+    const userId = req.userId;
+
     const addressCount = await Address.countDocuments({ user: userId });
 
     if (addressCount >= 5) {
       return res.status(400).json({
-        message: "You can only save up to 5 addresses",
+        message: "Maximum 5 addresses allowed",
       });
     }
 
-    const address = await Address.findOne({ user: userId, addressKey });
+    const {
+      fullName,
+      phoneNumber,
+      addressLine1,
+      addressLine2,
+      city,
+      state,
+      pinCode,
+      country,
+      addressType,
+      isDefault,
+    } = req.body;
 
-    if (!address) {
-      if (isDefault) {
-        await Address.updateMany(
-          { user: userId },
-          { $set: { isDefault: false } },
-        );
-      }
+    const addressKey = `${addressLine1}-${city}-${state}-${pinCode}`
+      .toLowerCase()
+      .replace(/\s+/g, "");
 
-      const address = await Address.create({
-        user: userId,
-        addressKey,
-        fullName,
-        phoneNumber,
-        addressLine1,
-        addressLine2,
-        city,
-        state,
-        pinCode,
-        country,
-        addressType,
-        notes,
-        isDefault,
-      });
+    const existing = await Address.findOne({ user: userId, addressKey });
 
-      return res.status(201).json(address);
-    } else {
+    if (existing) {
       return res.status(400).json({
-        message: "This address is already added",
+        message: "Address already exists",
       });
     }
+
+    if (isDefault) {
+      await Address.updateMany(
+        { user: userId },
+        { $set: { isDefault: false } },
+      );
+    }
+
+    const newAddress = await Address.create({
+      user: userId,
+      addressKey,
+      fullName,
+      phoneNumber,
+      addressLine1,
+      addressLine2,
+      city,
+      state,
+      pinCode,
+      country,
+      addressType,
+      isDefault,
+    });
+
+    return res.status(201).json(newAddress);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "internal server error", error: error.message });
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
 export const updateAddress = async (req, res) => {
-  const { id } = req.params;
-  if (!id) {
-    return res.status(400).json({ message: "ID is required" });
-  }
-
-  const {
-    fullName,
-    phoneNumber,
-    addressLine1,
-    addressLine2,
-    city,
-    state,
-    pinCode,
-    country,
-    addressType,
-    isDefault,
-  } = req.body;
-
   try {
-    const address = await Address.findById(id);
+    const { id } = req.params;
+    const userId = req.userId;
+
+    const address = await Address.findOne({ _id: id, user: userId });
 
     if (!address) {
-      return res.status(400).json({ message: "Address not fount" });
+      return res.status(404).json({
+        message: "Address not found",
+      });
     }
 
-    if (fullName !== undefined) address.fullName = fullName;
-    if (phoneNumber !== undefined) address.phoneNumber = phoneNumber;
-    if (addressLine1 !== undefined) address.addressLine1 = addressLine1;
-    if (addressLine2 !== undefined) address.addressLine2 = addressLine2;
-    if (city !== undefined) address.city = city;
-    if (state !== undefined) address.state = state;
-    if (pinCode !== undefined) address.pinCode = pinCode;
-    if (country !== undefined) address.country = country;
-    if (addressType !== undefined) address.addressType = addressType;
-    if (isDefault !== undefined) address.isDefault = isDefault;
+    Object.assign(address, req.body);
+
+    // regenerate addressKey if address fields changed
+    address.addressKey =
+      `${address.addressLine1}-${address.city}-${address.state}-${address.pinCode}`
+        .toLowerCase()
+        .replace(/\s+/g, "");
+
+    if (req.body.isDefault) {
+      await Address.updateMany(
+        { user: userId },
+        { $set: { isDefault: false } },
+      );
+    }
 
     await address.save();
 
     return res.status(200).json(address);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "internal server error", error: error.message });
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
 export const deleteAddress = async (req, res) => {
-  const { id } = req.params;
-
-  if (!id) {
-    return res.status(400).json({ message: "ID is required" });
-  }
-
   try {
-    const address = await Address.findByIdAndDelete(id);
+    const { id } = req.params;
+
+    const address = await Address.findOneAndDelete({
+      _id: id,
+      user: req.userId,
+    });
 
     if (!address) {
-      return res
-        .status(400)
-        .json({ message: "Address not found. Nothing deleted" });
+      return res.status(404).json({
+        message: "Address not found",
+      });
     }
 
-    return res
-      .status(200)
-      .json({ message: "Address deleted successfully", address });
+    return res.status(200).json({
+      message: "Address deleted successfully",
+    });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "internal server error", error: error.message });
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
