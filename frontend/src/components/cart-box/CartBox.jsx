@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Button from "../button/Button";
 import { assets } from "../../assets/assets";
 import CartItem from "../cart-item/CartItem";
+import CartSkeleton from "../skeleton/CartSkeleton";
 
 const products = [
   {
@@ -91,33 +92,35 @@ const products = [
 const CartBox = () => {
   const { cart, setCart, loading, setLoading } = useCart();
 
-  return (
+  return loading ? (
+    <CartSkeleton />
+  ) : (
     <div>
       <h3
         className={`text-[#fc8019] text-xs capitalize font-semibold mb-3 ${!cart?.length > 0 && "text-center"}`}
       >
         Shopping cart
       </h3>
-      <div>
-        <ul>
-          {cart?.length > 0 ? (
-            cart.map((currProd) => {
-              return (
-                <CartItem
-                  currProd={currProd}
-                  products={products}
-                  key={`${currProd.product._id}-${currProd.variant}`}
-                />
-              );
-            })
-          ) : (
-            <li className="text-gray-500 text-sm font-medium mt-4 text-center">
-              <img src={assets.EmptyCartImg} className="w-14 mb-3 mx-auto" />
-              Cart is Empty
-            </li>
-          )}
-        </ul>
-      </div>
+
+      <ul>
+        {cart?.length > 0 ? (
+          cart.map((currProd) => {
+            return (
+              <CartItem
+                currProd={currProd}
+                products={products}
+                key={`${currProd.product._id}-${currProd.variant}`}
+              />
+            );
+          })
+        ) : (
+          <li className="text-gray-500 text-sm font-medium mt-4 text-center">
+            <img src={assets.EmptyCartImg} className="w-14 mb-3 mx-auto" />
+            Cart is Empty
+          </li>
+        )}
+      </ul>
+
       {cart?.length > 0 && (
         <div className="pt-4 border-t border-[#fc8019]">
           <div className="flex items-center gap-2 justify-between">

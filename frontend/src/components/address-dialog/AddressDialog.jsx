@@ -22,12 +22,6 @@ const AddressDialog = () => {
       );
 
       setAddresses((prev) => {
-        console.log(
-          prev.map((item) =>
-            item._id === id ? data : { ...item, isDefault: false },
-          ),
-        );
-
         return prev.map((item) =>
           item._id === id ? data : { ...item, isDefault: false },
         );
@@ -95,8 +89,8 @@ const AddressDialog = () => {
                 <p className="mt-1 text-[13px] text-gray-500">
                   {address.phoneNumber}
                 </p>
-                <div className="flex gap-3 mt-2">
-                  {!address.isDefault && (
+                {!address.isDefault && (
+                  <div className="flex gap-3 mt-2">
                     <Button
                       size="2"
                       color="orange"
@@ -104,16 +98,17 @@ const AddressDialog = () => {
                     >
                       Make Default
                     </Button>
-                  )}
-                  <Button
-                    onClick={() => handleDelete(address._id)}
-                    size="2"
-                    variant="soft"
-                    color="red"
-                  >
-                    Delete
-                  </Button>
-                </div>
+
+                    <Button
+                      onClick={() => handleDelete(address._id)}
+                      size="2"
+                      variant="soft"
+                      color="red"
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                )}
               </div>
               <div className="ms-auto">
                 <EditAddress address={address} />

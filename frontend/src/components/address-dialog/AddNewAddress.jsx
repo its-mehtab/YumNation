@@ -34,7 +34,11 @@ const AddNewAddress = () => {
       );
 
       setAddresses((prev) => {
-        return [...prev, data];
+        const updatedAddresses = prev.map((item) => {
+          return data.isDefault ? { ...item, isDefault: false } : item;
+        });
+
+        return [...updatedAddresses, data];
       });
       notifySuccess("Address Added successfully");
       setFormData({
@@ -50,7 +54,9 @@ const AddNewAddress = () => {
         isDefault: false,
       });
     } catch (error) {
-      notifyError("Address Add failed");
+      notifyError(
+        error?.response?.data.message || error.message || "Address Add failed",
+      );
       console.log(
         "Edit Address Error:",
         error?.response?.data || error.message,

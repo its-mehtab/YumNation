@@ -36,7 +36,13 @@ const EditAddress = ({ address }) => {
       );
 
       setAddresses((prev) =>
-        prev.map((item) => (item._id === data._id ? data : item)),
+        prev.map((item) => {
+          return item._id === data._id
+            ? data
+            : data.isDefault
+              ? { ...item, isDefault: false }
+              : item;
+        }),
       );
       notifySuccess("Address update successfully");
     } catch (error) {

@@ -206,6 +206,7 @@ const AddressForm = ({
           <Text as="label" size="2">
             <Flex gap="2">
               <Checkbox
+                defaultChecked={address?.isDefault}
                 checked={formData.isDefault}
                 onCheckedChange={(checked) => {
                   setFormData((prev) => ({ ...prev, isDefault: checked }));

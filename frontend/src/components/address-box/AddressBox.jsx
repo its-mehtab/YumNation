@@ -3,20 +3,24 @@ import { LocationIcon } from "../../assets/icon/Icons";
 import AddressDialog from "../address-dialog/AddressDialog";
 import EditAddress from "../address-dialog/EditAddress";
 import { useAddress } from "../../context/AddressContext";
+import AddNewAddress from "../address-dialog/AddNewAddress";
+import AddressSkeleton from "../skeleton/AddressSkeleton";
 
 const AddressBox = () => {
-  const { addresses } = useAddress();
+  const { addresses, loading } = useAddress();
   const defaultAddress = addresses?.find((curr) => curr.isDefault === true);
 
-  return (
+  return loading ? (
+    <AddressSkeleton />
+  ) : (
     <>
-      {defaultAddress && (
+      <h3 className="text-[#fc8019] text-xs capitalize font-semibold">
+        Your address
+      </h3>
+      {defaultAddress ? (
         <>
-          <h3 className="text-[#fc8019] text-xs capitalize font-semibold">
-            Your address
-          </h3>
           <div className="flex items-center gap-1.5 mt-2">
-            <LocationIcon color={"#fc8019"} />
+            <LocationIcon color="#fc8019" />
             <div className="text-sm font-medium text-gray-700">
               {`${defaultAddress.city}, ${defaultAddress.state}`}
             </div>
@@ -24,17 +28,37 @@ const AddressBox = () => {
               <EditAddress address={defaultAddress} />
             </div>
           </div>
+
           <p className="mt-2 text-[13px] text-gray-500">
             {defaultAddress.addressLine1}, {defaultAddress.addressLine2},{" "}
-            {defaultAddress.pinCode}, <br /> {defaultAddress.city},{" "}
-            {defaultAddress.state}, {defaultAddress.country}
+            {defaultAddress.pinCode}, <br />
+            {defaultAddress.city}, {defaultAddress.state},{" "}
+            {defaultAddress.country}
           </p>
-        </>
-      )}
 
-      <div className="flex gap-2 items-center mt-3">
-        <AddressDialog />
-      </div>
+          <div className="flex gap-2 items-center mt-3">
+            <AddressDialog />
+          </div>
+        </>
+      ) : (
+        <div className="mt-3 p-4 border border-dashed border-gray-300 rounded-lg text-center">
+          <div className="flex justify-center">
+            <LocationIcon color="#fc8019" />
+          </div>
+
+          <p className="mt-2 text-sm font-medium text-gray-700">
+            No delivery address added
+          </p>
+
+          <p className="text-xs text-gray-500 mt-1">
+            Add your delivery location to start ordering your favorite meals.
+          </p>
+
+          <div className="mt-3">
+            <AddNewAddress />
+          </div>
+        </div>
+      )}
     </>
   );
 };

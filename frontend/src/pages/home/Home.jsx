@@ -29,10 +29,12 @@ import { useProduct } from "../../context/ProductContext";
 import { Link } from "react-router-dom";
 import CartBox from "../../components/cart-box/CartBox";
 import AddressBox from "../../components/address-box/AddressBox";
+import CategorySkeleton from "../../components/skeleton/CategorySkeleton";
+import ProductCardSkeleton from "../../components/skeleton/ProductCardSkeleton";
 
 const Home = () => {
-  const { categories, loading: catLoading } = useCategory();
-  const { products } = useProduct();
+  const { categories, loading } = useCategory();
+  const { products, loading: productLoading } = useProduct();
 
   return (
     <div className="grid grid-cols-12 gap-6">
@@ -72,6 +74,9 @@ const Home = () => {
               </button>
             </div>
           </div>
+          {/* {Array.from({ length: 6 }).map((_, i) => (
+            <CategorySkeleton key={i} />
+          ))} */}
           <Swiper
             navigation={{
               nextEl: ".custom-next",
@@ -86,26 +91,30 @@ const Home = () => {
             // }}
             className="mySwiper"
           >
-            {categories?.map((currCat) => {
-              return (
-                <SwiperSlide key={currCat._id}>
-                  <div
-                    // onClick={() => {
-                    //   setCategoryName(currCat.name);
-                    // }}
-                    className="border text-[#b2b2b2] px-5 py-6 rounded-lg text-xl cursor-pointer text-center"
-                  >
-                    {/* <span>{<currCat.icon />}</span> */}
-                    <div className="mb-2 flex justify-center">
-                      {<BurgersmIcon />}
-                    </div>
-                    <div className="mt-4 text-sm text-gray-900">
-                      {currCat.name}
-                    </div>
-                  </div>
-                </SwiperSlide>
-              );
-            })}
+            {loading
+              ? Array.from({ length: 3 }).map((_, i) => (
+                  <SwiperSlide key={i}>
+                    <CategorySkeleton />
+                  </SwiperSlide>
+                ))
+              : categories?.map((currCat) => {
+                  return (
+                    <SwiperSlide key={currCat._id}>
+                      <Link
+                        to={`/shop?category=${currCat._id}&page=1`}
+                        className="border block text-[#b2b2b2] px-5 py-6 rounded-lg text-xl cursor-pointer text-center"
+                      >
+                        {/* <span>{<currCat.icon />}</span> */}
+                        <div className="mb-2 flex justify-center">
+                          {<BurgersmIcon />}
+                        </div>
+                        <div className="mt-4 text-sm text-gray-900">
+                          {currCat.name}
+                        </div>
+                      </Link>
+                    </SwiperSlide>
+                  );
+                })}
           </Swiper>
         </section>
         <section className="pb-7">
@@ -140,13 +149,19 @@ const Home = () => {
             // }}
             className="mySwiper"
           >
-            {products?.products?.map((currProduct) => {
-              return (
-                <SwiperSlide key={currProduct._id}>
-                  <ProductCard currProduct={currProduct} />
-                </SwiperSlide>
-              );
-            })}
+            {productLoading
+              ? Array.from({ length: 2 }).map((_, i) => (
+                  <SwiperSlide key={i}>
+                    <ProductCardSkeleton />
+                  </SwiperSlide>
+                ))
+              : products?.products?.map((currProduct) => {
+                  return (
+                    <SwiperSlide key={currProduct._id}>
+                      <ProductCard currProduct={currProduct} />
+                    </SwiperSlide>
+                  );
+                })}
           </Swiper>
         </section>
         <section className="pb-7">

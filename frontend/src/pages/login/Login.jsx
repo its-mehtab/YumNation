@@ -69,12 +69,11 @@ const Login = () => {
   };
 
   return (
-    <section
-      className="bg-cover bg-center flex items-center justify-center pt-34 pb-28"
-      style={{ backgroundImage: `url(${assets.bannerBg})` }}
-    >
-      <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl w-full max-w-md shadow-xl border border-white/20 mx-auto">
-        <h2 className="text-3xl text-center text-white mb-6">Welcome Back</h2>
+    <section className="flex items-center justify-center">
+      <div className="p-8 rounded-2xl w-full max-w-md border border-gray-200 mx-auto">
+        <h2 className="text-xl font-semibold text-center text-gray-600 mb-4">
+          Welcome Back
+        </h2>
 
         <form onSubmit={handleSubmit}>
           {error.email && (
@@ -102,23 +101,15 @@ const Login = () => {
 
           <Link
             to="/forgot-password"
-            className="text-white mb-2.5 float-right inline-block"
+            className="text-gray-600 text-sm mb-2.5 float-right inline-block"
           >
             Forgot Password?
           </Link>
 
-          {/* <button
-            type="submit"
-            className="w-full bg-[#fc8019] text-white font-semibold py-3 rounded-lg hover:bg-white hover:text-black cursor-pointer transition"
-          >
-            Login
-          </button> */}
           <button
             type="submit"
-            className={`w-full font-semibold py-3 rounded-lg transition-all duration-200 ${
-              loading
-                ? "bg-white text-black cursor-not-allowed"
-                : "bg-[#fc8019] text-white hover:bg-white hover:text-black cursor-pointer"
+            className={`w-full text-sm font-medium py-3 rounded-lg transition-all duration-200 bg-[#fc8019] hover:bg-[#e47316] text-white ${
+              loading ? "cursor-not-allowed" : "cursor-pointer"
             }`}
             disabled={loading}
           >
@@ -127,14 +118,16 @@ const Login = () => {
         </form>
 
         {/* OAuth */}
-        <div className="mt-6">
-          <p className="text-center text-white mb-3">Or continue with</p>
+        <div className="mt-4">
+          <p className="text-center text-sm text-gray-600 mb-3">
+            Or continue with
+          </p>
           <div className="flex gap-4">
-            <button className="w-1/2 bg-white text-black font-semibold py-2 rounded-lg flex justify-center items-center gap-2 hover:bg-gray-200 transition cursor-pointer">
+            <button className="w-1/2 bg-gray-200 text-black font-medium text-sm py-3 rounded-lg flex justify-center items-center gap-2 hover:bg-gray-300 transition cursor-pointer">
               <GoogleIcon />
               Google
             </button>
-            <button className="w-1/2 bg-[#1877F2] text-white font-semibold py-2 rounded-lg flex justify-center items-center gap-2 hover:bg-[#0f5ec7] transition cursor-pointer">
+            <button className="w-1/2 bg-[#1877F2] text-white font-medium text-sm py-3 rounded-lg flex justify-center items-center gap-2 hover:bg-[#0f5ec7] transition cursor-pointer">
               <FacebookIcon />
               Facebook
             </button>
@@ -142,9 +135,9 @@ const Login = () => {
         </div>
 
         {/* Signup Link */}
-        <p className="text-center text-white mt-6">
+        <p className="text-sm text-center text-gray-600 mt-6">
           Don't have an account?
-          <Link to="/signup" className="text-white font-medium ms-1">
+          <Link to="/signup" className="text-gray-600 font-medium ms-1">
             Sign Up
           </Link>
         </p>
