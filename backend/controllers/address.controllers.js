@@ -96,7 +96,9 @@ export const updateAddress = async (req, res) => {
     const { id } = req.params;
     const userId = req.userId;
 
-    const address = await Address.findOne({ _id: id, user: userId });
+    const address = await Address.findOne({ _id: id, user: userId }).select(
+      "-addressKey -user -__v",
+    );
 
     if (!address) {
       return res.status(404).json({
@@ -104,17 +106,39 @@ export const updateAddress = async (req, res) => {
       });
     }
 
-    Object.assign(address, req.body);
+    if (address.isDefault && req.body.isDefault === false) {
+      return res.status(400).json({
+        message: "At least one default address is required",
+      });
+    }
 
-    // regenerate addressKey if address fields changed
+    const allowedFields = [
+      "fullName",
+      "phoneNumber",
+      "addressLine1",
+      "addressLine2",
+      "city",
+      "state",
+      "pinCode",
+      "country",
+      "addressType",
+      "isDefault",
+    ];
+
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        address[field] = req.body[field];
+      }
+    });
+
     address.addressKey =
       `${address.addressLine1}-${address.city}-${address.state}-${address.pinCode}`
         .toLowerCase()
         .replace(/\s+/g, "");
 
-    if (req.body.isDefault) {
+    if (req.body.isDefault === true) {
       await Address.updateMany(
-        { user: userId },
+        { user: userId, _id: { $ne: id } },
         { $set: { isDefault: false } },
       );
     }
@@ -137,7 +161,7 @@ export const deleteAddress = async (req, res) => {
     const address = await Address.findOneAndDelete({
       _id: id,
       user: req.userId,
-    });
+    }).select("-addressKey -user -__v");
 
     if (!address) {
       return res.status(404).json({
