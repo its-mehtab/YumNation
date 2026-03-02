@@ -96,7 +96,7 @@ const AddressDialog = () => {
                       color="orange"
                       onClick={() => handleDefault(address._id)}
                     >
-                      Make Default
+                      Deliver here
                     </Button>
 
                     <Button

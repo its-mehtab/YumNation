@@ -30,11 +30,10 @@ const ProductCard = ({ currProduct, productLoading }) => {
   } = useWishlist();
 
   const handleAddCart = async () => {
-    if (isSoldOut || isUnavailable) {
-      notifyError(`${currProduct.name} is ${statusText}`);
-      return;
-    }
-    setLoading(true);
+    // if (isSoldOut || isUnavailable) {
+    //   notifyError(`${currProduct.name} is ${statusText}`);
+    //   return;
+    // }
 
     try {
       const { data } = await axios.post(
@@ -59,8 +58,6 @@ const ProductCard = ({ currProduct, productLoading }) => {
       console.log("Cart Error:", error?.response?.data || error.message);
       notifyError(error?.response?.data || error.message);
       setCart(null);
-    } finally {
-      setLoading(false);
     }
   };
 

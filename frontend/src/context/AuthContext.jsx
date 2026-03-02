@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
   // const navigate = useNavigate();
   // const location = useLocation();
   const serverURL = "http://localhost:4000";
+  const isLoggedIn = !!user;
 
   const getUserData = async () => {
     setLoading(true);
@@ -32,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <authContext.Provider
-      value={{ serverURL, user, setUser, getUserData, loading }}
+      value={{ serverURL, user, setUser, getUserData, loading, isLoggedIn }}
     >
       {children}
     </authContext.Provider>

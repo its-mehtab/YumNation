@@ -8,7 +8,7 @@ export const AddressContextProvider = ({ children }) => {
   const [addresses, setAddresses] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const { serverURL } = useAuth();
+  const { serverURL, isLoggedIn } = useAuth();
 
   const fetchAddress = async () => {
     setLoading(true);
@@ -29,7 +29,7 @@ export const AddressContextProvider = ({ children }) => {
 
   useEffect(() => {
     fetchAddress();
-  }, []);
+  }, [isLoggedIn]);
 
   return (
     <AddressContext.Provider

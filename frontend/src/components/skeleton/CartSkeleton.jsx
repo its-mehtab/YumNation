@@ -2,13 +2,7 @@ import { Skeleton } from "@radix-ui/themes";
 
 const CartSkeleton = () => {
   return (
-    <div className="border border-gray-200 rounded-lg p-4">
-      <Skeleton height="20px" width="40%" />
-      <Skeleton height="14px" width="80%" className="mt-2" />
-      <Skeleton height="36px" width="120px" className="mt-3" />
-
-      <div className="border-t border-gray-100 my-4" />
-
+    <>
       <Skeleton height="18px" width="30%" />
 
       <div className="flex items-center gap-3 mt-4">
@@ -32,7 +26,7 @@ const CartSkeleton = () => {
       <Skeleton height="20px" width="70%" className="mt-3" />
 
       <Skeleton height="42px" className="mt-4 rounded-md" />
-    </div>
+    </>
   );
 };
 

@@ -31,8 +31,11 @@ import CartBox from "../../components/cart-box/CartBox";
 import AddressBox from "../../components/address-box/AddressBox";
 import CategorySkeleton from "../../components/skeleton/CategorySkeleton";
 import ProductCardSkeleton from "../../components/skeleton/ProductCardSkeleton";
+import { Skeleton } from "@radix-ui/themes";
+import { useAuth } from "../../context/AuthContext";
 
 const Home = () => {
+  const { isLoggedIn } = useAuth();
   const { categories, loading } = useCategory();
   const { products, loading: productLoading } = useProduct();
 
@@ -41,24 +44,35 @@ const Home = () => {
       <div className="col-span-7">
         <section className="relative">
           <div className="custom-pagination"></div>
-          <Swiper
-            pagination={{
-              el: ".custom-pagination",
-              clickable: true,
-            }}
-            modules={[Pagination]}
-            className="mySwiper heroSwiper"
-          >
+
+          {loading ? (
             <SwiperSlide>
-              <img src={assets.bannerImg1} className="rounded-lg" />
+              <Skeleton
+                height="260px"
+                width="100%"
+                style={{ borderRadius: "10px" }}
+              />
             </SwiperSlide>
-            <SwiperSlide>
-              <img src={assets.bannerImg2} className="rounded-lg" />
-            </SwiperSlide>
-            <SwiperSlide>
-              <img src={assets.bannerImg3} className="rounded-lg" />
-            </SwiperSlide>
-          </Swiper>
+          ) : (
+            <Swiper
+              pagination={{
+                el: ".custom-pagination",
+                clickable: true,
+              }}
+              modules={[Pagination]}
+              className="mySwiper heroSwiper"
+            >
+              <SwiperSlide>
+                <img src={assets.bannerImg1} className="rounded-lg" />
+              </SwiperSlide>
+              <SwiperSlide>
+                <img src={assets.bannerImg2} className="rounded-lg" />
+              </SwiperSlide>
+              <SwiperSlide>
+                <img src={assets.bannerImg3} className="rounded-lg" />
+              </SwiperSlide>
+            </Swiper>
+          )}
         </section>
         <section className="py-7">
           <div className="flex justify-between gap-3 items-center mb-2">

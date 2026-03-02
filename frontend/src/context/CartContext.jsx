@@ -8,7 +8,7 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const { serverURL } = useAuth();
+  const { serverURL, isLoggedIn } = useAuth();
 
   const fetchUserCart = async () => {
     setLoading(true);
@@ -26,12 +26,19 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  const subtotal = cart?.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0,
+  );
+
   useEffect(() => {
     fetchUserCart();
-  }, []);
+  }, [isLoggedIn]);
 
   return (
-    <CartContext.Provider value={{ cart, setCart, loading, setLoading }}>
+    <CartContext.Provider
+      value={{ cart, setCart, loading, setLoading, subtotal }}
+    >
       {children}
     </CartContext.Provider>
   );

@@ -6,6 +6,7 @@ import { useCart } from "../../context/CartContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { MinusIcon, PlusIcon } from "../../assets/icon/Icons";
 import { fetchAvailibility } from "../../utils/availibility";
+import { assets } from "../../assets/assets";
 
 const CartItem = ({ currProd, products }) => {
   const [quantity, setQuantity] = useState(currProd.quantity);
@@ -102,13 +103,13 @@ const CartItem = ({ currProd, products }) => {
   }, [currProd.quantity]);
 
   return (
-    <li key={currProd._id} className="flex gap-4 items-center mb-8">
+    <div className="flex flex-wrap gap-4 items-center mb-8">
       <Link
         to={`product/${currProd.product.slug}`}
         className={`w-17.5 min-w-17.5 h-17.5 rounded-lg border flex justify-center items-center border-[#fc8019] ${currProd.product.stock <= 0 || !currProd.product.isAvailable ? "grayscale" : ""}`}
       >
         {/* <img src={currProd.image} alt="" className="w-full" /> */}
-        <img src={products[1].img} alt="" className="w-full" />
+        <img src={assets.product2} alt="" className="w-full" />
       </Link>
       <div>
         {(isSoldOut || isUnavailable) && (
@@ -129,7 +130,7 @@ const CartItem = ({ currProd, products }) => {
           remove
         </span>
       </div>
-      <div className="ml-auto text-end">
+      <div className="md:ml-auto text-end">
         <div className="text-md font-semibold text-[#fc8019]">
           +${(currProd.price * currProd.quantity).toFixed(2)}
         </div>
@@ -149,7 +150,7 @@ const CartItem = ({ currProd, products }) => {
           </span>
         </div>
       </div>
-    </li>
+    </div>
   );
 };
 

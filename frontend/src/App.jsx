@@ -12,6 +12,7 @@ import Product from "./pages/product/Product";
 import { Bounce, ToastContainer } from "react-toastify";
 import Aside from "./components/aside/Aside";
 import Footer from "./components/footer/Footer";
+import Checkout from "./pages/checkout/Checkout";
 // import Grid3x3OutlinedIcon from "@mui/icons-material/Grid3x3Outlined";
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
                 />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/wishlist" element={<Wishlist />} />
+                <Route path="/checkout" element={<Checkout />} />
               </Routes>
               <Footer />
             </div>

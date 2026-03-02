@@ -8,7 +8,7 @@ export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const { serverURL } = useAuth();
+  const { serverURL, isLoggedIn } = useAuth();
 
   const fetchWishlist = async () => {
     setLoading(true);
@@ -29,7 +29,7 @@ export const WishlistProvider = ({ children }) => {
 
   useEffect(() => {
     fetchWishlist();
-  }, []);
+  }, [isLoggedIn]);
 
   return (
     <WishlistContext.Provider
