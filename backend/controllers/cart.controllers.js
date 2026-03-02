@@ -10,7 +10,7 @@ export const getUserCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({ user: userId }).populate(
       "items.product",
-      "name slug stock isAvailable",
+      "name slug stock isAvailable variants",
     );
 
     if (!cart) {
@@ -125,6 +125,11 @@ export const updateCartQuantity = async (req, res) => {
       .status(500)
       .json({ message: "Update error", error: error.message });
   }
+};
+
+export const updateCart = async (req, res) => {
+  const { action, productId, variant } = req.body;
+  const userId = req.userId;
 };
 
 export const removeFromCart = async (req, res) => {

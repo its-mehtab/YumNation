@@ -21,15 +21,13 @@ const AddNewAddress = () => {
   });
 
   const { serverURL } = useAuth();
-  const { addresses, setAddresses, loading, setLoading } = useAddress();
-
-  const isFirstAddress = addresses?.length <= 0;
+  const { setAddresses, loading, setLoading } = useAddress();
 
   const handleSubmit = async () => {
     try {
       const { data } = await axios.post(
         `${serverURL}/api/address`,
-        { ...formData, isDefault: isFirstAddress ? true : formData.isDefault },
+        { ...formData },
         {
           withCredentials: true,
         },

@@ -125,7 +125,7 @@ const CartItem = ({ currProd, products }) => {
         </p>
         <span
           onClick={handleDeleteCart}
-          className="cursor-pointer p-1 mt-1 text-xs text-red-600 hover:text-black underline"
+          className="cursor-pointer mt-1 text-xs text-red-600 hover:text-black underline"
         >
           remove
         </span>

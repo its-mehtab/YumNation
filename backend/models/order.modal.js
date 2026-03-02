@@ -1,104 +1,111 @@
 import mongoose, { Schema } from "mongoose";
-import slugGenerator from "../utils/slugGenerator.js";
 
-const productSchema = new Schema(
+const orderSchema = new Schema(
   {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    slug: {
-      type: String,
-      unique: true,
-    },
-
-    price: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-
-    description: {
-      type: String,
-      required: true,
-    },
-
-    images: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
-
-    category: {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
+      ref: "User",
       required: true,
     },
 
-    variants: [
+    items: [
       {
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+
         name: {
           type: String,
           required: true,
         },
+
+        image: {
+          type: String,
+        },
+
         price: {
           type: Number,
           required: true,
-          min: 0,
+        },
+
+        quantity: {
+          type: Number,
+          required: true,
+          min: 1,
+        },
+
+        variant: {
+          type: String,
         },
       },
     ],
 
-    ingredients: [
-      {
-        type: String,
-      },
-    ],
+    deliveryAddress: {
+      fullName: String,
+      phoneNumber: String,
+      addressLine1: String,
+      addressLine2: String,
+      city: String,
+      state: String,
+      pinCode: String,
+      country: String,
+    },
 
-    stock: {
+    subtotal: {
       type: Number,
-      default: 999,
+      required: true,
     },
 
-    isAvailable: {
-      type: Boolean,
-      default: true,
-    },
-
-    isFeatured: {
-      type: Boolean,
-      default: false,
-    },
-
-    rating: {
+    deliveryFee: {
       type: Number,
       default: 0,
     },
 
-    totalReviews: {
+    tax: {
       type: Number,
       default: 0,
     },
 
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+    discount: {
+      type: Number,
+      default: 0,
+    },
+
+    totalAmount: {
+      type: Number,
+      required: true,
+    },
+
+    paymentMethod: {
+      type: String,
+      enum: ["cod", "card", "upi", "wallet"],
+      required: true,
+    },
+
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "paid", "failed"],
+      default: "pending",
+    },
+
+    orderStatus: {
+      type: String,
+      enum: [
+        "placed",
+        "confirmed",
+        "preparing",
+        "out_for_delivery",
+        "delivered",
+        "cancelled",
+      ],
+      default: "placed",
     },
   },
   { timestamps: true },
 );
 
-productSchema.pre("save", slugGenerator);
+const Order = mongoose.model("Order", orderSchema);
 
-const Product = mongoose.model("Product", productSchema);
-
-export default Product;
-
-productSchema.index({
-  name: "text",
-  description: "text",
-  ingredients: "text",
-});
+export default Order;

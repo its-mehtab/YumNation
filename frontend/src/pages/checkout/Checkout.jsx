@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../../components/button/Button";
 import { LocationIcon } from "../../assets/icon/Icons";
 import { assets } from "../../assets/assets";
@@ -9,14 +9,38 @@ import { Skeleton } from "@radix-ui/themes";
 import { useAddress } from "../../context/AddressContext";
 import CartSkeleton from "../../components/skeleton/CartSkeleton";
 import PaymentBox from "./PaymentBox";
+import axios from "axios";
 
 const Checkout = () => {
-  const { cart, loading: cartLoading } = useCart();
+  const { cart, setCart, loading: cartLoading } = useCart();
   const { loading: addressLoading } = useAddress();
+  //   console.log(cart);
 
+  const fetchUpdatedPrice = async () => {
+    cart.map((item) => {
+      const updatedProduct = item.product.variants
+        ? item.product.variants.find((variant) => variant.name === item.variant)
+        : item.product;
+
+      const isPriceChanged = updatedProduct.price !== item.price;
+
+      console.log(updatedProduct);
+      if (isPriceChanged) {
+        // setCart()
+      }
+      //   try {
+      //       const {data} = await axios.patch(`${serverURL}/api/cart/${}`, {withCredentials: true})
+      //   } catch (error) {
+      //       console.log(error);
+
+      //   }
+    });
+  };
+  fetchUpdatedPrice();
+  //   useEffect(() => {
+  //   }, []);
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {/* LEFT SECTION */}
       <div className="lg:col-span-2">
         <div className="p-6 rounded-lg border border-gray-300">
           <Skeleton loading={addressLoading}>
@@ -41,7 +65,7 @@ const Checkout = () => {
             cart.map((currProd) => (
               <div
                 key={currProd._id}
-                className="flex flex-wrap gap-4 items-center my-6"
+                className="flex flex-wrap gap-4 items-center py-3"
               >
                 <Link
                   to={`product/${currProd.product.slug}`}
@@ -51,11 +75,6 @@ const Checkout = () => {
                   <img src={assets.product2} alt="" className="w-full" />
                 </Link>
                 <div>
-                  {/* {(isSoldOut || isUnavailable) && (
-                      <p className="text-xs bg-red-500 text-white font-medium mb-2 px-2 py-0.5 inline-block rounded-sm">
-                        {statusText}
-                      </p>
-                    )} */}
                   <h3 className="font-semibold text-gray-700 hover:text-[#fc8019] transition-all">
                     <Link to={`/product/${currProd.product.slug}`}>
                       {currProd.name}

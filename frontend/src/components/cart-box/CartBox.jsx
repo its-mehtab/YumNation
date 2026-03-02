@@ -8,10 +8,13 @@ import CartSkeleton from "../skeleton/CartSkeleton";
 import { notifyError } from "../../utils/toast";
 
 const CartBox = () => {
-  const { cart, setCart, subtotal, loading, setLoading } = useCart();
+  const { cart, setCart, subtotal, loading, setLoading, fetchUserCart } =
+    useCart();
   const navigate = useNavigate();
 
   const handleCheckout = () => {
+    fetchUserCart();
+
     const hasUnavailableProduct = cart.some(
       (item) => !item.product.isAvailable || item.product.stock <= 0,
     );
