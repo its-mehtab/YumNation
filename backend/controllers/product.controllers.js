@@ -121,22 +121,11 @@ export const createProduct = async (req, res) => {
     req.body;
 
   const userId = req.userId;
-  if (!userId) {
-    return res.status(401).json({ message: "User ID not found" });
-  }
 
-  if (
-    !name ||
-    !price ||
-    !description ||
-    !images ||
-    !category ||
-    !variants ||
-    !ingredients
-  ) {
+  if (!name || !price || !description || !images || !category || !ingredients) {
     return res.status(400).json({
       message:
-        "name, price, description, images, category, variants and ingredients is required",
+        "name, price, description, images, category and ingredients is required",
     });
   }
 
@@ -184,6 +173,7 @@ export const updateProduct = async (req, res) => {
     if (req.body.images !== undefined) product.images = req.body.images;
     if (req.body.category !== undefined) product.category = req.body.category;
     if (req.body.variants !== undefined) product.variants = req.body.variants;
+    if (req.body.addOns !== undefined) product.addOns = req.body.addOns;
     if (req.body.ingredients !== undefined)
       product.ingredients = req.body.ingredients;
 

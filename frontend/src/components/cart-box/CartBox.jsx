@@ -6,25 +6,38 @@ import { assets } from "../../assets/assets";
 import CartItem from "../cart-item/CartItem";
 import CartSkeleton from "../skeleton/CartSkeleton";
 import { notifyError } from "../../utils/toast";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 const CartBox = () => {
   const { cart, setCart, subtotal, loading, setLoading, fetchUserCart } =
     useCart();
   const navigate = useNavigate();
+  const { serverURL } = useAuth();
 
-  const handleCheckout = () => {
-    fetchUserCart();
+  const handleCheckout = async () => {
+    try {
+      const { data } = await axios.get(`${serverURL}/api/checkout`, {
+        withCredentials: true,
+      });
 
-    const hasUnavailableProduct = cart.some(
-      (item) => !item.product.isAvailable || item.product.stock <= 0,
-    );
-
-    if (hasUnavailableProduct) {
-      notifyError("Remove unavailable products from cart");
-      return;
+      console.log(data);
+    } catch (error) {
+      console.log(error);
     }
 
-    navigate("/checkout");
+    //   fetchUserCart();
+
+    //   const hasUnavailableProduct = cart.some(
+    //     (item) => !item.product.isAvailable || item.product.stock <= 0,
+    //   );
+
+    //   if (hasUnavailableProduct) {
+    //     notifyError("Remove unavailable products from cart");
+    //     return;
+    //   }
+
+    //   navigate("/checkout");
   };
 
   return loading ? (

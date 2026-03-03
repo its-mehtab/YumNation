@@ -49,15 +49,12 @@ const ProductCard = ({ currProduct, productLoading }) => {
         { withCredentials: true },
       );
 
-      setCart([...data]);
+      setCart(data);
 
       notifySuccess(`${currProduct.name} added to cart`);
     } catch (error) {
-      console.log(error);
-
       console.log("Cart Error:", error?.response?.data || error.message);
-      notifyError(error?.response?.data || error.message);
-      setCart(null);
+      notifyError(error?.response?.data.message || error.message);
     }
   };
 

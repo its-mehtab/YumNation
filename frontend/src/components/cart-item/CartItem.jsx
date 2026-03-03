@@ -87,7 +87,7 @@ const CartItem = ({ currProd, products }) => {
         withCredentials: true,
       });
 
-      setCart(data.cart.items);
+      setCart(data);
       notifySuccess(`${currProd.name} removed from cart`);
     } catch (error) {
       console.log("Delete Cart Error:", error?.response?.data || error.message);

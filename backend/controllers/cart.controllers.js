@@ -1,17 +1,14 @@
 import Cart from "../models/cart.modal.js";
+import Product from "../models/product.modal.js";
+import { generateCartKey } from "../utils/cartKey.js";
 
 export const getUserCart = async (req, res) => {
   const userId = req.userId;
 
-  if (!userId) {
-    return res.status(401).json({ message: "User ID not found" });
-  }
-
   try {
-    const cart = await Cart.findOne({ user: userId }).populate(
-      "items.product",
-      "name slug stock isAvailable variants",
-    );
+    const cart = await Cart.findOne({ user: userId })
+      .populate("items.product", "name slug stock isAvailable variants")
+      .lean();
 
     if (!cart) {
       return res.status(200).json([]);
@@ -28,19 +25,26 @@ export const getUserCart = async (req, res) => {
 export const addCart = async (req, res) => {
   const userId = req.userId;
 
-  if (!userId) {
-    return res.status(401).json({ message: "User ID not found" });
-  }
-
-  const { product, name, image, price, quantity, variant, addOns } = req.body;
+  const { product, quantity = 1, variant, addOns } = req.body;
 
   try {
+    const productDoc = await Product.findById(product);
+
+    if (!productDoc || !productDoc.isAvailable || productDoc.stock <= 0) {
+      return res.status(400).json({ message: "Product unavailable" });
+    }
+
+    const price = productDoc.price;
+    const name = productDoc.name;
+    const image = productDoc.images[0];
+
     let cart = await Cart.findOne({ user: userId });
+
+    const cartKey = generateCartKey(product, variant, addOns);
 
     if (cart) {
       const itemIndex = cart.items.findIndex(
-        (item) =>
-          item.product.toString() === product && item.variant === variant,
+        (item) => item.cartKey === cartKey,
       );
 
       if (itemIndex > -1) {
@@ -49,6 +53,7 @@ export const addCart = async (req, res) => {
         cart.items.push({
           product,
           name,
+          cartKey,
           image,
           price,
           quantity,
@@ -60,13 +65,20 @@ export const addCart = async (req, res) => {
     } else {
       cart = await Cart.create({
         user: userId,
-        items: [{ product, name, image, price, quantity, variant, addOns }],
+        items: [
+          { product, name, image, cartKey, price, quantity, variant, addOns },
+        ],
       });
     }
 
+    await cart.populate(
+      "items.product",
+      "name slug stock isAvailable variants",
+    );
+
     const updatedCart = await Cart.findOne({ user: userId }).populate(
       "items.product",
-      "name slug stock isAvailable",
+      "name slug stock isAvailable variants",
     );
 
     return res.status(201).json(updatedCart.items);
@@ -78,12 +90,10 @@ export const addCart = async (req, res) => {
 };
 
 export const updateCartQuantity = async (req, res) => {
-  const { action, productId, variant } = req.body;
+  const { action, productId, variant, addOns } = req.body;
   const userId = req.userId;
 
-  if (!userId) {
-    return res.status(401).json({ message: "User ID not found" });
-  }
+  const cartKey = generateCartKey(productId, variant, addOns);
 
   if (!productId || !variant || !action) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -96,16 +106,18 @@ export const updateCartQuantity = async (req, res) => {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-    const item = cart.items.find(
-      (i) => i.product.toString() === productId && i.variant === variant,
-    );
+    const item = cart.items.find((i) => i.cartKey === cartKey);
 
     if (!item) {
       return res.status(404).json({ message: "Item not found in cart" });
     }
 
     if (action === "decrease") {
-      item.quantity = Math.max(1, item.quantity - 1);
+      if (item.quantity <= 1) {
+        cart.items = cart.items.filter((i) => i.cartKey !== cartKey);
+      } else {
+        item.quantity -= 1;
+      }
     }
 
     if (action === "increase") {
@@ -116,7 +128,7 @@ export const updateCartQuantity = async (req, res) => {
 
     const updatedCart = await cart.populate(
       "items.product",
-      "name slug stock isAvailable",
+      "name slug stock isAvailable variants",
     );
 
     return res.status(200).json(updatedCart.items);
@@ -127,18 +139,13 @@ export const updateCartQuantity = async (req, res) => {
   }
 };
 
-export const updateCart = async (req, res) => {
-  const { action, productId, variant } = req.body;
-  const userId = req.userId;
-};
-
 export const removeFromCart = async (req, res) => {
   const userId = req.userId;
-  if (!userId) {
-    return res.status(401).json({ message: "User ID not found" });
-  }
 
-  const { productId, variant } = req.body;
+  const { productId, variant, addOns } = req.body;
+  console.log(productId);
+
+  const cartKey = generateCartKey(productId, variant, addOns);
 
   try {
     const cart = await Cart.findOneAndUpdate(
@@ -147,21 +154,18 @@ export const removeFromCart = async (req, res) => {
         $pull: {
           items: {
             product: productId,
-            variant: variant,
+            cartKey,
           },
         },
       },
       { new: true },
-    ).populate("items.product", "name slug stock isAvailable");
+    ).populate("items.product", "name slug stock isAvailable variants");
 
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-    return res.status(200).json({
-      message: "Item removed from cart",
-      cart,
-    });
+    return res.status(200).json(cart.items);
   } catch (error) {
     return res.status(500).json({
       message: "Remove from cart error",

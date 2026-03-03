@@ -42,11 +42,26 @@ const productSchema = new Schema(
       {
         name: {
           type: String,
-          required: true,
+          required: false,
         },
         price: {
           type: Number,
-          required: true,
+          required: false,
+          min: 0,
+        },
+      },
+    ],
+
+    addOns: [
+      {
+        addOnId: { type: mongoose.Schema.Types.ObjectId },
+        name: {
+          type: String,
+          required: false,
+        },
+        price: {
+          type: Number,
+          required: false,
           min: 0,
         },
       },

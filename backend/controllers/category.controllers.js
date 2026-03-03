@@ -34,9 +34,6 @@ export const getCategoryBySlug = async (req, res) => {
 export const createCategory = async (req, res) => {
   const { name, description, image, parentCategory } = req.body;
   const userId = req.userId;
-  if (!userId) {
-    return res.status(401).json({ message: "User ID not found" });
-  }
 
   if (!name || !description) {
     return res.status(400).json({

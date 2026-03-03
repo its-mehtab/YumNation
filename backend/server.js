@@ -10,6 +10,7 @@ import productRouter from "./routes/product.routes.js";
 import cartRouter from "./routes/cart.routes.js";
 import wishlistRouter from "./routes/wishlist.routes.js";
 import addressRouter from "./routes/address.routes.js";
+import checkoutRouter from "./routes/checkout.routes.js";
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -28,6 +29,7 @@ app.use("/api/products", productRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/wishlist", wishlistRouter);
 app.use("/api/address", addressRouter);
+app.use("api/checkout", checkoutRouter);
 
 app.get("/", (req, res) => {
   console.log(req.user);

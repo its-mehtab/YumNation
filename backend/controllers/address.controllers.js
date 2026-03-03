@@ -3,10 +3,6 @@ import Address from "../models/address.modal.js";
 export const getUserAddress = async (req, res) => {
   const userId = req.userId;
 
-  if (!userId) {
-    return res.status(401).json({ message: "User ID not found" });
-  }
-
   try {
     const addresses = await Address.find({ user: req.userId })
       .select("-addressKey -user -__v")

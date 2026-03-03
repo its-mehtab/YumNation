@@ -24,7 +24,7 @@ const Checkout = () => {
 
       const isPriceChanged = updatedProduct.price !== item.price;
 
-      console.log(updatedProduct);
+      //   console.log(updatedProduct);
       if (isPriceChanged) {
         // setCart()
       }

@@ -21,6 +21,11 @@ const cartSchema = new Schema(
           required: true,
         },
 
+        cartKey: {
+          type: String,
+          required: true,
+        },
+
         image: {
           type: String,
         },
@@ -42,6 +47,7 @@ const cartSchema = new Schema(
 
         addOns: [
           {
+            addOnId: { type: mongoose.Schema.Types.ObjectId },
             name: String,
             price: Number,
           },
@@ -49,7 +55,7 @@ const cartSchema = new Schema(
       },
     ],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Cart = mongoose.model("cart", cartSchema);
