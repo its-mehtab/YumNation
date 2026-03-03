@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { validateCartBeforeCheckout } from "../controllers/checkout.controllers";
-import { checkAuth } from "../middleware/checkAuth";
+import { validateCartBeforeCheckout } from "../controllers/checkout.controllers.js";
+import { checkAuth } from "../middleware/checkAuth.js";
 
 const checkoutRouter = Router();
 

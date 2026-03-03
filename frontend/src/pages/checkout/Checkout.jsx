@@ -14,31 +14,7 @@ import axios from "axios";
 const Checkout = () => {
   const { cart, setCart, loading: cartLoading } = useCart();
   const { loading: addressLoading } = useAddress();
-  //   console.log(cart);
 
-  const fetchUpdatedPrice = async () => {
-    cart.map((item) => {
-      const updatedProduct = item.product.variants
-        ? item.product.variants.find((variant) => variant.name === item.variant)
-        : item.product;
-
-      const isPriceChanged = updatedProduct.price !== item.price;
-
-      //   console.log(updatedProduct);
-      if (isPriceChanged) {
-        // setCart()
-      }
-      //   try {
-      //       const {data} = await axios.patch(`${serverURL}/api/cart/${}`, {withCredentials: true})
-      //   } catch (error) {
-      //       console.log(error);
-
-      //   }
-    });
-  };
-  fetchUpdatedPrice();
-  //   useEffect(() => {
-  //   }, []);
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2">

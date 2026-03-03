@@ -209,3 +209,19 @@ Cloud	Cloudinary (images), Render  Vercel (deployment)
 Optional	Stripe  Razorpay for payments
 
 Would you like me to prepare the exact folder structure + sample code files (like server.js, foodModel.js, authMiddleware.js, etc.) so you can start your backend setup right away tomorrow (Day 1 of the roadmap)
+
+
+
+Fetch cart from DB
+
+Recalculate subtotal
+
+Calculate delivery fee
+
+Apply coupon
+
+Calculate tax
+
+Calculate total
+
+Create order with stored values

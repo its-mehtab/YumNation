@@ -5,7 +5,7 @@ import Button from "../button/Button";
 import { assets } from "../../assets/assets";
 import CartItem from "../cart-item/CartItem";
 import CartSkeleton from "../skeleton/CartSkeleton";
-import { notifyError } from "../../utils/toast";
+import { notifyError, notifyInfo } from "../../utils/toast";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 
@@ -17,27 +17,17 @@ const CartBox = () => {
 
   const handleCheckout = async () => {
     try {
-      const { data } = await axios.get(`${serverURL}/api/checkout`, {
+      await axios.get(`${serverURL}/api/checkout`, {
         withCredentials: true,
       });
 
-      console.log(data);
+      navigate("/checkout");
     } catch (error) {
-      console.log(error);
+      console.log("Checkout Error:", error?.response?.data || error.message);
+      notifyInfo(error?.response?.data.message || error.message);
+
+      error?.response?.data?.cart && setCart(error?.response?.data?.cart);
     }
-
-    //   fetchUserCart();
-
-    //   const hasUnavailableProduct = cart.some(
-    //     (item) => !item.product.isAvailable || item.product.stock <= 0,
-    //   );
-
-    //   if (hasUnavailableProduct) {
-    //     notifyError("Remove unavailable products from cart");
-    //     return;
-    //   }
-
-    //   navigate("/checkout");
   };
 
   return loading ? (

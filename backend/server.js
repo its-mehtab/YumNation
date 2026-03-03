@@ -11,6 +11,7 @@ import cartRouter from "./routes/cart.routes.js";
 import wishlistRouter from "./routes/wishlist.routes.js";
 import addressRouter from "./routes/address.routes.js";
 import checkoutRouter from "./routes/checkout.routes.js";
+import couponRouter from "./routes/coupon.routes.js";
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -29,10 +30,10 @@ app.use("/api/products", productRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/wishlist", wishlistRouter);
 app.use("/api/address", addressRouter);
-app.use("api/checkout", checkoutRouter);
+app.use("/api/checkout", checkoutRouter);
+app.use("/api/coupon", couponRouter);
 
 app.get("/", (req, res) => {
-  console.log(req.user);
   res.status(200).json({ message: "Home Page" });
 });
 

@@ -1,4 +1,4 @@
-import Cart from "../models/cart.modal";
+import Cart from "../models/cart.modal.js";
 
 export const validateCartBeforeCheckout = async (req, res) => {
   const userId = req.userId;
@@ -10,7 +10,8 @@ export const validateCartBeforeCheckout = async (req, res) => {
       return res.status(400).json({ message: "Cart is empty" });
     }
 
-    let cartChanged = false;
+    let priceChanged = false;
+    let stockChanged = false;
 
     for (const item of cart.items) {
       const product = item.product;
@@ -23,7 +24,7 @@ export const validateCartBeforeCheckout = async (req, res) => {
 
       if (item.quantity > product.stock) {
         item.quantity = product.stock;
-        cartChanged = true;
+        stockChanged = true;
       }
 
       let expectedPrice = product.price;
@@ -60,20 +61,28 @@ export const validateCartBeforeCheckout = async (req, res) => {
 
       if (item.price !== expectedPrice) {
         item.price = expectedPrice;
-        cartChanged = true;
+        priceChanged = true;
       }
     }
 
-    if (cartChanged) {
+    if (priceChanged) {
       await cart.save();
 
       return res.status(400).json({
-        message: "Cart updated due to changes. Please review.",
-        ...cart.items,
+        message: "Price updated. Please review before proceed.",
+        cart: cart.items,
+      });
+    }
+    if (stockChanged) {
+      await cart.save();
+
+      return res.status(400).json({
+        message: "Stock updated. Please review before proceed.",
+        cart: cart.items,
       });
     }
 
-    return res.status(400).json(cart.items);
+    return res.status(200).json(cart.items);
   } catch (error) {
     return res
       .status(500)

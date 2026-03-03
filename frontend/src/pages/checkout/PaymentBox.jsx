@@ -2,15 +2,48 @@ import React, { useState } from "react";
 import { useCart } from "../../context/CartContext";
 import { Button as RxButton } from "@radix-ui/themes";
 import Button from "../../components/button/Button";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 const PaymentBox = () => {
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [coupon, setCoupon] = useState({
+    couponCode: "",
+    couponApplied: "",
+    invalidCouponMsg: "",
+  });
 
+  const { serverURL } = useAuth();
   const { cart, subtotal, loading: cartLoading } = useCart();
 
   const deliveryFee = 2.5;
   const total = subtotal + deliveryFee;
+
+  const handleCouponApply = async (e) => {
+    e.preventDefault();
+
+    try {
+      const { data } = await axios.get(
+        `${serverURL}/api/coupon/${coupon.couponCode}`,
+        { withCredentials: true },
+      );
+
+      setCoupon({
+        couponCode: "",
+        invalidCouponMsg: "",
+        couponApplied: data.code,
+      });
+    } catch (error) {
+      console.log("Checkout Error:", error?.response?.data || error.message);
+
+      if (error.status === 404) {
+        setCoupon((prev) => {
+          return { ...prev, invalidCouponMsg: error?.response?.data.message };
+        });
+      }
+    }
+  };
 
   const handlePlaceOrder = async () => {
     try {
@@ -30,14 +63,28 @@ const PaymentBox = () => {
   return (
     <div className="bg-white p-6 rounded-lg border border-gray-300 sticky top-0">
       <div className="text-gray-500 text-sm font-medium mb-2">Promo Code</div>
-      <div className="flex gap-2">
-        <input
-          type="text"
-          placeholder="Apply promo code"
-          className="w-full border border-gray-300 outline-gray-300 rounded-md px-4 py-1.5 text-sm min-w-40 mb-2"
-        />
-        <RxButton>Apply</RxButton>
-      </div>
+      {coupon?.couponApplied ? (
+        <div>{coupon.couponApplied}</div>
+      ) : (
+        <form className="w-full flex gap-2" onSubmit={handleCouponApply}>
+          <input
+            value={coupon?.couponCode}
+            onChange={(e) =>
+              setCoupon((prev) => {
+                return { ...prev, couponCode: e.target.value };
+              })
+            }
+            type="text"
+            placeholder="Apply promo code"
+            className="w-full border border-gray-300 outline-gray-300 rounded-md px-4 py-1.5 text-sm min-w-40 mb-2"
+          />
+          <RxButton onClick={handleCouponApply}>Apply</RxButton>
+        </form>
+      )}
+
+      {coupon.invalidCouponMsg && (
+        <div className="text-red-600">{coupon.invalidCouponMsg}</div>
+      )}
 
       <div className="mt-3">
         <h3 className="font-medium mb-3 text-sm text-gray-600">
