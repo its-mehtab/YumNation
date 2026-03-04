@@ -24,7 +24,7 @@ const CartBox = () => {
       navigate("/checkout");
     } catch (error) {
       console.log("Checkout Error:", error?.response?.data || error.message);
-      notifyInfo(error?.response?.data.message || error.message);
+      notifyInfo(error?.response?.data.message);
 
       error?.response?.data?.cart && setCart(error?.response?.data?.cart);
     }

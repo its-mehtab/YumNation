@@ -1,3 +1,4 @@
+import Address from "../models/address.modal.js";
 import Cart from "../models/cart.modal.js";
 
 export const validateCartBeforeCheckout = async (req, res) => {
@@ -87,5 +88,30 @@ export const validateCartBeforeCheckout = async (req, res) => {
     return res
       .status(500)
       .json({ message: "Update Cart error", error: error.message });
+  }
+};
+
+export const createOrder = async (req, res) => {
+  const userId = req.user;
+  const {
+    deliveryAddress,
+    deliveryFee,
+    tax,
+    discount,
+    totalAmount,
+    paymentMethod,
+    paymentStatus,
+    orderStatus,
+  } = req.body;
+
+  try {
+    const address = await Address.find({ user: userId, isDefault: true });
+
+    if (!address) {
+      return res.status(400).json({ message: "address is required" });
+    }
+  } catch (error) {
+    console.error("createOrder error:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

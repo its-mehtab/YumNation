@@ -54,7 +54,7 @@ const ProductCard = ({ currProduct, productLoading }) => {
       notifySuccess(`${currProduct.name} added to cart`);
     } catch (error) {
       console.log("Cart Error:", error?.response?.data || error.message);
-      notifyError(error?.response?.data.message || error.message);
+      notifyError(error?.response?.data.message);
     }
   };
 

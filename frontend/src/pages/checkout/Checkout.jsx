@@ -12,6 +12,8 @@ import PaymentBox from "./PaymentBox";
 import axios from "axios";
 
 const Checkout = () => {
+  const [error, setError] = useState("");
+
   const { cart, setCart, loading: cartLoading } = useCart();
   const { loading: addressLoading } = useAddress();
 
@@ -29,6 +31,18 @@ const Checkout = () => {
         </div>
 
         <div className="p-6 rounded-lg border border-gray-300 mt-3">
+          {error && (
+            <Skeleton loading={cartLoading}>
+              <h3 className="text-md text-red-600 font-semibold mb-1">
+                {error}
+              </h3>
+              <p className="mb-5 text-gray-500">
+                Some items in your order are currently low on stock or
+                unavailable. We’ve updated your cart totals—please review them
+                before checking out.
+              </p>
+            </Skeleton>
+          )}
           <Skeleton loading={cartLoading}>
             <h2 className="text-xl text-gray-600 font-semibold mb-4">
               Order Summary
@@ -44,7 +58,7 @@ const Checkout = () => {
                 className="flex flex-wrap gap-4 items-center py-3"
               >
                 <Link
-                  to={`product/${currProd.product.slug}`}
+                  to={`/product/${currProd.product.slug}`}
                   className={`w-17.5 min-w-17.5 h-17.5 rounded-lg border flex justify-center items-center border-[#fc8019] ${currProd.product.stock <= 0 || !currProd.product.isAvailable ? "grayscale" : ""}`}
                 >
                   {/* <img src={currProd.image} alt="" className="w-full" /> */}
@@ -76,7 +90,7 @@ const Checkout = () => {
 
       {/* RIGHT SECTION */}
       <div>
-        <PaymentBox />
+        <PaymentBox setError={setError} />
       </div>
     </div>
   );

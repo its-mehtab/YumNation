@@ -26,7 +26,7 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enam: ["user", "admin"],
+      enum: ["user", "admin"],
       required: true,
     },
     resetOtp: {
@@ -42,7 +42,7 @@ const userSchema = new Schema(
       default: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const User = mongoose.model("User", userSchema);

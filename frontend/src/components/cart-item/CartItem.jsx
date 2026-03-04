@@ -105,7 +105,7 @@ const CartItem = ({ currProd, products }) => {
   return (
     <div className="flex flex-wrap gap-4 items-center mb-8">
       <Link
-        to={`product/${currProd.product.slug}`}
+        to={`/product/${currProd.product.slug}`}
         className={`w-17.5 min-w-17.5 h-17.5 rounded-lg border flex justify-center items-center border-[#fc8019] ${currProd.product.stock <= 0 || !currProd.product.isAvailable ? "grayscale" : ""}`}
       >
         {/* <img src={currProd.image} alt="" className="w-full" /> */}
@@ -118,7 +118,7 @@ const CartItem = ({ currProd, products }) => {
           </p>
         )}
         <h3 className="text-sm font-semibold text-gray-700 hover:text-[#fc8019] transition-all">
-          <Link to={`product/${currProd.product.slug}`}>{currProd.name}</Link>
+          <Link to={`/product/${currProd.product.slug}`}>{currProd.name}</Link>
         </h3>
         <p className="text-xs text-gray-500 font-medium mt-2">
           {currProd.variant}
