@@ -19,9 +19,16 @@ const PaymentBox = ({ setError }) => {
   });
 
   const { serverURL } = useAuth();
-  const { cart, setCart, subtotal, loading: cartLoading } = useCart();
+  const {
+    cart,
+    setCart,
+    subtotal,
+    loading: cartLoading,
+    fetchUserCart,
+  } = useCart();
 
   const deliveryFee = 2.5;
+
   const discount =
     coupon.discountType === "flat"
       ? coupon.value
@@ -30,6 +37,7 @@ const PaymentBox = ({ setError }) => {
         : 0;
 
   const total = subtotal + deliveryFee - discount;
+  const tax = (total * 5) / 100;
 
   const handleCouponApply = async (e) => {
     e.preventDefault();
@@ -83,6 +91,7 @@ const PaymentBox = ({ setError }) => {
       );
 
       setError(error?.response?.data.message);
+      fetchUserCart();
 
       error?.response?.data?.cart && setCart(error?.response?.data?.cart);
     } finally {
@@ -179,6 +188,11 @@ const PaymentBox = ({ setError }) => {
         <div className="flex justify-between mt-2">
           <span>Delivery Fee</span>
           <span>${deliveryFee.toFixed(2)}</span>
+        </div>
+
+        <div className="flex justify-between mt-2">
+          <span>Tax</span>
+          <span>${tax.toFixed(2)}</span>
         </div>
 
         <div className="flex justify-between mt-4 font-semibold text-[#fc8019] text-base">

@@ -36,10 +36,14 @@ const Checkout = () => {
               <h3 className="text-md text-red-600 font-semibold mb-1">
                 {error}
               </h3>
-              <p className="mb-5 text-gray-500">
+              <p className="mb-2 text-gray-500">
                 Some items in your order are currently low on stock or
                 unavailable. We’ve updated your cart totals—please review them
                 before checking out.
+              </p>
+              <p className="mb-5 text-gray-500">
+                Note: If food is unavailable or out of stock please remove them
+                to proceed
               </p>
             </Skeleton>
           )}

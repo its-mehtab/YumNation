@@ -5,6 +5,7 @@ import { WishlistIcon } from "../../assets/icon/Icons";
 import Dropdown from "../dropdown/Dropdown";
 import { useWishlist } from "../../context/WishlistContext";
 import SearchBox from "../search-box/SearchBox";
+import { Button, DropdownMenu } from "@radix-ui/themes";
 
 const Header = () => {
   const [navActive, setNavActive] = useState(false);
@@ -77,6 +78,32 @@ const Header = () => {
                     {wishlist?.length || "0"}
                   </span>
                 </Link>
+              </li>
+
+              <li className="relative text-white hover:text-[#3f9065] transition-all cursor-pointer">
+                <DropdownMenu.Root>
+                  <DropdownMenu.Trigger>
+                    <Button color="orange" variant="soft" size="2">
+                      Options
+                      <DropdownMenu.TriggerIcon />
+                    </Button>
+                  </DropdownMenu.Trigger>
+                  <DropdownMenu.Content size="2">
+                    <DropdownMenu.Item shortcut="⌘ E">Edit</DropdownMenu.Item>
+                    <DropdownMenu.Item shortcut="⌘ D">
+                      Duplicate
+                    </DropdownMenu.Item>
+                    <DropdownMenu.Separator />
+                    <DropdownMenu.Item shortcut="⌘ N">
+                      Archive
+                    </DropdownMenu.Item>
+
+                    <DropdownMenu.Separator />
+                    <DropdownMenu.Item shortcut="⌘ ⌫" color="red">
+                      Delete
+                    </DropdownMenu.Item>
+                  </DropdownMenu.Content>
+                </DropdownMenu.Root>
               </li>
             </ul>
           </div>

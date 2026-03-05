@@ -222,9 +222,11 @@ const Home = () => {
       </div>
       <div className="col-span-5">
         <div className="border border-[#fc8019] rounded-lg bg-[#fff2e8]">
-          <div className="p-5 border-b border-[#fc8019]">
-            <AddressBox />
-          </div>
+          {isLoggedIn && (
+            <div className="p-5 border-b border-[#fc8019]">
+              <AddressBox />
+            </div>
+          )}
           <div className="p-5">
             <CartBox />
           </div>

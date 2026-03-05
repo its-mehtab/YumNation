@@ -39,6 +39,13 @@ const orderSchema = new Schema(
         variant: {
           type: String,
         },
+
+        addOns: [
+          {
+            type: String,
+            price: Number,
+          },
+        ],
       },
     ],
 

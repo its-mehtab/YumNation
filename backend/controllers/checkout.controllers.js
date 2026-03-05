@@ -1,5 +1,6 @@
 import Address from "../models/address.modal.js";
 import Cart from "../models/cart.modal.js";
+import Order from "../models/order.modal.js";
 
 export const validateCartBeforeCheckout = async (req, res) => {
   const userId = req.userId;
@@ -92,24 +93,47 @@ export const validateCartBeforeCheckout = async (req, res) => {
 };
 
 export const createOrder = async (req, res) => {
-  const userId = req.user;
+  const userId = req.userId;
   const {
     deliveryAddress,
     deliveryFee,
     tax,
     discount,
+    couponCode,
     totalAmount,
     paymentMethod,
     paymentStatus,
-    orderStatus,
   } = req.body;
 
   try {
-    const address = await Address.find({ user: userId, isDefault: true });
+    const cart = await Cart.findOne({ user: userId });
 
-    if (!address) {
-      return res.status(400).json({ message: "address is required" });
+    if (!cart || cart.items.length === 0) {
+      return res.status(400).json({ message: "Cart is empty" });
     }
+
+    // const coupon = await Coupon.findOne();
+
+    const subtotal = cart.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0,
+    );
+    const deliveryFee = 2.5;
+    const total = subtotal + deliveryFee - discount;
+    const tax = (total * 5) / 100;
+
+    const order = await Order.create({
+      user: userId,
+      items: cart.items,
+      deliveryAddress,
+      subtotal,
+      deliveryFee,
+      tax,
+      discount: 5,
+      totalAmount: 546,
+      paymentMethod: "cod",
+      paymentStatus: "paid",
+    });
   } catch (error) {
     console.error("createOrder error:", error);
     return res.status(500).json({ message: "Internal server error" });
