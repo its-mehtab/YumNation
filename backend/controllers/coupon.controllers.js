@@ -1,5 +1,6 @@
 import Cart from "../models/cart.modal.js";
 import Coupon from "../models/coupon.modal.js";
+import { validateCoupon } from "../services/coupon.service.js";
 
 export const getCoupons = async (req, res) => {
   try {
@@ -17,33 +18,7 @@ export const verifyCoupon = async (req, res) => {
   const { code } = req.params;
 
   try {
-    const coupon = await Coupon.findOne({ code: code.trim().toUpperCase() });
-
-    if (!coupon) {
-      return res.status(404).json({ message: "Invalid Coupon" });
-    }
-    if (!coupon.isActive) {
-      return res.status(400).json({ message: "Coupon is not active" });
-    }
-    if (coupon.expiresAt < Date.now()) {
-      return res.status(400).json({ message: "Coupon Expired" });
-    }
-
-    const cart = await Cart.findOne({ user: userId });
-
-    if (!cart) {
-      return res.status(404).json({ message: "Cart not found" });
-    }
-
-    const cartTotal = cart.items.reduce((acc, item) => {
-      return item.price * item.quantity + acc;
-    }, 0);
-
-    if (cartTotal < coupon.minOrderAmount) {
-      return res.status(400).json({
-        message: `Minimum cart of $${coupon.minOrderAmount} is required for this Coupon`,
-      });
-    }
+    const { coupon } = await validateCoupon(userId, code);
 
     return res.status(200).json({
       code: coupon.code,
@@ -52,8 +27,10 @@ export const verifyCoupon = async (req, res) => {
       minOrderAmount: coupon.minOrderAmount,
     });
   } catch (error) {
-    console.error("verifyCoupon error:", error); // 👈 add this
-    return res.status(500).json({ message: "Internal server error" });
+    console.error("verifyCoupon error:", error);
+    return res.status(400).json({
+      message: error.message,
+    });
   }
 };
 

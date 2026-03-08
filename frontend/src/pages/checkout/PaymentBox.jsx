@@ -5,9 +5,10 @@ import Button from "../../components/button/Button";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { Cross2Icon } from "@radix-ui/react-icons";
+import { useAddress } from "../../context/AddressContext";
+import { useOrders } from "../../context/OrderContext";
 
 const PaymentBox = ({ setError }) => {
-  const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [coupon, setCoupon] = useState({
     couponCode: "",
@@ -18,6 +19,7 @@ const PaymentBox = ({ setError }) => {
     discount: 0,
   });
 
+  const { setOrders, loading, setLoading } = useOrders();
   const { serverURL } = useAuth();
   const {
     cart,
@@ -26,6 +28,8 @@ const PaymentBox = ({ setError }) => {
     loading: cartLoading,
     fetchUserCart,
   } = useCart();
+  const { addresses } = useAddress();
+  const defaultAddress = addresses?.find((curr) => curr.isDefault === true);
 
   const deliveryFee = 2.5;
 
@@ -36,8 +40,8 @@ const PaymentBox = ({ setError }) => {
         ? (coupon.value * subtotal) / 100
         : 0;
 
-  const total = subtotal + deliveryFee - discount;
-  const tax = (total * 5) / 100;
+  const tax = (subtotal * 5) / 100;
+  const total = subtotal + deliveryFee + tax - discount;
 
   const handleCouponApply = async (e) => {
     e.preventDefault();
@@ -61,7 +65,9 @@ const PaymentBox = ({ setError }) => {
         couponApplied: normalizedCode,
       });
     } catch (error) {
-      console.log("Checkout Error:", error?.response?.data || error.message);
+      console.log(error);
+
+      // console.log("Checkout Error:", error?.response?.data || error.message);
       if (error.status === 403) return;
       setCoupon({
         couponCode: "",
@@ -72,12 +78,21 @@ const PaymentBox = ({ setError }) => {
   };
 
   const handlePlaceOrder = async () => {
-    try {
-      setLoading(true);
+    if (loading) return;
+    setLoading(true);
 
-      const { data } = await axios.get(`${serverURL}/api/checkout`, {
-        withCredentials: true,
-      });
+    try {
+      const { data } = await axios.post(
+        `${serverURL}/api/order`,
+        {
+          deliveryAddress: defaultAddress,
+          couponCode: coupon.couponApplied,
+          paymentMethod: paymentMethod,
+        },
+        {
+          withCredentials: true,
+        },
+      );
 
       console.log(data);
 

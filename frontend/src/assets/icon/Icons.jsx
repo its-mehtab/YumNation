@@ -555,10 +555,10 @@ export const PlusIcon = ({ size = 8, color }) => {
   );
 };
 
-export const ChevronRightIcon = ({ size, color }) => {
+export const ChevronRightIcon = ({ size, addClass }) => {
   return (
     <svg
-      className={color}
+      className={`transition-all duration-400 ${addClass}`}
       fill="currentColor"
       id="Layer_1"
       height={size}

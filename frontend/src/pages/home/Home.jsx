@@ -41,7 +41,7 @@ const Home = () => {
 
   return (
     <div className="grid grid-cols-12 gap-6">
-      <div className="col-span-7">
+      <div className="col-span-8">
         <section className="relative">
           <div className="custom-pagination"></div>
 
@@ -88,16 +88,13 @@ const Home = () => {
               </button>
             </div>
           </div>
-          {/* {Array.from({ length: 6 }).map((_, i) => (
-            <CategorySkeleton key={i} />
-          ))} */}
           <Swiper
             navigation={{
               nextEl: ".custom-next",
               prevEl: ".custom-prev",
             }}
             modules={[Navigation]}
-            slidesPerView={3}
+            slidesPerView={4}
             spaceBetween={20}
             // breakpoints={{
             //   640: { slidesPerView: 2 },
@@ -106,7 +103,7 @@ const Home = () => {
             className="mySwiper"
           >
             {loading
-              ? Array.from({ length: 3 }).map((_, i) => (
+              ? Array.from({ length: 4 }).map((_, i) => (
                   <SwiperSlide key={i}>
                     <CategorySkeleton />
                   </SwiperSlide>
@@ -145,7 +142,7 @@ const Home = () => {
             </Link>
           </div>
           <Swiper
-            slidesPerView={2}
+            slidesPerView={3}
             spaceBetween={20}
             // spaceBetween={0}
             // centeredSlides={true}
@@ -164,7 +161,7 @@ const Home = () => {
             className="mySwiper"
           >
             {productLoading
-              ? Array.from({ length: 2 }).map((_, i) => (
+              ? Array.from({ length: 3 }).map((_, i) => (
                   <SwiperSlide key={i}>
                     <ProductCardSkeleton />
                   </SwiperSlide>
@@ -192,7 +189,7 @@ const Home = () => {
             </Link>
           </div>
           <Swiper
-            slidesPerView={2}
+            slidesPerView={3}
             spaceBetween={20}
             // spaceBetween={0}
             // centeredSlides={true}
@@ -210,17 +207,23 @@ const Home = () => {
             // }}
             className="mySwiper"
           >
-            {products?.products?.map((currProduct) => {
-              return (
-                <SwiperSlide key={currProduct._id}>
-                  <ProductCard currProduct={currProduct} />
-                </SwiperSlide>
-              );
-            })}
+            {productLoading
+              ? Array.from({ length: 3 }).map((_, i) => (
+                  <SwiperSlide key={i}>
+                    <ProductCardSkeleton />
+                  </SwiperSlide>
+                ))
+              : products?.products?.map((currProduct) => {
+                  return (
+                    <SwiperSlide key={currProduct._id}>
+                      <ProductCard currProduct={currProduct} />
+                    </SwiperSlide>
+                  );
+                })}
           </Swiper>
         </section>
       </div>
-      <div className="col-span-5">
+      <div className="col-span-4">
         <div className="border border-[#fc8019] rounded-lg bg-[#fff2e8]">
           {isLoggedIn && (
             <div className="p-5 border-b border-[#fc8019]">

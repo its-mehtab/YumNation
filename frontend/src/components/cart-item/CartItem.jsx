@@ -48,10 +48,10 @@ const CartItem = ({ currProd, products }) => {
   };
 
   const handleQuantityPlus = async () => {
+    if (quantity >= 10) return;
     if (loading) return;
     setLoading(true);
 
-    if (quantity >= 10) return;
     setQuantity(quantity + 1);
 
     try {

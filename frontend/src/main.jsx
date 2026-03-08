@@ -13,6 +13,7 @@ import { CartProvider } from "./context/CartContext.jsx";
 import { WishlistProvider } from "./context/WishlistContext.jsx";
 import { Theme } from "@radix-ui/themes";
 import { AddressContextProvider } from "./context/AddressContext.jsx";
+import { OrderContextProvider } from "./context/OrderContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -24,10 +25,12 @@ createRoot(document.getElementById("root")).render(
               <CategoryProvider>
                 <AddressContextProvider>
                   <ValidateProvider>
-                    <Theme accentColor="orange">
-                      <Header />
-                      <App />
-                    </Theme>
+                    <OrderContextProvider>
+                      <Theme accentColor="orange">
+                        <Header />
+                        <App />
+                      </Theme>
+                    </OrderContextProvider>
                   </ValidateProvider>
                 </AddressContextProvider>
               </CategoryProvider>

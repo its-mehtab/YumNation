@@ -20,32 +20,32 @@ function App() {
 
   return (
     <>
-      <main className="w-full h-[88dvh] bg-white rounded-t-4xl rounded-tr-4xl">
-        <div className="grid grid-cols-11">
+      <main className="w-full bg-white rounded-t-4xl rounded-tr-4xl mt-18">
+        <div className="mx-auto px-4 sm:px-6 lg:pl-10 lg:pr-6 pt-10">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/shop" element={<Shop />} />
+            <Route path="/product/:slug" element={<Product />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route
+              path="/login"
+              element={!user ? <Login /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/signup"
+              element={!user ? <Signup /> : <Navigate to="/" />}
+            />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/checkout" element={<Checkout />} />
+          </Routes>
+          <Footer />
+        </div>
+        {/* <div className="grid grid-cols-11">
           <Aside />
           <div className="col-span-9">
-            <div className="mx-auto px-4 sm:px-6 lg:pl-10 lg:pr-6 pt-10 max-h-[87dvh] overflow-scroll">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/shop" element={<Shop />} />
-                <Route path="/product/:slug" element={<Product />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route
-                  path="/login"
-                  element={!user ? <Login /> : <Navigate to="/" />}
-                />
-                <Route
-                  path="/signup"
-                  element={!user ? <Signup /> : <Navigate to="/" />}
-                />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/wishlist" element={<Wishlist />} />
-                <Route path="/checkout" element={<Checkout />} />
-              </Routes>
-              <Footer />
-            </div>
           </div>
-        </div>
+        </div> */}
       </main>
 
       <ToastContainer
