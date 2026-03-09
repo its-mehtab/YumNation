@@ -38,6 +38,13 @@ const productSchema = new Schema(
       required: true,
     },
 
+    foodType: {
+      type: String,
+      enum: ["veg", "non-veg", "vegan"],
+      required: true,
+      default: "veg",
+    },
+
     variants: [
       {
         name: {

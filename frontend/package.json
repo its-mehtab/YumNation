@@ -17,6 +17,8 @@
     "@radix-ui/themes": "^3.3.0",
     "@tailwindcss/vite": "^4.1.17",
     "axios": "^1.13.2",
+    "dayjs": "^1.11.19",
+    "lottie-react": "^2.4.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.5",

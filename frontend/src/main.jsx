@@ -27,7 +27,6 @@ createRoot(document.getElementById("root")).render(
                   <ValidateProvider>
                     <OrderContextProvider>
                       <Theme accentColor="orange">
-                        <Header />
                         <App />
                       </Theme>
                     </OrderContextProvider>

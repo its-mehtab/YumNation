@@ -13,6 +13,9 @@ import { Bounce, ToastContainer } from "react-toastify";
 import Aside from "./components/aside/Aside";
 import Footer from "./components/footer/Footer";
 import Checkout from "./pages/checkout/Checkout";
+import Orders from "./pages/orders/Orders";
+import Header from "./components/header/Header";
+import ThankYou from "./pages/thank-you/ThankYou";
 // import Grid3x3OutlinedIcon from "@mui/icons-material/Grid3x3Outlined";
 
 function App() {
@@ -20,8 +23,10 @@ function App() {
 
   return (
     <>
-      <main className="w-full bg-white rounded-t-4xl rounded-tr-4xl mt-18">
-        <div className="mx-auto px-4 sm:px-6 lg:pl-10 lg:pr-6 pt-10">
+      <Header />
+      <main className="w-full bg-white rounded-t-4xl rounded-tr-4xl mt-19">
+        <span className="clip-box"></span>
+        <div className="mx-auto px-4 sm:px-6 lg:pl-10 lg:pr-6 pt-10 relative">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/shop" element={<Shop />} />
@@ -38,6 +43,8 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/thankyou" element={<ThankYou />} />
           </Routes>
           <Footer />
         </div>

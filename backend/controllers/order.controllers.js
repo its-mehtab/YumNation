@@ -5,7 +5,10 @@ export const getUserOrders = async (req, res) => {
   const { userId } = req.userId;
 
   try {
-    const order = await Order.find({ userId });
+    const order = await Order.find({ userId }).populate(
+      "items.product",
+      "slug",
+    );
 
     if (order.length === 0) {
       return res.status(400).json({ message: "Order is empty" });
