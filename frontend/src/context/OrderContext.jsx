@@ -30,7 +30,9 @@ export const OrderContextProvider = ({ children }) => {
   }, []);
 
   return (
-    <OrderContext.Provider value={{ orders, setOrders, loading, setLoading }}>
+    <OrderContext.Provider
+      value={{ orders, setOrders, loading, setLoading, fetchOrders }}
+    >
       {children}
     </OrderContext.Provider>
   );

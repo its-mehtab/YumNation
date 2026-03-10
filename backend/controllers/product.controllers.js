@@ -72,16 +72,18 @@ export const getProducts = async (req, res) => {
     const pageNum = Math.max(Number(page), 1);
     const limitNum = Math.min(Number(limit), 50);
 
-    const products = await Product.find(query)
-      .populate("category", "name slug")
-      .sort(sortOption)
-      .skip((pageNum - 1) * limitNum)
-      .limit(limitNum)
-      .select(
-        "name price images slug description rating stock isAvailable isFeatured variants",
-      );
+    const [products, total] = await Promise.all([
+      Product.find(query)
+        .populate("category", "name slug")
+        .sort(sortOption)
+        .skip((pageNum - 1) * limitNum)
+        .limit(limitNum)
+        .select(
+          "name price images slug description rating stock isAvailable isFeatured variants",
+        ),
 
-    const total = await Product.countDocuments(query);
+      Product.countDocuments(query),
+    ]);
 
     res.status(200).json({
       products,

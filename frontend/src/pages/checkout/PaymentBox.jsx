@@ -7,6 +7,7 @@ import { useAuth } from "../../context/AuthContext";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { useAddress } from "../../context/AddressContext";
 import { useOrders } from "../../context/OrderContext";
+import { useNavigate } from "react-router-dom";
 
 const PaymentBox = ({ setError }) => {
   const [paymentMethod, setPaymentMethod] = useState("cod");
@@ -30,6 +31,8 @@ const PaymentBox = ({ setError }) => {
   } = useCart();
   const { addresses } = useAddress();
   const defaultAddress = addresses?.find((curr) => curr.isDefault === true);
+
+  const navigate = useNavigate();
 
   const deliveryFee = 2.5;
 
@@ -94,11 +97,9 @@ const PaymentBox = ({ setError }) => {
         },
       );
 
-      console.log(data);
+      navigate("/thankyou", { state: { order: data } });
 
-      // await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      alert("Order placed successfully 🎉");
+      // navigate("/thank-you", { state: { order: data } });
     } catch (error) {
       console.log(
         "Checkout Verify Error:",

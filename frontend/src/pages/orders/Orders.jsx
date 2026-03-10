@@ -1,13 +1,47 @@
-import { Table } from "@radix-ui/themes";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Skeleton, Table } from "@radix-ui/themes";
 import { assets } from "../../assets/assets";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useOrders } from "../../context/OrderContext";
 import dayjs from "dayjs";
 import { ChevronRightIcon, LocationIcon } from "../../assets/icon/Icons";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 const Orders = () => {
-  const { orders } = useOrders();
+  const { serverURL } = useAuth();
+  const { orders, setOrders, loading, setLoading } = useOrders();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [page, setPage] = useState(searchParams.get("page") || 1);
+
+  const handlePageChange = async (e, value) => {
+    setPage(value);
+    setSearchParams({ page: value });
+  };
+
+  const fetchOrders = async () => {
+    if (loading) return;
+    setLoading(true);
+
+    try {
+      const { data } = await axios.get(`${serverURL}/api/order`, {
+        withCredentials: true,
+      });
+
+      setOrders(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, [page]);
 
   return (
     <div>
@@ -34,7 +68,7 @@ const Orders = () => {
         </Table.Header>
 
         <Table.Body>
-          {orders?.map((order) => {
+          {orders?.orders?.map((order) => {
             return (
               <Table.Row align="center" key={order._id}>
                 <Table.RowHeaderCell px="5" py="5">
@@ -93,6 +127,19 @@ const Orders = () => {
           })}
         </Table.Body>
       </Table.Root>
+      <div className="mt-8 flex justify-center">
+        <Stack spacing={2}>
+          <Skeleton loading={loading}>
+            <Pagination
+              page={page}
+              onChange={handlePageChange}
+              count={orders?.pages}
+              variant="outlined"
+              shape="rounded"
+            />
+          </Skeleton>
+        </Stack>
+      </div>
     </div>
   );
 };

@@ -8,7 +8,7 @@ export const getCoupons = async (req, res) => {
 
     return res.status(200).json(coupon);
   } catch (error) {
-    console.error("verifyCoupon error:", error); // 👈 add this
+    console.error("verifyCoupon error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

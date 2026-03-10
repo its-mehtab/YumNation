@@ -668,3 +668,34 @@ export const RestaurantIcon = ({ size = 24, color = "#0f0f0" }) => {
     </svg>
   );
 };
+
+export const FailedIcon = () => (
+  <svg viewBox="0 0 100 100" className="w-28 h-28">
+    <circle
+      cx="50"
+      cy="50"
+      r="46"
+      fill="#fef2f2"
+      stroke="#ef4444"
+      strokeWidth="4"
+    />
+    <line
+      x1="32"
+      y1="32"
+      x2="68"
+      y2="68"
+      stroke="#ef4444"
+      strokeWidth="7"
+      strokeLinecap="round"
+    />
+    <line
+      x1="68"
+      y1="32"
+      x2="32"
+      y2="68"
+      stroke="#ef4444"
+      strokeWidth="7"
+      strokeLinecap="round"
+    />
+  </svg>
+);
