@@ -15,7 +15,7 @@ const Orders = () => {
   const { orders, setOrders, loading, setLoading } = useOrders();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [page, setPage] = useState(searchParams.get("page") || 1);
+  const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
 
   const handlePageChange = async (e, value) => {
     setPage(value);
@@ -27,13 +27,13 @@ const Orders = () => {
     setLoading(true);
 
     try {
-      const { data } = await axios.get(`${serverURL}/api/order`, {
+      const { data } = await axios.get(`${serverURL}/api/order?page=${page}`, {
         withCredentials: true,
       });
 
       setOrders(data);
     } catch (error) {
-      console.log(error);
+      console.log("Order Error:", error?.response?.data || error.message);
     } finally {
       setLoading(false);
     }
@@ -42,6 +42,26 @@ const Orders = () => {
   useEffect(() => {
     fetchOrders();
   }, [page]);
+
+  if (!loading && (!orders?.orders || orders?.orders?.length === 0)) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 text-center">
+        <div className="text-6xl mb-4">🛍️</div>
+        <h2 className="text-xl font-semibold text-gray-700 mb-2">
+          No orders yet
+        </h2>
+        <p className="text-sm text-gray-400 mb-6">
+          Looks like you haven't placed any orders yet.
+        </p>
+        <Link
+          to="/shop"
+          className="bg-[#fc8019] text-white px-6 py-2.5 rounded-md text-sm font-semibold hover:bg-[#e5721f] transition-colors"
+        >
+          Browse Menu
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -68,63 +88,84 @@ const Orders = () => {
         </Table.Header>
 
         <Table.Body>
-          {orders?.orders?.map((order) => {
-            return (
-              <Table.Row align="center" key={order._id}>
-                <Table.RowHeaderCell px="5" py="5">
-                  <div className="flex gap-3 items-center">
-                    <Link
-                      to={`/product/${order.items[0].product.slug}`}
-                      className={`w-16 min-w-16 h-16 rounded-lg border flex justify-center items-center border-[#fc8019]`}
-                    >
-                      {/* <img src={currProd.image} alt="" className="w-full" /> */}
-                      <img src={assets.product2} alt="" className="w-full" />
-                    </Link>
-                    <div>
-                      <h3 className="flex gap-2 text-sm font-semibold text-gray-700 hover:text-[#fc8019] transition-all">
-                        <Link to={`/product/${order.items[0].product.slug}`}>
-                          {order.items[0].name}
+          {loading
+            ? Array.from({ length: 5 }).map((_, i) => (
+                <Table.Row key={i} align="center">
+                  {Array.from({ length: 6 }).map((_, j) => (
+                    <Table.Cell key={j}>
+                      <Skeleton loading={true}>
+                        <div className="h-4 w-24 rounded" />
+                      </Skeleton>
+                    </Table.Cell>
+                  ))}
+                </Table.Row>
+              ))
+            : orders?.orders?.map((order) => {
+                return (
+                  <Table.Row align="center" key={order._id} className="fade-up">
+                    <Table.RowHeaderCell px="5" py="5">
+                      <div className="flex gap-3 items-center">
+                        <Link
+                          to={`/product/${order.items[0].product.slug}`}
+                          className={`w-16 min-w-16 h-16 rounded-lg border flex justify-center items-center border-[#fc8019]`}
+                        >
+                          {/* <img src={currProd.image} alt="" className="w-full" /> */}
+                          <img
+                            src={assets.product2}
+                            alt=""
+                            className="w-full"
+                          />
                         </Link>
-                        {order.items.length > 1 && (
-                          <div className="text-lg text-[#fc8019]">
-                            +{order.items.length - 1}
-                          </div>
-                        )}
-                      </h3>
-                      <p className="text-xs text-gray-500 font-medium mt-2">
-                        {order.items[0].variant} × {order.items[0].quantity}
-                      </p>
-                    </div>
-                  </div>
-                </Table.RowHeaderCell>
-                <Table.Cell>
-                  {dayjs(order.createdAt).format("MMM D, YYYY h:mm A")}
-                </Table.Cell>
-                <Table.Cell>
-                  <div className="flex gap-2 items-center">
-                    <LocationIcon color={"#fc8019"} />
-                    {`${order.deliveryAddress.city}, ${order.deliveryAddress.state}, ${order.deliveryAddress.pinCode}`}
-                  </div>
-                </Table.Cell>
-                <Table.Cell className="text-base font-semibold text-[#fc8019]">
-                  ${order.totalAmount.toFixed(2)}
-                </Table.Cell>
-                <Table.Cell>
-                  <div className="font-medium capitalize py-2 rounded-lg bg-gray-100 border border-[#fc8019] text-center text-[#fc8019]">
-                    {order.orderStatus}
-                  </div>
-                </Table.Cell>
-                <Table.Cell px="3">
-                  <Link className="hover:translate-x-2">
-                    <ChevronRightIcon
-                      size={18}
-                      addClass="text-gray-400 hover:text-gray-700"
-                    />
-                  </Link>
-                </Table.Cell>
-              </Table.Row>
-            );
-          })}
+                        <div>
+                          <h3 className="flex gap-2 text-sm font-semibold text-gray-700 hover:text-[#fc8019] transition-all">
+                            <Link
+                              to={`/product/${order.items[0].product.slug}`}
+                            >
+                              {order.items[0].name}
+                            </Link>
+                            {order.items.length > 1 && (
+                              <div className="text-lg text-[#fc8019]">
+                                +{order.items.length - 1}
+                              </div>
+                            )}
+                          </h3>
+                          <p className="text-xs text-gray-500 font-medium mt-2">
+                            {order.items[0].variant} × {order.items[0].quantity}
+                          </p>
+                        </div>
+                      </div>
+                    </Table.RowHeaderCell>
+                    <Table.Cell>
+                      {dayjs(order.createdAt).format("MMM D, YYYY h:mm A")}
+                    </Table.Cell>
+                    <Table.Cell>
+                      <div className="flex gap-2 items-center">
+                        <LocationIcon color={"#fc8019"} />
+                        {`${order.deliveryAddress.city}, ${order.deliveryAddress.state}, ${order.deliveryAddress.pinCode}`}
+                      </div>
+                    </Table.Cell>
+                    <Table.Cell className="text-base font-semibold text-[#fc8019]">
+                      ${order.totalAmount.toFixed(2)}
+                    </Table.Cell>
+                    <Table.Cell>
+                      <div className="font-medium capitalize py-2 rounded-lg bg-gray-100 border border-[#fc8019] text-center text-[#fc8019]">
+                        {order.orderStatus}
+                      </div>
+                    </Table.Cell>
+                    <Table.Cell px="3">
+                      <Link
+                        to={`/order/${order._id}`}
+                        className="hover:translate-x-2"
+                      >
+                        <ChevronRightIcon
+                          size={18}
+                          addClass="text-gray-400 hover:text-gray-700"
+                        />
+                      </Link>
+                    </Table.Cell>
+                  </Table.Row>
+                );
+              })}
         </Table.Body>
       </Table.Root>
       <div className="mt-8 flex justify-center">

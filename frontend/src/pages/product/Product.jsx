@@ -143,7 +143,9 @@ const Product = () => {
   return loading ? (
     <ProductDetailsSkeleton />
   ) : (
-    <section className={`${isSoldOut || isUnavailable ? "grayscale" : ""}`}>
+    <section
+      className={`fade-up ${isSoldOut || isUnavailable ? "grayscale" : ""}`}
+    >
       <div className="grid grid-cols-9 gap-8">
         <div className="col-span-4">
           <ul className="flex mb-8 text-gray-600">

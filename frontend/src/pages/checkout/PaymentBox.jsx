@@ -8,6 +8,7 @@ import { Cross2Icon } from "@radix-ui/react-icons";
 import { useAddress } from "../../context/AddressContext";
 import { useOrders } from "../../context/OrderContext";
 import { useNavigate } from "react-router-dom";
+import { notifyError } from "../../utils/toast";
 
 const PaymentBox = ({ setError }) => {
   const [paymentMethod, setPaymentMethod] = useState("cod");
@@ -17,10 +18,9 @@ const PaymentBox = ({ setError }) => {
     invalidCouponMsg: "",
     discountType: null,
     value: 0,
-    discount: 0,
   });
 
-  const { setOrders, loading, setLoading } = useOrders();
+  const { loading, setLoading, fetchOrders } = useOrders();
   const { serverURL } = useAuth();
   const {
     cart,
@@ -48,9 +48,11 @@ const PaymentBox = ({ setError }) => {
 
   const handleCouponApply = async (e) => {
     e.preventDefault();
+    setError("");
     const normalizedCode = coupon.couponCode.trim().toUpperCase();
 
     if (!normalizedCode) return;
+    if (normalizedCode === coupon.couponApplied) return;
 
     try {
       const { data } = await axios.get(
@@ -68,9 +70,8 @@ const PaymentBox = ({ setError }) => {
         couponApplied: normalizedCode,
       });
     } catch (error) {
-      console.log(error);
+      console.log("Coupon Error:", error?.response?.data || error.message);
 
-      // console.log("Checkout Error:", error?.response?.data || error.message);
       if (error.status === 403) return;
       setCoupon({
         couponCode: "",
@@ -82,6 +83,13 @@ const PaymentBox = ({ setError }) => {
 
   const handlePlaceOrder = async () => {
     if (loading) return;
+    setError("");
+
+    if (!defaultAddress) {
+      notifyError("Please add a delivery address before placing your order.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -98,19 +106,18 @@ const PaymentBox = ({ setError }) => {
       );
 
       navigate("/thankyou", { state: { order: data } });
-
-      // navigate("/thank-you", { state: { order: data } });
+      fetchOrders();
     } catch (error) {
       console.log(
         "Checkout Verify Error:",
         error?.response?.data || error.message,
       );
 
-      setError(error?.response?.data.message);
-      fetchUserCart();
+      setError(error?.response?.data?.message || "Something went wrong");
 
       error?.response?.data?.cart && setCart(error?.response?.data?.cart);
     } finally {
+      fetchUserCart();
       setLoading(false);
     }
   };

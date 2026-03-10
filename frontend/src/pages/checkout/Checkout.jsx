@@ -18,7 +18,7 @@ const Checkout = () => {
   const { loading: addressLoading } = useAddress();
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-up">
       <div className="lg:col-span-2">
         <div className="p-6 rounded-lg border border-gray-300">
           <Skeleton loading={addressLoading}>

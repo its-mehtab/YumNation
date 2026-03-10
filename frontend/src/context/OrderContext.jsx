@@ -19,7 +19,7 @@ export const OrderContextProvider = ({ children }) => {
 
       setOrders(data);
     } catch (error) {
-      console.log(error);
+      console.log("Order Error:", error?.response?.data || error.message);
     } finally {
       setLoading(false);
     }

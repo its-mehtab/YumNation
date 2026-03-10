@@ -16,6 +16,7 @@ import Checkout from "./pages/checkout/Checkout";
 import Orders from "./pages/orders/Orders";
 import Header from "./components/header/Header";
 import ThankYou from "./pages/thank-you/ThankYou";
+import OrderDetails from "./pages/order-details/OrderDetails";
 // import Grid3x3OutlinedIcon from "@mui/icons-material/Grid3x3Outlined";
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/orders" element={<Orders />} />
+            <Route path="/order/:id" element={<OrderDetails />} />
             <Route path="/thankyou" element={<ThankYou />} />
           </Routes>
           <Footer />

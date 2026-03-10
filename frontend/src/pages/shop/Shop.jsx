@@ -76,7 +76,7 @@ const Shop = () => {
 
   return (
     <>
-      <section>
+      <section className="fade-up">
         <div className="grid lg:grid-cols-9 sm:grid-cols-10 gap-6">
           <div className="lg:col-span-3 sm:col-span-4">
             <FilterBox filters={filters} setFilters={setFilters} />

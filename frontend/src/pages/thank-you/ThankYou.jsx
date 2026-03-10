@@ -82,7 +82,7 @@ const ThankYou = () => {
 
             <SummaryRow
               label="Order ID"
-              value={`#${order._id?.slice(-6).toUpperCase()}`}
+              value={`#${order._id?.slice(-10).toUpperCase()}`}
             />
             <SummaryRow
               label="Items"

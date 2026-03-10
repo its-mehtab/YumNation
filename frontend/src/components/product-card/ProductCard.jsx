@@ -21,7 +21,7 @@ const ProductCard = ({ currProduct, productLoading }) => {
     fetchAvailibility(currProduct);
 
   const { serverURL } = useAuth();
-  const { setCart, loading, setLoading } = useCart();
+  const { setCart } = useCart();
   const {
     wishlist,
     setWishlist,
@@ -113,7 +113,7 @@ const ProductCard = ({ currProduct, productLoading }) => {
       </span>
       <span
         onClick={handleWishlist}
-        className="text-[#B7B7B7] hover:text-[#027a36] cursor-pointer absolute top-4 right-4"
+        className="text-[#B7B7B7] hover:text-[#027a36] cursor-pointer absolute top-4 right-4 z-10"
       >
         {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}
       </span>

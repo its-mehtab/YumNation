@@ -12,16 +12,13 @@ const CartItem = ({ currProd, products }) => {
   const [quantity, setQuantity] = useState(currProd.quantity);
 
   const { serverURL } = useAuth();
-  const { setCart, loading, setLoading } = useCart();
+  const { setCart } = useCart();
 
   const { isSoldOut, isUnavailable, statusText } = fetchAvailibility(
     currProd.product,
   );
 
   const handleQuantityMinus = async () => {
-    if (loading) return;
-    setLoading(true);
-
     if (quantity > 1) {
       setQuantity(quantity - 1);
     }
@@ -42,15 +39,11 @@ const CartItem = ({ currProd, products }) => {
       console.error("Cart Error:", error?.response?.data || error.message);
       setQuantity(quantity);
       notifyError("Quantity update failed");
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleQuantityPlus = async () => {
     if (quantity >= 10) return;
-    if (loading) return;
-    setLoading(true);
 
     setQuantity(quantity + 1);
 
@@ -70,14 +63,10 @@ const CartItem = ({ currProd, products }) => {
       console.log("Cart Error:", error?.response?.data || error.message);
       setQuantity(quantity);
       notifyError("Quantity update failed");
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleDeleteCart = async () => {
-    if (loading) return;
-    setLoading(true);
     try {
       const { data } = await axios.delete(`${serverURL}/api/cart`, {
         data: {
@@ -93,8 +82,6 @@ const CartItem = ({ currProd, products }) => {
       console.log("Delete Cart Error:", error?.response?.data || error.message);
       notifyError("Cart remove failed");
       setQuantity(quantity);
-    } finally {
-      setLoading(false);
     }
   };
 

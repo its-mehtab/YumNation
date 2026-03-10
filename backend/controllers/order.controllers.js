@@ -1,3 +1,4 @@
+import Cart from "../models/cart.modal.js";
 import Order from "../models/order.modal.js";
 import { validateCoupon } from "../services/coupon.service.js";
 
@@ -29,6 +30,28 @@ export const getUserOrders = async (req, res) => {
       page: pageNum,
       pages: Math.ceil(total / limitNum),
     });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error:", error: error.message });
+  }
+};
+
+export const getOrderById = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.userId;
+
+  try {
+    const order = await Order.findOne({ user: userId, _id: id }).populate(
+      "items.product",
+      "slug",
+    );
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    return res.status(200).json(order);
   } catch (error) {
     return res
       .status(500)
@@ -75,6 +98,8 @@ export const createOrder = async (req, res) => {
       paymentMethod,
       paymentStatus,
     });
+
+    await Cart.findOneAndDelete({ user: userId });
 
     return res.status(201).json(order);
   } catch (error) {
