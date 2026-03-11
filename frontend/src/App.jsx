@@ -1,61 +1,15 @@
-import Home from "./pages/home/Home";
-import Contact from "./pages/contact/Contact";
 import { Route, Routes } from "react-router-dom";
-import Shop from "./pages/shop/Shop";
-import Login from "./pages/login/Login";
-import Signup from "./pages/sign-up/SignUp";
-import Wishlist from "./pages/wishlist/Wishlist";
-import { useAuth } from "./context/AuthContext";
-import { Navigate } from "react-router-dom";
-import ForgotPassword from "./pages/forgot-password/ForgotPassword";
-import Product from "./pages/product/Product";
 import { Bounce, ToastContainer } from "react-toastify";
-import Aside from "./components/aside/Aside";
-import Footer from "./components/footer/Footer";
-import Checkout from "./pages/checkout/Checkout";
-import Orders from "./pages/orders/Orders";
-import Header from "./components/header/Header";
-import ThankYou from "./pages/thank-you/ThankYou";
-import OrderDetails from "./pages/order-details/OrderDetails";
-// import Grid3x3OutlinedIcon from "@mui/icons-material/Grid3x3Outlined";
+import AdminRoutes from "./routes/AdminRoutes";
+import UserRoutes from "./routes/UserRoutes";
 
 function App() {
-  const { user } = useAuth();
-
   return (
     <>
-      <Header />
-      <main className="w-full bg-white rounded-t-4xl rounded-tr-4xl mt-19">
-        <span className="clip-box"></span>
-        <div className="mx-auto px-4 sm:px-6 lg:pl-10 lg:pr-6 pt-10 relative">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/product/:slug" element={<Product />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route
-              path="/login"
-              element={!user ? <Login /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/signup"
-              element={!user ? <Signup /> : <Navigate to="/" />}
-            />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/wishlist" element={<Wishlist />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/order/:id" element={<OrderDetails />} />
-            <Route path="/thankyou" element={<ThankYou />} />
-          </Routes>
-          <Footer />
-        </div>
-        {/* <div className="grid grid-cols-11">
-          <Aside />
-          <div className="col-span-9">
-          </div>
-        </div> */}
-      </main>
+      <Routes>
+        <Route path="/admin/*" element={<AdminRoutes />} />
+        <Route path="/*" element={<UserRoutes />} />
+      </Routes>
 
       <ToastContainer
         toastClassName="custom-toast"

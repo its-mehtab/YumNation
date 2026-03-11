@@ -30,12 +30,17 @@ const Header = () => {
 
   const logout = async () => {
     try {
-      await axios.post(serverURL + "/api/logout", {
-        withCredentials: true,
-      });
+      await axios.post(
+        `${serverURL}/api/logout`,
+        {},
+        {
+          withCredentials: true,
+        },
+      );
+
       setUser(null);
     } catch (error) {
-      console.log(error);
+      console.log("Auth Error:", error?.response?.data || error.message);
     }
   };
 

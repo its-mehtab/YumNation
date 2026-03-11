@@ -59,8 +59,8 @@ input:-webkit-autofill:focus {
   transform: translateY(-50%) !important;
 }
 
-main:before,
-main:after {
+.user-header:before,
+.user-header:after {
   content: "";
   width: 2.5rem;
   height: 2.5rem;
@@ -72,14 +72,14 @@ main:after {
   border-top-left-radius: 30px;
 }
 
-main:after {
+.user-header:after {
   background: #fc8019;
   border-top-left-radius: 0;
   z-index: -8;
 }
 
-main .clip-box:before,
-main .clip-box:after {
+.user-header .clip-box:before,
+.user-header .clip-box:after {
   content: "";
   width: 2.5rem;
   height: 2.5rem;
@@ -91,13 +91,13 @@ main .clip-box:after {
   border-top-right-radius: 30px;
 }
 
-main .clip-box:after {
+.user-header .clip-box:after {
   background: #fc8019;
   border-top-right-radius: 0;
   z-index: -8;
 }
 
-main {
+.user-header {
   position: relative;
   z-index: 10;
 }

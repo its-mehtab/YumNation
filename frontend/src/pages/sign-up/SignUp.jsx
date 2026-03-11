@@ -7,7 +7,7 @@ import { useValidate } from "../../context/ValidateContext";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 
-const Signup = () => {
+const SignUp = () => {
   const [signUpData, setSignUpData] = useState({
     firstName: "",
     lastName: "",
@@ -200,4 +200,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default SignUp;

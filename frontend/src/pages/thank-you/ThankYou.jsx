@@ -6,10 +6,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const SummaryRow = ({ label, value, highlight }) => (
   <div
-    className={`flex justify-between py-2 text-sm border-b border-gray-100 last:border-0 ${highlight ? "font-semibold text-[#fc8019]" : "text-gray-600"}`}
+    className={`flex gap-8 justify-between py-2 text-sm border-b border-gray-100 last:border-0 ${highlight ? "font-semibold text-[#fc8019]" : "text-gray-600"}`}
   >
     <span>{label}</span>
-    <span>{value}</span>
+    <span className="text-end">{value}</span>
   </div>
 );
 

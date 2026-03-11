@@ -169,7 +169,7 @@ const OrderDetails = () => {
       </div>
 
       {/* ── Order meta ── */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-5">
+      <div className="bg-white rounded-2xl border border-gray-300 p-5">
         <div className="flex justify-between items-start flex-wrap gap-3">
           <div>
             <p className="text-xs text-gray-400 font-medium uppercase tracking-widest mb-1">
@@ -191,7 +191,7 @@ const OrderDetails = () => {
       </div>
 
       {!isCancelled && (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-5">
+        <div className="bg-white rounded-2xl border border-gray-300 p-5">
           <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-5">
             Delivery Progress
           </p>
@@ -210,7 +210,7 @@ const OrderDetails = () => {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-5">
+      <div className="bg-white rounded-2xl border border-gray-300 p-5">
         <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">
           Items ({order.items.length})
         </p>
@@ -254,7 +254,7 @@ const OrderDetails = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-5">
+      <div className="bg-white rounded-2xl border border-gray-300 p-5">
         <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">
           Bill Summary
         </p>
@@ -277,7 +277,7 @@ const OrderDetails = () => {
         />
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-5">
+      <div className="bg-white rounded-2xl border border-gray-300 p-5">
         <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">
           Delivery Address
         </p>
@@ -300,7 +300,7 @@ const OrderDetails = () => {
       </div>
 
       {/* ── Payment ── */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-5 flex justify-between items-center">
+      <div className="bg-white rounded-2xl border border-gray-300 p-5 flex justify-between items-center">
         <div>
           <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">
             Payment Method

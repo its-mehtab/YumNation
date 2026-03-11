@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Skeleton, Table } from "@radix-ui/themes";
 import { assets } from "../../assets/assets";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useOrders } from "../../context/OrderContext";
 import dayjs from "dayjs";
 import { ChevronRightIcon, LocationIcon } from "../../assets/icon/Icons";
@@ -14,6 +14,8 @@ const Orders = () => {
   const { serverURL } = useAuth();
   const { orders, setOrders, loading, setLoading } = useOrders();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const navigate = useNavigate();
 
   const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
 
@@ -102,11 +104,15 @@ const Orders = () => {
               ))
             : orders?.orders?.map((order) => {
                 return (
-                  <Table.Row align="center" key={order._id} className="fade-up">
+                  <Table.Row
+                    onClick={() => navigate(`/order/${order._id}`)}
+                    align="center"
+                    key={order._id}
+                    className="fade-up cursor-pointer"
+                  >
                     <Table.RowHeaderCell px="5" py="5">
                       <div className="flex gap-3 items-center">
-                        <Link
-                          to={`/product/${order.items[0].product.slug}`}
+                        <div
                           className={`w-16 min-w-16 h-16 rounded-lg border flex justify-center items-center border-[#fc8019]`}
                         >
                           {/* <img src={currProd.image} alt="" className="w-full" /> */}
@@ -115,14 +121,12 @@ const Orders = () => {
                             alt=""
                             className="w-full"
                           />
-                        </Link>
+                        </div>
                         <div>
                           <h3 className="flex gap-2 text-sm font-semibold text-gray-700 hover:text-[#fc8019] transition-all">
-                            <Link
-                              to={`/product/${order.items[0].product.slug}`}
-                            >
+                            <div to={`/product/${order.items[0].product.slug}`}>
                               {order.items[0].name}
-                            </Link>
+                            </div>
                             {order.items.length > 1 && (
                               <div className="text-lg text-[#fc8019]">
                                 +{order.items.length - 1}
@@ -153,15 +157,10 @@ const Orders = () => {
                       </div>
                     </Table.Cell>
                     <Table.Cell px="3">
-                      <Link
-                        to={`/order/${order._id}`}
-                        className="hover:translate-x-2"
-                      >
-                        <ChevronRightIcon
-                          size={18}
-                          addClass="text-gray-400 hover:text-gray-700"
-                        />
-                      </Link>
+                      <ChevronRightIcon
+                        size={18}
+                        addClass="text-gray-400 hover:text-gray-700"
+                      />
                     </Table.Cell>
                   </Table.Row>
                 );
