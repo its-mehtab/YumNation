@@ -13,6 +13,7 @@ import addressRouter from "./routes/address.routes.js";
 import couponRouter from "./routes/coupon.routes.js";
 import checkoutRouter from "./routes/checkout.routes.js";
 import orderRouter from "./routes/order.routes.js";
+import restaurantRouter from "./routes/restaurant.routes.js";
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -34,6 +35,7 @@ app.use("/api/address", addressRouter);
 app.use("/api/coupon", couponRouter);
 app.use("/api/checkout", checkoutRouter);
 app.use("/api/order", orderRouter);
+app.use("/api/restaurant", restaurantRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Home Page" });

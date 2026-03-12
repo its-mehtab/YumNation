@@ -3,14 +3,14 @@ import { Link, NavLink } from "react-router-dom";
 import { RestaurantIcon } from "../../assets/icon/Icons";
 import { assets } from "../../assets/assets";
 
-const AdminSidebar = () => {
+const RestaurantSidebar = () => {
   return (
     <aside className="col-span-2 h-dvh relative z-10">
       <div className="mx-auto px-4 lg:px-5 py-6 border-r border-[#b2b2b2] h-full">
         <ul className="[&_li]:mt-5">
           <li>
             <NavLink
-              to={"/admin"}
+              to={"/restaurant"}
               end
               className={({ isActive }) =>
                 `flex gap-3 items-center text-sm px-3 py-2.5 rounded-lg font-medium transition-all ${isActive ? "text-[#fc8019] bg-gray-100" : "text-gray-500"}`
@@ -22,40 +22,7 @@ const AdminSidebar = () => {
           </li>
           <li>
             <NavLink
-              to={"/admin/restaurants"}
-              className={({ isActive }) =>
-                `flex gap-3 items-center text-sm px-3 py-2.5 rounded-lg font-medium transition-all ${isActive ? "text-[#fc8019] bg-gray-100" : "text-gray-500"}`
-              }
-            >
-              <RestaurantIcon size={22} />
-              Restaurants
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to={"/admin/dishes"}
-              className={({ isActive }) =>
-                `flex gap-3 items-center text-sm px-3 py-2.5 rounded-lg font-medium transition-all ${isActive ? "text-[#fc8019] bg-gray-100" : "text-gray-500"}`
-              }
-            >
-              <RestaurantIcon size={22} />
-              Dishes
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to={"/admin/categories"}
-              className={({ isActive }) =>
-                `flex gap-3 items-center text-sm px-3 py-2.5 rounded-lg font-medium transition-all ${isActive ? "text-[#fc8019] bg-gray-100" : "text-gray-500"}`
-              }
-            >
-              <RestaurantIcon size={22} />
-              Categories
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to={"/admin/orders"}
+              to={"/restaurant/orders"}
               className={({ isActive }) =>
                 `flex gap-3 items-center text-sm px-3 py-2.5 rounded-lg font-medium transition-all ${isActive ? "text-[#fc8019] bg-gray-100" : "text-gray-500"}`
               }
@@ -66,37 +33,30 @@ const AdminSidebar = () => {
           </li>
           <li>
             <NavLink
-              to={"/admin/promo"}
+              to={"/restaurant/dishes"}
               className={({ isActive }) =>
                 `flex gap-3 items-center text-sm px-3 py-2.5 rounded-lg font-medium transition-all ${isActive ? "text-[#fc8019] bg-gray-100" : "text-gray-500"}`
               }
             >
               <RestaurantIcon size={22} />
-              Promo Codes
+              My Menu
             </NavLink>
           </li>
           <li>
             <NavLink
-              to={"/admin/customers"}
+              to={"/restaurant/settings"}
               className={({ isActive }) =>
                 `flex gap-3 items-center text-sm px-3 py-2.5 rounded-lg font-medium transition-all ${isActive ? "text-[#fc8019] bg-gray-100" : "text-gray-500"}`
               }
             >
               <RestaurantIcon size={22} />
-              Customers
+              Settings
             </NavLink>
           </li>
-          {/* <li>
-            <NavLink to={"/admin/reviews"} className={({ isActive }) =>
-                `flex gap-3 items-center text-sm px-3 py-2.5 rounded-lg font-medium transition-all ${isActive ? "text-[#fc8019] bg-gray-100" : "text-gray-500"}`}>
-              <RestaurantIcon size={22} />
-              Reviews
-            </NavLink>
-          </li> */}
         </ul>
       </div>
     </aside>
   );
 };
 
-export default AdminSidebar;
+export default RestaurantSidebar;

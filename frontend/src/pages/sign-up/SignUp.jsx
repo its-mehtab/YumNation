@@ -153,6 +153,15 @@ const SignUp = () => {
               </div>
 
               <div
+                onClick={() =>
+                  setSignUpData({ ...signUpData, role: "restaurant" })
+                }
+                className={`flex-1 cursor-pointer p-2.5 rounded-md text-sm h-full text-gray-600 text-center font-semibold transition border ${signUpData.role === "restaurant" ? "border-[#fc8019]" : "border-gray-300"}`}
+              >
+                Restaurant
+              </div>
+
+              <div
                 onClick={() => setSignUpData({ ...signUpData, role: "admin" })}
                 className={`flex-1 cursor-pointer p-2.5 rounded-md text-sm h-full text-gray-600 text-center font-semibold transition border ${signUpData.role === "admin" ? "border-[#fc8019]" : "border-gray-300"}`}
               >

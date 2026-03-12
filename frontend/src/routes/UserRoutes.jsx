@@ -18,6 +18,7 @@ const UserRoutes = () => {
   const { isLoggedIn, user } = useAuth();
 
   if (user?.role === "admin") return <Navigate to="/admin" />;
+  if (user?.role === "restaurant") return <Navigate to="/restaurant" />;
 
   return (
     <UserLayout>

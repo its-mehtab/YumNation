@@ -132,11 +132,6 @@ export const createProduct = async (req, res) => {
   }
 
   try {
-    const productExists = await Product.findOne({ name });
-
-    if (productExists) {
-      return res.status(400).json({ message: "product already exists" });
-    }
     const product = await Product.create({
       ...req.body,
       createdBy: userId,

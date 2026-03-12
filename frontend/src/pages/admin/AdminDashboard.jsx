@@ -13,7 +13,7 @@ const AdminDashboard = () => {
         ].map((stat) => (
           <div
             key={stat.label}
-            className="p-5 bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] flex justify-between gap-3 items-center"
+            className="p-5 bg-white rounded-2xl border border-[#b2b2b254] flex justify-between gap-3 items-center"
           >
             <div>
               <p className="text-xs font-medium capitalize text-gray-400 mb-1.5">

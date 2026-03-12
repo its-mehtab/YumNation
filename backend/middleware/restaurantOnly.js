@@ -1,9 +1,12 @@
 import User from "../models/user.modal.js";
 
-export const adminOnly = async (req, res, next) => {
+export const restaurantOnly = async (req, res, next) => {
+  console.log(req.userId);
+
   try {
-    const user = await User.findOne({ user: req.userId });
-    if (user.role !== "admin") {
+    const user = await User.findOne({ _id: req.userId });
+
+    if (user.role !== "restaurant") {
       return res.status(403).json({ message: "Access denied" });
     }
     next();

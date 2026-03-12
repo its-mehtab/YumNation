@@ -3,7 +3,7 @@ import { SearchIcon } from "../../assets/icon/Icons";
 import { NavLink } from "react-router-dom";
 import { assets } from "../../assets/assets";
 
-const AdminHeader = () => {
+const RestaurantHeader = () => {
   return (
     <div className="flex gap-14 items-center py-4 bg-[#fc8019] px-8">
       <NavLink to="/admin" className="flex shrink-0 items-center">
@@ -109,4 +109,4 @@ const AdminHeader = () => {
   );
 };
 
-export default AdminHeader;
+export default RestaurantHeader;
