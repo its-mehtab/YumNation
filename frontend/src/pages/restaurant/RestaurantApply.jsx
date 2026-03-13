@@ -5,6 +5,7 @@ import Input from "../../components/restaurant/Input";
 import Field from "../../components/restaurant/Field";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import { useRestaurant } from "../../context/restaurant/RestaurantContext";
 
 // ── Step config ───────────────────────────────────────────────────────────────
 const STEPS = [
@@ -52,16 +53,16 @@ const ReviewRow = ({ label, value }) => (
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 const RestaurantApply = () => {
-  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+
   // const logoRef = useRef();
   // const coverRef = useRef();
 
-  const { serverURL, user } = useAuth();
+  const { serverURL, logout } = useAuth();
+  const { restaurant, setRestaurant } = useRestaurant();
 
   const set = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -106,14 +107,17 @@ const RestaurantApply = () => {
 
   const handleSubmit = async () => {
     setSubmitting(true);
-    console.log(form);
 
     try {
-      await axios.post(`${serverURL}/api/restaurant/apply`, form, {
-        withCredentials: true,
-      });
-      // await new Promise((r) => setTimeout(r, 1500));
-      setSubmitted(true);
+      const { data } = await axios.post(
+        `${serverURL}/api/restaurant/apply`,
+        form,
+        {
+          withCredentials: true,
+        },
+      );
+
+      setRestaurant(data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -121,8 +125,7 @@ const RestaurantApply = () => {
     }
   };
 
-  // ── Submitted state ──
-  if (submitted) {
+  if (restaurant) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div
@@ -152,10 +155,10 @@ const RestaurantApply = () => {
             </ul>
           </div>
           <button
-            onClick={() => navigate("/")}
+            onClick={logout}
             className="w-full bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold py-3 rounded-xl transition-colors"
           >
-            Back to Home
+            Logout
           </button>
         </div>
       </div>

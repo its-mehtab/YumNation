@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import axios from "axios";
 import { useAuth } from "./AuthContext.jsx";
 
@@ -8,7 +8,7 @@ export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const { serverURL, isLoggedIn } = useAuth();
+  const { serverURL } = useAuth();
 
   const fetchWishlist = async () => {
     setLoading(true);
@@ -17,7 +17,6 @@ export const WishlistProvider = ({ children }) => {
       const { data } = await axios.get(`${serverURL}/api/wishlist`, {
         withCredentials: true,
       });
-      //   console.log(data);
 
       setWishlist(data);
     } catch (error) {
@@ -27,13 +26,9 @@ export const WishlistProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    fetchWishlist();
-  }, [isLoggedIn]);
-
   return (
     <WishlistContext.Provider
-      value={{ wishlist, setWishlist, loading, setLoading }}
+      value={{ wishlist, setWishlist, loading, setLoading, fetchWishlist }}
     >
       {children}
     </WishlistContext.Provider>

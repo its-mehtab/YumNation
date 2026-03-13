@@ -7,9 +7,8 @@ import AdminDishes from "../pages/admin/AdminDishes";
 import AddDish from "../pages/admin/AddDish";
 import AdminCategories from "../pages/admin/AdminCategories";
 import AdminOrderDetails from "../pages/admin/AdminOrderDetails";
-import AddRestaurant from "../pages/admin/AddRestaurant";
 import AdminRestaurants from "../pages/admin/AdminRestaurants";
-import RestaurantDetails from "../pages/admin/RestaurantDetails";
+import AdminRestaurantDetails from "../pages/admin/AdminRestaurantDetails";
 
 const AdminRoutes = () => {
   const { user } = useAuth();
@@ -23,8 +22,7 @@ const AdminRoutes = () => {
       <Routes>
         <Route path="/" element={<AdminDashboard />} />
         <Route path="/restaurants" element={<AdminRestaurants />} />
-        <Route path="/restaurants/:slug" element={<RestaurantDetails />} />
-        <Route path="/restaurant/add" element={<AddRestaurant />} />
+        <Route path="/restaurants/:slug" element={<AdminRestaurantDetails />} />
         <Route path="/dishes" element={<AdminDishes />} />
         <Route path="/dishes/add" element={<AddDish />} />
         <Route path="/categories" element={<AdminCategories />} />

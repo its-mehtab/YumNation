@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import axios from "axios";
 import { useAuth } from "./AuthContext";
 
@@ -8,7 +8,7 @@ export const AddressContextProvider = ({ children }) => {
   const [addresses, setAddresses] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const { serverURL, isLoggedIn } = useAuth();
+  const { serverURL } = useAuth();
 
   const fetchAddress = async () => {
     setLoading(true);
@@ -20,20 +20,16 @@ export const AddressContextProvider = ({ children }) => {
 
       setAddresses(data);
     } catch (error) {
-      console.log(error);
+      console.log("Address Error:", error?.response?.data || error.message);
       setAddresses(null);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchAddress();
-  }, [isLoggedIn]);
-
   return (
     <AddressContext.Provider
-      value={{ addresses, setAddresses, loading, setLoading }}
+      value={{ addresses, setAddresses, loading, setLoading, fetchAddress }}
     >
       {children}
     </AddressContext.Provider>

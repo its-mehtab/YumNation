@@ -14,6 +14,9 @@ import { WishlistProvider } from "./context/WishlistContext.jsx";
 import { Theme } from "@radix-ui/themes";
 import { AddressContextProvider } from "./context/AddressContext.jsx";
 import { OrderContextProvider } from "./context/OrderContext.jsx";
+import AppInit from "./context/AppInit.jsx";
+import { RestaurantProvider } from "./context/restaurant/RestaurantContext.jsx";
+import { RestaurantsProvider } from "./context/admin/RestaurantsContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -26,9 +29,14 @@ createRoot(document.getElementById("root")).render(
                 <AddressContextProvider>
                   <ValidateProvider>
                     <OrderContextProvider>
-                      <Theme accentColor="orange">
-                        <App />
-                      </Theme>
+                      <RestaurantProvider>
+                        <RestaurantsProvider>
+                          <Theme accentColor="orange">
+                            <AppInit />
+                            <App />
+                          </Theme>
+                        </RestaurantsProvider>
+                      </RestaurantProvider>
                     </OrderContextProvider>
                   </ValidateProvider>
                 </AddressContextProvider>

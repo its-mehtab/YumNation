@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { useAuth } from "./AuthContext";
 
 const OrderContext = createContext();
@@ -24,10 +24,6 @@ export const OrderContextProvider = ({ children }) => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchOrders();
-  }, []);
 
   return (
     <OrderContext.Provider

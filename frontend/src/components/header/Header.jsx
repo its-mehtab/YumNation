@@ -2,17 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { assets } from "../../assets/assets";
 import { Link, NavLink } from "react-router-dom";
 import { ChevronRightIcon, WishlistIcon } from "../../assets/icon/Icons";
-import Dropdown from "../dropdown/Dropdown";
-import { useWishlist } from "../../context/WishlistContext";
 import SearchBox from "../search-box/SearchBox";
 import { useAuth } from "../../context/AuthContext";
-import axios from "axios";
 
 const Header = () => {
   const [navActive, setNavActive] = useState(false);
 
-  const { wishlist } = useWishlist();
-  const { serverURL, user, setUser, isLoggedIn } = useAuth();
+  const { user, isLoggedIn, logout } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -27,22 +23,6 @@ const Header = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const logout = async () => {
-    try {
-      await axios.post(
-        `${serverURL}/api/logout`,
-        {},
-        {
-          withCredentials: true,
-        },
-      );
-
-      setUser(null);
-    } catch (error) {
-      console.log("Auth Error:", error?.response?.data || error.message);
-    }
-  };
 
   return (
     <header className="bg-[#fc8019] fixed top-0 left-0 right-0 z-50">

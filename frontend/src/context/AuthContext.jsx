@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useState, createContext, useContext, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
 
 const authContext = createContext();
 
@@ -27,13 +26,37 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const logout = async () => {
+    try {
+      await axios.post(
+        `${serverURL}/api/logout`,
+        {},
+        {
+          withCredentials: true,
+        },
+      );
+
+      setUser(null);
+    } catch (error) {
+      console.log("Auth Error:", error?.response?.data || error.message);
+    }
+  };
+
   useEffect(() => {
     getUserData();
   }, []);
 
   return (
     <authContext.Provider
-      value={{ serverURL, user, setUser, getUserData, loading, isLoggedIn }}
+      value={{
+        serverURL,
+        user,
+        setUser,
+        getUserData,
+        loading,
+        isLoggedIn,
+        logout,
+      }}
     >
       {children}
     </authContext.Provider>
