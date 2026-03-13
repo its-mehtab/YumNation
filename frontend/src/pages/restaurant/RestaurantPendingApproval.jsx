@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useRestaurant } from "../../context/restaurant/RestaurantContext";
 
 const steps = [
   { icon: "📝", label: "Application Submitted", done: true },
@@ -11,7 +12,7 @@ const steps = [
 
 const RestaurantPendingApproval = () => {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { restaurant } = useRestaurant();
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
@@ -36,13 +37,10 @@ const RestaurantPendingApproval = () => {
             Application Under Review
           </h1>
           <p className="text-sm text-gray-400 leading-relaxed">
-            Hey{" "}
-            <strong className="text-gray-600">
-              {user?.name?.split(" ")[0]}
-            </strong>
-            ! Your application for{" "}
+            Hey <strong className="text-gray-600">{user?.firstName}</strong>!
+            Your application for{" "}
             <strong className="text-[#fc8019]">
-              {user?.restaurant?.name || "your restaurant"}
+              {restaurant?.name || "your restaurant"}
             </strong>{" "}
             has been received. Our team typically reviews applications within{" "}
             <strong className="text-gray-600">2–3 business days</strong>.

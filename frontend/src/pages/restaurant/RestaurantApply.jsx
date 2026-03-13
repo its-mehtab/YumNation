@@ -125,46 +125,6 @@ const RestaurantApply = () => {
     }
   };
 
-  if (restaurant) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-        <div
-          className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.08)] max-w-md w-full p-10 text-center"
-          style={{ animation: "fadeUp 0.5s ease both" }}
-        >
-          <style>{`@keyframes fadeUp { from { opacity:0; transform:translateY(20px) } to { opacity:1; transform:translateY(0) } }`}</style>
-          <div className="text-6xl mb-4">🎉</div>
-          <h2 className="text-xl font-bold text-gray-700 mb-2">
-            Application Submitted!
-          </h2>
-          <p className="text-sm text-gray-400 leading-relaxed mb-6">
-            Thanks for applying! Our team will review your application and get
-            back to you within{" "}
-            <strong className="text-gray-600">2–3 business days</strong>. You'll
-            receive an email once you're approved.
-          </p>
-          <div className="bg-orange-50 border border-orange-100 rounded-xl px-4 py-3 text-left mb-6">
-            <p className="text-xs font-semibold text-[#fc8019] mb-1">
-              What happens next?
-            </p>
-            <ul className="text-xs text-gray-500 space-y-1">
-              <li>✅ Application received</li>
-              <li>⏳ Admin reviews your details</li>
-              <li>📧 You'll get an approval email</li>
-              <li>🚀 Your dashboard unlocks</li>
-            </ul>
-          </div>
-          <button
-            onClick={logout}
-            className="w-full bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold py-3 rounded-xl transition-colors"
-          >
-            Logout
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 pt-5 pb-10 px-4">
       <div className="max-w-2xl mx-auto">

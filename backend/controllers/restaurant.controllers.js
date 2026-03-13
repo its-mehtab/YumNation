@@ -114,13 +114,60 @@ export const createRestaurant = async (req, res) => {
 };
 
 export const updateRestaurant = async (req, res) => {
-  console.log(",jdb");
+  const { id } = req.params;
+  const { name } = req.body;
+
+  try {
+    const restaurant = await Restaurant.findByIdAndUpdate(id);
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "restaurant not found" });
+    }
+
+    return res.status(200).json(restaurant);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "internal server error", error: error.message });
+  }
 };
 
 export const updateRestaurantStatus = async (req, res) => {
-  const owner = req.userId;
+  const { id } = req.params;
+  const { status } = req.body;
+
   try {
-    const restaurant = await Restaurant.findOne({ owner });
+    const restaurant = await Restaurant.findByIdAndUpdate(
+      id,
+      {
+        $set: { status },
+      },
+      { new: true },
+    );
+
+    if (!restaurant) {
+      res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    res.status(200).json(restaurant);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "internal server error", error: error.message });
+  }
+};
+
+export const deleteRestaurant = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const restaurant = await Restaurant.findByIdAndDelete(id);
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    return res.status(200).json(restaurant);
   } catch (error) {
     return res
       .status(500)

@@ -11,21 +11,21 @@ import RestaurantSettings from "../pages/restaurant/RestaurantSettings";
 import RestaurantApply from "../pages/restaurant/RestaurantApply";
 import RestaurantPendingApproval from "../pages/restaurant/RestaurantPendingApproval";
 import RestaurantRejectedPage from "../pages/restaurant/RestaurantRejectedPage";
+import { useRestaurant } from "../context/restaurant/RestaurantContext";
 
 const RestaurantRoutes = () => {
   const { user } = useAuth();
+  const { restaurant } = useRestaurant();
 
   if (user?.role !== "restaurant") return <Navigate to="/" />;
 
   if (!user || user?.role !== "restaurant") return <Navigate to="/" />;
 
-  if (!user?.restaurant) return <RestaurantApply />;
+  if (!restaurant) return <RestaurantApply />;
 
-  if (user?.restaurant?.status === "pending")
-    return <RestaurantPendingApproval />;
+  if (restaurant?.status === "pending") return <RestaurantPendingApproval />;
 
-  if (user?.restaurant?.status === "rejected")
-    return <RestaurantRejectedPage />;
+  if (restaurant?.status === "rejected") return <RestaurantRejectedPage />;
 
   return (
     <RestaurantLayout>

@@ -2,183 +2,10 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useRestaurants } from "../../context/admin/RestaurantsContext";
 import { DeleteIcon } from "../../assets/icon/Icons";
-
-// ── Mock data ─────────────────────────────────────────────────────────────────
-const mockRestaurants = [
-  {
-    _id: "1",
-    name: "Pizza Palace",
-    owner: "Marco Rossi",
-    email: "marco@pizzapalace.com",
-    phone: "+91 9876543210",
-    city: "Kolkata",
-    totalDishes: 24,
-    totalOrders: 342,
-    revenue: 18450,
-    rating: 4.5,
-    status: "active",
-    joinedAt: "2024-01-10",
-  },
-  {
-    _id: "2",
-    name: "Burger Barn",
-    owner: "Sarah Khan",
-    email: "sarah@burgerbarn.com",
-    phone: "+91 9123456780",
-    city: "Mumbai",
-    totalDishes: 18,
-    totalOrders: 210,
-    revenue: 9800,
-    rating: 4.2,
-    status: "active",
-    joinedAt: "2024-02-15",
-  },
-  {
-    _id: "3",
-    name: "Noodle House",
-    owner: "Lin Wei",
-    email: "lin@noodlehouse.com",
-    phone: "+91 9988776655",
-    city: "Delhi",
-    totalDishes: 0,
-    totalOrders: 0,
-    revenue: 0,
-    rating: 0,
-    status: "pending",
-    joinedAt: "2024-03-01",
-  },
-  {
-    _id: "4",
-    name: "Sweet Tooth",
-    owner: "Priya Sharma",
-    email: "priya@sweettooth.com",
-    phone: "+91 9871234560",
-    city: "Bangalore",
-    totalDishes: 30,
-    totalOrders: 560,
-    revenue: 31200,
-    rating: 4.8,
-    status: "active",
-    joinedAt: "2024-03-22",
-  },
-  {
-    _id: "5",
-    name: "Spice Garden",
-    owner: "Arjun Nair",
-    email: "arjun@spicegarden.com",
-    phone: "+91 9765432100",
-    city: "Chennai",
-    totalDishes: 0,
-    totalOrders: 0,
-    revenue: 0,
-    rating: 0,
-    status: "pending",
-    joinedAt: "2024-04-05",
-  },
-  {
-    _id: "6",
-    name: "Taco Town",
-    owner: "Raj Mehta",
-    email: "raj@tacotown.com",
-    phone: "+91 9000012345",
-    city: "Hyderabad",
-    totalDishes: 5,
-    totalOrders: 12,
-    revenue: 600,
-    rating: 3.2,
-    status: "rejected",
-    joinedAt: "2024-04-10",
-  },
-  {
-    _id: "7",
-    name: "Sushi Stop",
-    owner: "Kenji Tanaka",
-    email: "kenji@sushistop.com",
-    phone: "+91 9111122233",
-    city: "Pune",
-    totalDishes: 20,
-    totalOrders: 130,
-    revenue: 9100,
-    rating: 4.1,
-    status: "suspended",
-    joinedAt: "2024-02-20",
-  },
-];
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-const statusConfig = {
-  active: { label: "Active", bg: "bg-green-50", text: "text-green-600" },
-  pending: { label: "Pending", bg: "bg-yellow-50", text: "text-yellow-600" },
-  rejected: { label: "Rejected", bg: "bg-red-50", text: "text-red-400" },
-  suspended: { label: "Suspended", bg: "bg-gray-100", text: "text-gray-500" },
-};
-
-const StatusBadge = ({ status }) => {
-  const cfg = statusConfig[status] || statusConfig.pending;
-  return (
-    <span
-      className={`text-xs font-semibold px-3 py-1 rounded-full ${cfg.bg} ${cfg.text}`}
-    >
-      {cfg.label}
-    </span>
-  );
-};
-
-const StarRating = ({ rating }) =>
-  rating > 0 ? (
-    <div className="flex items-center gap-1">
-      <span className="text-yellow-400 text-xs">★</span>
-      <span className="text-xs font-semibold text-gray-700">
-        {rating.toFixed(1)}
-      </span>
-    </div>
-  ) : (
-    <span className="text-xs text-gray-300">—</span>
-  );
-
-// ── Reject modal ──────────────────────────────────────────────────────────────
-const RejectModal = ({ restaurant, onConfirm, onCancel }) => {
-  const [reason, setReason] = useState("");
-  return (
-    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 px-4">
-      <div
-        className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6"
-        style={{ animation: "fadeUp 0.2s ease both" }}
-      >
-        <style>{`@keyframes fadeUp { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:translateY(0) } }`}</style>
-        <h3 className="text-base font-bold text-gray-700 mb-1">
-          Reject Application
-        </h3>
-        <p className="text-xs text-gray-400 mb-4">
-          Rejecting <strong className="text-gray-600">{restaurant.name}</strong>
-          . Give a reason so the owner can reapply correctly.
-        </p>
-        <textarea
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-          placeholder="e.g. Address could not be verified. Please provide a complete and accurate address."
-          rows={3}
-          className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-700 outline-none focus:border-red-300 transition-colors resize-none mb-4"
-        />
-        <div className="flex gap-3">
-          <button
-            onClick={onCancel}
-            className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={() => onConfirm(reason)}
-            disabled={!reason.trim()}
-            className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-semibold transition-colors disabled:opacity-40"
-          >
-            Reject
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+import AdminRestaurantsItem from "../../components/admin/AdminRestaurantItem";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
+import RejectModal from "../../components/admin/RejectModal";
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 const AdminRestaurants = () => {
@@ -187,6 +14,8 @@ const AdminRestaurants = () => {
   const [filter, setFilter] = useState("all");
   const [rejectTarget, setRejectTarget] = useState(null);
 
+  const { serverURL } = useAuth();
+
   const tabs = [
     { key: "all", label: "All" },
     { key: "pending", label: "Pending" },
@@ -194,7 +23,6 @@ const AdminRestaurants = () => {
     { key: "rejected", label: "Rejected" },
     { key: "suspended", label: "Suspended" },
   ];
-  console.log(restaurants);
 
   const filtered = restaurants.filter((r) => {
     const matchSearch =
@@ -210,20 +38,6 @@ const AdminRestaurants = () => {
       prev.map((r) => (r._id === id ? { ...r, status, ...extra } : r)),
     );
 
-  const handleApprove = (id) => updateStatus(id, "active");
-  const handleSuspend = (id) => {
-    if (window.confirm("Suspend this restaurant?"))
-      updateStatus(id, "suspended");
-  };
-  const handleDelete = (id) => {
-    if (window.confirm("Permanently delete this restaurant?"))
-      setRestaurants((prev) => prev.filter((r) => r._id !== id));
-  };
-  const handleReject = (reason) => {
-    updateStatus(rejectTarget._id, "rejected", { rejectionReason: reason });
-    setRejectTarget(null);
-  };
-
   const pendingCount = restaurants.filter((r) => r.status === "pending").length;
   const totalRevenue = restaurants
     .filter((r) => r.status === "active")
@@ -233,9 +47,9 @@ const AdminRestaurants = () => {
     <div>
       {rejectTarget && (
         <RejectModal
+          updateStatus={updateStatus}
           restaurant={rejectTarget}
-          onConfirm={handleReject}
-          onCancel={() => setRejectTarget(null)}
+          setRejectTarget={setRejectTarget}
         />
       )}
 
@@ -371,106 +185,12 @@ const AdminRestaurants = () => {
             </thead>
             <tbody className="divide-y divide-gray-50">
               {filtered.map((r) => (
-                <tr key={r._id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 min-w-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-lg">
-                        🏪
-                      </div>
-                      <p className="font-semibold text-gray-700">{r.name}</p>
-                    </div>
-                  </td>
-                  <td className="px-4 py-4">
-                    <p className="font-medium text-gray-700 text-xs">
-                      {r.owner.firstName}
-                    </p>
-                    <p className="text-xs text-gray-400 mt-0.5">{r.email}</p>
-                  </td>
-                  <td className="px-4 py-4 text-gray-500 text-xs">
-                    📍 {r.address.city}
-                  </td>
-                  <td className="px-4 py-4 text-gray-700 font-medium">
-                    {r.totalDishes || "—"}
-                  </td>
-                  <td className="px-4 py-4 text-gray-700 font-medium">
-                    {r.totalOrders > 0 ? r.totalOrders.toLocaleString() : "—"}
-                  </td>
-                  <td className="px-4 py-4 font-semibold text-[#fc8019]">
-                    {r.revenue > 0 ? `$${r.revenue.toLocaleString()}` : "—"}
-                  </td>
-                  <td className="px-4 py-4">
-                    <StarRating rating={r.rating} />
-                  </td>
-                  <td className="px-4 py-4">
-                    <StatusBadge status={r.status} />
-                  </td>
-                  <td className="px-4 py-4">
-                    <div className="flex items-center gap-1 flex-wrap">
-                      {/* Pending actions */}
-                      {r.status === "pending" && (
-                        <>
-                          <button
-                            onClick={() => handleApprove(r._id)}
-                            className="px-2.5 py-1 rounded-lg bg-green-50 text-green-600 text-xs font-semibold hover:bg-green-100 transition-colors"
-                          >
-                            ✓ Approve
-                          </button>
-                          <button
-                            onClick={() => setRejectTarget(r)}
-                            className="px-2.5 py-1 rounded-lg bg-red-50 text-red-400 text-xs font-semibold hover:bg-red-100 transition-colors"
-                          >
-                            ✕ Reject
-                          </button>
-                        </>
-                      )}
-                      {/* Active actions */}
-                      {r.status === "active" && (
-                        <button
-                          onClick={() => handleSuspend(r._id)}
-                          className="px-2.5 py-1 rounded-lg bg-gray-100 text-gray-500 text-xs font-semibold hover:bg-gray-200 transition-colors"
-                        >
-                          Suspend
-                        </button>
-                      )}
-                      {/* Reinstate */}
-                      {(r.status === "suspended" ||
-                        r.status === "rejected") && (
-                        <button
-                          onClick={() => handleApprove(r._id)}
-                          className="px-2.5 py-1 rounded-lg bg-green-50 text-green-600 text-xs font-semibold hover:bg-green-100 transition-colors"
-                        >
-                          Reinstate
-                        </button>
-                      )}
-                      {/* View */}
-                      <Link
-                        to={`/admin/restaurants/${r._id}`}
-                        className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-blue-500 transition-colors"
-                      >
-                        <svg
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                          <circle cx="12" cy="12" r="3" />
-                        </svg>
-                      </Link>
-                      {/* Delete */}
-                      <button
-                        onClick={() => handleDelete(r._id)}
-                        className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
-                      >
-                        <DeleteIcon />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                <AdminRestaurantsItem
+                  key={r._id}
+                  r={r}
+                  setRejectTarget={setRejectTarget}
+                  updateStatus={updateStatus}
+                />
               ))}
             </tbody>
           </table>
