@@ -26,20 +26,28 @@ const ConfirmationModal = ({ button, heading, description, onClick }) => {
         {button}
       </AlertDialog.Trigger>
       <AlertDialog.Content maxWidth="450px">
-        <AlertDialog.Title>{heading}</AlertDialog.Title>
-        <AlertDialog.Description size="2" className="text-gray-400">
-          {description}
+        <AlertDialog.Title asChild>
+          <h2 className="font-[Poppins] text-lg font-bold text-gray-700">
+            {heading}
+          </h2>
+        </AlertDialog.Title>
+
+        <AlertDialog.Description asChild>
+          <p className="text-[15px] text-gray-400">{description}</p>
         </AlertDialog.Description>
         <Flex gap="3" mt="4" justify="end">
-          <AlertDialog.Cancel>
-            <Button variant="soft" color="gray">
+          <AlertDialog.Cancel asChild>
+            <button className="w-full py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors">
               Cancel
-            </Button>
+            </button>
           </AlertDialog.Cancel>
-          <Button variant="solid" color="red" onClick={handleConfirm}>
+          <button
+            onClick={handleConfirm}
+            className="w-full flex justify-center items-center gap-2 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-semibold transition-colors disabled:opacity-40"
+          >
             Confirm
             <Spinner loading={loading} />
-          </Button>
+          </button>
         </Flex>
       </AlertDialog.Content>
     </AlertDialog.Root>

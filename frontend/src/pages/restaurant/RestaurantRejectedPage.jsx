@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useRestaurant } from "../../context/restaurant/RestaurantContext";
 
 const RestaurantRejectedPage = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [showReapply, setShowReapply] = useState(false);
 
-  // Get rejection reason from user's restaurant object
-  const reason = user?.restaurant?.rejectionReason || null;
+  const { restaurant } = useRestaurant();
+
+  const reason = restaurant?.rejectionReason || null;
 
   const commonReasons = [
     { emoji: "📄", text: "Incomplete or inaccurate information provided" },
@@ -18,14 +20,8 @@ const RestaurantRejectedPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
-      <div
-        className="max-w-lg w-full space-y-4"
-        style={{ animation: "fadeUp 0.5s ease both" }}
-      >
-        <style>{`@keyframes fadeUp { from { opacity:0; transform:translateY(20px) } to { opacity:1; transform:translateY(0) } }`}</style>
-
-        {/* ── Main card ── */}
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12 fade-up">
+      <div className="max-w-lg w-full space-y-4">
         <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.08)] p-8 text-center">
           <div className="w-20 h-20 rounded-full bg-red-50 border-2 border-red-100 flex items-center justify-center text-4xl mx-auto mb-5">
             😔
@@ -37,16 +33,15 @@ const RestaurantRejectedPage = () => {
           <p className="text-sm text-gray-400 leading-relaxed">
             Hey{" "}
             <strong className="text-gray-600">
-              {user?.name?.split(" ")[0]}
+              {user?.firstName?.split(" ")[0]}
             </strong>
             , unfortunately your application for{" "}
             <strong className="text-red-400">
-              {user?.restaurant?.name || "your restaurant"}
+              {restaurant?.name || "your restaurant"}
             </strong>{" "}
             was not approved this time.
           </p>
 
-          {/* Rejection reason from admin */}
           {reason ? (
             <div className="mt-6 bg-red-50 border border-red-100 rounded-xl px-5 py-4 text-left">
               <p className="text-xs font-bold uppercase tracking-widest text-red-400 mb-2">
@@ -70,21 +65,19 @@ const RestaurantRejectedPage = () => {
             </div>
           )}
 
-          {/* Reapply CTA */}
           <div className="mt-6 space-y-3">
-            <button
-              onClick={() => navigate("/restaurant/apply")}
-              className="w-full bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold py-3 rounded-xl transition-colors"
+            <Link
+              to={"/restaurant"}
+              className="block w-full bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold py-3 rounded-xl transition-colors"
             >
               🔄 Reapply Now
-            </button>
+            </Link>
             <p className="text-xs text-gray-400">
               Fix the issues above and submit a new application.
             </p>
           </div>
         </div>
 
-        {/* ── Tips card ── */}
         <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-5">
           <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
             Tips for a successful application
@@ -118,7 +111,6 @@ const RestaurantRejectedPage = () => {
           </div>
         </div>
 
-        {/* ── Actions ── */}
         <div className="grid grid-cols-2 gap-3">
           <a
             href="mailto:support@yourapp.com"

@@ -134,22 +134,33 @@ export const updateRestaurant = async (req, res) => {
 
 export const updateRestaurantStatus = async (req, res) => {
   const { id } = req.params;
-  const { status } = req.body;
+  const { status, rejectionReason } = req.body;
 
   try {
+    if (status === "rejected" && !rejectionReason) {
+      return res.status(400).json({
+        message: "Rejection reason is required",
+      });
+    }
+
+    const updatedData = {
+      status,
+      rejectionReason: status !== "rejected" ? null : rejectionReason,
+    };
+
     const restaurant = await Restaurant.findByIdAndUpdate(
       id,
       {
-        $set: { status },
+        $set: updatedData,
       },
       { new: true },
     );
 
     if (!restaurant) {
-      res.status(404).json({ message: "Restaurant not found" });
+      return res.status(404).json({ message: "Restaurant not found" });
     }
 
-    res.status(200).json(restaurant);
+    return res.status(200).json(restaurant);
   } catch (error) {
     return res
       .status(500)

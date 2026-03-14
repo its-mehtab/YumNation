@@ -1,27 +1,33 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { notifyError } from "../../utils/toast";
+import { notifyError, notifySuccess } from "../../utils/toast";
+import { Spinner } from "@radix-ui/themes";
 
 const RejectModal = ({ restaurant, setRejectTarget, updateStatus }) => {
   const [reason, setReason] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { serverURL } = useAuth();
 
   const handleReject = async (reason) => {
+    setLoading(true);
     try {
-      const { data } = await axios.patch(
-        `${serverURL}/api/restaurant`,
-        { status: "rejected" },
+      await axios.patch(
+        `${serverURL}/api/restaurant/${restaurant._id}`,
+        { status: "rejected", rejectionReason: reason },
         { withCredentials: true },
       );
-    } catch (error) {
-      notifyError(error?.response?.data || `${restaurant.name} rejected`);
-      console.log("Reject Error:", error?.response?.data || error.message);
-    }
 
-    updateStatus(restaurant._id, "rejected", { rejectionReason: reason });
-    setRejectTarget(null);
+      updateStatus(restaurant._id, "rejected", { rejectionReason: reason });
+      notifySuccess(`${restaurant.name} rejected`);
+    } catch (error) {
+      notifyError(error?.response?.data || `${restaurant.name} reject failed`);
+      console.log("Reject Error:", error?.response?.data || error.message);
+    } finally {
+      setLoading(false);
+      setRejectTarget(null);
+    }
   };
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 px-4">
@@ -47,16 +53,17 @@ const RejectModal = ({ restaurant, setRejectTarget, updateStatus }) => {
         <div className="flex gap-3">
           <button
             onClick={() => setRejectTarget(null)}
-            className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
+            className="w-full py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={() => handleReject(reason)}
-            disabled={!reason.trim()}
-            className="flex-1 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-semibold transition-colors disabled:opacity-40"
+            disabled={!reason.trim() || loading}
+            className="w-full flex justify-center items-center gap-2 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-semibold transition-colors disabled:opacity-40"
           >
             Reject
+            <Spinner loading={loading} />
           </button>
         </div>
       </div>
