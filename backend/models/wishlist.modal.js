@@ -10,9 +10,9 @@ const wishlistSchema = new Schema(
     },
     items: [
       {
-        product: {
+        dish: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Product",
+          ref: "Dish",
           required: true,
         },
 
@@ -32,7 +32,7 @@ const wishlistSchema = new Schema(
       },
     ],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Wishlist = mongoose.model("wishlist", wishlistSchema);

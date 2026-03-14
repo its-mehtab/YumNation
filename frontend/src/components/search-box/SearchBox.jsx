@@ -6,14 +6,14 @@ import "swiper/css/free-mode";
 import { useAuth } from "../../context/AuthContext";
 import axios from "axios";
 import RecentSearchWrap from "../recent-search-wrap/RecentSearchWrap";
-import ProductCardSm from "../product-card-sm/ProductCardSm";
+import DishCardSm from "../dish-card-sm/DishCardSm";
 
 const SearchBox = () => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [query, setQuery] = useState("");
   const [resultName, setResultName] = useState(null);
   const [results, setResults] = useState([]);
-  const [popularProducts, setPopulerProducts] = useState([]);
+  const [popularDishs, setPopulerDishs] = useState([]);
   const [recentSearches, setRecentSearches] = useState(
     JSON.parse(localStorage.getItem("Recent Searches")) || [
       "Pizza",
@@ -25,22 +25,22 @@ const SearchBox = () => {
   const { serverURL } = useAuth();
   const boxRef = useRef(null);
 
-  const fetchPopularProducts = async () => {
+  const fetchPopularDishs = async () => {
     try {
-      const { data } = await axios.get(`${serverURL}/api/products`, {
+      const { data } = await axios.get(`${serverURL}/api/dish`, {
         params: {
           availability: "recommended",
         },
       });
 
-      setPopulerProducts(data.products);
+      setPopulerDishs(data.dishs);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    fetchPopularProducts();
+    fetchPopularDishs();
   }, []);
 
   const handleSearch = async (e) => {
@@ -58,10 +58,10 @@ const SearchBox = () => {
 
     try {
       const { data } = await axios.get(
-        `${serverURL}/api/products?search=${query}`,
+        `${serverURL}/api/dishs?search=${query}`,
       );
 
-      setResults(data.products);
+      setResults(data.dishs);
       setRecentSearches((prev) => {
         return [query, ...prev];
       });
@@ -135,7 +135,7 @@ const SearchBox = () => {
                 {results?.map((resultItem) => {
                   return (
                     <SwiperSlide key={resultItem._id}>
-                      <ProductCardSm
+                      <DishCardSm
                         setResultName={setResultName}
                         setResults={setResults}
                         setIsSearchActive={setIsSearchActive}
@@ -172,10 +172,10 @@ const SearchBox = () => {
                 // }}
                 className="mySwiper"
               >
-                {popularProducts?.map((resultItem) => {
+                {popularDishs?.map((resultItem) => {
                   return (
                     <SwiperSlide key={resultItem._id}>
-                      <ProductCardSm
+                      <DishCardSm
                         resultName={resultName}
                         setResultName={setResultName}
                         setIsSearchActive={setIsSearchActive}

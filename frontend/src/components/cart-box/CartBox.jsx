@@ -45,7 +45,7 @@ const CartBox = () => {
           return (
             <CartItem
               currProd={currProd}
-              key={`${currProd.product._id}-${currProd.variant}`}
+              key={`${currProd.dish._id}-${currProd.variant}`}
             />
           );
         })

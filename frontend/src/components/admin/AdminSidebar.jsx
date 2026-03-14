@@ -33,17 +33,6 @@ const AdminSidebar = () => {
           </li>
           <li>
             <NavLink
-              to={"/admin/dishes"}
-              className={({ isActive }) =>
-                `flex gap-3 items-center text-sm px-3 py-2.5 rounded-lg font-medium transition-all ${isActive ? "text-[#fc8019] bg-gray-100" : "text-gray-500"}`
-              }
-            >
-              <RestaurantIcon size={22} />
-              Dishes
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
               to={"/admin/categories"}
               className={({ isActive }) =>
                 `flex gap-3 items-center text-sm px-3 py-2.5 rounded-lg font-medium transition-all ${isActive ? "text-[#fc8019] bg-gray-100" : "text-gray-500"}`

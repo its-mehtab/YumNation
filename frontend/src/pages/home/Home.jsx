@@ -6,7 +6,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "./home.css";
 import { Navigation, Pagination } from "swiper/modules";
-import ProductCard from "../../components/product-card/ProductCard";
+import DishCard from "../../components/dish-card/DishCard";
 import {
   BeverageIcon,
   BurgersmIcon,
@@ -25,19 +25,19 @@ import {
   LocationIcon,
 } from "../../assets/icon/Icons";
 import { useCategory } from "../../context/CategoryContext";
-import { useProduct } from "../../context/ProductContext";
+import { useDish } from "../../context/DishContext";
 import { Link } from "react-router-dom";
 import CartBox from "../../components/cart-box/CartBox";
 import AddressBox from "../../components/address-box/AddressBox";
 import CategorySkeleton from "../../components/skeleton/CategorySkeleton";
-import ProductCardSkeleton from "../../components/skeleton/ProductCardSkeleton";
+import DishCardSkeleton from "../../components/skeleton/DishCardSkeleton";
 import { Skeleton } from "@radix-ui/themes";
 import { useAuth } from "../../context/AuthContext";
 
 const Home = () => {
   const { isLoggedIn } = useAuth();
   const { categories, loading } = useCategory();
-  const { products, loading: productLoading } = useProduct();
+  const { dishs, loading: dishLoading } = useDish();
 
   return (
     <div className="grid grid-cols-12 gap-6">
@@ -160,16 +160,16 @@ const Home = () => {
             // }}
             className="mySwiper"
           >
-            {productLoading
+            {dishLoading
               ? Array.from({ length: 3 }).map((_, i) => (
                   <SwiperSlide key={i}>
-                    <ProductCardSkeleton />
+                    <DishCardSkeleton />
                   </SwiperSlide>
                 ))
-              : products?.products?.map((currProduct) => {
+              : dishs?.dishs?.map((currDish) => {
                   return (
-                    <SwiperSlide key={currProduct._id}>
-                      <ProductCard currProduct={currProduct} />
+                    <SwiperSlide key={currDish._id}>
+                      <DishCard currDish={currDish} />
                     </SwiperSlide>
                   );
                 })}
@@ -207,16 +207,16 @@ const Home = () => {
             // }}
             className="mySwiper"
           >
-            {productLoading
+            {dishLoading
               ? Array.from({ length: 3 }).map((_, i) => (
                   <SwiperSlide key={i}>
-                    <ProductCardSkeleton />
+                    <DishCardSkeleton />
                   </SwiperSlide>
                 ))
-              : products?.products?.map((currProduct) => {
+              : dishs?.dishs?.map((currDish) => {
                   return (
-                    <SwiperSlide key={currProduct._id}>
-                      <ProductCard currProduct={currProduct} />
+                    <SwiperSlide key={currDish._id}>
+                      <DishCard currDish={currDish} />
                     </SwiperSlide>
                   );
                 })}

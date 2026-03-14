@@ -26,9 +26,9 @@ const mockRestaurant = {
     state: "West Bengal",
     pinCode: "700016",
   },
-  openingHours: { open: 600, close: 1380 }, // minutes since midnight
+  openingHours: { open: 600, close: 1380 },
   isOpen: true,
-  status: "active", // active | pending | rejected | suspended
+  status: "pending",
   isPureVeg: false,
   deliveryTime: 35,
   minOrderAmount: 10,
@@ -107,7 +107,7 @@ const toTimeString = (minutes) => {
 };
 
 const statusConfig = {
-  active: { label: "Approved ✅", bg: "bg-green-50", text: "text-green-600" },
+  active: { label: "Active ✅", bg: "bg-green-50", text: "text-green-600" },
   pending: {
     label: "Pending Review ⏳",
     bg: "bg-yellow-50",
@@ -167,6 +167,59 @@ const InfoRow = ({ label, value }) => (
   </div>
 );
 
+// ── Status actions ─────────────────────────────────────────────────────────────
+// pending   → Approve + Reject
+// active    → Suspend
+// suspended → Reinstate
+// rejected  → Reinstate
+const StatusActions = ({
+  status,
+  onApprove,
+  onReject,
+  onSuspend,
+  onReinstate,
+}) => {
+  if (status === "pending")
+    return (
+      <div className="flex items-center gap-2">
+        <button
+          onClick={onApprove}
+          className="flex items-center gap-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+        >
+          ✓ Approve
+        </button>
+        <button
+          onClick={onReject}
+          className="flex items-center gap-1.5 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+        >
+          ✕ Reject
+        </button>
+      </div>
+    );
+
+  if (status === "active")
+    return (
+      <button
+        onClick={onSuspend}
+        className="flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+      >
+        🚫 Suspend
+      </button>
+    );
+
+  if (status === "suspended" || status === "rejected")
+    return (
+      <button
+        onClick={onReinstate}
+        className="flex items-center gap-1.5 bg-green-50 hover:bg-green-100 text-green-600 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+      >
+        ✓ Reinstate
+      </button>
+    );
+
+  return null;
+};
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 const AdminRestaurantDetails = () => {
   const { id } = useParams();
@@ -190,10 +243,11 @@ const AdminRestaurantDetails = () => {
 
   const handleToggleOpen = () =>
     setRestaurant((prev) => ({ ...prev, isOpen: !prev.isOpen }));
+  // Replace with: axios.patch(`${serverURL}/api/admin/restaurant/${id}`, { isOpen: !restaurant.isOpen }, { withCredentials: true })
 
-  const handleStatusChange = (e) =>
-    setRestaurant((prev) => ({ ...prev, status: e.target.value }));
-  // Replace with: axios.put(`${serverURL}/api/admin/restaurant/${id}/status`, { status: e.target.value }, { withCredentials: true })
+  const handleStatusUpdate = (status) =>
+    setRestaurant((prev) => ({ ...prev, status }));
+  // Replace with: axios.patch(`${serverURL}/api/admin/restaurant/${id}/status`, { status }, { withCredentials: true })
 
   if (loading)
     return (
@@ -240,7 +294,6 @@ const AdminRestaurantDetails = () => {
 
       {/* ── Hero banner ── */}
       <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] overflow-hidden mb-5">
-        {/* Cover */}
         <div className="h-36 bg-gradient-to-r from-orange-100 to-orange-50 relative">
           {restaurant.coverImage && (
             <img
@@ -270,10 +323,8 @@ const AdminRestaurantDetails = () => {
           </Link>
         </div>
 
-        {/* Info row */}
         <div className="px-6 pb-5 pt-3 flex items-end justify-between flex-wrap gap-4">
           <div className="flex items-center gap-4">
-            {/* Logo */}
             <div className="w-16 h-16 rounded-xl bg-orange-50 border-2 border-white shadow-md flex items-center justify-center text-3xl -mt-8 overflow-hidden">
               {restaurant.logo ? (
                 <img
@@ -311,29 +362,26 @@ const AdminRestaurantDetails = () => {
 
           {/* Controls */}
           <div className="flex items-center gap-4">
-            {/* Open today toggle */}
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500 font-medium">
-                Open Today
-              </span>
-              <Toggle checked={restaurant.isOpen} onChange={handleToggleOpen} />
-            </div>
-            {/* Status updater */}
-            <div className="flex flex-col gap-1">
-              <span className="text-xs text-gray-400 font-medium">
-                Application Status
-              </span>
-              <select
-                value={restaurant.status}
-                onChange={handleStatusChange}
-                className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-gray-600 outline-none focus:border-[#fc8019] transition-colors bg-white cursor-pointer"
-              >
-                <option value="pending">⏳ Pending</option>
-                <option value="active">✅ Active</option>
-                <option value="rejected">❌ Rejected</option>
-                <option value="suspended">🚫 Suspended</option>
-              </select>
-            </div>
+            {/* Open today toggle — only relevant when active */}
+            {restaurant.status === "active" && (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-500 font-medium">
+                  Open Today
+                </span>
+                <Toggle
+                  checked={restaurant.isOpen}
+                  onChange={handleToggleOpen}
+                />
+              </div>
+            )}
+            {/* Contextual status actions */}
+            <StatusActions
+              status={restaurant.status}
+              onApprove={() => handleStatusUpdate("active")}
+              onReject={() => handleStatusUpdate("rejected")}
+              onSuspend={() => handleStatusUpdate("suspended")}
+              onReinstate={() => handleStatusUpdate("active")}
+            />
           </div>
         </div>
       </div>
@@ -486,30 +534,22 @@ const AdminRestaurantDetails = () => {
       {/* ── Dishes tab ── */}
       {activeTab === "dishes" && (
         <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <div className="px-6 py-4 border-b border-gray-100">
             <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
               Dishes ({dishes.length})
             </p>
-            <Link
-              to={`/admin/dishes/add?restaurant=${restaurant._id}`}
-              className="flex items-center gap-1.5 bg-[#fc8019] text-white text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-[#e5721f] transition-colors"
-            >
-              + Add Dish
-            </Link>
           </div>
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100">
-                {["Dish", "Price", "Stock", "Type", "Status", "Action"].map(
-                  (h) => (
-                    <th
-                      key={h}
-                      className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider"
-                    >
-                      {h}
-                    </th>
-                  ),
-                )}
+                {["Dish", "Price", "Stock", "Type", "Status", ""].map((h) => (
+                  <th
+                    key={h}
+                    className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider"
+                  >
+                    {h}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -546,12 +586,13 @@ const AdminRestaurantDetails = () => {
                       {dish.isAvailable ? "Available" : "Unavailable"}
                     </span>
                   </td>
+                  {/* View only — admin does not edit dishes */}
                   <td className="px-5 py-3.5">
                     <Link
-                      to={`/admin/dishes/edit/${dish._id}`}
+                      to={`/admin/dishes/${dish._id}`}
                       className="text-xs text-[#fc8019] font-semibold hover:underline"
                     >
-                      Edit
+                      View →
                     </Link>
                   </td>
                 </tr>

@@ -31,11 +31,8 @@ const RestaurantRejectedPage = () => {
             Application Rejected
           </h1>
           <p className="text-sm text-gray-400 leading-relaxed">
-            Hey{" "}
-            <strong className="text-gray-600">
-              {user?.firstName?.split(" ")[0]}
-            </strong>
-            , unfortunately your application for{" "}
+            Hey <strong className="text-gray-600">{user?.firstName}</strong>,
+            unfortunately your application for{" "}
             <strong className="text-red-400">
               {restaurant?.name || "your restaurant"}
             </strong>{" "}

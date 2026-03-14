@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import ProductCard from "../../components/product-card/ProductCard";
-import { useProduct } from "../../context/ProductContext";
+import DishCard from "../../components/dish-card/DishCard";
+import { useDish } from "../../context/DishContext";
 import FilterBox from "./FilterBox";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import ProductCardSkeleton from "../../components/skeleton/ProductCardSkeleton";
+import DishCardSkeleton from "../../components/skeleton/DishCardSkeleton";
 import { Skeleton } from "@radix-ui/themes";
 
 const Shop = () => {
@@ -15,7 +15,7 @@ const Shop = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const { serverURL } = useAuth();
-  const { products, setProducts, loading } = useProduct();
+  const { dishs, setDishs, loading } = useDish();
 
   const [filters, setFilters] = useState({
     category: searchParams.get("category")?.split(",") || [],
@@ -34,7 +34,7 @@ const Shop = () => {
     });
   };
 
-  const fetchProducts = async () => {
+  const fetchDishs = async () => {
     try {
       const params = {
         ...filters,
@@ -42,11 +42,11 @@ const Shop = () => {
         availability: filters.availability.join(","),
       };
 
-      const { data } = await axios.get(`${serverURL}/api/products`, {
+      const { data } = await axios.get(`${serverURL}/api/dishs`, {
         params,
       });
 
-      setProducts(data);
+      setDishs(data);
     } catch (error) {
       console.log(error);
     }
@@ -68,7 +68,7 @@ const Shop = () => {
 
   useEffect(() => {
     const timer = setTimeout(async () => {
-      fetchProducts();
+      fetchDishs();
     }, 500);
 
     return () => clearTimeout(timer);
@@ -85,7 +85,7 @@ const Shop = () => {
             <div className="flex justify-between gap-3 mb-4">
               <Skeleton loading={loading}>
                 <p className="text-sm text-gray-600">
-                  Showing {products?.products.length} of {products?.total}
+                  Showing {dishs?.dishs.length} of {dishs?.total}
                 </p>
               </Skeleton>
 
@@ -119,13 +119,13 @@ const Shop = () => {
               {loading
                 ? Array.from({ length: 6 }).map((_, i) => (
                     <div key={i}>
-                      <ProductCardSkeleton />
+                      <DishCardSkeleton />
                     </div>
                   ))
-                : products?.products?.map((currProduct) => {
+                : dishs?.dishs?.map((currDish) => {
                     return (
-                      <div key={currProduct._id}>
-                        <ProductCard currProduct={currProduct} />
+                      <div key={currDish._id}>
+                        <DishCard currDish={currDish} />
                       </div>
                     );
                   })}
@@ -136,7 +136,7 @@ const Shop = () => {
                   <Pagination
                     page={page}
                     onChange={handlePageChange}
-                    count={products?.pages}
+                    count={dishs?.pages}
                     variant="outlined"
                     shape="rounded"
                   />

@@ -9,11 +9,11 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import { assets } from "../../assets/assets";
 
-const ProductGallery = () => {
+const DishGallery = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   return (
-    <div className="product-container clearfix">
+    <div className="dish-container clearfix">
       <Swiper
         onSwiper={setThumbsSwiper}
         direction="vertical"
@@ -24,16 +24,16 @@ const ProductGallery = () => {
         className="gallery-thumbs"
       >
         <SwiperSlide>
-          <img src={assets.product2} />
+          <img src={assets.dish2} />
         </SwiperSlide>
         <SwiperSlide>
-          <img src={assets.product2} />
+          <img src={assets.dish2} />
         </SwiperSlide>
         <SwiperSlide>
-          <img src={assets.product2} />
+          <img src={assets.dish2} />
         </SwiperSlide>
         <SwiperSlide>
-          <img src={assets.product2} />
+          <img src={assets.dish2} />
         </SwiperSlide>
       </Swiper>
 
@@ -45,20 +45,20 @@ const ProductGallery = () => {
         className="gallery-top"
       >
         <SwiperSlide>
-          <img src={assets.product2} />
+          <img src={assets.dish2} />
         </SwiperSlide>
         <SwiperSlide>
-          <img src={assets.product2} />
+          <img src={assets.dish2} />
         </SwiperSlide>
         <SwiperSlide>
-          <img src={assets.product2} />
+          <img src={assets.dish2} />
         </SwiperSlide>
         <SwiperSlide>
-          <img src={assets.product2} />
+          <img src={assets.dish2} />
         </SwiperSlide>
       </Swiper>
     </div>
   );
 };
 
-export default ProductGallery;
+export default DishGallery;

@@ -116,15 +116,11 @@ const Orders = () => {
                           className={`w-16 min-w-16 h-16 rounded-lg border flex justify-center items-center border-[#fc8019]`}
                         >
                           {/* <img src={currProd.image} alt="" className="w-full" /> */}
-                          <img
-                            src={assets.product2}
-                            alt=""
-                            className="w-full"
-                          />
+                          <img src={assets.dish2} alt="" className="w-full" />
                         </div>
                         <div>
                           <h3 className="flex gap-2 text-sm font-semibold text-gray-700 hover:text-[#fc8019] transition-all">
-                            <div to={`/product/${order.items[0].product.slug}`}>
+                            <div to={`/dish/${order.items[0].dish.slug}`}>
                               {order.items[0].name}
                             </div>
                             {order.items.length > 1 && (

@@ -12,6 +12,7 @@ import RestaurantApply from "../pages/restaurant/RestaurantApply";
 import RestaurantPendingApproval from "../pages/restaurant/RestaurantPendingApproval";
 import RestaurantRejectedPage from "../pages/restaurant/RestaurantRejectedPage";
 import { useRestaurant } from "../context/restaurant/RestaurantContext";
+import RestaurantSuspended from "../pages/restaurant/RestaurantSuspended";
 
 const RestaurantRoutes = () => {
   const { user } = useAuth();
@@ -24,6 +25,8 @@ const RestaurantRoutes = () => {
   if (!restaurant) return <RestaurantApply />;
 
   if (restaurant?.status === "pending") return <RestaurantPendingApproval />;
+
+  if (restaurant?.status === "suspended") return <RestaurantSuspended />;
 
   if (restaurant?.status === "rejected") return <RestaurantRejectedPage />;
 

@@ -94,7 +94,7 @@ const FilterBox = ({ filters, setFilters }) => {
       )}
 
       <h3 className="text-gray-700 text-lg capitalize font-semibold border-b border-gray-200 pb-2 mb-4.5">
-        Product categories
+        Dish categories
       </h3>
       {categories?.map((currCategory) => {
         return (

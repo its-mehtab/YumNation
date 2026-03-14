@@ -11,7 +11,7 @@ const Footer = () => {
         </p>
       </footer>
 
-      {/* <ProductModal /> */}
+      {/* <DishModal /> */}
     </>
   );
 };

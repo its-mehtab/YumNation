@@ -4,7 +4,7 @@ export const validateCartBeforeCheckout = async (req, res) => {
   const userId = req.userId;
 
   try {
-    const cart = await Cart.findOne({ user: userId }).populate("items.product");
+    const cart = await Cart.findOne({ user: userId }).populate("items.dish");
 
     if (!cart || cart.items.length === 0) {
       return res.status(400).json({ message: "Cart is empty" });
@@ -14,25 +14,23 @@ export const validateCartBeforeCheckout = async (req, res) => {
     let stockChanged = false;
 
     for (const item of cart.items) {
-      const product = item.product;
+      const dish = item.dish;
 
-      if (!product || !product.isAvailable || product.stock <= 0) {
+      if (!dish || !dish.isAvailable || dish.stock <= 0) {
         return res.status(400).json({
           message: `${item.name} is no longer available`,
         });
       }
 
-      if (item.quantity > product.stock) {
-        item.quantity = product.stock;
+      if (item.quantity > dish.stock) {
+        item.quantity = dish.stock;
         stockChanged = true;
       }
 
-      let expectedPrice = product.price;
+      let expectedPrice = dish.price;
 
       if (item.variant) {
-        const variantDoc = product.variants.find(
-          (v) => v.name === item.variant,
-        );
+        const variantDoc = dish.variants.find((v) => v.name === item.variant);
 
         if (!variantDoc) {
           return res.status(400).json({
@@ -45,17 +43,15 @@ export const validateCartBeforeCheckout = async (req, res) => {
 
       if (item.addOns && item.addOns.length > 0) {
         for (const cartAddOn of item.addOns) {
-          const productAddOn = product.addOns?.find(
-            (a) => a.name === cartAddOn.name,
-          );
+          const dishAddOn = dish.addOns?.find((a) => a.name === cartAddOn.name);
 
-          if (!productAddOn) {
+          if (!dishAddOn) {
             return res.status(400).json({
               message: `Add-on ${cartAddOn.name} no longer available`,
             });
           }
 
-          expectedPrice += productAddOn.price;
+          expectedPrice += dishAddOn.price;
         }
       }
 

@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import slugGenerator from "../utils/slugGenerator.js";
 
-const productSchema = new Schema(
+const dishSchema = new Schema(
   {
     name: {
       type: String,
@@ -20,17 +20,25 @@ const productSchema = new Schema(
       min: 0,
     },
 
-    description: {
+    cost: { type: Number, default: 0, min: 0 },
+
+    shortDescription: {
       type: String,
       required: true,
     },
 
-    images: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
+    longDescription: {
+      type: String,
+      required: true,
+    },
+
+    image: { type: String, default: null },
+
+    restaurant: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Restaurant",
+      required: true,
+    },
 
     category: {
       type: mongoose.Schema.Types.ObjectId,
@@ -56,12 +64,17 @@ const productSchema = new Schema(
           required: false,
           min: 0,
         },
+        stock: {
+          type: Number,
+          default: null,
+        },
+        rating: { type: Number, default: 0, min: 0, max: 5 },
+        totalOrders: { type: Number, default: 0 },
       },
     ],
 
     addOns: [
       {
-        addOnId: { type: mongoose.Schema.Types.ObjectId },
         name: {
           type: String,
           required: false,
@@ -74,16 +87,7 @@ const productSchema = new Schema(
       },
     ],
 
-    ingredients: [
-      {
-        type: String,
-      },
-    ],
-
-    stock: {
-      type: Number,
-      default: 999,
-    },
+    stock: { type: Number, default: null },
 
     isAvailable: {
       type: Boolean,
@@ -94,33 +98,18 @@ const productSchema = new Schema(
       type: Boolean,
       default: false,
     },
-
-    rating: {
-      type: Number,
-      default: 0,
-    },
-
-    totalReviews: {
-      type: Number,
-      default: 0,
-    },
-
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
   },
   { timestamps: true },
 );
 
-productSchema.pre("save", slugGenerator);
+dishSchema.pre("save", slugGenerator);
 
-const Product = mongoose.model("Product", productSchema);
-
-export default Product;
-
-productSchema.index({
+dishSchema.index({
   name: "text",
-  description: "text",
-  ingredients: "text",
+  shortDescription: "text",
+  longDescription: "text",
 });
+
+const Dish = mongoose.model("Dish", dishSchema);
+
+export default Dish;

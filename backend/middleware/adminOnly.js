@@ -5,7 +5,6 @@ export const adminOnly = async (req, res, next) => {
 
   try {
     const user = await User.findOne({ _id: req.userId });
-    console.log(user);
 
     if (user.role !== "admin") {
       return res.status(403).json({ message: "Access denied" });

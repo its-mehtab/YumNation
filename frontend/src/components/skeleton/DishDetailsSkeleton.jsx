@@ -1,6 +1,6 @@
 import { Skeleton } from "@radix-ui/themes";
 
-const ProductDetailsSkeleton = () => {
+const DishDetailsSkeleton = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 p-6">
       {/* LEFT SECTION */}
@@ -67,4 +67,4 @@ const ProductDetailsSkeleton = () => {
   );
 };
 
-export default ProductDetailsSkeleton;
+export default DishDetailsSkeleton;

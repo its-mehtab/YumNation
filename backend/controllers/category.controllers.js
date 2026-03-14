@@ -1,5 +1,5 @@
 import Category from "../models/category.modal.js";
-import Product from "../models/product.modal.js";
+import Dish from "../models/dish.modal.js";
 
 export const getCategories = async (req, res) => {
   try {
@@ -109,11 +109,11 @@ export const hardDeleteCategory = async (req, res) => {
       return res.status(404).json({ message: "Category not found" });
     }
 
-    const productCount = await Product.countDocuments({ category: id });
+    const dishCount = await Dish.countDocuments({ category: id });
 
-    if (productCount > 0) {
+    if (dishCount > 0) {
       return res.status(400).json({
-        message: `Cannot delete category. ${productCount} products still use it.`,
+        message: `Cannot delete category. ${dishCount} dishs still use it.`,
       });
     }
 

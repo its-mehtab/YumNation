@@ -27,13 +27,13 @@ const ConfirmationModal = ({ button, heading, description, onClick }) => {
       </AlertDialog.Trigger>
       <AlertDialog.Content maxWidth="450px">
         <AlertDialog.Title asChild>
-          <h2 className="font-[Poppins] text-lg font-bold text-gray-700">
+          <span className="font-[Poppins] text-lg font-bold text-gray-700">
             {heading}
-          </h2>
+          </span>
         </AlertDialog.Title>
 
         <AlertDialog.Description asChild>
-          <p className="text-[15px] text-gray-400">{description}</p>
+          <span className="text-[15px] text-gray-400">{description}</span>
         </AlertDialog.Description>
         <Flex gap="3" mt="4" justify="end">
           <AlertDialog.Cancel asChild>

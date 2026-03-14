@@ -39,7 +39,7 @@ const mockOrder = {
       quantity: 2,
       price: 45,
       image: null,
-      product: { slug: "italian-pizza" },
+      dish: { slug: "italian-pizza" },
     },
     {
       _id: "i2",
@@ -48,7 +48,7 @@ const mockOrder = {
       quantity: 1,
       price: 30,
       image: null,
-      product: { slug: "veg-burger" },
+      dish: { slug: "veg-burger" },
     },
   ],
 };
@@ -277,7 +277,7 @@ const RestaurantOrderDetails = () => {
               {order.items.map((item) => (
                 <div key={item._id} className="flex items-center gap-4">
                   <Link
-                    to={`/product/${item.product?.slug}`}
+                    to={`/dish/${item.dish?.slug}`}
                     className="w-14 h-14 min-w-14 rounded-xl border border-orange-100 bg-orange-50 flex items-center justify-center overflow-hidden"
                   >
                     {item.image ? (

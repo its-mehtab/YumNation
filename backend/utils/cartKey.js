@@ -1,4 +1,4 @@
-export const generateCartKey = (productId, variant, addOns) => {
+export const generateCartKey = (dishId, variant, addOns) => {
   const normalizedAddOns = Array.isArray(addOns)
     ? addOns
         .map((a) => a.toLowerCase().trim())
@@ -6,5 +6,5 @@ export const generateCartKey = (productId, variant, addOns) => {
         .join("-")
     : "";
 
-  return `${productId}-${variant}-${normalizedAddOns}`;
+  return `${dishId}-${variant}-${normalizedAddOns}`;
 };

@@ -8,7 +8,7 @@ import Header from "./components/header/Header.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ValidateProvider } from "./context/ValidateContext.jsx";
 import { CategoryProvider } from "./context/CategoryContext.jsx";
-import { ProductProvider } from "./context/ProductContext.jsx";
+import { DishProvider } from "./context/DishContext.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
 import { WishlistProvider } from "./context/WishlistContext.jsx";
 import { Theme } from "@radix-ui/themes";
@@ -24,7 +24,7 @@ createRoot(document.getElementById("root")).render(
       <AuthProvider>
         <WishlistProvider>
           <CartProvider>
-            <ProductProvider>
+            <DishProvider>
               <CategoryProvider>
                 <AddressContextProvider>
                   <ValidateProvider>
@@ -41,7 +41,7 @@ createRoot(document.getElementById("root")).render(
                   </ValidateProvider>
                 </AddressContextProvider>
               </CategoryProvider>
-            </ProductProvider>
+            </DishProvider>
           </CartProvider>
         </WishlistProvider>
       </AuthProvider>

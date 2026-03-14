@@ -15,7 +15,7 @@ export const getUserOrders = async (req, res) => {
         .sort({ createdAt: -1 })
         .skip((pageNum - 1) * limitNum)
         .limit(limitNum)
-        .populate("items.product", "slug"),
+        .populate("items.dish", "slug"),
 
       Order.countDocuments({ user: userId }),
     ]);
@@ -43,7 +43,7 @@ export const getOrderById = async (req, res) => {
 
   try {
     const order = await Order.findOne({ user: userId, _id: id }).populate(
-      "items.product",
+      "items.dish",
       "slug",
     );
 

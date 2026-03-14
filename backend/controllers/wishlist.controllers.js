@@ -5,7 +5,7 @@ export const getUserWishlist = async (req, res) => {
 
   try {
     const wishlist = await Wishlist.findOne({ user: userId }).populate(
-      "items.product",
+      "items.dish",
       "name slug variants stock isAvailable",
     );
 
@@ -22,7 +22,7 @@ export const getUserWishlist = async (req, res) => {
 };
 
 export const toggleWishlist = async (req, res) => {
-  const { productId, name, image, price } = req.body;
+  const { dishId, name, image, price } = req.body;
   const userId = req.userId;
 
   try {
@@ -30,25 +30,25 @@ export const toggleWishlist = async (req, res) => {
 
     if (wishlist) {
       const index = wishlist.items.findIndex(
-        (item) => item.product.toString() === productId,
+        (item) => item.dish.toString() === dishId,
       );
 
       if (index > -1) {
         wishlist.items.splice(index, 1);
       } else {
-        wishlist.items.push({ product: productId, name, image, price });
+        wishlist.items.push({ dish: dishId, name, image, price });
       }
 
       await wishlist.save();
     } else {
       wishlist = await Wishlist.create({
         user: userId,
-        items: [{ product: productId, name, image, price }],
+        items: [{ dish: dishId, name, image, price }],
       });
     }
 
     const updatedWishlist = await Wishlist.findOne({ user: userId }).populate(
-      "items.product",
+      "items.dish",
       "name slug variants stock isAvailable",
     );
 
@@ -62,7 +62,7 @@ export const toggleWishlist = async (req, res) => {
 
 export const removeFromWishlist = async (req, res) => {
   const userId = req.userId;
-  const { productId } = req.params;
+  const { dishId } = req.params;
 
   try {
     let wishlist = await Wishlist.findOne({ user: userId });
@@ -72,18 +72,18 @@ export const removeFromWishlist = async (req, res) => {
     }
 
     const index = wishlist.items.findIndex(
-      (item) => item.product.toString() === productId,
+      (item) => item.dish.toString() === dishId,
     );
 
     if (index === -1) {
-      return res.status(404).json({ message: "Product not found in wishlist" });
+      return res.status(404).json({ message: "Dish not found in wishlist" });
     }
 
     wishlist.items.splice(index, 1);
     await wishlist.save();
 
     const updatedWishlist = await wishlist.populate(
-      "items.product",
+      "items.dish",
       "name slug variants stock isAvailable",
     );
 

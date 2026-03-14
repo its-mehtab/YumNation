@@ -19,7 +19,7 @@ const Wishlist = () => {
     setLoading(true);
     try {
       const { data } = await axios.delete(
-        `${serverURL}/api/wishlist/${currProd.product._id}`,
+        `${serverURL}/api/wishlist/${currProd.dish._id}`,
         { withCredentials: true },
       );
 
@@ -33,7 +33,7 @@ const Wishlist = () => {
     }
   };
 
-  const handleAddCart = async (currProduct) => {
+  const handleAddCart = async (currDish) => {
     if (loading) return;
     setLoading(true);
 
@@ -41,19 +41,19 @@ const Wishlist = () => {
       const { data } = await axios.post(
         `${serverURL}/api/cart`,
         {
-          product: currProduct.product._id,
-          name: currProduct.name,
+          dish: currDish.dish._id,
+          name: currDish.name,
           image: "kjgdh.jpg",
-          price: currProduct.price,
+          price: currDish.price,
           quantity: 1,
-          variant: currProduct.product.variants[0].name,
+          variant: currDish.dish.variants[0].name,
         },
         { withCredentials: true },
       );
 
       setCart([...data]);
 
-      notifySuccess(`${currProduct.name} added to cart`);
+      notifySuccess(`${currDish.name} added to cart`);
     } catch (error) {
       console.log("Cart Error:", error?.response?.data || error.message);
       notifyError(error?.response?.data || error.message);
@@ -70,7 +70,7 @@ const Wishlist = () => {
           {wishlist?.length > 0 ? (
             wishlist?.map((currProd) => {
               const { isSoldOut, isUnavailable, statusText } =
-                fetchAvailibility(currProd.product);
+                fetchAvailibility(currProd.dish);
 
               return (
                 <li
@@ -78,11 +78,11 @@ const Wishlist = () => {
                   className="flex gap-4 items-center py-3 border-t border-gray-100 first:border-t-0"
                 >
                   <Link
-                    to={`/product/${currProd.product.slug}`}
+                    to={`/dish/${currProd.dish.slug}`}
                     className={`w-20 min-w-20 ${isSoldOut || isUnavailable ? "grayscale" : ""}`}
                   >
                     {/* <img src={currProd.img} alt="" className="w-full" /> */}
-                    <img src={assets.product2} alt="" className="w-full" />
+                    <img src={assets.dish2} alt="" className="w-full" />
                   </Link>
                   <div>
                     {(isSoldOut || isUnavailable) && (
@@ -90,7 +90,7 @@ const Wishlist = () => {
                         {statusText}
                       </p>
                     )}
-                    <Link to={`/product/${currProd.product.slug}`}>
+                    <Link to={`/dish/${currProd.dish.slug}`}>
                       <h3 className="text-sm text-gray-700 font-semibold">
                         {currProd.name}
                       </h3>

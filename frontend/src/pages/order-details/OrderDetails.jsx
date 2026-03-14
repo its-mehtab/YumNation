@@ -218,12 +218,12 @@ const OrderDetails = () => {
           {order.items.map((item, i) => (
             <div key={i} className="flex items-center gap-4">
               <Link
-                to={`/product/${item.product?.slug}`}
+                to={`/dish/${item.dish?.slug}`}
                 className="w-14 h-14 min-w-14 p-1.5 rounded-md border border-orange-100 bg-orange-50 flex items-center justify-center overflow-hidden"
               >
                 {item.image ? (
                   <img
-                    src={assets.product2}
+                    src={assets.dish2}
                     alt={item.name}
                     className="w-full h-full object-cover rounded-xl"
                   />
@@ -232,7 +232,7 @@ const OrderDetails = () => {
                 )}
               </Link>
               <div className="flex-1 min-w-0">
-                <Link to={`/product/${item.product?.slug}`}>
+                <Link to={`/dish/${item.dish?.slug}`}>
                   <p className="text-sm font-semibold text-gray-700 hover:text-[#fc8019] transition-colors truncate">
                     {item.name}
                   </p>

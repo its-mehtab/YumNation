@@ -1,5 +1,5 @@
 import Cart from "../models/cart.modal.js";
-import Product from "../models/product.modal.js";
+import Dish from "../models/dish.modal.js";
 import { generateCartKey } from "../utils/cartKey.js";
 
 export const getUserCart = async (req, res) => {
@@ -7,7 +7,7 @@ export const getUserCart = async (req, res) => {
 
   try {
     const cart = await Cart.findOne({ user: userId })
-      .populate("items.product", "name slug stock isAvailable variants")
+      .populate("items.dish", "name slug stock isAvailable variants")
       .lean();
 
     if (!cart) {
@@ -25,22 +25,22 @@ export const getUserCart = async (req, res) => {
 export const addCart = async (req, res) => {
   const userId = req.userId;
 
-  const { product, quantity = 1, variant, addOns } = req.body;
+  const { dish, quantity = 1, variant, addOns } = req.body;
 
   try {
-    const productDoc = await Product.findById(product);
+    const dishDoc = await Dish.findById(dish);
 
-    if (!productDoc || !productDoc.isAvailable || productDoc.stock <= 0) {
-      return res.status(400).json({ message: "Product unavailable" });
+    if (!dishDoc || !dishDoc.isAvailable || dishDoc.stock <= 0) {
+      return res.status(400).json({ message: "Dish unavailable" });
     }
 
-    const price = productDoc.price;
-    const name = productDoc.name;
-    const image = productDoc.images[0];
+    const price = dishDoc.price;
+    const name = dishDoc.name;
+    const image = dishDoc.images[0];
 
     let cart = await Cart.findOne({ user: userId });
 
-    const cartKey = generateCartKey(product, variant, addOns);
+    const cartKey = generateCartKey(dish, variant, addOns);
 
     if (cart) {
       const itemIndex = cart.items.findIndex(
@@ -51,7 +51,7 @@ export const addCart = async (req, res) => {
         cart.items[itemIndex].quantity += quantity;
       } else {
         cart.items.push({
-          product,
+          dish,
           name,
           cartKey,
           image,
@@ -66,18 +66,15 @@ export const addCart = async (req, res) => {
       cart = await Cart.create({
         user: userId,
         items: [
-          { product, name, image, cartKey, price, quantity, variant, addOns },
+          { dish, name, image, cartKey, price, quantity, variant, addOns },
         ],
       });
     }
 
-    await cart.populate(
-      "items.product",
-      "name slug stock isAvailable variants",
-    );
+    await cart.populate("items.dish", "name slug stock isAvailable variants");
 
     const updatedCart = await Cart.findOne({ user: userId }).populate(
-      "items.product",
+      "items.dish",
       "name slug stock isAvailable variants",
     );
 
@@ -90,12 +87,12 @@ export const addCart = async (req, res) => {
 };
 
 export const updateCartQuantity = async (req, res) => {
-  const { action, productId, variant, addOns } = req.body;
+  const { action, dishId, variant, addOns } = req.body;
   const userId = req.userId;
 
-  const cartKey = generateCartKey(productId, variant, addOns);
+  const cartKey = generateCartKey(dishId, variant, addOns);
 
-  if (!productId || !variant || !action) {
+  if (!dishId || !variant || !action) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
@@ -127,7 +124,7 @@ export const updateCartQuantity = async (req, res) => {
     await cart.save();
 
     const updatedCart = await cart.populate(
-      "items.product",
+      "items.dish",
       "name slug stock isAvailable variants",
     );
 
@@ -142,10 +139,10 @@ export const updateCartQuantity = async (req, res) => {
 export const removeFromCart = async (req, res) => {
   const userId = req.userId;
 
-  const { productId, variant, addOns } = req.body;
-  console.log(productId);
+  const { dishId, variant, addOns } = req.body;
+  console.log(dishId);
 
-  const cartKey = generateCartKey(productId, variant, addOns);
+  const cartKey = generateCartKey(dishId, variant, addOns);
 
   try {
     const cart = await Cart.findOneAndUpdate(
@@ -153,13 +150,13 @@ export const removeFromCart = async (req, res) => {
       {
         $pull: {
           items: {
-            product: productId,
+            dish: dishId,
             cartKey,
           },
         },
       },
       { new: true },
-    ).populate("items.product", "name slug stock isAvailable variants");
+    ).populate("items.dish", "name slug stock isAvailable variants");
 
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });

@@ -14,11 +14,10 @@ import { useWishlist } from "../../context/WishlistContext";
 import { StarIcon } from "../../assets/icon/Icons";
 import { fetchAvailibility } from "../../utils/availibility";
 
-const ProductCard = ({ currProduct, productLoading }) => {
+const DishCard = ({ currDish, dishLoading }) => {
   const [wishlistActive, setWishlistActive] = useState(false);
 
-  const { isSoldOut, isUnavailable, statusText } =
-    fetchAvailibility(currProduct);
+  const { isSoldOut, isUnavailable, statusText } = fetchAvailibility(currDish);
 
   const { serverURL } = useAuth();
   const { setCart } = useCart();
@@ -31,7 +30,7 @@ const ProductCard = ({ currProduct, productLoading }) => {
 
   const handleAddCart = async () => {
     // if (isSoldOut || isUnavailable) {
-    //   notifyError(`${currProduct.name} is ${statusText}`);
+    //   notifyError(`${currDish.name} is ${statusText}`);
     //   return;
     // }
 
@@ -39,19 +38,19 @@ const ProductCard = ({ currProduct, productLoading }) => {
       const { data } = await axios.post(
         `${serverURL}/api/cart`,
         {
-          product: currProduct._id,
-          name: currProduct.name,
+          dish: currDish._id,
+          name: currDish.name,
           image: "kjgdh.jpg",
-          price: currProduct.price,
+          price: currDish.price,
           quantity: 1,
-          variant: currProduct.variants[0].name,
+          variant: currDish.variants[0].name,
         },
         { withCredentials: true },
       );
 
       setCart(data);
 
-      notifySuccess(`${currProduct.name} added to cart`);
+      notifySuccess(`${currDish.name} added to cart`);
     } catch (error) {
       console.log("Cart Error:", error?.response?.data || error.message);
       notifyError(error?.response?.data.message);
@@ -60,7 +59,7 @@ const ProductCard = ({ currProduct, productLoading }) => {
 
   const syncWishlistState = async () => {
     const isWishlisted = wishlist?.find(
-      (item) => item.product._id === currProduct._id,
+      (item) => item.dish._id === currDish._id,
     );
 
     setWishlistActive(!!isWishlisted);
@@ -76,10 +75,10 @@ const ProductCard = ({ currProduct, productLoading }) => {
       const { data } = await axios.post(
         `${serverURL}/api/wishlist`,
         {
-          productId: currProduct._id,
-          name: currProduct.name,
+          dishId: currDish._id,
+          name: currDish.name,
           image: "kjgdh.jpg",
-          price: currProduct.price,
+          price: currDish.price,
         },
         { withCredentials: true },
       );
@@ -88,8 +87,8 @@ const ProductCard = ({ currProduct, productLoading }) => {
 
       notifySuccess(
         !wishlistActive
-          ? `${currProduct.name} Added to wishlist ❤️`
-          : `${currProduct.name} Removed from wishlist`,
+          ? `${currDish.name} Added to wishlist ❤️`
+          : `${currDish.name} Removed from wishlist`,
       );
     } catch (error) {
       console.log("Cart Error:", error?.response?.data || error.message);
@@ -102,7 +101,7 @@ const ProductCard = ({ currProduct, productLoading }) => {
 
   useEffect(() => {
     syncWishlistState();
-  }, [wishlist, currProduct?._id]);
+  }, [wishlist, currDish?._id]);
 
   return (
     <div
@@ -117,13 +116,13 @@ const ProductCard = ({ currProduct, productLoading }) => {
       >
         {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}
       </span>
-      <Link className="relative" to={`/product/${currProduct.slug}`}>
+      <Link className="relative" to={`/dish/${currDish.slug}`}>
         {(isSoldOut || isUnavailable) && (
           <span className="bg-[#fc8019] text-white text-md absolute top-1/2 -left-4 -translate-y-1/2 -right-4 text-center px-2.5 py-1.5">
             {statusText}
           </span>
         )}
-        <img src={assets.product2} alt="" className="h-31.5 mx-auto mb-3" />
+        <img src={assets.dish2} alt="" className="h-31.5 mx-auto mb-3" />
       </Link>
       <div className="flex gap-1 items-center mb-2">
         <StarIcon size={18} color={"text-[#FC8019]"} />
@@ -134,13 +133,13 @@ const ProductCard = ({ currProduct, productLoading }) => {
       </div>
       <div className="flex items-end gap-2 justify-between">
         <div>
-          <Link to={`/product/${currProduct.slug}`}>
+          <Link to={`/dish/${currDish.slug}`}>
             <h3 className="text font-semibold text-gray-700 hover:text-[#fc8019] transition-all">
-              {currProduct.name}
+              {currDish.name}
             </h3>
           </Link>
           <h3 className="text-xl font-bold text-[#fc8019] mt-0.5">
-            <Link to={`/product`}>${currProduct.price.toFixed(2)}</Link>
+            <Link to={`/dish`}>${currDish.price.toFixed(2)}</Link>
           </h3>
         </div>
         <span
@@ -154,4 +153,4 @@ const ProductCard = ({ currProduct, productLoading }) => {
   );
 };
 
-export default ProductCard;
+export default DishCard;

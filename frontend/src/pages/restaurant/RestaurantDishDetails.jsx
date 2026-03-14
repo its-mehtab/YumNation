@@ -16,21 +16,14 @@ const mockDish = {
   category: { _id: "c1", name: "Pizza" },
   foodType: "veg",
   variants: [
-    { name: 'Small (8")', price: 9 },
-    { name: 'Medium (10")', price: 12 },
-    { name: 'Large (12")', price: 15 },
+    { name: 'Small (8")', price: 9, stock: 15 },
+    { name: 'Medium (10")', price: 12, stock: 20 },
+    { name: 'Large (12")', price: 15, stock: 10 },
   ],
   addOns: [
     { name: "Extra Cheese", price: 1.5 },
     { name: "Olives", price: 1 },
     { name: "Jalapeños", price: 0.75 },
-  ],
-  ingredients: [
-    "Flour",
-    "Tomato Sauce",
-    "Buffalo Mozzarella",
-    "Basil",
-    "Olive Oil",
   ],
   images: [null, null, null],
   stock: 20,
@@ -40,7 +33,6 @@ const mockDish = {
   totalReviews: 84,
   totalOrders: 312,
   createdAt: "2024-01-15T10:00:00.000Z",
-  createdBy: { name: "Admin" },
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -90,7 +82,7 @@ const RestaurantDishDetails = () => {
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-    // Replace with: axios.get(`${serverURL}/api/admin/dish/${id}`, { withCredentials: true })
+    // Replace with: axios.get(`${serverURL}/api/restaurant/dish/${id}`, { withCredentials: true })
     setTimeout(() => {
       setDish(mockDish);
       setLoading(false);
@@ -99,12 +91,13 @@ const RestaurantDishDetails = () => {
 
   const handleToggle = (key) =>
     setDish((prev) => ({ ...prev, [key]: !prev[key] }));
+  // Replace with: axios.patch(`${serverURL}/api/restaurant/dish/${id}`, { [key]: !dish[key] }, { withCredentials: true })
 
   const handleDelete = async () => {
     if (!window.confirm("Delete this dish permanently?")) return;
     setDeleting(true);
-    // await axios.delete(...)
-    setTimeout(() => navigate("/admin/dishes"), 800);
+    // await axios.delete(`${serverURL}/api/restaurant/dish/${id}`, { withCredentials: true })
+    setTimeout(() => navigate("/restaurant/dishes"), 800);
   };
 
   if (loading)
@@ -139,10 +132,10 @@ const RestaurantDishDetails = () => {
         </div>
         <div className="flex items-center gap-2 text-sm text-gray-400">
           <Link
-            to="/admin/dishes"
+            to="/restaurant/dishes"
             className="hover:text-[#fc8019] transition-colors"
           >
-            Dishes
+            My Menu
           </Link>
           <span className="text-gray-300">›</span>
           <span className="text-[#fc8019] font-medium">{dish.name}</span>
@@ -235,7 +228,6 @@ const RestaurantDishDetails = () => {
                 ${margin.toFixed(2)} ({marginPct}%)
               </span>
             </div>
-            {/* Margin bar */}
             <div className="mt-2 h-2 bg-gray-100 rounded-full overflow-hidden">
               <div
                 className="h-full rounded-full bg-[#fc8019] transition-all"
@@ -247,7 +239,7 @@ const RestaurantDishDetails = () => {
           {/* Actions */}
           <div className="flex gap-3">
             <Link
-              to={`/admin/dishes/edit/${dish._id}`}
+              to={`/restaurant/dishes/edit/${dish._id}`}
               className="flex-1 py-2.5 rounded-xl bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold text-center transition-colors"
             >
               Edit Dish
@@ -272,10 +264,9 @@ const RestaurantDishDetails = () => {
                   <h2 className="text-xl font-bold text-gray-700">
                     {dish.name}
                   </h2>
-                  {/* Food type dot */}
+                  {/* Food type indicator */}
                   <div
-                    className={`w-4 h-4 rounded-sm border-2 flex items-center justify-center
-                    ${dish.foodType === "veg" ? "border-green-600" : "border-red-500"}`}
+                    className={`w-4 h-4 rounded-sm border-2 flex items-center justify-center ${dish.foodType === "veg" ? "border-green-600" : "border-red-500"}`}
                   >
                     <div
                       className={`w-2 h-2 rounded-full ${dish.foodType === "veg" ? "bg-green-600" : "bg-red-500"}`}
@@ -307,26 +298,23 @@ const RestaurantDishDetails = () => {
             </div>
 
             <div className="flex gap-6 mt-4 pt-4 border-t border-gray-50">
-              <div className="text-center">
-                <p className="text-lg font-bold text-gray-700">
-                  {dish.totalOrders}
-                </p>
-                <p className="text-xs text-gray-400">Total Orders</p>
-              </div>
-              <div className="text-center">
-                <p className="text-lg font-bold text-gray-700">{dish.rating}</p>
-                <p className="text-xs text-gray-400">Rating</p>
-              </div>
-              <div className="text-center">
-                <p className="text-lg font-bold text-gray-700">
-                  {dish.totalReviews}
-                </p>
-                <p className="text-xs text-gray-400">Reviews</p>
-              </div>
-              <div className="text-center">
-                <p className="text-lg font-bold text-gray-700">{dish.stock}</p>
-                <p className="text-xs text-gray-400">In Stock</p>
-              </div>
+              {[
+                { label: "Total Orders", value: dish.totalOrders },
+                { label: "Rating", value: dish.rating },
+                { label: "Reviews", value: dish.totalReviews },
+                {
+                  label: "In Stock",
+                  value:
+                    dish.variants.length > 0
+                      ? dish.variants.reduce((a, v) => a + Number(v.stock), 0)
+                      : dish.stock,
+                },
+              ].map((s) => (
+                <div key={s.label} className="text-center">
+                  <p className="text-lg font-bold text-gray-700">{s.value}</p>
+                  <p className="text-xs text-gray-400">{s.label}</p>
+                </div>
+              ))}
             </div>
           </Card>
 
@@ -339,55 +327,65 @@ const RestaurantDishDetails = () => {
             </Card>
           )}
 
-          {/* Variants + Add-ons */}
-          <div className="grid grid-cols-2 gap-5">
-            <Card title={`Variants (${dish.variants.length})`}>
-              {dish.variants.length === 0 ? (
-                <p className="text-xs text-gray-400">No variants added.</p>
-              ) : (
-                dish.variants.map((v, i) => (
+          {/* Variants */}
+          <Card title={`Variants (${dish.variants.length})`}>
+            {dish.variants.length === 0 ? (
+              <p className="text-xs text-gray-400">No variants added.</p>
+            ) : (
+              <div className="overflow-hidden rounded-xl border border-gray-100">
+                {/* Header */}
+                <div className="grid grid-cols-12 px-4 py-2 bg-gray-50 border-b border-gray-100">
+                  <p className="col-span-6 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                    Name
+                  </p>
+                  <p className="col-span-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                    Price
+                  </p>
+                  <p className="col-span-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                    Stock
+                  </p>
+                </div>
+                {dish.variants.map((v, i) => (
                   <div
                     key={i}
-                    className="flex justify-between py-2 border-b border-gray-50 last:border-0 text-sm"
+                    className={`grid grid-cols-12 items-center px-4 py-3 ${i !== dish.variants.length - 1 ? "border-b border-gray-50" : ""}`}
                   >
-                    <span className="text-gray-600 font-medium">{v.name}</span>
-                    <span className="font-bold text-gray-700">${v.price}</span>
+                    <p className="col-span-6 text-sm font-semibold text-gray-700">
+                      {v.name}
+                    </p>
+                    <p className="col-span-3 text-sm font-bold text-[#fc8019]">
+                      ${v.price}
+                    </p>
+                    <p className="col-span-3 text-sm text-gray-500">
+                      {v.stock} units
+                    </p>
                   </div>
-                ))
-              )}
-            </Card>
+                ))}
+              </div>
+            )}
+          </Card>
 
-            <Card title={`Add-ons (${dish.addOns.length})`}>
-              {dish.addOns.length === 0 ? (
-                <p className="text-xs text-gray-400">No add-ons added.</p>
-              ) : (
-                dish.addOns.map((a, i) => (
+          {/* Add-ons */}
+          <Card title={`Add-ons (${dish.addOns.length})`}>
+            {dish.addOns.length === 0 ? (
+              <p className="text-xs text-gray-400">No add-ons added.</p>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {dish.addOns.map((a, i) => (
                   <div
                     key={i}
-                    className="flex justify-between py-2 border-b border-gray-50 last:border-0 text-sm"
+                    className="flex items-center gap-2 bg-orange-50 border border-orange-100 rounded-xl px-3 py-2"
                   >
-                    <span className="text-gray-600 font-medium">{a.name}</span>
-                    <span className="font-bold text-[#fc8019]">
+                    <span className="text-xs font-semibold text-gray-700">
+                      {a.name}
+                    </span>
+                    <span className="text-xs font-bold text-[#fc8019]">
                       +${a.price}
                     </span>
                   </div>
-                ))
-              )}
-            </Card>
-          </div>
-
-          {/* Ingredients */}
-          <Card title="Ingredients">
-            <div className="flex flex-wrap gap-2">
-              {dish.ingredients.map((ing, i) => (
-                <span
-                  key={i}
-                  className="text-xs font-medium bg-orange-50 text-[#fc8019] px-3 py-1.5 rounded-full border border-orange-100"
-                >
-                  {ing}
-                </span>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </Card>
 
           {/* Meta */}
@@ -396,7 +394,6 @@ const RestaurantDishDetails = () => {
               label="Slug"
               value={<span className="font-mono text-xs">{dish.slug}</span>}
             />
-            <InfoRow label="Created By" value={dish.createdBy?.name} />
             <InfoRow
               label="Created On"
               value={dayjs(dish.createdAt).format("MMM D, YYYY")}

@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { WishlistIcon, WishlistIconRed } from "../../assets/icon/Icons";
-import ProductTab from "../../components/product-tab/ProductTab";
-import "./product.css";
-import ProductGallery from "./ProductGallery";
+import "./dish.css";
+import DishGallery from "./DishGallery";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { useWishlist } from "../../context/WishlistContext";
 import { fetchAvailibility } from "../../utils/availibility";
-import ProductDetailsSkeleton from "../../components/skeleton/ProductDetailsSkeleton";
+import DishDetailsSkeleton from "../../components/skeleton/DishDetailsSkeleton";
 
-const Product = () => {
+const Dish = () => {
   const [variation, setVariation] = useState("");
   //   const [addOns, setAddOns] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [wishlistActive, setWishlistActive] = useState(false);
-  const [mainProduct, setMainProduct] = useState(null);
+  const [mainDish, setMainDish] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const { slug } = useParams();
@@ -34,30 +33,30 @@ const Product = () => {
     setLoading: setWishlistLoading,
   } = useWishlist();
 
-  const getMainProduct = async () => {
+  const getMainDish = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`${serverURL}/api/products/${slug}`);
+      const { data } = await axios.get(`${serverURL}/api/dishs/${slug}`);
 
-      setMainProduct(data);
+      setMainDish(data);
 
       setVariation(data.variants[0].name);
     } catch (error) {
-      console.log("Product Error:", error?.response?.data || error.message);
+      console.log("Dish Error:", error?.response?.data || error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const productPrice = mainProduct?.variants
-    ? mainProduct?.variants
+  const dishPrice = mainDish?.variants
+    ? mainDish?.variants
         .find((curr) => curr.name === variation)
         ?.price.toFixed(2)
-    : mainProduct?.price;
+    : mainDish?.price;
 
   const handleAddCart = async () => {
     if (isSoldOut || isUnavailable) {
-      notifyError(`${mainProduct.name} is ${statusText}`);
+      notifyError(`${mainDish.name} is ${statusText}`);
       return;
     }
     setCartLoading(true);
@@ -66,10 +65,10 @@ const Product = () => {
       const { data } = await axios.post(
         `${serverURL}/api/cart`,
         {
-          product: mainProduct._id,
-          name: mainProduct.name,
+          dish: mainDish._id,
+          name: mainDish.name,
           image: "kjgdh.jpg",
-          price: productPrice,
+          price: dishPrice,
           quantity,
           variant: variation,
         },
@@ -77,7 +76,7 @@ const Product = () => {
       );
 
       setCart(data);
-      notifySuccess(`${mainProduct.name} added to cart`);
+      notifySuccess(`${mainDish.name} added to cart`);
     } catch (error) {
       console.log("Cart Error:", error?.response?.data || error.message);
       setCart(null);
@@ -97,10 +96,10 @@ const Product = () => {
       const { data } = await axios.post(
         `${serverURL}/api/wishlist`,
         {
-          productId: mainProduct._id,
-          name: mainProduct.name,
+          dishId: mainDish._id,
+          name: mainDish.name,
           image: "kjgdh.jpg",
-          price: mainProduct.price,
+          price: mainDish.price,
         },
         { withCredentials: true },
       );
@@ -109,8 +108,8 @@ const Product = () => {
 
       notifySuccess(
         !wishlistActive
-          ? `${mainProduct.name} Added to wishlist ❤️`
-          : `${mainProduct.name} Removed from wishlist`,
+          ? `${mainDish.name} Added to wishlist ❤️`
+          : `${mainDish.name} Removed from wishlist`,
       );
     } catch (error) {
       console.log("Cart Error:", error?.response?.data || error.message);
@@ -123,25 +122,25 @@ const Product = () => {
 
   const syncWishlistState = async () => {
     const isWishlisted = wishlist?.find(
-      (item) => item.product._id === mainProduct?._id,
+      (item) => item.dish._id === mainDish?._id,
     );
 
     setWishlistActive(!!isWishlisted);
   };
   useEffect(() => {
     syncWishlistState();
-  }, [wishlist, mainProduct?._id]);
+  }, [wishlist, mainDish?._id]);
 
   useEffect(() => {
-    getMainProduct();
+    getMainDish();
   }, [slug]);
 
-  const { isSoldOut, isUnavailable, statusText } = mainProduct
-    ? fetchAvailibility(mainProduct)
+  const { isSoldOut, isUnavailable, statusText } = mainDish
+    ? fetchAvailibility(mainDish)
     : {};
 
   return loading ? (
-    <ProductDetailsSkeleton />
+    <DishDetailsSkeleton />
   ) : (
     <section
       className={`fade-up ${isSoldOut || isUnavailable ? "grayscale" : ""}`}
@@ -160,10 +159,10 @@ const Product = () => {
               </Link>
             </li>
             <li className="text-sm before:content-['/'] before:mx-2">
-              {mainProduct?.name}
+              {mainDish?.name}
             </li>
           </ul>
-          <ProductGallery />
+          <DishGallery />
         </div>
         <div className="col-span-5 md:pr-5">
           {(isSoldOut || isUnavailable) && (
@@ -172,7 +171,7 @@ const Product = () => {
             </h3>
           )}
           <h2 className="text-2xl font-semibold text-gray-600">
-            {mainProduct?.name}
+            {mainDish?.name}
           </h2>
           <div className="flex items-center gap-0.5 py-3 border-b border-gray-200">
             <svg
@@ -235,18 +234,18 @@ const Product = () => {
                 <path d="m29.911 13.75-6.229 6.072 1.471 8.576c.064.375-.09.754-.398.978-.174.127-.381.191-.588.191-.159 0-.319-.038-.465-.115l-7.702-4.049-7.701 4.048c-.336.178-.745.149-1.053-.076-.308-.224-.462-.603-.398-.978l1.471-8.576-6.23-6.071c-.272-.266-.371-.664-.253-1.025s.431-.626.808-.681l8.609-1.25 3.85-7.802c.337-.683 1.457-.683 1.794 0l3.85 7.802 8.609 1.25c.377.055.69.319.808.681s.019.758-.253 1.025z" />
               </g>
             </svg>
-            <p className="ms-2">({mainProduct?.rating} Customer Review)</p>
+            <p className="ms-2">({mainDish?.rating} Customer Review)</p>
           </div>
           <p className="pt-4 text-sm text-gray-500 leading-relaxed">
-            {mainProduct?.description}
+            {mainDish?.description}
           </p>
 
           <h4 className="block py-4 text-2xl font-bold text-[#fc8019]">
-            ${productPrice}
+            ${dishPrice}
           </h4>
           <h3 className="mt-1 mb-1 text-gray-600">variation: {variation}</h3>
           <div className="flex gap-3 items-center text-sm">
-            {mainProduct?.variants.map((curr) => {
+            {mainDish?.variants.map((curr) => {
               return (
                 <span
                   key={curr._id}
@@ -342,7 +341,7 @@ const Product = () => {
             </li>
             <li className="mt-3 text-sm text-gray-600">
               <span className="font-semibold">Categories:</span>{" "}
-              {mainProduct?.category?.name}
+              {mainDish?.category?.name}
             </li>
             <li className="mt-3 text-sm text-gray-600">
               <span className="font-semibold">Tags:</span> BURGERS, PIZZA
@@ -354,4 +353,4 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default Dish;

@@ -1,6 +1,6 @@
-export const fetchAvailibility = (product) => {
-  const isSoldOut = product.stock <= 0;
-  const isUnavailable = !product.isAvailable;
+export const fetchAvailibility = (dish) => {
+  const isSoldOut = dish.stock <= 0;
+  const isUnavailable = !dish.isAvailable;
 
   const statusText = isSoldOut && isUnavailable ? "Sold Out" : "Unavailable";
 

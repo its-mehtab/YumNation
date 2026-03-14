@@ -8,14 +8,14 @@ import { MinusIcon, PlusIcon } from "../../assets/icon/Icons";
 import { fetchAvailibility } from "../../utils/availibility";
 import { assets } from "../../assets/assets";
 
-const CartItem = ({ currProd, products }) => {
+const CartItem = ({ currProd, dishs }) => {
   const [quantity, setQuantity] = useState(currProd.quantity);
 
   const { serverURL } = useAuth();
   const { setCart } = useCart();
 
   const { isSoldOut, isUnavailable, statusText } = fetchAvailibility(
-    currProd.product,
+    currProd.dish,
   );
 
   const handleQuantityMinus = async () => {
@@ -28,7 +28,7 @@ const CartItem = ({ currProd, products }) => {
         `${serverURL}/api/cart`,
         {
           action: "decrease",
-          productId: currProd.product._id,
+          dishId: currProd.dish._id,
           variant: currProd.variant,
         },
         { withCredentials: true },
@@ -52,7 +52,7 @@ const CartItem = ({ currProd, products }) => {
         `${serverURL}/api/cart`,
         {
           action: "increase",
-          productId: currProd.product._id,
+          dishId: currProd.dish._id,
           variant: currProd.variant,
         },
         { withCredentials: true },
@@ -70,7 +70,7 @@ const CartItem = ({ currProd, products }) => {
     try {
       const { data } = await axios.delete(`${serverURL}/api/cart`, {
         data: {
-          productId: currProd.product._id,
+          dishId: currProd.dish._id,
           variant: currProd.variant,
         },
         withCredentials: true,
@@ -92,11 +92,11 @@ const CartItem = ({ currProd, products }) => {
   return (
     <div className="flex flex-wrap gap-4 items-center mb-8">
       <Link
-        to={`/product/${currProd.product.slug}`}
-        className={`w-17.5 min-w-17.5 h-17.5 rounded-lg border flex justify-center items-center border-[#fc8019] ${currProd.product.stock <= 0 || !currProd.product.isAvailable ? "grayscale" : ""}`}
+        to={`/dish/${currProd.dish.slug}`}
+        className={`w-17.5 min-w-17.5 h-17.5 rounded-lg border flex justify-center items-center border-[#fc8019] ${currProd.dish.stock <= 0 || !currProd.dish.isAvailable ? "grayscale" : ""}`}
       >
         {/* <img src={currProd.image} alt="" className="w-full" /> */}
-        <img src={assets.product2} alt="" className="w-full" />
+        <img src={assets.dish2} alt="" className="w-full" />
       </Link>
       <div>
         {(isSoldOut || isUnavailable) && (
@@ -105,7 +105,7 @@ const CartItem = ({ currProd, products }) => {
           </p>
         )}
         <h3 className="text-sm font-semibold text-gray-700 hover:text-[#fc8019] transition-all">
-          <Link to={`/product/${currProd.product.slug}`}>{currProd.name}</Link>
+          <Link to={`/dish/${currProd.dish.slug}`}>{currProd.name}</Link>
         </h3>
         <p className="text-xs text-gray-500 font-medium mt-2">
           {currProd.variant}

@@ -1,6 +1,6 @@
 import { Card, Flex, Skeleton } from "@radix-ui/themes";
 
-const ProductCardSkeleton = () => {
+const DishCardSkeleton = () => {
   return (
     <Card className="relative p-4 rounded-xl">
       <Flex direction="column" gap="3">
@@ -31,4 +31,4 @@ const ProductCardSkeleton = () => {
   );
 };
 
-export default ProductCardSkeleton;
+export default DishCardSkeleton;

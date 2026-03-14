@@ -1,6 +1,8 @@
-import Product from "../models/product.modal.js";
+import Dish from "../models/dish.modal.js";
+import Restaurant from "../models/restaurant.modal.js";
+import Category from "../models/category.modal.js";
 
-export const getProducts = async (req, res) => {
+export const getDishs = async (req, res) => {
   try {
     const {
       search,
@@ -72,8 +74,8 @@ export const getProducts = async (req, res) => {
     const pageNum = Math.max(Number(page), 1);
     const limitNum = Math.min(Number(limit), 50);
 
-    const [products, total] = await Promise.all([
-      Product.find(query)
+    const [dishs, total] = await Promise.all([
+      Dish.find(query)
         .populate("category", "name slug")
         .sort(sortOption)
         .skip((pageNum - 1) * limitNum)
@@ -82,62 +84,94 @@ export const getProducts = async (req, res) => {
           "name price images slug description rating stock isAvailable isFeatured variants",
         ),
 
-      Product.countDocuments(query),
+      Dish.countDocuments(query),
     ]);
 
     res.status(200).json({
-      products,
+      dishs,
       total,
       page: pageNum,
       pages: Math.ceil(total / limitNum),
     });
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch products" });
+    res.status(500).json({ message: "Failed to fetch dishs" });
   }
 };
 
-export const getProductBySlug = async (req, res) => {
+export const getDishBySlug = async (req, res) => {
   const slug = req.params.slug;
 
   try {
-    const product = await Product.findOne({ slug }).populate(
-      "category",
-      "name",
-    );
+    const dish = await Dish.findOne({ slug }).populate("category", "name");
 
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+    if (!dish) {
+      return res.status(404).json({ message: "Dish not found" });
     }
 
-    return res.status(200).json(product);
+    return res.status(200).json(dish);
   } catch (error) {
     return res.status(500).json({
-      message: "unable to find product by slug",
+      message: "unable to find dish by slug",
       error: error.message,
     });
   }
 };
 
-export const createProduct = async (req, res) => {
-  const { name, price, description, images, category, variants, ingredients } =
-    req.body;
+export const createDish = async (req, res) => {
+  const {
+    name,
+    price,
+    cost,
+    stock,
+    shortDescription,
+    longDescription,
+    image,
+    categoryId,
+    variants,
+    addOns,
+    foodType,
+  } = req.body;
 
-  const userId = req.userId;
+  const owner = req.userId;
 
-  if (!name || !price || !description || !images || !category || !ingredients) {
+  if (!name || !price || !shortDescription || !longDescription || !categoryId) {
     return res.status(400).json({
-      message:
-        "name, price, description, images, category and ingredients is required",
+      message: "name, price, description, category is required",
     });
   }
 
   try {
-    const product = await Product.create({
-      ...req.body,
-      createdBy: userId,
+    const restaurant = await Restaurant.findOne({ owner });
+
+    if (!restaurant) {
+      return res.status(404).json("Restaurant not found");
+    }
+
+    if (restaurant.status !== "active") {
+      return res.status(403).json({ message: "Your restaurant is not active" });
+    }
+
+    const category = await Category.findById(categoryId);
+    if (!category) {
+      return res.status(404).json({ message: "Invalid category" });
+    }
+
+    const dish = await Dish.create({
+      name,
+      price,
+      cost,
+      stock,
+      shortDescription,
+      longDescription,
+      image,
+      category: categoryId,
+      variants,
+      addOns,
+      foodType,
+      restaurant: restaurant._id,
     });
 
-    return res.status(201).json({ product });
+    return res.status(201).json({ dish });
   } catch (error) {
     return res
       .status(500)
@@ -145,7 +179,7 @@ export const createProduct = async (req, res) => {
   }
 };
 
-export const updateProduct = async (req, res) => {
+export const updateDish = async (req, res) => {
   const { id } = req.params;
 
   if (!id) {
@@ -153,40 +187,40 @@ export const updateProduct = async (req, res) => {
   }
 
   try {
-    const product = await Product.findById(id);
+    const dish = await Dish.findById(id);
 
-    if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+    if (!dish) {
+      return res.status(404).json({ message: "Dish not found" });
     }
 
-    if (req.body.name && req.body.name !== product.name) {
-      product.name = req.body.name;
+    if (req.body.name && req.body.name !== dish.name) {
+      dish.name = req.body.name;
     }
 
-    if (req.body.price !== undefined) product.price = req.body.price;
+    if (req.body.price !== undefined) dish.price = req.body.price;
     if (req.body.description !== undefined)
-      product.description = req.body.description;
-    if (req.body.stock !== undefined) product.stock = req.body.stock;
-    if (req.body.images !== undefined) product.images = req.body.images;
-    if (req.body.category !== undefined) product.category = req.body.category;
-    if (req.body.variants !== undefined) product.variants = req.body.variants;
-    if (req.body.addOns !== undefined) product.addOns = req.body.addOns;
+      dish.description = req.body.description;
+    if (req.body.stock !== undefined) dish.stock = req.body.stock;
+    if (req.body.images !== undefined) dish.images = req.body.images;
+    if (req.body.category !== undefined) dish.category = req.body.category;
+    if (req.body.variants !== undefined) dish.variants = req.body.variants;
+    if (req.body.addOns !== undefined) dish.addOns = req.body.addOns;
     if (req.body.ingredients !== undefined)
-      product.ingredients = req.body.ingredients;
+      dish.ingredients = req.body.ingredients;
 
     if (req.body.isAvailable !== undefined)
-      product.isAvailable = req.body.isAvailable;
+      dish.isAvailable = req.body.isAvailable;
 
     if (req.body.isFeatured !== undefined)
-      product.isFeatured = req.body.isFeatured;
+      dish.isFeatured = req.body.isFeatured;
 
-    await product.save();
+    await dish.save();
 
-    return res.status(200).json(product);
+    return res.status(200).json(dish);
   } catch (error) {
     if (error.code === 11000) {
       return res.status(400).json({
-        message: "Product with this name already exists",
+        message: "Dish with this name already exists",
       });
     }
 
@@ -197,7 +231,7 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-export const deleteProduct = async (req, res) => {
+export const deleteDish = async (req, res) => {
   const { id } = req.params;
 
   if (!id) {
@@ -205,17 +239,15 @@ export const deleteProduct = async (req, res) => {
   }
 
   try {
-    const product = await Product.findByIdAndDelete(id);
+    const dish = await Dish.findByIdAndDelete(id);
 
-    if (!product) {
+    if (!dish) {
       return res
         .status(404)
-        .json({ message: "product not found. Nothing deleted" });
+        .json({ message: "dish not found. Nothing deleted" });
     }
 
-    return res
-      .status(200)
-      .json({ message: "product deleted successfully", product });
+    return res.status(200).json({ message: "dish deleted successfully", dish });
   } catch (error) {
     return res
       .status(500)

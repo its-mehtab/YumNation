@@ -62,15 +62,15 @@ const Checkout = () => {
                 className="flex flex-wrap gap-4 items-center py-3"
               >
                 <Link
-                  to={`/product/${currProd.product.slug}`}
-                  className={`w-17.5 min-w-17.5 h-17.5 rounded-lg border flex justify-center items-center border-[#fc8019] ${currProd.product.stock <= 0 || !currProd.product.isAvailable ? "grayscale" : ""}`}
+                  to={`/dish/${currProd.dish.slug}`}
+                  className={`w-17.5 min-w-17.5 h-17.5 rounded-lg border flex justify-center items-center border-[#fc8019] ${currProd.dish.stock <= 0 || !currProd.dish.isAvailable ? "grayscale" : ""}`}
                 >
                   {/* <img src={currProd.image} alt="" className="w-full" /> */}
-                  <img src={assets.product2} alt="" className="w-full" />
+                  <img src={assets.dish2} alt="" className="w-full" />
                 </Link>
                 <div>
                   <h3 className="font-semibold text-gray-700 hover:text-[#fc8019] transition-all">
-                    <Link to={`/product/${currProd.product.slug}`}>
+                    <Link to={`/dish/${currProd.dish.slug}`}>
                       {currProd.name}
                     </Link>
                   </h3>

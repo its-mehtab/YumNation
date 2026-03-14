@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Home from "../pages/home/Home";
-import Product from "../pages/product/Product";
+import Dish from "../pages/dish/Dish";
 import Contact from "../pages/contact/Contact";
 import Shop from "../pages/shop/Shop";
 import Login from "../pages/login/Login";
@@ -25,7 +25,7 @@ const UserRoutes = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
-        <Route path="/product/:slug" element={<Product />} />
+        <Route path="/dish/:slug" element={<Dish />} />
         <Route path="/contact" element={<Contact />} />
         <Route
           path="/login"

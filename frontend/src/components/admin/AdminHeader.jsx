@@ -50,7 +50,7 @@ const AdminHeader = () => {
                     {results?.map((resultItem) => {
                       return (
                         <SwiperSlide key={resultItem._id}>
-                          <ProductCardSm
+                          <DishCardSm
                             setResultName={setResultName}
                             setResults={setResults}
                             setIsSearchActive={setIsSearchActive}
@@ -87,10 +87,10 @@ const AdminHeader = () => {
                     // }}
                     className="mySwiper"
                   >
-                    {popularProducts?.map((resultItem) => {
+                    {popularDishs?.map((resultItem) => {
                       return (
                         <SwiperSlide key={resultItem._id}>
-                          <ProductCardSm
+                          <DishCardSm
                             resultName={resultName}
                             setResultName={setResultName}
                             setIsSearchActive={setIsSearchActive}

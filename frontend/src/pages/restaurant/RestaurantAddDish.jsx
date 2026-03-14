@@ -1,36 +1,48 @@
 import React, { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Input from "../../components/restaurant/Input";
+import Field from "../../components/restaurant/Field";
+import { Switch } from "@radix-ui/themes";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
+import { DeleteIcon, PlusIcon } from "../../assets/icon/Icons";
+import { notifySuccess } from "../../utils/toast";
+import { useCategory } from "../../context/CategoryContext";
 
+// ── Initial state ─────────────────────────────────────────────────────────────
 const initialForm = {
   name: "",
-  description: "",
+  shortDescription: "",
   longDescription: "",
-  category: "",
-  sellingPrice: "",
-  costPrice: "",
-  quantity: "",
-  deliveryType: "",
-  foodType: "",
-  hasDiscount: false,
-  discountValue: "",
-  hasExpiry: false,
-  expiresAt: "",
-  returnPolicy: false,
-  saleStartOn: "",
-  saleEndOn: "",
+  categoryId: "",
+  price: "",
+  cost: "",
+  stock: "",
+  variants: [],
+  addOns: [],
+  foodType: "veg",
   isAvailable: true,
   isFeatured: false,
 };
 
+// ── Main ──────────────────────────────────────────────────────────────────────
 const RestaurantAddDish = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState(initialForm);
-  const [mainImage, setMainImage] = useState(null);
-  const [additionalImages, setAdditionalImages] = useState([]);
+  const [dishImage, setMainImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const mainImageRef = useRef();
-  const additionalImageRef = useRef();
+  const [variantInput, setVariantInput] = useState({
+    name: "",
+    price: "",
+    stock: "",
+  });
+
+  const [addOnInput, setAddOnInput] = useState({ name: "", price: "" });
+
+  const { serverURL } = useAuth();
+  const { categories } = useCategory();
+  const dishImageRef = useRef();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -40,38 +52,71 @@ const RestaurantAddDish = () => {
     }));
   };
 
-  const handleToggle = (key) => {
+  const handleToggle = (key) =>
     setForm((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
 
-  const handleMainImage = (e) => {
+  const handleDishImage = (e) => {
     const file = e.target.files[0];
     if (file) setMainImage({ file, preview: URL.createObjectURL(file) });
   };
 
-  const handleAdditionalImages = (e) => {
-    const files = Array.from(e.target.files);
-    const previews = files.map((f) => ({
-      file: f,
-      preview: URL.createObjectURL(f),
+  // ── Variants ──
+  const addVariant = () => {
+    if (!variantInput.name.trim() || !variantInput.price || !variantInput.stock)
+      return;
+
+    setForm((prev) => ({
+      ...prev,
+      ["variants"]: [...prev.variants, variantInput],
     }));
-    setAdditionalImages((prev) => [...prev, ...previews].slice(0, 4));
+    setVariantInput({ name: "", price: "", stock: "" });
   };
+
+  const removeVariant = (name) =>
+    setForm((prev) => ({
+      ...prev,
+      ["variants"]: prev.variants.filter((v) => v.name !== name),
+    }));
+
+  // ── Add-ons ──
+  const addAddOn = () => {
+    if (!addOnInput.name.trim() || !addOnInput.price) return;
+    setForm((prev) => ({
+      ...prev,
+      ["addOns"]: [...prev.addOns, addOnInput],
+    }));
+    setAddOnInput({ name: "", price: "" });
+  };
+
+  const removeAddOn = (name) =>
+    setForm((prev) => ({
+      ...prev,
+      ["addOns"]: prev.addOns.filter((a) => a.name !== name),
+    }));
 
   const handleClear = () => {
     setForm(initialForm);
     setMainImage(null);
-    setAdditionalImages([]);
   };
 
   const handleSubmit = async (e) => {
+    console.log({ ...form });
+
     e.preventDefault();
     setLoading(true);
     try {
-      // TODO: replace with actual API call
-      console.log("Form data:", form);
-      await new Promise((r) => setTimeout(r, 1000));
-      navigate("/restaurant/dishes");
+      await axios.post(
+        `${serverURL}/api/dish`,
+        { ...form },
+        { withCredentials: true },
+      );
+
+      // navigate("/restaurant/dishes");
+      notifySuccess(`${form.name} added successfully`);
+    } catch (error) {
+      console.log(error);
+
+      console.log("Add Dish Error:", error?.response?.data || error.message);
     } finally {
       setLoading(false);
     }
@@ -87,7 +132,7 @@ const RestaurantAddDish = () => {
             to="/restaurant/dishes"
             className="hover:text-[#fc8019] transition-colors"
           >
-            Dishes
+            My Menu
           </Link>
           <span className="text-gray-300">›</span>
           <span className="text-[#fc8019] font-medium">Add Dish</span>
@@ -96,16 +141,16 @@ const RestaurantAddDish = () => {
 
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-12 gap-5">
-          {/* ── Left — images ── */}
+          {/* ── Left — images + toggles ── */}
           <div className="col-span-3 space-y-4">
             {/* Main image */}
             <div
-              onClick={() => mainImageRef.current.click()}
+              onClick={() => dishImageRef.current.click()}
               className="aspect-square rounded-2xl border-2 border-dashed border-[#fc8019] bg-orange-50 flex flex-col items-center justify-center cursor-pointer hover:bg-orange-100 transition-colors overflow-hidden"
             >
-              {mainImage ? (
+              {dishImage ? (
                 <img
-                  src={mainImage.preview}
+                  src={dishImage.preview}
                   alt="main"
                   className="w-full h-full object-cover"
                 />
@@ -113,332 +158,358 @@ const RestaurantAddDish = () => {
                 <div className="text-center p-4">
                   <div className="text-3xl mb-2">📷</div>
                   <p className="text-xs text-gray-400 font-medium">
-                    Upload Image
+                    Main Image
                   </p>
                 </div>
               )}
               <input
-                ref={mainImageRef}
+                ref={dishImageRef}
                 type="file"
                 accept="image/*"
                 className="hidden"
-                onChange={handleMainImage}
+                onChange={handleDishImage}
               />
             </div>
 
-            {/* Additional images */}
-            <div>
-              <p className="text-xs font-semibold text-gray-500 mb-2">
-                Additional Images
-              </p>
-              <div className="grid grid-cols-2 gap-2">
-                {additionalImages.map((img, i) => (
-                  <div
-                    key={i}
-                    className="aspect-square rounded-xl overflow-hidden border border-orange-100"
-                  >
-                    <img
-                      src={img.preview}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ))}
-                {additionalImages.length < 4 && (
-                  <div
-                    onClick={() => additionalImageRef.current.click()}
-                    className="aspect-square rounded-xl border-2 border-dashed border-[#fc8019] bg-orange-50 flex flex-col items-center justify-center cursor-pointer hover:bg-orange-100 transition-colors"
-                  >
-                    <span className="text-xl">+</span>
-                    <p className="text-xs text-gray-400 mt-1">Upload</p>
-                    <input
-                      ref={additionalImageRef}
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      className="hidden"
-                      onChange={handleAdditionalImages}
-                    />
-                  </div>
-                )}
+            {/* Toggles */}
+            <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-semibold text-gray-700">
+                    Available
+                  </p>
+                  <p className="text-xs text-gray-400">Visible to customers</p>
+                </div>
+                <Switch
+                  color="orange"
+                  checked={form.isAvailable}
+                  onCheckedChange={() => handleToggle("isAvailable")}
+                />
+              </div>
+              <div className="flex items-center justify-between border-t border-gray-50 pt-3">
+                <div>
+                  <p className="text-xs font-semibold text-gray-700">
+                    Featured
+                  </p>
+                  <p className="text-xs text-gray-400">Show on home page</p>
+                </div>
+                <Switch
+                  color="orange"
+                  checked={form.isFeatured}
+                  onCheckedChange={() => handleToggle("isFeatured")}
+                />
               </div>
             </div>
           </div>
 
           {/* ── Right — form fields ── */}
-          <div className="col-span-9 bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-6 space-y-5">
-            {/* Row 1 — Name + Description */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1.5">
-                  Product Name
-                </label>
-                <input
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  placeholder="Product Name"
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
-                />
+          <div className="col-span-9 space-y-5">
+            {/* ── Basic Info ── */}
+            <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-6 space-y-4">
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                Basic Info
+              </p>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Dish Name" required>
+                  <Input
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                    placeholder="e.g. Margherita Pizza"
+                  />
+                </Field>
+                <Field label="Category" required>
+                  <select
+                    name="categoryId"
+                    value={form.categoryId}
+                    onChange={handleChange}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors bg-white"
+                  >
+                    <option value="">Select category...</option>
+                    {categories.map((cat) => {
+                      return (
+                        <option value={cat._id} key={cat._id}>
+                          {cat.name}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </Field>
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1.5">
-                  Description
-                </label>
-                <input
-                  name="description"
-                  value={form.description}
+              <Field label="Short Description" required>
+                <Input
+                  name="shortDescription"
+                  value={form.shortDescription}
                   onChange={handleChange}
-                  placeholder="Short Description"
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
+                  placeholder="Brief shortDescription shown on menu cards"
                 />
+              </Field>
+              <Field
+                label="Long Description"
+                hint="Shown on the dish detail page"
+              >
+                <textarea
+                  name="longDescription"
+                  value={form.longDescription}
+                  onChange={handleChange}
+                  placeholder="Describe ingredients, cooking method, taste..."
+                  rows={3}
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors resize-none"
+                />
+              </Field>
+            </div>
+
+            {/* ── Pricing & Stock ── */}
+            <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-6 space-y-4">
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                Pricing & Stock
+              </p>
+              <div className="grid grid-cols-3 gap-4">
+                <Field label="Selling Price ($)" required>
+                  <Input
+                    name="price"
+                    value={form.price}
+                    onChange={handleChange}
+                    placeholder="0.00"
+                    type="number"
+                    min="0"
+                  />
+                </Field>
+                <Field label="Cost Price ($)" hint="Not visible to customers">
+                  <Input
+                    name="cost"
+                    value={form.cost}
+                    onChange={handleChange}
+                    placeholder="0.00"
+                    type="number"
+                    min="0"
+                  />
+                </Field>
+                <Field
+                  label="Stock / stock"
+                  required
+                  hint="Leave 0 if using variants"
+                >
+                  <Input
+                    name="stock"
+                    value={form.stock}
+                    onChange={handleChange}
+                    placeholder="0"
+                    type="number"
+                    min="0"
+                  />
+                </Field>
+              </div>
+              <Field label="Food Type" required>
+                <div className="flex gap-3 mt-1">
+                  {["veg", "non-veg", "vegan"].map((type) => (
+                    <label
+                      key={type}
+                      className={`flex items-center gap-2 cursor-pointer px-4 py-2 rounded-xl border-2 transition-all text-xs font-semibold
+                      ${form.foodType === type ? "border-[#fc8019] bg-orange-50 text-[#fc8019]" : "border-gray-200 text-gray-400"}`}
+                    >
+                      <input
+                        type="radio"
+                        name="foodType"
+                        value={type}
+                        checked={form.foodType === type}
+                        onChange={handleChange}
+                        className="hidden"
+                      />
+                      {type === "veg" ? "🟢" : type === "non-veg" ? "🔴" : "🌿"}{" "}
+                      {type}
+                    </label>
+                  ))}
+                </div>
+              </Field>
+            </div>
+
+            {/* ── Variants ── */}
+            <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-6 space-y-4">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                  Variants
+                </p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  e.g. Small / Medium / Large — each with its own price and
+                  stock
+                </p>
+              </div>
+
+              {/* Existing variants */}
+              {form.variants?.length > 0 && (
+                <div className="overflow-hidden rounded-xl border border-gray-100">
+                  {/* Header */}
+                  <div className="grid grid-cols-12 px-4 py-2 bg-gray-50 border-b border-gray-100">
+                    <p className="col-span-5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      Name
+                    </p>
+                    <p className="col-span-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      Price
+                    </p>
+                    <p className="col-span-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      Stock
+                    </p>
+                    <p className="col-span-1" />
+                  </div>
+                  {form.variants.map((v, i) => (
+                    <div
+                      key={v.id}
+                      className={`grid grid-cols-12 items-center px-4 py-3 ${i !== form.variants.length - 1 ? "border-b border-gray-50" : ""}`}
+                    >
+                      <p className="col-span-5 text-sm font-semibold text-gray-700">
+                        {v.name}
+                      </p>
+                      <p className="col-span-3 text-sm font-bold text-[#fc8019]">
+                        ${v.price}
+                      </p>
+                      <p className="col-span-3 text-sm text-gray-500">
+                        {v.stock} units
+                      </p>
+                      <div className="col-span-1 flex justify-end">
+                        <button
+                          type="button"
+                          onClick={() => removeVariant(v.name)}
+                          className="text-red-400 hover:text-red-500 hover:bg-red-50 p-1 rounded-lg transition-colors"
+                        >
+                          <DeleteIcon size="13" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Add variant input */}
+              <div className="flex items-center gap-3">
+                <input
+                  value={variantInput.name}
+                  onChange={(e) =>
+                    setVariantInput((p) => ({ ...p, name: e.target.value }))
+                  }
+                  placeholder="Variant name (e.g. Large)"
+                  className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
+                />
+                <input
+                  value={variantInput.price}
+                  onChange={(e) =>
+                    setVariantInput((p) => ({ ...p, price: e.target.value }))
+                  }
+                  placeholder="Price ($)"
+                  type="number"
+                  min="0"
+                  className="w-28 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
+                />
+                <input
+                  value={variantInput.stock}
+                  onChange={(e) =>
+                    setVariantInput((p) => ({ ...p, stock: e.target.value }))
+                  }
+                  placeholder="Stock"
+                  type="number"
+                  min="0"
+                  className="w-24 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
+                />
+                <button
+                  type="button"
+                  onClick={addVariant}
+                  disabled={
+                    !variantInput.name.trim() ||
+                    !variantInput.price ||
+                    !variantInput.stock
+                  }
+                  className="flex gap-1 items-center px-4 py-2 rounded-lg bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors whitespace-nowrap disabled:opacity-40"
+                >
+                  <PlusIcon color={"#fff"} />
+                  Add
+                </button>
               </div>
             </div>
 
-            {/* Row 2 — Category + Long Description */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1.5">
-                    Product Category
-                  </label>
-                  <select
-                    name="category"
-                    value={form.category}
-                    onChange={handleChange}
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors bg-white"
-                  >
-                    <option value="">Select...</option>
-                    <option value="pizza">Pizza</option>
-                    <option value="burger">Burger</option>
-                    <option value="noodles">Noodles</option>
-                    <option value="dessert">Dessert</option>
-                  </select>
-                </div>
-
-                {/* Selling + Cost Price */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1.5">
-                      Selling Price
-                    </label>
-                    <input
-                      name="sellingPrice"
-                      value={form.sellingPrice}
-                      onChange={handleChange}
-                      placeholder="Selling Price"
-                      type="number"
-                      className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1.5">
-                      Cost Price
-                    </label>
-                    <input
-                      name="costPrice"
-                      value={form.costPrice}
-                      onChange={handleChange}
-                      placeholder="Cost Price"
-                      type="number"
-                      className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
-                    />
-                  </div>
-                </div>
-
-                {/* Quantity */}
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1.5">
-                    Quantity
-                  </label>
-                  <input
-                    name="quantity"
-                    value={form.quantity}
-                    onChange={handleChange}
-                    placeholder="Quantity In Stock"
-                    type="number"
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
-                  />
-                </div>
-
-                {/* Delivery Type */}
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1.5">
-                    Delivery Type
-                  </label>
-                  <select
-                    name="deliveryType"
-                    value={form.deliveryType}
-                    onChange={handleChange}
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors bg-white"
-                  >
-                    <option value="">Select...</option>
-                    <option value="standard">Standard</option>
-                    <option value="express">Express</option>
-                  </select>
-                </div>
-
-                {/* Discount toggle */}
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-gray-500">
-                    Discount
-                  </label>
-                  <div className="flex items-center gap-3">
-                    {form.hasDiscount && (
-                      <input
-                        name="discountValue"
-                        value={form.discountValue}
-                        onChange={handleChange}
-                        placeholder="Value %"
-                        type="number"
-                        className="w-24 border border-gray-200 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-[#fc8019]"
-                      />
-                    )}
-                    <Toggle
-                      checked={form.hasDiscount}
-                      onChange={() => handleToggle("hasDiscount")}
-                    />
-                  </div>
-                </div>
-
-                {/* Expiry toggle */}
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-gray-500">
-                    Expiry Date
-                  </label>
-                  <div className="flex items-center gap-3">
-                    {form.hasExpiry && (
-                      <input
-                        name="expiresAt"
-                        value={form.expiresAt}
-                        onChange={handleChange}
-                        type="date"
-                        className="w-36 border border-gray-200 rounded-lg px-3 py-1.5 text-sm outline-none focus:border-[#fc8019]"
-                      />
-                    )}
-                    <Toggle
-                      checked={form.hasExpiry}
-                      onChange={() => handleToggle("hasExpiry")}
-                    />
-                  </div>
-                </div>
+            {/* ── Add-ons ── */}
+            <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-6 space-y-4">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
+                  Add-ons
+                </p>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  e.g. Extra Cheese, Olives, Jalapeños — optional extras
+                  customers can choose
+                </p>
               </div>
 
-              {/* Long description + right side toggles */}
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1.5">
-                    Product Long Description
-                  </label>
-                  <textarea
-                    name="longDescription"
-                    value={form.longDescription}
-                    onChange={handleChange}
-                    placeholder="Add a long description for your product"
-                    rows={7}
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors resize-none"
-                  />
-                </div>
-
-                {/* Return policy */}
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-gray-500">
-                    Return Policy
-                  </label>
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs text-gray-400">
-                      {form.returnPolicy ? "Returnable" : "Non-returnable"}
-                    </span>
-                    <Toggle
-                      checked={form.returnPolicy}
-                      onChange={() => handleToggle("returnPolicy")}
-                    />
-                  </div>
-                </div>
-
-                {/* Sale dates */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1.5">
-                      Sale Start On
-                    </label>
-                    <input
-                      name="saleStartOn"
-                      value={form.saleStartOn}
-                      onChange={handleChange}
-                      type="date"
-                      className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1.5">
-                      Sale End On
-                    </label>
-                    <input
-                      name="saleEndOn"
-                      value={form.saleEndOn}
-                      onChange={handleChange}
-                      type="date"
-                      className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors"
-                    />
-                  </div>
-                </div>
-
-                {/* Food type */}
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1.5">
-                    Food Type
-                  </label>
-                  <div className="flex gap-3">
-                    {["veg", "non-veg", "vegan"].map((type) => (
-                      <label
-                        key={type}
-                        className="flex items-center gap-1.5 cursor-pointer"
+              {/* Existing add-ons */}
+              {form.addOns.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {form.addOns.map((a) => (
+                    <div
+                      key={a.id}
+                      className="flex items-center gap-2 bg-orange-50 border border-orange-100 rounded-xl px-3 py-2"
+                    >
+                      <span className="text-xs font-semibold text-gray-700">
+                        {a.name}
+                      </span>
+                      <span className="text-xs font-bold text-[#fc8019]">
+                        +${a.price}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => removeAddOn(a.name)}
+                        className="text-red-400 hover:text-red-500 transition-colors ml-1"
                       >
-                        <input
-                          type="radio"
-                          name="foodType"
-                          value={type}
-                          checked={form.foodType === type}
-                          onChange={handleChange}
-                          className="accent-[#fc8019]"
-                        />
-                        <span className="text-xs text-gray-600 capitalize">
-                          {type}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
+                        <DeleteIcon size="13" />
+                      </button>
+                    </div>
+                  ))}
                 </div>
+              )}
 
-                {/* Featured toggle */}
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-gray-500">
-                    Featured
-                  </label>
-                  <Toggle
-                    checked={form.isFeatured}
-                    onChange={() => handleToggle("isFeatured")}
-                  />
-                </div>
+              {/* Add add-on input */}
+              <div className="flex items-center gap-3">
+                <input
+                  value={addOnInput.name}
+                  onChange={(e) =>
+                    setAddOnInput((p) => ({ ...p, name: e.target.value }))
+                  }
+                  placeholder="Add-on name (e.g. Extra Cheese)"
+                  className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
+                />
+                <input
+                  value={addOnInput.price}
+                  onChange={(e) =>
+                    setAddOnInput((p) => ({ ...p, price: e.target.value }))
+                  }
+                  placeholder="Price ($)"
+                  type="number"
+                  min="0"
+                  className="w-28 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
+                />
+                <button
+                  type="button"
+                  onClick={addAddOn}
+                  disabled={!addOnInput.name.trim() || !addOnInput.price}
+                  className="flex gap-1 items-center px-4 py-2 rounded-lg bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors whitespace-nowrap disabled:opacity-40"
+                >
+                  <PlusIcon color={"#fff"} /> Add
+                </button>
               </div>
             </div>
 
             {/* ── Footer buttons ── */}
-            <div className="flex justify-end gap-3 pt-2 border-t border-gray-100">
+            <div className="flex justify-end gap-3">
               <button
                 type="button"
                 onClick={handleClear}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
+                className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
               >
                 🗑️ Clear
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors disabled:opacity-60"
+                className="px-6 py-2.5 rounded-xl bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors disabled:opacity-60"
               >
-                💾 {loading ? "Saving..." : "Save"}
+                💾 {loading ? "Saving..." : "Save Dish"}
               </button>
             </div>
           </div>
@@ -447,18 +518,5 @@ const RestaurantAddDish = () => {
     </div>
   );
 };
-
-// ── Toggle switch component ──────────────────────────────────────────────────
-const Toggle = ({ checked, onChange }) => (
-  <button
-    type="button"
-    onClick={onChange}
-    className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${checked ? "bg-[#fc8019]" : "bg-gray-200"}`}
-  >
-    <span
-      className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${checked ? "translate-x-5" : "translate-x-0"}`}
-    />
-  </button>
-);
 
 export default RestaurantAddDish;
