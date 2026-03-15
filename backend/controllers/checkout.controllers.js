@@ -11,20 +11,14 @@ export const validateCartBeforeCheckout = async (req, res) => {
     }
 
     let priceChanged = false;
-    let stockChanged = false;
 
     for (const item of cart.items) {
       const dish = item.dish;
 
-      if (!dish || !dish.isAvailable || dish.stock <= 0) {
+      if (!dish || !dish.isAvailable) {
         return res.status(400).json({
           message: `${item.name} is no longer available`,
         });
-      }
-
-      if (item.quantity > dish.stock) {
-        item.quantity = dish.stock;
-        stockChanged = true;
       }
 
       let expectedPrice = dish.price;
@@ -66,14 +60,6 @@ export const validateCartBeforeCheckout = async (req, res) => {
 
       return res.status(400).json({
         message: "Price updated. Please review before proceed.",
-        cart: cart.items,
-      });
-    }
-    if (stockChanged) {
-      await cart.save();
-
-      return res.status(400).json({
-        message: "Stock updated. Please review before proceed.",
         cart: cart.items,
       });
     }

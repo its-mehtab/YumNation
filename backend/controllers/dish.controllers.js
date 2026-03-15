@@ -43,19 +43,12 @@ import Category from "../models/category.modal.js";
 //       if (values.includes("availableNow")) {
 //         conditions.push({
 //           isAvailable: true,
-//           stock: { $gt: 0 },
 //         });
 //       }
 
 //       if (values.includes("recommended")) {
 //         conditions.push({
 //           isFeatured: true,
-//         });
-//       }
-
-//       if (values.includes("soldOut")) {
-//         conditions.push({
-//           stock: { $lte: 0 },
 //         });
 //       }
 
@@ -81,7 +74,7 @@ import Category from "../models/category.modal.js";
 //         .skip((pageNum - 1) * limitNum)
 //         .limit(limitNum)
 //         .select(
-//           "name price images slug description rating stock isAvailable isFeatured variants",
+//           "name price images slug description rating isAvailable isFeatured variants",
 //         ),
 
 //       Dish.countDocuments(query),
@@ -100,71 +93,12 @@ import Category from "../models/category.modal.js";
 
 export const getDishes = async (req, res) => {
   try {
-    const { search, category, minPrice, maxPrice, availability, sort } =
-      req.query;
+    // const { category, minPrice, maxPrice, availability } =
+    //   req.query;
 
-    const query = {};
-
-    // 🔍 Search
-    if (search) {
-      query.$text = { $search: search };
-    }
-
-    // 🏷 Category
-    if (category) {
-      const categoriesArray = category.split(",");
-      query.category = { $in: categoriesArray };
-    }
-
-    // 💰 Price
-    if (minPrice || maxPrice) {
-      query.price = {};
-      if (minPrice) query.price.$gte = Number(minPrice);
-      if (maxPrice) query.price.$lte = Number(maxPrice);
-    }
-
-    // 📦 Availability
-    if (availability) {
-      const values = availability.split(",");
-      const conditions = [];
-
-      if (values.includes("availableNow")) {
-        conditions.push({
-          isAvailable: true,
-          stock: { $gt: 0 },
-        });
-      }
-
-      if (values.includes("recommended")) {
-        conditions.push({
-          isFeatured: true,
-        });
-      }
-
-      if (values.includes("soldOut")) {
-        conditions.push({
-          stock: { $lte: 0 },
-        });
-      }
-
-      if (conditions.length) {
-        query.$or = conditions;
-      }
-    }
-
-    // ↕ Sorting
-    let sortOption = {};
-    if (sort === "price_asc") sortOption.price = 1;
-    if (sort === "price_desc") sortOption.price = -1;
-    if (sort === "rating") sortOption.rating = -1;
-    if (sort === "latest") sortOption.createdAt = -1;
-
-    const dishes = await Dish.find(query)
+    const dishes = await Dish.find({ restaurant: req.restaurantId })
       .populate("category", "name slug")
-      .sort(sortOption)
-      .select(
-        "name slug price shortDescription image category isAvailable isFeatured rating stock",
-      );
+      .select(req.hideFields || "");
 
     res.status(200).json(dishes);
   } catch (error) {
@@ -191,12 +125,32 @@ export const getDishBySlug = async (req, res) => {
   }
 };
 
+export const getDishById = async (req, res) => {
+  try {
+    const dish = await Dish.findById(req.params.id)
+      .populate("category", "name")
+      .populate("restaurant", "name slug");
+
+    if (!dish) return res.status(404).json({ message: "Dish not found" });
+
+    if (dish.restaurant._id.toString() !== req.restaurantId.toString()) {
+      return res.status(403).json({ message: "Not authorizeddsd" });
+    }
+
+    return res.status(200).json(dish);
+  } catch (error) {
+    return res.status(500).json({
+      message: "unable to find dish by id",
+      error: error.message,
+    });
+  }
+};
+
 export const createDish = async (req, res) => {
   const {
     name,
     price,
     cost,
-    stock,
     shortDescription,
     longDescription,
     image,
@@ -234,7 +188,6 @@ export const createDish = async (req, res) => {
       name,
       price,
       cost,
-      stock,
       shortDescription,
       longDescription,
       image,
@@ -245,7 +198,7 @@ export const createDish = async (req, res) => {
       restaurant: restaurant._id,
     });
 
-    return res.status(201).json({ dish });
+    return res.status(201).json(dish);
   } catch (error) {
     return res
       .status(500)
@@ -274,7 +227,6 @@ export const updateDish = async (req, res) => {
     if (req.body.price !== undefined) dish.price = req.body.price;
     if (req.body.description !== undefined)
       dish.description = req.body.description;
-    if (req.body.stock !== undefined) dish.stock = req.body.stock;
     if (req.body.images !== undefined) dish.images = req.body.images;
     if (req.body.category !== undefined) dish.category = req.body.category;
     if (req.body.variants !== undefined) dish.variants = req.body.variants;

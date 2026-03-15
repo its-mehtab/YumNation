@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { notifySuccess } from "../../utils/toast";
 import { useDish } from "../../context/restaurant/DishContext";
+import axios, { Axios } from "axios";
+import { notifySuccess } from "../../utils/toast";
 import DishForm from "../../components/restaurant/DishForm";
 
-// ── Initial state ─────────────────────────────────────────────────────────────
 const initialForm = {
   name: "",
   shortDescription: "",
@@ -21,18 +20,41 @@ const initialForm = {
   isFeatured: false,
 };
 
-// ── Main ──────────────────────────────────────────────────────────────────────
-const RestaurantAddDish = () => {
+const RestaurantEditDish = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState(initialForm);
+  const [mainDish, setMainDish] = useState({});
+  const [form, setForm] = useState(mainDish);
+  const [loading, setLoading] = useState(false);
 
   const { serverURL } = useAuth();
   const { setDishes } = useDish();
 
+  const { id } = useParams();
+
+  const fetchDish = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(
+        `${serverURL}/api/dish/restaurant/${id}`,
+        {
+          withCredentials: true,
+        },
+      );
+
+      console.log(data);
+
+      setMainDish(data);
+    } catch (error) {
+      console.log("Add Dish Error:", error?.response?.data || error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post(
+      const { data } = await Axios.post(
         `${serverURL}/api/dish`,
         { ...form },
         { withCredentials: true },
@@ -45,6 +67,10 @@ const RestaurantAddDish = () => {
       console.log("Add Dish Error:", error?.response?.data || error.message);
     }
   };
+
+  useEffect(() => {
+    fetchDish();
+  }, [id]);
 
   return (
     <div>
@@ -73,4 +99,4 @@ const RestaurantAddDish = () => {
   );
 };
 
-export default RestaurantAddDish;
+export default RestaurantEditDish;

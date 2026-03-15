@@ -17,7 +17,7 @@ import { fetchAvailibility } from "../../utils/availibility";
 const DishCard = ({ currDish, dishLoading }) => {
   const [wishlistActive, setWishlistActive] = useState(false);
 
-  const { isSoldOut, isUnavailable, statusText } = fetchAvailibility(currDish);
+  const { isUnavailable, statusText } = fetchAvailibility(currDish);
 
   const { serverURL } = useAuth();
   const { setCart } = useCart();
@@ -29,7 +29,7 @@ const DishCard = ({ currDish, dishLoading }) => {
   } = useWishlist();
 
   const handleAddCart = async () => {
-    // if (isSoldOut || isUnavailable) {
+    // if (isUnavailable) {
     //   notifyError(`${currDish.name} is ${statusText}`);
     //   return;
     // }
@@ -105,7 +105,7 @@ const DishCard = ({ currDish, dishLoading }) => {
 
   return (
     <div
-      className={`border border-[#b2b2b2] rounded-lg py-4 px-3.5 relative ${isSoldOut || isUnavailable ? "grayscale" : ""}`}
+      className={`border border-[#b2b2b2] rounded-lg py-4 px-3.5 relative ${isUnavailable ? "grayscale" : ""}`}
     >
       <span className="bg-[#eb5757] text-white text-sm absolute -top-0.5 -left-px rounded-tl-lg rounded-br-md px-2.5 py-0.5">
         15% Off
@@ -117,7 +117,7 @@ const DishCard = ({ currDish, dishLoading }) => {
         {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}
       </span>
       <Link className="relative" to={`/dish/${currDish.slug}`}>
-        {(isSoldOut || isUnavailable) && (
+        {isUnavailable && (
           <span className="bg-[#fc8019] text-white text-md absolute top-1/2 -left-4 -translate-y-1/2 -right-4 text-center px-2.5 py-1.5">
             {statusText}
           </span>

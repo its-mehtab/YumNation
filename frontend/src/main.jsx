@@ -8,7 +8,7 @@ import Header from "./components/header/Header.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ValidateProvider } from "./context/ValidateContext.jsx";
 import { CategoryProvider } from "./context/CategoryContext.jsx";
-import { DishProvider } from "./context/DishContext.jsx";
+import { DishProvider } from "./context/restaurant/DishContext.jsx";
 import { CartProvider } from "./context/CartContext.jsx";
 import { WishlistProvider } from "./context/WishlistContext.jsx";
 import { Theme } from "@radix-ui/themes";

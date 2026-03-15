@@ -37,13 +37,11 @@ const Checkout = () => {
                 {error}
               </h3>
               <p className="mb-2 text-gray-500">
-                Some items in your order are currently low on stock or
-                unavailable. We’ve updated your cart totals—please review them
-                before checking out.
+                Some items in your order are currently unavailable. We’ve
+                updated your cart totals—please review them before checking out.
               </p>
               <p className="mb-5 text-gray-500">
-                Note: If food is unavailable or out of stock please remove them
-                to proceed
+                Note: If food is unavailable please remove them to proceed
               </p>
             </Skeleton>
           )}
@@ -63,7 +61,7 @@ const Checkout = () => {
               >
                 <Link
                   to={`/dish/${currProd.dish.slug}`}
-                  className={`w-17.5 min-w-17.5 h-17.5 rounded-lg border flex justify-center items-center border-[#fc8019] ${currProd.dish.stock <= 0 || !currProd.dish.isAvailable ? "grayscale" : ""}`}
+                  className={`w-17.5 min-w-17.5 h-17.5 rounded-lg border flex justify-center items-center border-[#fc8019] ${!currProd.dish.isAvailable ? "grayscale" : ""}`}
                 >
                   {/* <img src={currProd.image} alt="" className="w-full" /> */}
                   <img src={assets.dish2} alt="" className="w-full" />

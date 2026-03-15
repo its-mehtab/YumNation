@@ -69,8 +69,9 @@ const Wishlist = () => {
         <ul className="border border-gray-200 p-3 lg:px-6 rounded-xl">
           {wishlist?.length > 0 ? (
             wishlist?.map((currProd) => {
-              const { isSoldOut, isUnavailable, statusText } =
-                fetchAvailibility(currProd.dish);
+              const { isUnavailable, statusText } = fetchAvailibility(
+                currProd.dish,
+              );
 
               return (
                 <li
@@ -79,13 +80,13 @@ const Wishlist = () => {
                 >
                   <Link
                     to={`/dish/${currProd.dish.slug}`}
-                    className={`w-20 min-w-20 ${isSoldOut || isUnavailable ? "grayscale" : ""}`}
+                    className={`w-20 min-w-20 ${isUnavailable ? "grayscale" : ""}`}
                   >
                     {/* <img src={currProd.img} alt="" className="w-full" /> */}
                     <img src={assets.dish2} alt="" className="w-full" />
                   </Link>
                   <div>
-                    {(isSoldOut || isUnavailable) && (
+                    {isUnavailable && (
                       <p className="text-xs bg-red-500 text-white font-medium mb-2 px-2 py-0.5 inline-block rounded-sm">
                         {statusText}
                       </p>
@@ -102,13 +103,13 @@ const Wishlist = () => {
                   <div className="ml-auto flex gap-5 md:gap-10 items-center">
                     <div
                       onClick={() => {
-                        if (isSoldOut || isUnavailable) {
+                        if (isUnavailable) {
                           notifyError(`${currProd.name} is ${statusText}`);
                           return;
                         }
                         handleAddCart(currProd);
                       }}
-                      className={`hidden md:block px-5 py-2 rounded-md  bg-[#fc8019] text-white hover:bg-[#c57300] transition ${isSoldOut || isUnavailable ? "grayscale cursor-not-allowed" : "cursor-pointer"}`}
+                      className={`hidden md:block px-5 py-2 rounded-md  bg-[#fc8019] text-white hover:bg-[#c57300] transition ${isUnavailable ? "grayscale cursor-not-allowed" : "cursor-pointer"}`}
                     >
                       Move to Cart
                     </div>

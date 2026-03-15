@@ -7,7 +7,7 @@ export const getUserCart = async (req, res) => {
 
   try {
     const cart = await Cart.findOne({ user: userId })
-      .populate("items.dish", "name slug stock isAvailable variants")
+      .populate("items.dish", "name slug isAvailable variants")
       .lean();
 
     if (!cart) {
@@ -30,7 +30,7 @@ export const addCart = async (req, res) => {
   try {
     const dishDoc = await Dish.findById(dish);
 
-    if (!dishDoc || !dishDoc.isAvailable || dishDoc.stock <= 0) {
+    if (!dishDoc || !dishDoc.isAvailable) {
       return res.status(400).json({ message: "Dish unavailable" });
     }
 
@@ -71,11 +71,11 @@ export const addCart = async (req, res) => {
       });
     }
 
-    await cart.populate("items.dish", "name slug stock isAvailable variants");
+    await cart.populate("items.dish", "name slug isAvailable variants");
 
     const updatedCart = await Cart.findOne({ user: userId }).populate(
       "items.dish",
-      "name slug stock isAvailable variants",
+      "name slug isAvailable variants",
     );
 
     return res.status(201).json(updatedCart.items);
@@ -125,7 +125,7 @@ export const updateCartQuantity = async (req, res) => {
 
     const updatedCart = await cart.populate(
       "items.dish",
-      "name slug stock isAvailable variants",
+      "name slug isAvailable variants",
     );
 
     return res.status(200).json(updatedCart.items);
@@ -156,7 +156,7 @@ export const removeFromCart = async (req, res) => {
         },
       },
       { new: true },
-    ).populate("items.dish", "name slug stock isAvailable variants");
+    ).populate("items.dish", "name slug isAvailable variants");
 
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });

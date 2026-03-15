@@ -22,6 +22,7 @@ export const getAllRestaurant = async (req, res) => {
 
 export const getRestaurant = async (req, res) => {
   const owner = req.userId;
+
   try {
     const restaurant = await Restaurant.findOne({ owner });
 

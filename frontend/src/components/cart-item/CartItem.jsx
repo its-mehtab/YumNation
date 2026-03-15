@@ -14,9 +14,7 @@ const CartItem = ({ currProd, dishs }) => {
   const { serverURL } = useAuth();
   const { setCart } = useCart();
 
-  const { isSoldOut, isUnavailable, statusText } = fetchAvailibility(
-    currProd.dish,
-  );
+  const { isUnavailable, statusText } = fetchAvailibility(currProd.dish);
 
   const handleQuantityMinus = async () => {
     if (quantity > 1) {
@@ -93,13 +91,13 @@ const CartItem = ({ currProd, dishs }) => {
     <div className="flex flex-wrap gap-4 items-center mb-8">
       <Link
         to={`/dish/${currProd.dish.slug}`}
-        className={`w-17.5 min-w-17.5 h-17.5 rounded-lg border flex justify-center items-center border-[#fc8019] ${currProd.dish.stock <= 0 || !currProd.dish.isAvailable ? "grayscale" : ""}`}
+        className={`w-17.5 min-w-17.5 h-17.5 rounded-lg border flex justify-center items-center border-[#fc8019] ${!currProd.dish.isAvailable ? "grayscale" : ""}`}
       >
         {/* <img src={currProd.image} alt="" className="w-full" /> */}
         <img src={assets.dish2} alt="" className="w-full" />
       </Link>
       <div>
-        {(isSoldOut || isUnavailable) && (
+        {isUnavailable && (
           <p className="text-xs bg-red-500 text-white font-medium mb-2 px-2 py-0.5 inline-block rounded-sm">
             {statusText}
           </p>

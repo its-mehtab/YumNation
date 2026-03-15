@@ -6,7 +6,11 @@ import {
   PlusIcon,
   ViewIcon,
 } from "../../assets/icon/Icons";
-import { useDish } from "../../context/DishContext";
+import { useDish } from "../../context/restaurant/DishContext";
+import ConfirmationModal from "../../components/common/ConfirmationModal";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
+import { notifyError, notifySuccess } from "../../utils/toast";
 
 // ── Status Badge ──────────────────────────────────────────────────────────────
 const StatusBadge = ({ isAvailable }) => (
@@ -21,6 +25,7 @@ const StatusBadge = ({ isAvailable }) => (
 const RestaurantDishes = () => {
   const [sort, setSort] = useState("asc");
 
+  const { serverURL } = useAuth();
   const { dishes, setDishes } = useDish();
 
   const sorted = [...dishes].sort((a, b) =>
@@ -29,9 +34,18 @@ const RestaurantDishes = () => {
       : b.name.localeCompare(a.name),
   );
 
-  const handleDelete = (id) => {
-    if (!window.confirm("Delete this dish?")) return;
+  const handleDelete = async (id, name) => {
     setDishes((prev) => prev.filter((d) => d._id !== id));
+    try {
+      await axios.delete(`${serverURL}/api/dish/${id}`, {
+        withCredentials: true,
+      });
+
+      notifySuccess(`${name} is deleted`);
+    } catch (error) {
+      notifyError(`deletion failed`);
+      console.log("Delete Dish Error:", error?.response?.data || error.message);
+    }
   };
 
   return (
@@ -73,7 +87,7 @@ const RestaurantDishes = () => {
             </div>
             {/* Add dish */}
             <Link
-              to="/restaurant/dishes/add"
+              to="/restaurant/dish/add"
               className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
             >
               <PlusIcon color={"#fff"} size={12} />
@@ -87,21 +101,16 @@ const RestaurantDishes = () => {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100">
-                {[
-                  "Dish Name",
-                  "Category",
-                  "Price",
-                  "Stock",
-                  "Status",
-                  "Action",
-                ].map((h) => (
-                  <th
-                    key={h}
-                    className="text-left px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider first:px-6"
-                  >
-                    {h}
-                  </th>
-                ))}
+                {["Dish Name", "Category", "Price", "Status", "Action"].map(
+                  (h) => (
+                    <th
+                      key={h}
+                      className="text-left px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider first:px-6"
+                    >
+                      {h}
+                    </th>
+                  ),
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
@@ -134,14 +143,13 @@ const RestaurantDishes = () => {
                   <td className="px-4 py-4 text-gray-700 font-semibold">
                     ${dish.price}
                   </td>
-                  <td className="px-4 py-4 text-gray-500">{dish.stock}</td>
                   <td className="px-4 py-4">
                     <StatusBadge isAvailable={dish.isAvailable} />
                   </td>
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-1.5">
                       <Link
-                        to={`/restaurant/dishes/edit/${dish._id}`}
+                        to={`/restaurant/dish/edit/${dish._id}`}
                         className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
                         title="Edit"
                       >
@@ -154,13 +162,22 @@ const RestaurantDishes = () => {
                       >
                         <ViewIcon size={15} />
                       </Link>
-                      <button
-                        onClick={() => handleDelete(dish._id)}
-                        className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
-                        title="Delete"
-                      >
-                        <DeleteIcon size={15} />
-                      </button>
+
+                      <ConfirmationModal
+                        button={
+                          <button
+                            className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
+                            title="Delete"
+                          >
+                            <DeleteIcon size={15} />
+                          </button>
+                        }
+                        heading="Delete This Dish"
+                        description="Are you sure you want to delete this dish? This action cannot be undone and the dish will be removed from the menu."
+                        onClick={async () =>
+                          await handleDelete(dish._id, dish.name)
+                        }
+                      />
                     </div>
                   </td>
                 </tr>
@@ -174,12 +191,6 @@ const RestaurantDishes = () => {
           <div className="text-center py-16 text-gray-400">
             <div className="text-4xl mb-3">🍽️</div>
             <p className="text-sm font-medium mb-3">No dishes added yet</p>
-            <Link
-              to="/restaurant/dishes/add"
-              className="flex items-center gap-2 bg-[#fc8019] text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-[#e5721f] transition-colors"
-            >
-              <PlusIcon /> Add your first dish
-            </Link>
           </div>
         )}
       </div>

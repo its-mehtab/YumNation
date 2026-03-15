@@ -64,10 +64,6 @@ const dishSchema = new Schema(
           required: false,
           min: 0,
         },
-        stock: {
-          type: Number,
-          default: null,
-        },
       },
     ],
 
@@ -84,8 +80,6 @@ const dishSchema = new Schema(
         },
       },
     ],
-
-    stock: { type: Number, default: null },
 
     isAvailable: {
       type: Boolean,

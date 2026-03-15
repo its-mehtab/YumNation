@@ -13,6 +13,7 @@ import RestaurantPendingApproval from "../pages/restaurant/RestaurantPendingAppr
 import RestaurantRejectedPage from "../pages/restaurant/RestaurantRejectedPage";
 import { useRestaurant } from "../context/restaurant/RestaurantContext";
 import RestaurantSuspended from "../pages/restaurant/RestaurantSuspended";
+import RestaurantEditDish from "../pages/restaurant/RestaurantEditDish";
 
 const RestaurantRoutes = () => {
   const { user } = useAuth();
@@ -38,7 +39,8 @@ const RestaurantRoutes = () => {
         <Route path="/orders/:id" element={<RestaurantOrderDetails />} />
         <Route path="/dishes" element={<RestaurantDishes />} />
         <Route path="/dish/:id" element={<RestaurantDishDetails />} />
-        <Route path="/dishes/add" element={<RestaurantAddDish />} />
+        <Route path="/dish/add" element={<RestaurantAddDish />} />
+        <Route path="/dish/edit/:id" element={<RestaurantEditDish />} />
         <Route path="/settings" element={<RestaurantSettings />} />
       </Routes>
     </RestaurantLayout>

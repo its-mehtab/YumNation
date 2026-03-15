@@ -25,7 +25,7 @@ import {
   LocationIcon,
 } from "../../assets/icon/Icons";
 import { useCategory } from "../../context/CategoryContext";
-import { useDish } from "../../context/DishContext";
+import { useDish } from "../../context/restaurant/DishContext";
 import { Link } from "react-router-dom";
 import CartBox from "../../components/cart-box/CartBox";
 import AddressBox from "../../components/address-box/AddressBox";

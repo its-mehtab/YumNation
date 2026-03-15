@@ -6,7 +6,7 @@ export const getUserWishlist = async (req, res) => {
   try {
     const wishlist = await Wishlist.findOne({ user: userId }).populate(
       "items.dish",
-      "name slug variants stock isAvailable",
+      "name slug variants isAvailable",
     );
 
     if (!wishlist) {
@@ -49,7 +49,7 @@ export const toggleWishlist = async (req, res) => {
 
     const updatedWishlist = await Wishlist.findOne({ user: userId }).populate(
       "items.dish",
-      "name slug variants stock isAvailable",
+      "name slug variants isAvailable",
     );
 
     return res.status(201).json(updatedWishlist.items);
@@ -84,7 +84,7 @@ export const removeFromWishlist = async (req, res) => {
 
     const updatedWishlist = await wishlist.populate(
       "items.dish",
-      "name slug variants stock isAvailable",
+      "name slug variants isAvailable",
     );
 
     return res.status(200).json(updatedWishlist.items);
