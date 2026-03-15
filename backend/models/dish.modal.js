@@ -68,8 +68,6 @@ const dishSchema = new Schema(
           type: Number,
           default: null,
         },
-        rating: { type: Number, default: 0, min: 0, max: 5 },
-        totalOrders: { type: Number, default: 0 },
       },
     ],
 
@@ -98,6 +96,9 @@ const dishSchema = new Schema(
       type: Boolean,
       default: false,
     },
+
+    rating: { type: Number, default: 0, min: 0, max: 5 },
+    totalOrders: { type: Number, default: 0 },
   },
   { timestamps: true },
 );

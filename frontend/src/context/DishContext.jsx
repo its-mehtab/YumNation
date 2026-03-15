@@ -5,18 +5,18 @@ import { useAuth } from "./AuthContext";
 const DishContext = createContext();
 
 export const DishProvider = ({ children }) => {
-  const [dish, setDish] = useState(null);
+  const [dishes, setDishes] = useState(null);
   const { serverURL } = useAuth();
   const [loading, setLoading] = useState(false);
 
-  const getAllDishs = async () => {
+  const getAllDishes = async () => {
     setLoading(true);
     try {
       const { data } = await axios.get(`${serverURL}/api/dish`, {
         withCredentials: true,
       });
 
-      setDish(data);
+      setDishes(data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -25,11 +25,11 @@ export const DishProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    getAllDishs();
+    getAllDishes();
   }, []);
 
   return (
-    <DishContext.Provider value={{ dish, setDish, loading, setLoading }}>
+    <DishContext.Provider value={{ dishes, setDishes, loading, setLoading }}>
       {children}
     </DishContext.Provider>
   );

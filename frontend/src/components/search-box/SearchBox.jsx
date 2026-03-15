@@ -26,17 +26,16 @@ const SearchBox = () => {
   const boxRef = useRef(null);
 
   const fetchPopularDishs = async () => {
-    try {
-      const { data } = await axios.get(`${serverURL}/api/dish`, {
-        params: {
-          availability: "recommended",
-        },
-      });
-
-      setPopulerDishs(data.dishs);
-    } catch (error) {
-      console.log(error);
-    }
+    // try {
+    //   const { data } = await axios.get(`${serverURL}/api/dish`, {
+    //     params: {
+    //       availability: "recommended",
+    //     },
+    //   });
+    //   setPopulerDishs(data.dishs);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   useEffect(() => {

@@ -111,7 +111,7 @@ const RestaurantAddDish = () => {
         { withCredentials: true },
       );
 
-      // navigate("/restaurant/dishes");
+      navigate("/restaurant/dishes");
       notifySuccess(`${form.name} added successfully`);
     } catch (error) {
       console.log(error);

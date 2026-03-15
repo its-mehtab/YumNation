@@ -1,45 +1,12 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
-// ── Mock data ─────────────────────────────────────────────────────────────────
-const mockDishes = [
-  {
-    _id: "1",
-    name: "Italian Pizza",
-    category: "Pizza",
-    price: 79,
-    stock: 16,
-    isAvailable: true,
-    image: null,
-  },
-  {
-    _id: "2",
-    name: "Veg Burger",
-    category: "Burger",
-    price: 488,
-    stock: 20,
-    isAvailable: true,
-    image: null,
-  },
-  {
-    _id: "3",
-    name: "Spaghetti",
-    category: "Noodles",
-    price: 23,
-    stock: 10,
-    isAvailable: true,
-    image: null,
-  },
-  {
-    _id: "4",
-    name: "Red Velvet Cake",
-    category: "Dessert",
-    price: 350,
-    stock: 230,
-    isAvailable: false,
-    image: null,
-  },
-];
+import {
+  DeleteIcon,
+  EditIcon,
+  PlusIcon,
+  ViewIcon,
+} from "../../assets/icon/Icons";
+import { useDish } from "../../context/DishContext";
 
 // ── Status Badge ──────────────────────────────────────────────────────────────
 const StatusBadge = ({ isAvailable }) => (
@@ -53,7 +20,8 @@ const StatusBadge = ({ isAvailable }) => (
 // ── Main ──────────────────────────────────────────────────────────────────────
 const RestaurantDishes = () => {
   const [sort, setSort] = useState("asc");
-  const [dishes, setDishes] = useState(mockDishes);
+
+  const { dishes, setDishes } = useDish();
 
   const sorted = [...dishes].sort((a, b) =>
     sort === "asc"
@@ -85,7 +53,7 @@ const RestaurantDishes = () => {
           <div className="flex items-center gap-2">
             <h2 className="text-base font-bold text-gray-700">All Dishes</h2>
             <span className="text-xs bg-orange-50 text-[#fc8019] font-semibold px-2 py-0.5 rounded-full">
-              {sorted.length}
+              {sorted?.length}
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -108,7 +76,7 @@ const RestaurantDishes = () => {
               to="/restaurant/dishes/add"
               className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
             >
-              <span className="text-lg leading-none">+</span>
+              <PlusIcon color={"#fff"} size={12} />
               Add Dish
             </Link>
           </div>
@@ -137,12 +105,11 @@ const RestaurantDishes = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {sorted.map((dish) => (
+              {sorted?.map((dish) => (
                 <tr
                   key={dish._id}
                   className="hover:bg-gray-50 transition-colors"
                 >
-                  {/* Name */}
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 min-w-10 rounded-lg bg-orange-50 border border-orange-100 flex items-center justify-center overflow-hidden">
@@ -161,7 +128,9 @@ const RestaurantDishes = () => {
                       </span>
                     </div>
                   </td>
-                  <td className="px-4 py-4 text-gray-500">{dish.category}</td>
+                  <td className="px-4 py-4 text-gray-500">
+                    {dish.category.name}
+                  </td>
                   <td className="px-4 py-4 text-gray-700 font-semibold">
                     ${dish.price}
                   </td>
@@ -169,70 +138,28 @@ const RestaurantDishes = () => {
                   <td className="px-4 py-4">
                     <StatusBadge isAvailable={dish.isAvailable} />
                   </td>
-                  {/* Actions */}
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-1.5">
-                      {/* Edit */}
                       <Link
                         to={`/restaurant/dishes/edit/${dish._id}`}
                         className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
                         title="Edit"
                       >
-                        <svg
-                          width="15"
-                          height="15"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                        </svg>
+                        <EditIcon size={15} />
                       </Link>
-                      {/* View */}
                       <Link
                         to={`/restaurant/dish/${dish._id}`}
                         className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-blue-500 transition-colors"
                         title="View"
                       >
-                        <svg
-                          width="15"
-                          height="15"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                          <circle cx="12" cy="12" r="3" />
-                        </svg>
+                        <ViewIcon size={15} />
                       </Link>
-                      {/* Delete */}
                       <button
                         onClick={() => handleDelete(dish._id)}
                         className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
                         title="Delete"
                       >
-                        <svg
-                          width="15"
-                          height="15"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <polyline points="3 6 5 6 21 6" />
-                          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                          <path d="M10 11v6M14 11v6" />
-                          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-                        </svg>
+                        <DeleteIcon size={15} />
                       </button>
                     </div>
                   </td>
@@ -243,15 +170,15 @@ const RestaurantDishes = () => {
         </div>
 
         {/* Empty state */}
-        {sorted.length === 0 && (
+        {sorted?.length === 0 && (
           <div className="text-center py-16 text-gray-400">
             <div className="text-4xl mb-3">🍽️</div>
             <p className="text-sm font-medium mb-3">No dishes added yet</p>
             <Link
               to="/restaurant/dishes/add"
-              className="inline-flex items-center gap-1.5 bg-[#fc8019] text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-[#e5721f] transition-colors"
+              className="flex items-center gap-2 bg-[#fc8019] text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-[#e5721f] transition-colors"
             >
-              + Add your first dish
+              <PlusIcon /> Add your first dish
             </Link>
           </div>
         )}

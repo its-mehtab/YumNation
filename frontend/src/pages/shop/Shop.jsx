@@ -15,7 +15,7 @@ const Shop = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const { serverURL } = useAuth();
-  const { dishs, setDishs, loading } = useDish();
+  const { dishes, setDishs, loading } = useDish();
 
   const [filters, setFilters] = useState({
     category: searchParams.get("category")?.split(",") || [],
@@ -42,7 +42,7 @@ const Shop = () => {
         availability: filters.availability.join(","),
       };
 
-      const { data } = await axios.get(`${serverURL}/api/dishs`, {
+      const { data } = await axios.get(`${serverURL}/api/dish`, {
         params,
       });
 
@@ -85,7 +85,7 @@ const Shop = () => {
             <div className="flex justify-between gap-3 mb-4">
               <Skeleton loading={loading}>
                 <p className="text-sm text-gray-600">
-                  Showing {dishs?.dishs.length} of {dishs?.total}
+                  Showing {dishes?.dishes.length} of {dishes?.total}
                 </p>
               </Skeleton>
 
@@ -122,7 +122,7 @@ const Shop = () => {
                       <DishCardSkeleton />
                     </div>
                   ))
-                : dishs?.dishs?.map((currDish) => {
+                : dishes?.dishes?.map((currDish) => {
                     return (
                       <div key={currDish._id}>
                         <DishCard currDish={currDish} />
@@ -136,7 +136,7 @@ const Shop = () => {
                   <Pagination
                     page={page}
                     onChange={handlePageChange}
-                    count={dishs?.pages}
+                    count={dishes?.pages}
                     variant="outlined"
                     shape="rounded"
                   />

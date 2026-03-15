@@ -2,18 +2,106 @@ import Dish from "../models/dish.modal.js";
 import Restaurant from "../models/restaurant.modal.js";
 import Category from "../models/category.modal.js";
 
-export const getDishs = async (req, res) => {
+// export const getDishes = async (req, res) => {
+//   try {
+//     const {
+//       search,
+//       category,
+//       minPrice,
+//       maxPrice,
+//       availability,
+//       sort,
+//       page = 1,
+//       limit = 6,
+//     } = req.query;
+
+//     const query = {};
+
+//     // 🔍 Search
+//     if (search) {
+//       query.$text = { $search: search };
+//     }
+
+//     // 🏷 Category
+//     if (category) {
+//       const categoriesArray = category.split(",");
+//       query.category = { $in: categoriesArray };
+//     }
+
+//     // 💰 Price
+//     if (minPrice || maxPrice) {
+//       query.price = {};
+//       if (minPrice) query.price.$gte = Number(minPrice);
+//       if (maxPrice) query.price.$lte = Number(maxPrice);
+//     }
+
+//     // 📦 Availability
+//     if (availability) {
+//       const values = availability.split(",");
+//       const conditions = [];
+
+//       if (values.includes("availableNow")) {
+//         conditions.push({
+//           isAvailable: true,
+//           stock: { $gt: 0 },
+//         });
+//       }
+
+//       if (values.includes("recommended")) {
+//         conditions.push({
+//           isFeatured: true,
+//         });
+//       }
+
+//       if (values.includes("soldOut")) {
+//         conditions.push({
+//           stock: { $lte: 0 },
+//         });
+//       }
+
+//       if (conditions.length) {
+//         query.$or = conditions;
+//       }
+//     }
+
+//     // ↕ Sorting
+//     let sortOption = {};
+//     if (sort === "price_asc") sortOption.price = 1;
+//     if (sort === "price_desc") sortOption.price = -1;
+//     if (sort === "rating") sortOption.rating = -1;
+//     if (sort === "latest") sortOption.createdAt = -1;
+
+//     const pageNum = Math.max(Number(page), 1);
+//     const limitNum = Math.min(Number(limit), 50);
+
+//     const [dishs, total] = await Promise.all([
+//       Dish.find(query)
+//         .populate("category", "name slug")
+//         .sort(sortOption)
+//         .skip((pageNum - 1) * limitNum)
+//         .limit(limitNum)
+//         .select(
+//           "name price images slug description rating stock isAvailable isFeatured variants",
+//         ),
+
+//       Dish.countDocuments(query),
+//     ]);
+
+//     res.status(200).json({
+//       dishs,
+//       total,
+//       page: pageNum,
+//       pages: Math.ceil(total / limitNum),
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: "Failed to fetch dishs" });
+//   }
+// };
+
+export const getDishes = async (req, res) => {
   try {
-    const {
-      search,
-      category,
-      minPrice,
-      maxPrice,
-      availability,
-      sort,
-      page = 1,
-      limit = 6,
-    } = req.query;
+    const { search, category, minPrice, maxPrice, availability, sort } =
+      req.query;
 
     const query = {};
 
@@ -71,28 +159,14 @@ export const getDishs = async (req, res) => {
     if (sort === "rating") sortOption.rating = -1;
     if (sort === "latest") sortOption.createdAt = -1;
 
-    const pageNum = Math.max(Number(page), 1);
-    const limitNum = Math.min(Number(limit), 50);
+    const dishes = await Dish.find(query)
+      .populate("category", "name slug")
+      .sort(sortOption)
+      .select(
+        "name slug price shortDescription image category isAvailable isFeatured rating stock",
+      );
 
-    const [dishs, total] = await Promise.all([
-      Dish.find(query)
-        .populate("category", "name slug")
-        .sort(sortOption)
-        .skip((pageNum - 1) * limitNum)
-        .limit(limitNum)
-        .select(
-          "name price images slug description rating stock isAvailable isFeatured variants",
-        ),
-
-      Dish.countDocuments(query),
-    ]);
-
-    res.status(200).json({
-      dishs,
-      total,
-      page: pageNum,
-      pages: Math.ceil(total / limitNum),
-    });
+    res.status(200).json(dishes);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch dishs" });
   }

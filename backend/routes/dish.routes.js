@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   createDish,
-  getDishs,
+  getDishes,
   getDishBySlug,
   updateDish,
   deleteDish,
@@ -11,7 +11,7 @@ import { restaurantOnly } from "../middleware/restaurantOnly.js";
 
 const dishRouter = Router();
 
-dishRouter.get("/", getDishs);
+dishRouter.get("/", getDishes);
 dishRouter.get("/:slug", getDishBySlug);
 
 dishRouter.post("/", checkAuth, restaurantOnly, createDish);

@@ -37,7 +37,7 @@ import { useAuth } from "../../context/AuthContext";
 const Home = () => {
   const { isLoggedIn } = useAuth();
   const { categories, loading } = useCategory();
-  const { dishs, loading: dishLoading } = useDish();
+  const { dishes, loading: dishLoading } = useDish();
 
   return (
     <div className="grid grid-cols-12 gap-6">
@@ -166,7 +166,7 @@ const Home = () => {
                     <DishCardSkeleton />
                   </SwiperSlide>
                 ))
-              : dishs?.dishs?.map((currDish) => {
+              : dishes?.map((currDish) => {
                   return (
                     <SwiperSlide key={currDish._id}>
                       <DishCard currDish={currDish} />
@@ -213,7 +213,7 @@ const Home = () => {
                     <DishCardSkeleton />
                   </SwiperSlide>
                 ))
-              : dishs?.dishs?.map((currDish) => {
+              : dishes?.map((currDish) => {
                   return (
                     <SwiperSlide key={currDish._id}>
                       <DishCard currDish={currDish} />
