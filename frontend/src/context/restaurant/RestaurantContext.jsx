@@ -2,12 +2,11 @@ import axios from "axios";
 import React, { useContext, useState } from "react";
 import { createContext } from "react";
 import { useAuth } from "../AuthContext";
-import { useEffect } from "react";
 
 const RestaurantContext = createContext();
 
 export const RestaurantProvider = ({ children }) => {
-  const [restaurant, setRestaurant] = useState(null);
+  const [restaurant, setRestaurant] = useState({});
   const [loading, setLoading] = useState(false);
 
   const { serverURL } = useAuth();

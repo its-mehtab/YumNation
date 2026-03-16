@@ -1,8 +1,8 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Switch } from "@radix-ui/themes";
-import Input from "../../components/restaurant/Input";
-import Field from "../../components/restaurant/Field";
+import Input from "../../components/common/Input";
+import Field from "../../components/common/Field";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useRestaurant } from "../../context/restaurant/RestaurantContext";

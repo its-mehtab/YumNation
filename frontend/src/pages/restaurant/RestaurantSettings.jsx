@@ -1,4 +1,11 @@
+import { Switch } from "@radix-ui/themes";
 import React, { useState, useRef } from "react";
+import Field from "../../components/common/Field";
+import Input from "../../components/common/Input";
+import { useRestaurant } from "../../context/restaurant/RestaurantContext";
+import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
+import slugify from "slugify";
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
 const mockSettings = {
@@ -25,19 +32,6 @@ const mockSettings = {
   isOpen: true,
 };
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-const Toggle = ({ checked, onChange }) => (
-  <button
-    type="button"
-    onClick={onChange}
-    className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${checked ? "bg-[#fc8019]" : "bg-gray-200"}`}
-  >
-    <span
-      className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${checked ? "translate-x-5" : "translate-x-0"}`}
-    />
-  </button>
-);
-
 const Section = ({ title, desc, children }) => (
   <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] overflow-hidden">
     <div className="px-6 py-4 border-b border-gray-100">
@@ -48,33 +42,19 @@ const Section = ({ title, desc, children }) => (
   </div>
 );
 
-const Field = ({ label, hint, children }) => (
-  <div>
-    <label className="block text-xs font-semibold text-gray-500 mb-1.5">
-      {label}
-    </label>
-    {children}
-    {hint && <p className="text-xs text-gray-400 mt-1">{hint}</p>}
-  </div>
-);
-
-const Input = ({ ...props }) => (
-  <input
-    {...props}
-    className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
-  />
-);
-
 const tabs = ["General", "Address", "Hours & Delivery", "Danger Zone"];
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 const RestaurantSettings = () => {
-  const [form, setForm] = useState(mockSettings);
+  const { restaurant } = useRestaurant();
+  const [form, setForm] = useState(restaurant);
   const [activeTab, setActiveTab] = useState("General");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
   const logoRef = useRef();
   const coverRef = useRef();
+  const { serverURL } = useAuth();
 
   const set = (path, value) => {
     const keys = path.split(".");
@@ -98,11 +78,19 @@ const RestaurantSettings = () => {
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
-    // await axios.put(`${serverURL}/api/restaurant/settings`, form, { withCredentials: true });
-    await new Promise((r) => setTimeout(r, 1000));
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+
+    try {
+      await axios.patch(`${serverURL}/api/restaurant`, form, {
+        withCredentials: true,
+      });
+
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (error) {
+      console.log("Restaurant Error:", error?.response?.data || error.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -225,7 +213,15 @@ const RestaurantSettings = () => {
                 <Field label="Restaurant Name">
                   <Input
                     value={form.name}
-                    onChange={(e) => set("name", e.target.value)}
+                    onChange={(e) => {
+                      const slug = slugify(e.target.value, {
+                        lower: true,
+                        strict: true,
+                      });
+
+                      set("slug", slug);
+                      set("name", e.target.value);
+                    }}
                     placeholder="Restaurant Name"
                   />
                 </Field>
@@ -233,11 +229,9 @@ const RestaurantSettings = () => {
                   label="Slug"
                   hint="Auto-generated from name — used in your URL"
                 >
-                  <Input
-                    value={form.slug}
-                    onChange={(e) => set("slug", e.target.value)}
-                    placeholder="pizza-palace"
-                  />
+                  <div className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors bg-white">
+                    {form.slug || "..."}
+                  </div>
                 </Field>
               </div>
               <Field label="Description">
@@ -280,9 +274,9 @@ const RestaurantSettings = () => {
                       Show green "Pure Veg" banner on your page
                     </p>
                   </div>
-                  <Toggle
+                  <Switch
                     checked={form.isPureVeg}
-                    onChange={() => set("isPureVeg", !form.isPureVeg)}
+                    onCheckedChange={() => set("isPureVeg", !form.isPureVeg)}
                   />
                 </div>
                 <div className="flex items-center justify-between py-2 border-t border-gray-50">
@@ -294,9 +288,9 @@ const RestaurantSettings = () => {
                       Toggle to temporarily stop accepting orders
                     </p>
                   </div>
-                  <Toggle
+                  <Switch
                     checked={form.isOpen}
-                    onChange={() => set("isOpen", !form.isOpen)}
+                    onCheckedChange={() => set("isOpen", !form.isOpen)}
                   />
                 </div>
               </div>
@@ -495,7 +489,6 @@ const RestaurantSettings = () => {
           </div>
         )}
 
-        {/* ── Save bar ── */}
         {activeTab !== "Danger Zone" && (
           <div className="flex justify-end pt-2">
             <button

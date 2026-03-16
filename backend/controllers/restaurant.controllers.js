@@ -111,11 +111,12 @@ export const createRestaurant = async (req, res) => {
 };
 
 export const updateRestaurant = async (req, res) => {
-  const { id } = req.params;
-  const { name } = req.body;
-
   try {
-    const restaurant = await Restaurant.findByIdAndUpdate(id);
+    const restaurant = await Restaurant.findByIdAndUpdate(
+      req.restaurantId,
+      { $set: req.body },
+      { new: true, runValidators: true },
+    );
 
     if (!restaurant) {
       return res.status(404).json({ message: "restaurant not found" });

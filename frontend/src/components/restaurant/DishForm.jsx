@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 import { useCategory } from "../../context/CategoryContext";
 import { Switch } from "@radix-ui/themes";
-import Field from "./Field";
-import Input from "./Input";
+import Field from "../common/Field";
+import Input from "../common/Input";
 import { DeleteIcon, PlusIcon } from "../../assets/icon/Icons";
 
 const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
