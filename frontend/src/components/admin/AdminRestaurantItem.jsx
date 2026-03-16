@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useRestaurants } from "../../context/admin/RestaurantsContext";
 import { Link } from "react-router-dom";
@@ -38,8 +38,28 @@ const StarRating = ({ rating }) =>
   );
 
 const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
+  const [restaurantDishes, setRestaurantDishes] = useState(null);
+
   const { restaurants, setRestaurants } = useRestaurants();
   const { serverURL } = useAuth();
+
+  const fetchRestaurantDishes = async () => {
+    try {
+      const { data } = await axios.get(
+        `${serverURL}/api/dish/admin/dishes?restaurantId=${r._id}`,
+        {
+          withCredentials: true,
+        },
+      );
+
+      setRestaurantDishes(data);
+    } catch (error) {
+      console.log(
+        "Restaurant Dishes Error:",
+        error?.response?.data || error.message,
+      );
+    }
+  };
 
   const handleApprove = async (id) => {
     updateStatus(id, "active");
@@ -88,6 +108,10 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
     }
   };
 
+  useEffect(() => {
+    fetchRestaurantDishes();
+  }, []);
+
   return (
     <tr key={r._id} className="hover:bg-gray-50 transition-colors">
       <td className="px-6 py-4">
@@ -104,7 +128,7 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
       </td>
       <td className="px-4 py-4 text-gray-500 text-xs">📍 {r.address.city}</td>
       <td className="px-4 py-4 text-gray-700 font-medium">
-        {r.totalDishes || "—"}
+        {restaurantDishes?.length || "—"}
       </td>
       <td className="px-4 py-4 text-gray-700 font-medium">
         {r.totalOrders > 0 ? r.totalOrders.toLocaleString() : "—"}

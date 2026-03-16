@@ -158,13 +158,13 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
               </Field>
               <Field label="Category" required>
                 <select
-                  name="categoryId"
-                  value={form.categoryId}
+                  name="category"
+                  value={form.category._id}
                   onChange={handleChange}
                   className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors bg-white"
                 >
                   <option value="">Select category...</option>
-                  {categories.map((cat) => {
+                  {categories?.map((cat) => {
                     return (
                       <option value={cat._id} key={cat._id}>
                         {cat.name}

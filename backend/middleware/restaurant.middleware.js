@@ -36,14 +36,14 @@ export const setRestaurantFromOwner = async (req, res, next) => {
 };
 
 export const setRestaurantFromQuery = async (req, res, next) => {
-  const restaurant = req.query;
+  const restaurantId = req.query.restaurantId;
 
   try {
-    if (!restaurant) {
+    if (!restaurantId) {
       return res.status(400).json({ message: "Restaurant ID required" });
     }
 
-    req.restaurantId = restaurant;
+    req.restaurantId = restaurantId;
     req.hideFields = "";
     next();
   } catch (error) {

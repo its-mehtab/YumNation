@@ -17,19 +17,21 @@ import RestaurantEditDish from "../pages/restaurant/RestaurantEditDish";
 
 const RestaurantRoutes = () => {
   const { user } = useAuth();
-  const { restaurant } = useRestaurant();
+  const { restaurant, loading } = useRestaurant();
 
-  if (user?.role !== "restaurant") return <Navigate to="/" />;
+  if (user || restaurant) {
+    if (!user || user?.role !== "restaurant") return <Navigate to="/" />;
+  }
 
-  if (!user || user?.role !== "restaurant") return <Navigate to="/" />;
+  // if (!loading) {
+  //   if (!restaurant) return <RestaurantApply />;
 
-  if (!restaurant) return <RestaurantApply />;
+  //   if (restaurant?.status === "pending") return <RestaurantPendingApproval />;
 
-  if (restaurant?.status === "pending") return <RestaurantPendingApproval />;
+  //   if (restaurant?.status === "suspended") return <RestaurantSuspended />;
 
-  if (restaurant?.status === "suspended") return <RestaurantSuspended />;
-
-  if (restaurant?.status === "rejected") return <RestaurantRejectedPage />;
+  //   if (restaurant?.status === "rejected") return <RestaurantRejectedPage />;
+  // }
 
   return (
     <RestaurantLayout>

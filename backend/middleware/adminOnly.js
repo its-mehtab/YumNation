@@ -1,8 +1,6 @@
 import User from "../models/user.modal.js";
 
 export const adminOnly = async (req, res, next) => {
-  console.log({ _id: req.userId });
-
   try {
     const user = await User.findOne({ _id: req.userId });
 

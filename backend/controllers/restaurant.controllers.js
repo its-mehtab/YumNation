@@ -2,11 +2,7 @@ import Restaurant from "../models/restaurant.modal.js";
 
 export const getAllRestaurant = async (req, res) => {
   try {
-    const restaurant = await Restaurant.find()
-      .populate("owner", "firstName")
-      .select(
-        "name owner email phone address totalOrders rating status joinedAt",
-      );
+    const restaurant = await Restaurant.find().populate("owner");
 
     if (!restaurant) {
       return res.status(404).json({ message: "Restaurant not found" });

@@ -6,6 +6,7 @@ import { useOrders } from "../context/OrderContext";
 import { useWishlist } from "../context/WishlistContext";
 import { useRestaurant } from "./restaurant/RestaurantContext";
 import { useRestaurants } from "./admin/RestaurantsContext";
+import { useDish } from "./restaurant/DishContext";
 
 const AppInit = () => {
   const { user } = useAuth();
@@ -15,6 +16,7 @@ const AppInit = () => {
   const { fetchWishlist } = useWishlist();
 
   const { fetchRestaurant } = useRestaurant();
+  const { getRestaurantDishes } = useDish();
 
   const { fetchRestaurants } = useRestaurants();
 
@@ -30,6 +32,7 @@ const AppInit = () => {
 
     if (user.role === "restaurant") {
       fetchRestaurant();
+      getRestaurantDishes();
     }
 
     if (user.role === "admin") {

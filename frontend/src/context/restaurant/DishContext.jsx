@@ -5,7 +5,7 @@ import { useAuth } from "../AuthContext";
 const DishContext = createContext();
 
 export const DishProvider = ({ children }) => {
-  const [dishes, setDishes] = useState(null);
+  const [dishes, setDishes] = useState([]);
   const { serverURL } = useAuth();
   const [loading, setLoading] = useState(false);
 
@@ -26,10 +26,6 @@ export const DishProvider = ({ children }) => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    getRestaurantDishes();
-  }, []);
 
   return (
     <DishContext.Provider

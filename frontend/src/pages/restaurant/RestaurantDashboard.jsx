@@ -436,7 +436,7 @@ const RestaurantDashboard = () => {
             label: "Add New Dish",
             desc: "Add a dish to your menu",
             emoji: "➕",
-            to: "/restaurant/dishes/add",
+            to: "/restaurant/dish/add",
             color: "border-orange-200 hover:bg-orange-50",
           },
           {

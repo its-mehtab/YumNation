@@ -26,9 +26,9 @@ const RestaurantDishes = () => {
   const [sort, setSort] = useState("asc");
 
   const { serverURL } = useAuth();
-  const { dishes, setDishes } = useDish();
+  const { dishes, setDishes, loading } = useDish();
 
-  const sorted = [...dishes].sort((a, b) =>
+  const sorted = [...dishes]?.sort((a, b) =>
     sort === "asc"
       ? a.name.localeCompare(b.name)
       : b.name.localeCompare(a.name),
@@ -190,7 +190,11 @@ const RestaurantDishes = () => {
         {sorted?.length === 0 && (
           <div className="text-center py-16 text-gray-400">
             <div className="text-4xl mb-3">🍽️</div>
-            <p className="text-sm font-medium mb-3">No dishes added yet</p>
+            {loading ? (
+              <p className="text-sm font-medium mb-3">Dishes Loading...</p>
+            ) : (
+              <p className="text-sm font-medium mb-3">No dishes added yet</p>
+            )}
           </div>
         )}
       </div>

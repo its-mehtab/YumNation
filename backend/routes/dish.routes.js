@@ -18,7 +18,6 @@ import { adminOnly } from "../middleware/adminOnly.js";
 
 const dishRouter = Router();
 
-dishRouter.get("/restaurants/:slug/dishes", setRestaurantFromParam, getDishes);
 dishRouter.get(
   "/restaurant/dishes",
   checkAuth,
@@ -33,24 +32,37 @@ dishRouter.get(
   setRestaurantFromQuery,
   getDishes,
 );
-dishRouter.get("/:slug", getDishBySlug);
+dishRouter.get("/restaurants/:slug/dishes", setRestaurantFromParam, getDishes);
 dishRouter.get(
-  "/restaurant/:id",
+  "/restaurant/:restaurantId",
   checkAuth,
   restaurantOnly,
   setRestaurantFromOwner,
   getDishById,
 );
 dishRouter.get(
-  "/admin/:id",
+  "/admin/:restaurantId",
   checkAuth,
   adminOnly,
   setRestaurantFromQuery,
   getDishById,
 );
+dishRouter.get("/:slug", getDishBySlug);
 
 dishRouter.post("/", checkAuth, restaurantOnly, createDish);
-dishRouter.patch("/:id", checkAuth, restaurantOnly, updateDish);
-dishRouter.delete("/:id", checkAuth, restaurantOnly, deleteDish);
+dishRouter.patch(
+  "/:id",
+  checkAuth,
+  restaurantOnly,
+  setRestaurantFromOwner,
+  updateDish,
+);
+dishRouter.delete(
+  "/:id",
+  checkAuth,
+  restaurantOnly,
+  setRestaurantFromOwner,
+  deleteDish,
+);
 
 export default dishRouter;

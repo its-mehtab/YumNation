@@ -10,7 +10,7 @@ const initialForm = {
   name: "",
   shortDescription: "",
   longDescription: "",
-  categoryId: "",
+  category: "",
   price: "",
   cost: "",
   variants: [],
@@ -22,12 +22,11 @@ const initialForm = {
 
 const RestaurantEditDish = () => {
   const navigate = useNavigate();
-  const [mainDish, setMainDish] = useState({});
-  const [form, setForm] = useState(mainDish);
+  const [form, setForm] = useState(initialForm);
   const [loading, setLoading] = useState(false);
 
   const { serverURL } = useAuth();
-  const { setDishes } = useDish();
+  const { dishes, setDishes } = useDish();
 
   const { id } = useParams();
 
@@ -41,9 +40,7 @@ const RestaurantEditDish = () => {
         },
       );
 
-      console.log(data);
-
-      setMainDish(data);
+      setForm(data);
     } catch (error) {
       console.log("Add Dish Error:", error?.response?.data || error.message);
     } finally {
@@ -54,15 +51,15 @@ const RestaurantEditDish = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await Axios.post(
-        `${serverURL}/api/dish`,
+      const { data } = await axios.patch(
+        `${serverURL}/api/dish/${id}`,
         { ...form },
         { withCredentials: true },
       );
 
-      setDishes((prev) => [...prev, { ...data }]);
+      setDishes((prev) => prev.map((d) => (d._id === id ? data : d)));
       navigate("/restaurant/dishes");
-      notifySuccess(`${form.name} added successfully`);
+      notifySuccess(`${form.name} Updated successfully`);
     } catch (error) {
       console.log("Add Dish Error:", error?.response?.data || error.message);
     }
@@ -76,7 +73,7 @@ const RestaurantEditDish = () => {
     <div>
       {/* ── Page header ── */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-bold text-gray-700">Add Dish</h1>
+        <h1 className="text-xl font-bold text-gray-700">Edit Dish</h1>
         <div className="flex items-center gap-2 text-sm text-gray-400">
           <Link
             to="/restaurant/dishes"
@@ -85,7 +82,7 @@ const RestaurantEditDish = () => {
             My Menu
           </Link>
           <span className="text-gray-300">›</span>
-          <span className="text-[#fc8019] font-medium">Add Dish</span>
+          <span className="text-[#fc8019] font-medium">Edit Dish</span>
         </div>
       </div>
 

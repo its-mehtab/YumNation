@@ -11,7 +11,7 @@ const initialForm = {
   name: "",
   shortDescription: "",
   longDescription: "",
-  categoryId: "",
+  category: "",
   price: "",
   cost: "",
   variants: [],
@@ -31,6 +31,8 @@ const RestaurantAddDish = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(form);
+
     try {
       const { data } = await axios.post(
         `${serverURL}/api/dish`,
