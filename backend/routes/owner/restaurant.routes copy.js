@@ -6,15 +6,17 @@ import {
   getAllRestaurant,
   updateRestaurantStatus,
   deleteRestaurant,
-} from "../controllers/restaurant.controllers.js";
-import { restaurantOnly } from "../middleware/restaurantOnly.js";
-import { adminOnly } from "../middleware/adminOnly.js";
-import { checkAuth } from "../middleware/checkAuth.js";
-import { setRestaurantFromOwner } from "../middleware/restaurant.middleware.js";
+  getRestaurants,
+} from "../../controllers/restaurant.controllers.js";
+import { restaurantOnly } from "../../middleware/restaurantOnly.js";
+import { adminOnly } from "../../middleware/adminOnly.js";
+import { checkAuth } from "../../middleware/checkAuth.js";
+import { setRestaurantFromOwner } from "../../middleware/restaurant.middleware.js";
 
 const restaurantRouter = Router();
 
-restaurantRouter.get("/all", checkAuth, adminOnly, getAllRestaurant);
+restaurantRouter.get("/all", checkAuth, getAllRestaurant);
+restaurantRouter.get("/admin/all", checkAuth, adminOnly, getRestaurants);
 restaurantRouter.get("/", checkAuth, restaurantOnly, getRestaurant);
 restaurantRouter.post("/apply", checkAuth, restaurantOnly, createRestaurant);
 restaurantRouter.patch(

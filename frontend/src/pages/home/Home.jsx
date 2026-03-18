@@ -7,6 +7,7 @@ import "swiper/css/pagination";
 import "./home.css";
 import { Navigation, Pagination } from "swiper/modules";
 import DishCard from "../../components/dish-card/DishCard";
+import RestaurantCard from "../../components/user/RestaurantCard";
 import {
   BeverageIcon,
   BurgersmIcon,
@@ -131,7 +132,53 @@ const Home = () => {
         <section className="pb-7">
           <div className="flex justify-between gap-3 items-center mb-2">
             <h3 className="text-gray-700 text-lg capitalize font-semibold">
-              Popular Dishes
+              Popular Restaurants
+            </h3>
+            <Link
+              to="/restaurants"
+              className="flex items-center gap-2 text-sm text-[#fc8019]"
+            >
+              view all
+              <ChevronRightIcon size={9} />
+            </Link>
+          </div>
+          <Swiper
+            slidesPerView={3}
+            spaceBetween={20}
+            // spaceBetween={0}
+            // centeredSlides={true}
+            // initialSlide={2}
+            // modules={[Navigation]}
+            // navigation={{
+            //   nextEl: ".custom-next",
+            //   prevEl: ".custom-prev",
+            // }}
+            // breakpoints={{
+            //   480: { slidesPerView: 1.5 },
+            //   767: { slidesPerView: 2.5 },
+            //   991: { slidesPerView: 3.5 },
+            //   1200: { slidesPerView: 4.2 },
+            // }}
+            className="mySwiper"
+          >
+            <SwiperSlide>
+              <RestaurantCard />
+            </SwiperSlide>
+            <SwiperSlide>
+              <RestaurantCard />
+            </SwiperSlide>
+            <SwiperSlide>
+              <RestaurantCard />
+            </SwiperSlide>
+            <SwiperSlide>
+              <RestaurantCard />
+            </SwiperSlide>
+          </Swiper>
+        </section>
+        {/* <section className="pb-7">
+          <div className="flex justify-between gap-3 items-center mb-2">
+            <h3 className="text-gray-700 text-lg capitalize font-semibold">
+              Popular Restaurants
             </h3>
             <Link
               to="/shop"
@@ -174,7 +221,7 @@ const Home = () => {
                   );
                 })}
           </Swiper>
-        </section>
+        </section> */}
         <section className="pb-7">
           <div className="flex justify-between gap-3 items-center mb-2">
             <h3 className="text-gray-700 text-lg capitalize font-semibold">

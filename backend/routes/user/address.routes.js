@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { checkAuth } from "../middleware/checkAuth.js";
+import { checkAuth } from "../../middleware/checkAuth.js";
 import {
   createAddress,
   deleteAddress,
   getUserAddress,
   updateAddress,
-} from "../controllers/address.controllers.js";
+} from "../../controllers/address.controllers.js";
 
 const addressRouter = Router();
 

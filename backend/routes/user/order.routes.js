@@ -3,8 +3,8 @@ import {
   createOrder,
   getOrderById,
   getUserOrders,
-} from "../controllers/order.controllers.js";
-import { checkAuth } from "../middleware/checkAuth.js";
+} from "../../controllers/order.controllers.js";
+import { checkAuth } from "../../middleware/checkAuth.js";
 
 const orderRouter = Router();
 

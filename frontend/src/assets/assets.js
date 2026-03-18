@@ -3,6 +3,7 @@ import logoYellow from "./logo-yellow.png";
 import bannerImg1 from "./banner-1.jpg";
 import bannerImg2 from "./banner-2.jpg";
 import bannerImg3 from "./banner-3.jpg";
+import restaurant from "./restaurant.jpeg";
 import dish2 from "./dish2.jpg";
 import { FriesIcon, BurgerIcon, WishlistIcon, CartIcon } from "./icon/Icons";
 import avatar from "./avatar.jpg";
@@ -21,6 +22,7 @@ export const assets = {
   offerImg,
   offerBannerBg,
   EmptyCartImg,
+  restaurant,
 };
 
 export const Icon = {

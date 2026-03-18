@@ -7,8 +7,8 @@ import {
   sendOtp,
   signUp,
   verifyOtp,
-} from "../controllers/auth.controllers.js";
-import { checkAuth } from "../middleware/checkAuth.js";
+} from "../../controllers/auth.controllers.js";
+import { checkAuth } from "../../middleware/checkAuth.js";
 
 const authRouter = Router();
 

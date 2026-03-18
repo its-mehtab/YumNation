@@ -6,7 +6,10 @@ const slugGenerator = async function (next) {
     return next();
 
   try {
-    const slug = slugify(this.name, { lower: true, strict: true });
+    const slug = slugify(`${this.name}-${this.address.city}`, {
+      lower: true,
+      strict: true,
+    });
 
     const exists = await this.constructor.findOne({
       slug,

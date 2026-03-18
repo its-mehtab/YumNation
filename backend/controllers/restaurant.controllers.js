@@ -1,6 +1,39 @@
 import Restaurant from "../models/restaurant.modal.js";
 
 export const getAllRestaurant = async (req, res) => {
+  const { sort, page = 1, limit = 12 } = req.query;
+
+  try {
+    let sortOption = {};
+    if (sort === "price_asc") sortOption.price = 1;
+    if (sort === "price_desc") sortOption.price = -1;
+    if (sort === "rating") sortOption.rating = -1;
+    if (sort === "delivery_time") sortOption.deliveryTime = 1;
+
+    const pageNum = Math.max(Number(page), 1);
+    const limitNum = Math.min(Number(limit), 40);
+
+    const skip = (pageNum - 1) * limitNum;
+
+    const restaurant = await Restaurant.find()
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    return res.status(200).json(restaurant);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "internal server error", error: error.message });
+  }
+};
+
+export const getRestaurants = async (req, res) => {
   try {
     const restaurant = await Restaurant.find().populate("owner");
 
@@ -17,10 +50,10 @@ export const getAllRestaurant = async (req, res) => {
 };
 
 export const getRestaurant = async (req, res) => {
-  const owner = req.userId;
-
   try {
-    const restaurant = await Restaurant.findOne({ owner });
+    const restaurant = await Restaurant.findById(req.restaurantId).select(
+      req.hideFields,
+    );
 
     if (!restaurant) {
       return res.status(404).json({ message: "Restaurant not found" });

@@ -7,7 +7,15 @@ import Checkbox from "@mui/material/Checkbox";
 const label = { slotProps: { input: { "aria-label": "Checkbox demo" } } };
 
 const FilterBox = ({ filters, setFilters }) => {
-  const { categories } = useCategory();
+  // const { categories } = useCategory();
+
+  const categories = [
+    { _id: "1", name: "Biryani Bowls" },
+    { _id: "2", name: "Starters" },
+    { _id: "3", name: "Desserts" },
+    { _id: "4", name: "Beverages" },
+    { _id: "5", name: "Combos" },
+  ];
 
   const handleCategory = (id) => {
     setFilters((prev) => {

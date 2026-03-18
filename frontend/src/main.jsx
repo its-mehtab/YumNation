@@ -16,7 +16,8 @@ import { AddressContextProvider } from "./context/AddressContext.jsx";
 import { OrderContextProvider } from "./context/OrderContext.jsx";
 import AppInit from "./context/AppInit.jsx";
 import { RestaurantProvider } from "./context/restaurant/RestaurantContext.jsx";
-import { RestaurantsProvider } from "./context/admin/RestaurantsContext.jsx";
+import { RestaurantsProvider as AdminRestaurantsProvider } from "./context/admin/RestaurantsContext.jsx";
+import { RestaurantsProvider } from "./context/user/RestaurantsContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -25,22 +26,24 @@ createRoot(document.getElementById("root")).render(
         <WishlistProvider>
           <CartProvider>
             <DishProvider>
-              <CategoryProvider>
-                <AddressContextProvider>
-                  <ValidateProvider>
-                    <OrderContextProvider>
-                      <RestaurantProvider>
-                        <RestaurantsProvider>
-                          <Theme accentColor="orange">
-                            <AppInit />
-                            <App />
-                          </Theme>
-                        </RestaurantsProvider>
-                      </RestaurantProvider>
-                    </OrderContextProvider>
-                  </ValidateProvider>
-                </AddressContextProvider>
-              </CategoryProvider>
+              <RestaurantsProvider>
+                <CategoryProvider>
+                  <AddressContextProvider>
+                    <ValidateProvider>
+                      <OrderContextProvider>
+                        <RestaurantProvider>
+                          <AdminRestaurantsProvider>
+                            <Theme accentColor="orange">
+                              <AppInit />
+                              <App />
+                            </Theme>
+                          </AdminRestaurantsProvider>
+                        </RestaurantProvider>
+                      </OrderContextProvider>
+                    </ValidateProvider>
+                  </AddressContextProvider>
+                </CategoryProvider>
+              </RestaurantsProvider>
             </DishProvider>
           </CartProvider>
         </WishlistProvider>

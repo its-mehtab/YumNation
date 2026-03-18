@@ -5,8 +5,8 @@ import {
   getCategoryBySlug,
   hardDeleteCategory,
   updateCategory,
-} from "../controllers/category.controllers.js";
-import { checkAuth } from "../middleware/checkAuth.js";
+} from "../../controllers/category.controllers.js";
+import { checkAuth } from "../../middleware/checkAuth.js";
 
 const categoryRouter = Router();
 

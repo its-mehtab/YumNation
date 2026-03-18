@@ -7,7 +7,9 @@ const restaurantSchema = new Schema(
 
     slug: { type: String, unique: true },
 
-    description: { type: String },
+    description: { type: String, required: true },
+
+    cuisine: [{ type: String }],
 
     owner: {
       type: mongoose.Schema.Types.ObjectId,

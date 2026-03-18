@@ -6,15 +6,15 @@ import {
   updateDish,
   deleteDish,
   getDishById,
-} from "../controllers/dish.controllers.js";
-import { checkAuth } from "../middleware/checkAuth.js";
-import { restaurantOnly } from "../middleware/restaurantOnly.js";
+} from "../../controllers/dish.controllers.js";
+import { checkAuth } from "../../middleware/checkAuth.js";
+import { restaurantOnly } from "../../middleware/restaurantOnly.js";
 import {
   setRestaurantFromOwner,
   setRestaurantFromParam,
   setRestaurantFromQuery,
-} from "../middleware/restaurant.middleware.js";
-import { adminOnly } from "../middleware/adminOnly.js";
+} from "../../middleware/restaurant.middleware.js";
+import { adminOnly } from "../../middleware/adminOnly.js";
 
 const dishRouter = Router();
 

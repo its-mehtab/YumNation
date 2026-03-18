@@ -13,6 +13,8 @@ import OrderDetails from "../pages/order-details/OrderDetails";
 import Orders from "../pages/orders/Orders";
 import Checkout from "../pages/checkout/Checkout";
 import UserLayout from "../layout/UserLayout";
+import Restaurants from "../pages/user/Restaurants";
+import RestaurantDishes from "../pages/user/RestaurantDishes";
 
 const UserRoutes = () => {
   const { isLoggedIn, user } = useAuth();
@@ -24,6 +26,8 @@ const UserRoutes = () => {
     <UserLayout>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/restaurants" element={<Restaurants />} />
+        <Route path="/restaurants/:slug" element={<RestaurantDishes />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/dish/:slug" element={<Dish />} />
         <Route path="/contact" element={<Contact />} />
