@@ -2,7 +2,7 @@ import { Switch } from "@radix-ui/themes";
 import React, { useState, useRef } from "react";
 import Field from "../../components/common/Field";
 import Input from "../../components/common/Input";
-import { useRestaurant } from "../../context/restaurant/RestaurantContext";
+import { useRestaurant } from "../../context/owner/RestaurantContext";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import slugify from "slugify";

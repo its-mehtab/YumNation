@@ -15,9 +15,11 @@ export const RestaurantProvider = ({ children }) => {
     setLoading(true);
 
     try {
-      const { data } = await axios.get(`${serverURL}/api/restaurant`, {
+      const { data } = await axios.get(`${serverURL}/api/owner/restaurant`, {
         withCredentials: true,
       });
+
+      console.log(data);
 
       setRestaurant(data);
     } catch (error) {

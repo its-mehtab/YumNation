@@ -1,19 +1,19 @@
 import RestaurantLayout from "../layout/RestaurantLayout";
 import { useAuth } from "../context/AuthContext";
 import { Navigate, Route, Routes } from "react-router-dom";
-import RestaurantDashboard from "../pages/restaurant/RestaurantDashboard";
-import RestaurantOrders from "../pages/restaurant/RestaurantOrders";
-import RestaurantOrderDetails from "../pages/restaurant/RestaurantOrderDetails";
-import RestaurantDishes from "../pages/restaurant/RestaurantDishes";
-import RestaurantAddDish from "../pages/restaurant/RestaurantAddDish";
-import RestaurantDishDetails from "../pages/restaurant/RestaurantDishDetails";
-import RestaurantSettings from "../pages/restaurant/RestaurantSettings";
-import RestaurantApply from "../pages/restaurant/RestaurantApply";
-import RestaurantPendingApproval from "../pages/restaurant/RestaurantPendingApproval";
-import RestaurantRejectedPage from "../pages/restaurant/RestaurantRejectedPage";
-import { useRestaurant } from "../context/restaurant/RestaurantContext";
-import RestaurantSuspended from "../pages/restaurant/RestaurantSuspended";
-import RestaurantEditDish from "../pages/restaurant/RestaurantEditDish";
+import RestaurantDashboard from "../pages/owner/RestaurantDashboard";
+import RestaurantOrders from "../pages/owner/RestaurantOrders";
+import RestaurantOrderDetails from "../pages/owner/RestaurantOrderDetails";
+import RestaurantDishes from "../pages/owner/RestaurantDishes";
+import RestaurantAddDish from "../pages/owner/RestaurantAddDish";
+import RestaurantDishDetails from "../pages/owner/RestaurantDishDetails";
+import RestaurantSettings from "../pages/owner/RestaurantSettings";
+import RestaurantApply from "../pages/owner/RestaurantApply";
+import RestaurantPendingApproval from "../pages/owner/RestaurantPendingApproval";
+import RestaurantRejectedPage from "../pages/owner/RestaurantRejectedPage";
+import { useRestaurant } from "../context/owner/RestaurantContext";
+import RestaurantSuspended from "../pages/owner/RestaurantSuspended";
+import RestaurantEditDish from "../pages/owner/RestaurantEditDish";
 
 const RestaurantRoutes = () => {
   const { user } = useAuth();

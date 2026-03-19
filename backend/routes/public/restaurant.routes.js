@@ -15,18 +15,6 @@ import { setRestaurantFromOwner } from "../../middleware/restaurant.middleware.j
 
 const restaurantRouter = Router();
 
-restaurantRouter.get("/all", checkAuth, getAllRestaurant);
-restaurantRouter.get("/admin/all", checkAuth, adminOnly, getRestaurants);
-restaurantRouter.get("/", checkAuth, restaurantOnly, getRestaurant);
-restaurantRouter.post("/apply", checkAuth, restaurantOnly, createRestaurant);
-restaurantRouter.patch(
-  "/",
-  checkAuth,
-  restaurantOnly,
-  setRestaurantFromOwner,
-  updateRestaurant,
-);
-restaurantRouter.patch("/:id", checkAuth, adminOnly, updateRestaurantStatus);
-restaurantRouter.delete("/:id", checkAuth, adminOnly, deleteRestaurant);
+restaurantRouter.get("/", getAllRestaurant);
 
 export default restaurantRouter;

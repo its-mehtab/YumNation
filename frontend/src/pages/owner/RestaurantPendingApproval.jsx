@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { useRestaurant } from "../../context/restaurant/RestaurantContext";
+import { useRestaurant } from "../../context/owner/RestaurantContext";
 
 const steps = [
   { icon: "📝", label: "Application Submitted", done: true },

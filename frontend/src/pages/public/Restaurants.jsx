@@ -1,10 +1,10 @@
 import React from "react";
 import { Skeleton } from "@radix-ui/themes";
 import Chip from "../../components/user/Chip";
-import FilterBox from "../../pages/shop/FilterBox";
+import FilterBox from "../shop/FilterBox";
 import RestaurantCard from "../../components/user/RestaurantCard";
 import { FilterIcon } from "../../assets/icon/Icons";
-import { useRestaurats } from "../../context/user/RestaurantsContext";
+import { useRestaurats } from "../../context/public/RestaurantsContext";
 import DishCardSkeleton from "../../components/skeleton/DishCardSkeleton";
 
 const Restaurants = () => {

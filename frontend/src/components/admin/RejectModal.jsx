@@ -14,7 +14,7 @@ const RejectModal = ({ restaurant, setRejectTarget, updateStatus }) => {
     setLoading(true);
     try {
       await axios.patch(
-        `${serverURL}/api/restaurant/${restaurant._id}`,
+        `${serverURL}/api/admin/restaurant/${restaurant._id}`,
         { status: "rejected", rejectionReason: reason },
         { withCredentials: true },
       );

@@ -1,6 +1,6 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
-import { useRestaurant } from "../../context/restaurant/RestaurantContext";
+import { useRestaurant } from "../../context/owner/RestaurantContext";
 
 const RestaurantSuspended = () => {
   const { user, logout } = useAuth();

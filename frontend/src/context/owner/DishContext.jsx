@@ -12,12 +12,9 @@ export const DishProvider = ({ children }) => {
   const getRestaurantDishes = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(
-        `${serverURL}/api/dish/restaurant/dishes`,
-        {
-          withCredentials: true,
-        },
-      );
+      const { data } = await axios.get(`${serverURL}/api/owner/dish`, {
+        withCredentials: true,
+      });
 
       setDishes(data);
     } catch (error) {

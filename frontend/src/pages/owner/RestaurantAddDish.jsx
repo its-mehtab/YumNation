@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { notifySuccess } from "../../utils/toast";
-import { useDish } from "../../context/restaurant/DishContext";
-import DishForm from "../../components/restaurant/DishForm";
+import { useDish } from "../../context/owner/DishContext";
+import DishForm from "../../components/owner/DishForm";
 
 // ── Initial state ─────────────────────────────────────────────────────────────
 const initialForm = {

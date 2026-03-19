@@ -4,7 +4,7 @@ import { WishlistIcon, WishlistIconRed } from "../../assets/icon/Icons";
 import { assets, Icon } from "../../assets/assets";
 import { StarIcon } from "../../assets/icon/Icons";
 
-const RestaurantCard = ({ restaurant }) => {
+const RestaurantCard = ({ restaurant = {} }) => {
   const [wishlistActive, setWishlistActive] = useState(false);
 
   const isUnavailable = false;
@@ -27,7 +27,7 @@ const RestaurantCard = ({ restaurant }) => {
         {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}
       </span>
 
-      <Link className="relative block" to={`/restaurants/${restaurant.slug}`}>
+      <Link className="relative block" to={`/restaurant/${restaurant.slug}`}>
         {isUnavailable && (
           <span className="bg-[#fc8019] text-white text-md absolute top-1/2 -left-4 -translate-y-1/2 -right-4 text-center">
             {statusText}
@@ -49,7 +49,7 @@ const RestaurantCard = ({ restaurant }) => {
           </div>
         </div>
 
-        <Link to={`/restaurants/${restaurant.slug}`}>
+        <Link to={`/restaurant/${restaurant.slug}`}>
           <h3 className="font-semibold text-gray-700 hover:text-[#fc8019] transition-all">
             {restaurant.name}
           </h3>

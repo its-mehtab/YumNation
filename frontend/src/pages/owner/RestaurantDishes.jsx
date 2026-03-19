@@ -6,7 +6,7 @@ import {
   PlusIcon,
   ViewIcon,
 } from "../../assets/icon/Icons";
-import { useDish } from "../../context/restaurant/DishContext";
+import { useDish } from "../../context/owner/DishContext";
 import ConfirmationModal from "../../components/common/ConfirmationModal";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";

@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { Bounce, ToastContainer } from "react-toastify";
 import AdminRoutes from "./routes/AdminRoutes";
-import UserRoutes from "./routes/UserRoutes";
+import PublicRoutes from "./routes/PublicRoutes";
 import RestaurantRoutes from "./routes/RestaurantRoutes";
 
 function App() {
@@ -9,8 +9,8 @@ function App() {
     <>
       <Routes>
         <Route path="/admin/*" element={<AdminRoutes />} />
-        <Route path="/restaurant/*" element={<RestaurantRoutes />} />
-        <Route path="/*" element={<UserRoutes />} />
+        <Route path="/owner/*" element={<RestaurantRoutes />} />
+        <Route path="/*" element={<PublicRoutes />} />
       </Routes>
 
       <ToastContainer

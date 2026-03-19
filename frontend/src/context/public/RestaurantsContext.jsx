@@ -13,7 +13,7 @@ export const RestaurantsProvider = ({ children }) => {
   const fetchRestaurants = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`${serverURL}/api/restaurant/all`, {
+      const { data } = await axios.get(`${serverURL}/api/restaurant`, {
         withCredentials: true,
       });
 

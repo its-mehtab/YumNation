@@ -46,7 +46,7 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
   const fetchRestaurantDishes = async () => {
     try {
       const { data } = await axios.get(
-        `${serverURL}/api/dish/admin/dishes?restaurantId=${r._id}`,
+        `${serverURL}/api/admin/dish?restaurantId=${r._id}`,
         {
           withCredentials: true,
         },
@@ -66,7 +66,7 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
 
     try {
       await axios.patch(
-        `${serverURL}/api/restaurant/${id}`,
+        `${serverURL}/api/admin/restaurant/${id}`,
         { status: "active" },
         { withCredentials: true },
       );
@@ -82,7 +82,7 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
   const handleSuspend = async (id) => {
     try {
       await axios.patch(
-        `${serverURL}/api/restaurant/${id}`,
+        `${serverURL}/api/admin/restaurant/${id}`,
         { status: "suspended" },
         { withCredentials: true },
       );
@@ -96,7 +96,7 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${serverURL}/api/restaurant/${id}`, {
+      await axios.delete(`${serverURL}/api/admin/restaurant/${id}`, {
         withCredentials: true,
       });
 

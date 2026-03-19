@@ -4,9 +4,9 @@ import { useAddress } from "../context/AddressContext";
 import { useCart } from "../context/CartContext";
 import { useOrders } from "../context/OrderContext";
 import { useWishlist } from "../context/WishlistContext";
-import { useRestaurant } from "./restaurant/RestaurantContext";
+import { useRestaurant } from "./owner/RestaurantContext";
 import { useRestaurants } from "./admin/RestaurantsContext";
-import { useDish } from "./restaurant/DishContext";
+import { useDish } from "./owner/DishContext";
 
 const AppInit = () => {
   const { user } = useAuth();

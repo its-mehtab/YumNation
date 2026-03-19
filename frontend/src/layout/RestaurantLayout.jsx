@@ -1,5 +1,5 @@
-import RestaurantHeader from "../components/restaurant/RestaurantHeader";
-import RestaurantSidebar from "../components/restaurant/RestaurantSidebar";
+import RestaurantHeader from "../components/owner/RestaurantHeader";
+import RestaurantSidebar from "../components/owner/RestaurantSidebar";
 
 const RestaurantLayout = ({ children }) => (
   <>

@@ -4,7 +4,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import "./home.css";
 import { Navigation, Pagination } from "swiper/modules";
 import DishCard from "../../components/dish-card/DishCard";
 import RestaurantCard from "../../components/user/RestaurantCard";
@@ -26,7 +25,7 @@ import {
   LocationIcon,
 } from "../../assets/icon/Icons";
 import { useCategory } from "../../context/CategoryContext";
-import { useDish } from "../../context/restaurant/DishContext";
+import { useDish } from "../../context/owner/DishContext";
 import { Link } from "react-router-dom";
 import CartBox from "../../components/cart-box/CartBox";
 import AddressBox from "../../components/address-box/AddressBox";

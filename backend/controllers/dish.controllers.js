@@ -92,8 +92,6 @@ import Category from "../models/category.modal.js";
 // };
 
 export const getDishes = async (req, res) => {
-  console.log(req.restaurantId);
-
   try {
     const dishes = await Dish.find({ restaurant: req.restaurantId })
       .populate("category", "name slug")
