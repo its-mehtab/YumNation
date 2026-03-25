@@ -80,7 +80,7 @@ const RestaurantSettings = () => {
     setSaving(true);
 
     try {
-      await axios.patch(`${serverURL}/api/restaurant`, form, {
+      await axios.patch(`${serverURL}/api/owner/restaurant`, form, {
         withCredentials: true,
       });
 

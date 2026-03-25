@@ -110,7 +110,7 @@ const RestaurantApply = () => {
 
     try {
       const { data } = await axios.post(
-        `${serverURL}/api/restaurant/apply`,
+        `${serverURL}/api/owner/restaurant/apply`,
         form,
         {
           withCredentials: true,

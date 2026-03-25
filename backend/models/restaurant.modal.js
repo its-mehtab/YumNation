@@ -28,15 +28,18 @@ const restaurantSchema = new Schema(
     coverImage: { type: String },
 
     address: {
-      addressLine1: { type: String, required: true },
-      addressLine2: { type: String },
-      city: { type: String, required: true },
-      state: { type: String, required: true },
-      pinCode: { type: String, required: true },
-      coordinates: {
-        lat: { type: Number },
-        lng: { type: Number },
+      type: {
+        addressLine1: { type: String, required: true },
+        addressLine2: { type: String },
+        city: { type: String, required: true },
+        state: { type: String, required: true },
+        pinCode: { type: String, required: true },
+        coordinates: {
+          lat: { type: Number },
+          lng: { type: Number },
+        },
       },
+      required: true,
     },
 
     openingHours: {

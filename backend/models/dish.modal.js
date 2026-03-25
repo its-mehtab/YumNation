@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import slugGenerator from "../utils/slugGenerator.js";
+import dishSlugGenerator from "../utils/dishSlugGenerator.js";
 
 const dishSchema = new Schema(
   {
@@ -97,7 +97,7 @@ const dishSchema = new Schema(
   { timestamps: true },
 );
 
-dishSchema.pre("save", slugGenerator);
+dishSchema.pre("save", dishSlugGenerator);
 
 dishSchema.index({
   name: "text",

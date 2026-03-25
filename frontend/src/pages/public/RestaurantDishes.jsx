@@ -7,6 +7,8 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { SearchIcon } from "../../assets/icon/Icons";
+import { useRestaurant } from "../../context/owner/RestaurantContext";
+import { Tabs } from "@radix-ui/themes";
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
@@ -136,30 +138,52 @@ const menuCategories = [
 // ─── COMPONENTS ───────────────────────────────────────────────────────────────
 
 function RestaurantHeader() {
+  const [restaurant, setRestaurant] = useState({});
+
+  const { serverURL } = useAuth();
+  const { slug } = useParams();
+
+  const fetchRestaurant = async () => {
+    try {
+      const { data } = await axios.get(`${serverURL}/api/restaurant/${slug}`);
+
+      console.log(data);
+
+      setRestaurant(data);
+    } catch (error) {
+      console.log("Restaurant Error:", error?.response?.data || error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchRestaurant();
+  }, []);
+
   return (
     <section className="mb-7">
       <h1 className="text-[28px] font-bold tracking-tight text-gray-900 mb-4">
-        {restaurant.name}
+        {restaurant?.name}
       </h1>
       <div className="border border-gray-200 rounded-2xl p-5">
-        {/* Rating row */}
         <div className="flex items-center gap-2 text-sm font-medium text-gray-800 mb-2">
           <span className="text-green-600 text-base">★</span>
           <span className="font-semibold">
-            {restaurant.rating} ({restaurant.ratingCount} ratings)
+            {restaurant?.rating} ({restaurant?.ratingCount}+ ratings)
           </span>
           <span className="text-gray-300 text-lg leading-none">·</span>
-          <span className="text-gray-600">{restaurant.priceForTwo}</span>
+          <span className="text-gray-600">
+            ${restaurant?.costForTwo} for two
+          </span>
         </div>
 
         {/* Category links */}
         <div className="flex items-center gap-1 flex-wrap mb-3">
-          {restaurant.categories.map((cat, i) => (
+          {restaurant?.cuisine?.map((cat, i) => (
             <span key={cat} className="flex items-center gap-1">
               <button className="text-orange-500 font-medium text-sm underline hover:text-orange-600 transition-colors">
                 {cat}
               </button>
-              {i < restaurant.categories.length - 1 && (
+              {i < restaurant?.cuisine.length - 1 && (
                 <span className="text-gray-300 text-sm">,</span>
               )}
             </span>
@@ -168,16 +192,19 @@ function RestaurantHeader() {
 
         {/* Outlet */}
         <div className="flex items-center gap-2 text-sm text-gray-500 mb-1.5">
-          <span className="w-2 h-2 rounded-full bg-gray-300 flex-shrink-0" />
+          <span className="w-2 h-2 rounded-full bg-gray-300 shrink-0" />
           <span className="text-gray-400">Outlet</span>
-          <span className="font-medium text-gray-700">{restaurant.outlet}</span>
-          <span className="text-[10px] text-gray-400">▼</span>
+          <span className="font-medium text-gray-700">
+            {restaurant?.address?.city}
+          </span>
         </div>
 
         {/* Delivery time */}
         <div className="flex items-center gap-2 text-sm text-gray-600">
-          <span className="w-2 h-2 rounded-full bg-gray-300 flex-shrink-0" />
-          <span>{restaurant.deliveryTime}</span>
+          <span className="w-2 h-2 rounded-full bg-gray-300 shrink-0" />
+          <span>
+            {restaurant?.deliveryTime}-{restaurant?.deliveryTime + 5} mins
+          </span>
         </div>
       </div>
     </section>
@@ -209,7 +236,7 @@ function DealsSection() {
         {deals.map((deal, i) => (
           <SwiperSlide key={i} className="!w-auto">
             <div className="flex items-center gap-3 border border-gray-200 rounded-xl px-4 py-3 w-56 cursor-pointer hover:border-orange-200 hover:bg-orange-50/30 transition-all">
-              <div className="w-11 h-11 rounded-xl bg-orange-50 flex items-center justify-center text-xl flex-shrink-0">
+              <div className="w-11 h-11 rounded-xl bg-orange-50 flex items-center justify-center text-xl shrink-0">
                 {deal.icon}
               </div>
               <div>
@@ -336,29 +363,16 @@ function TopPicksSection() {
   );
 }
 
-function CategoryNav() {
-  return (
-    <div className="flex overflow-x-auto scrollbar-hide border-b border-gray-200">
-      {menuCategories.map((cat, i) => (
-        <button
-          key={cat}
-          className={`px-5 py-2.5 text-sm whitespace-nowrap font-medium transition-colors flex-shrink-0 border-b-2 -mb-px ${
-            i === 0
-              ? "text-orange-500 border-orange-500 font-semibold"
-              : "text-gray-500 border-transparent hover:text-gray-800"
-          }`}
-        >
-          {cat}
-        </button>
-      ))}
-    </div>
-  );
-}
+// function CategoryNav() {
+//   return (
+
+//   );
+// }
 
 function VegBadge({ isNonVeg }) {
   return (
     <div
-      className={`w-4.5 h-4.5 rounded-sm flex items-center justify-center flex-shrink-0 border-[1.5px] ${
+      className={`w-4.5 h-4.5 rounded-sm flex items-center justify-center shrink-0 border-[1.5px] ${
         isNonVeg ? "border-orange-500" : "border-green-600"
       }`}
     >
@@ -412,9 +426,70 @@ function DishItem({ dish }) {
   );
 }
 
-function RecommendedSection() {
+function DishesSection() {
+  const [tab, setTab] = useState("recommended");
+  const [restaurntDishes, setRestaurantDishes] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const { serverURL } = useAuth();
+  const { slug } = useParams();
+
+  const groupDishes = (dishes) => {
+    const menu = {};
+    const featured = dishes.filter((currDish) => currDish.isFeatured);
+
+    if (featured.length > 0) menu["recommended"] = featured;
+
+    dishes.forEach((dish) => {
+      const cat = dish.category.name;
+
+      if (!menu[cat]) menu[cat] = [];
+
+      menu[cat].push(dish);
+    });
+
+    return menu;
+  };
+
+  const fetchRestaurantDishes = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(`${serverURL}/api/dish/${slug}`, {
+        withCredentials: true,
+      });
+
+      setRestaurantDishes(groupDishes(data));
+    } catch (error) {
+      console.log(
+        "Restaurant Dishes Error:",
+        error?.response?.data || error.message,
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRestaurantDishes();
+  }, []);
+
   return (
     <section>
+      <div className="flex overflow-x-auto scrollbar-hide border-b border-gray-200">
+        {Object.keys(restaurntDishes)?.map((cat, i) => (
+          <button
+            onClick={() => setTab(cat)}
+            key={cat}
+            className={`px-5 py-2.5 text-sm whitespace-nowrap font-medium transition-colors shrink-0 border-b-2 -mb-px capitalize ${
+              cat === tab
+                ? "text-orange-500 border-orange-500 font-semibold"
+                : "text-gray-500 border-transparent hover:text-gray-800"
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
       <div className="flex items-center justify-between cursor-pointer select-none mt-6">
         <h2 className="text-[17px] font-bold text-gray-900">
           Recommended{" "}
@@ -422,7 +497,6 @@ function RecommendedSection() {
             ({recommendedDishes.length})
           </span>
         </h2>
-        <span className="text-gray-400 text-lg">∧</span>
       </div>
       <div>
         {recommendedDishes.map((dish) => (
@@ -436,53 +510,7 @@ function RecommendedSection() {
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 
 const RestaurantDishes = () => {
-  const [restaurntDishes, setRestaurantDishes] = useState({});
-  const [loading, setLoading] = useState(false);
-
-  const { serverURL } = useAuth();
   const { slug } = useParams();
-
-  const menu = {};
-
-  const groupDishes = (dishes) => {
-    const featured = dishes.filter((currDish) => currDish.isFeatured);
-    console.log(featured);
-
-    if (featured.length > 0) menu["recommended"] = featured;
-
-    dishes.forEach((dish) => {
-      const cat = dish.category.name;
-
-      if (!menu[cat]) menu[cat];
-
-      menu[cat] = dish.name;
-    });
-  };
-
-  const fetchRestaurantDishes = async () => {
-    setLoading(true);
-    try {
-      const { data } = await axios.get(`${serverURL}/api/dish/${slug}`, {
-        withCredentials: true,
-      });
-
-      groupDishes(data);
-      setRestaurantDishes(data);
-    } catch (error) {
-      console.log(
-        "Restaurant Dishes Error:",
-        error?.response?.data || error.message,
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  console.log(menu);
-
-  useEffect(() => {
-    fetchRestaurantDishes();
-  }, []);
 
   return (
     <div className="max-w-3xl mx-auto px-4 pb-20 bg-white">
@@ -495,14 +523,14 @@ const RestaurantDishes = () => {
           Kolkata
         </span>
         <span className="text-gray-300">/</span>
-        <span className="text-gray-800 font-semibold">{restaurant.name}</span>
+        <span className="text-gray-800 font-semibold capitalize">{slug}</span>
       </nav>
       <RestaurantHeader />
       <DealsSection />
       <MenuSearch />
       <TopPicksSection />
-      <CategoryNav />
-      <RecommendedSection />
+      {/* <CategoryNav /> */}
+      <DishesSection />
     </div>
   );
 };

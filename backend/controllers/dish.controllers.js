@@ -95,7 +95,6 @@ export const getDishes = async (req, res) => {
   try {
     const dishes = await Dish.find({ restaurant: req.restaurantId })
       .populate("category", "name slug")
-      .populate("restaurant")
       .select(req.hideFields || "");
 
     res.status(200).json(dishes);
@@ -108,9 +107,7 @@ export const getDishBySlug = async (req, res) => {
   const slug = req.params.slug;
 
   try {
-    const dish = await Dish.findOne({ slug })
-      .populate("category", "name")
-      .populate("restaurant");
+    const dish = await Dish.findOne({ slug }).populate("category", "name");
 
     if (!dish) {
       return res.status(404).json({ message: "Dish not found" });
@@ -127,9 +124,10 @@ export const getDishBySlug = async (req, res) => {
 
 export const getDishById = async (req, res) => {
   try {
-    const dish = await Dish.findById(req.params.id)
-      .populate("category", "name slug")
-      .populate("restaurant");
+    const dish = await Dish.findById(req.params.id).populate(
+      "category",
+      "name slug",
+    );
 
     if (!dish) return res.status(404).json({ message: "Dish not found" });
 
@@ -157,6 +155,7 @@ export const createDish = async (req, res) => {
     category,
     variants,
     addOns,
+    isFeatured,
     foodType,
   } = req.body;
 
@@ -173,13 +172,6 @@ export const createDish = async (req, res) => {
 
     if (!restaurant) {
       return res.status(404).json("Restaurant not found");
-    }
-
-    if (!restaurant.address || !restaurant.address.city) {
-      return res.status(400).json({
-        message:
-          "Restaurant address information is incomplete. Please update your restaurant profile with complete address details.",
-      });
     }
 
     if (restaurant.status !== "active") {
@@ -202,11 +194,14 @@ export const createDish = async (req, res) => {
       variants,
       addOns,
       foodType,
+      isFeatured,
       restaurant: restaurant._id,
     });
-    const populatedDish = await Dish.findById(dish._id)
-      .populate("category", "name slug")
-      .populate("restaurant");
+
+    const populatedDish = await Dish.findById(dish._id).populate(
+      "category",
+      "name slug",
+    );
 
     return res.status(201).json(populatedDish);
   } catch (error) {
