@@ -10,7 +10,7 @@ const RestaurantSidebar = () => {
         <ul className="[&_li]:mt-5">
           <li>
             <NavLink
-              to={"/restaurant"}
+              to={"/owner"}
               end
               className={({ isActive }) =>
                 `flex gap-3 items-center text-sm px-3 py-2.5 rounded-lg font-medium transition-all ${isActive ? "text-[#fc8019] bg-gray-100" : "text-gray-500"}`
@@ -22,7 +22,7 @@ const RestaurantSidebar = () => {
           </li>
           <li>
             <NavLink
-              to={"/restaurant/orders"}
+              to={"/owner/orders"}
               className={({ isActive }) =>
                 `flex gap-3 items-center text-sm px-3 py-2.5 rounded-lg font-medium transition-all ${isActive ? "text-[#fc8019] bg-gray-100" : "text-gray-500"}`
               }
@@ -33,7 +33,7 @@ const RestaurantSidebar = () => {
           </li>
           <li>
             <NavLink
-              to={"/restaurant/dishes"}
+              to={"/owner/dishes"}
               className={({ isActive }) =>
                 `flex gap-3 items-center text-sm px-3 py-2.5 rounded-lg font-medium transition-all ${isActive ? "text-[#fc8019] bg-gray-100" : "text-gray-500"}`
               }
@@ -44,7 +44,7 @@ const RestaurantSidebar = () => {
           </li>
           <li>
             <NavLink
-              to={"/restaurant/settings"}
+              to={"/owner/settings"}
               className={({ isActive }) =>
                 `flex gap-3 items-center text-sm px-3 py-2.5 rounded-lg font-medium transition-all ${isActive ? "text-[#fc8019] bg-gray-100" : "text-gray-500"}`
               }

@@ -33,12 +33,9 @@ const RestaurantEditDish = () => {
   const fetchDish = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(
-        `${serverURL}/api/dish/restaurant/${id}`,
-        {
-          withCredentials: true,
-        },
-      );
+      const { data } = await axios.get(`${serverURL}/api/owner/dish/${id}`, {
+        withCredentials: true,
+      });
 
       setForm(data);
     } catch (error) {
@@ -52,7 +49,7 @@ const RestaurantEditDish = () => {
     e.preventDefault();
     try {
       const { data } = await axios.patch(
-        `${serverURL}/api/dish/${id}`,
+        `${serverURL}/api/owner/dish/${id}`,
         { ...form },
         { withCredentials: true },
       );

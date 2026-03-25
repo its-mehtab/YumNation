@@ -9,6 +9,7 @@ import DishForm from "../../components/owner/DishForm";
 // ── Initial state ─────────────────────────────────────────────────────────────
 const initialForm = {
   name: "",
+  image: "mdbn",
   shortDescription: "",
   longDescription: "",
   category: "",
@@ -35,15 +36,16 @@ const RestaurantAddDish = () => {
 
     try {
       const { data } = await axios.post(
-        `${serverURL}/api/dish`,
+        `${serverURL}/api/owner/dish`,
         { ...form },
         { withCredentials: true },
       );
 
       setDishes((prev) => [...prev, { ...data }]);
-      navigate("/restaurant/dishes");
+      navigate("/owner/dishes");
       notifySuccess(`${form.name} added successfully`);
     } catch (error) {
+      console.log(error);
       console.log("Add Dish Error:", error?.response?.data || error.message);
     }
   };

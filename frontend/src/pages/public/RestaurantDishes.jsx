@@ -299,7 +299,7 @@ function TopPicksSection() {
                 className="w-full h-full object-cover opacity-70 group-hover:opacity-80 group-hover:scale-105 transition-all duration-300"
               />
               {/* Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="absolute inset-0 bg-linier-to-t from-black/80 via-black/20 to-transparent" />
 
               {/* Badge */}
               <div className="absolute top-3 left-3">
@@ -436,11 +436,28 @@ function RecommendedSection() {
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 
 const RestaurantDishes = () => {
-  const [restaurntDishes, setRestaurantDishes] = useState();
+  const [restaurntDishes, setRestaurantDishes] = useState({});
   const [loading, setLoading] = useState(false);
 
   const { serverURL } = useAuth();
   const { slug } = useParams();
+
+  const menu = {};
+
+  const groupDishes = (dishes) => {
+    const featured = dishes.filter((currDish) => currDish.isFeatured);
+    console.log(featured);
+
+    if (featured.length > 0) menu["recommended"] = featured;
+
+    dishes.forEach((dish) => {
+      const cat = dish.category.name;
+
+      if (!menu[cat]) menu[cat];
+
+      menu[cat] = dish.name;
+    });
+  };
 
   const fetchRestaurantDishes = async () => {
     setLoading(true);
@@ -449,6 +466,7 @@ const RestaurantDishes = () => {
         withCredentials: true,
       });
 
+      groupDishes(data);
       setRestaurantDishes(data);
     } catch (error) {
       console.log(
@@ -459,6 +477,8 @@ const RestaurantDishes = () => {
       setLoading(false);
     }
   };
+
+  console.log(menu);
 
   useEffect(() => {
     fetchRestaurantDishes();

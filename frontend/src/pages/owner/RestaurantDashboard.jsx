@@ -292,7 +292,7 @@ const RestaurantDashboard = () => {
               Top Dishes
             </p>
             <Link
-              to="/restaurant/dishes"
+              to="/owner/dishes"
               className="text-xs text-[#fc8019] font-semibold hover:underline"
             >
               View all →

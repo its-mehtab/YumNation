@@ -37,7 +37,7 @@ const RestaurantDishes = () => {
   const handleDelete = async (id, name) => {
     setDishes((prev) => prev.filter((d) => d._id !== id));
     try {
-      await axios.delete(`${serverURL}/api/dish/${id}`, {
+      await axios.delete(`${serverURL}/api/owner/dish/${id}`, {
         withCredentials: true,
       });
 
@@ -87,7 +87,7 @@ const RestaurantDishes = () => {
             </div>
             {/* Add dish */}
             <Link
-              to="/restaurant/dish/add"
+              to="/owner/dish/add"
               className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
             >
               <PlusIcon color={"#fff"} size={12} />
@@ -149,14 +149,14 @@ const RestaurantDishes = () => {
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-1.5">
                       <Link
-                        to={`/restaurant/dish/edit/${dish._id}`}
+                        to={`/owner/dish/edit/${dish._id}`}
                         className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
                         title="Edit"
                       >
                         <EditIcon size={15} />
                       </Link>
                       <Link
-                        to={`/restaurant/dish/${dish._id}`}
+                        to={`/owner/dish/${dish._id}`}
                         className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-blue-500 transition-colors"
                         title="View"
                       >

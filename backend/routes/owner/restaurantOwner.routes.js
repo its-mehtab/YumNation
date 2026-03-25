@@ -10,7 +10,13 @@ import { setRestaurantFromOwner } from "../../middleware/restaurant.middleware.j
 
 const restaurantOwnerRouter = Router();
 
-restaurantOwnerRouter.get("/", checkAuth, restaurantOnly, getRestaurant);
+restaurantOwnerRouter.get(
+  "/",
+  checkAuth,
+  restaurantOnly,
+  setRestaurantFromOwner,
+  getRestaurant,
+);
 restaurantOwnerRouter.post(
   "/apply",
   checkAuth,

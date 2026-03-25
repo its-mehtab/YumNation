@@ -20,14 +20,20 @@ dishOwnerRouter.get(
   getDishes,
 );
 dishOwnerRouter.get(
-  "/:restaurantId",
+  "/:id",
   checkAuth,
   restaurantOnly,
   setRestaurantFromOwner,
   getDishById,
 );
 
-dishOwnerRouter.post("/", checkAuth, restaurantOnly, createDish);
+dishOwnerRouter.post(
+  "/",
+  checkAuth,
+  restaurantOnly,
+  setRestaurantFromOwner,
+  createDish,
+);
 dishOwnerRouter.patch(
   "/:id",
   checkAuth,
