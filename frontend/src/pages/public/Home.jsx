@@ -6,7 +6,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import { Navigation, Pagination } from "swiper/modules";
 import DishCard from "../../components/dish-card/DishCard";
-import RestaurantCard from "../../components/user/RestaurantCard";
+import RestaurantCard from "../../components/public/RestaurantCard";
 import {
   BeverageIcon,
   BurgersmIcon,

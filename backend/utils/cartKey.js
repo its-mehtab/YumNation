@@ -3,8 +3,8 @@ export const generateCartKey = (dishId, variant, addOns) => {
     ? addOns
         .map((a) => a.toLowerCase().trim())
         .sort()
-        .join("-")
+        .join("+")
     : "";
 
-  return `${dishId}-${variant}-${normalizedAddOns}`;
+  return `${dishId}-${variant || "default"}-${normalizedAddOns}`;
 };

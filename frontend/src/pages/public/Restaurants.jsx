@@ -1,8 +1,8 @@
 import React from "react";
 import { Skeleton } from "@radix-ui/themes";
-import Chip from "../../components/user/Chip";
+import Chip from "../../components/public/Chip";
 import FilterBox from "../shop/FilterBox";
-import RestaurantCard from "../../components/user/RestaurantCard";
+import RestaurantCard from "../../components/public/RestaurantCard";
 import { FilterIcon } from "../../assets/icon/Icons";
 import { useRestaurats } from "../../context/public/RestaurantsContext";
 import DishCardSkeleton from "../../components/skeleton/DishCardSkeleton";

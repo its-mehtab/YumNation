@@ -1,4 +1,5 @@
 import Cart from "../models/cart.modal.js";
+import Restaurant from "../models/restaurant.modal.js";
 import Dish from "../models/dish.modal.js";
 import { generateCartKey } from "../utils/cartKey.js";
 
@@ -25,7 +26,7 @@ export const getUserCart = async (req, res) => {
 export const addCart = async (req, res) => {
   const userId = req.userId;
 
-  const { dish, quantity = 1, variant, addOns } = req.body;
+  const { restaurant, dish, variant, addOns } = req.body;
 
   try {
     const dishDoc = await Dish.findById(dish);
@@ -34,13 +35,44 @@ export const addCart = async (req, res) => {
       return res.status(400).json({ message: "Dish unavailable" });
     }
 
-    const price = dishDoc.price;
+    const restaurantDoc = await Restaurant.findById(restaurant);
+
+    if (
+      !restaurantDoc ||
+      !restaurantDoc.isOpen ||
+      !restaurantDoc.isActive ||
+      !restaurantDoc.status !== "active"
+    ) {
+      return res.status(400).json({ message: "Restaurant unavailable" });
+    }
+
+    let price = dish.price;
+
+    const variantExist = dish.variants.find((v) => v === variant);
+    if (variantExist) {
+      price = variantExist.price;
+    }
+
+    addOns.forEach((a) => {
+      const addOnExist = dish.addOns.find((dishA) => dishA === a);
+
+      if (addOnExist) {
+        price += addOnExist.price;
+      }
+    });
+
+    const basePrice = dishDoc.price;
     const name = dishDoc.name;
-    const image = dishDoc.images[0];
+    const image = dishDoc.image;
 
     let cart = await Cart.findOne({ user: userId });
 
     const cartKey = generateCartKey(dish, variant, addOns);
+
+    if (cart.restaurant !== restaurant) {
+      cart.restaurant = restaurant;
+      cart.items = [];
+    }
 
     if (cart) {
       const itemIndex = cart.items.findIndex(
@@ -48,15 +80,16 @@ export const addCart = async (req, res) => {
       );
 
       if (itemIndex > -1) {
-        cart.items[itemIndex].quantity += quantity;
+        cart.items[itemIndex].quantity += 1;
       } else {
         cart.items.push({
           dish,
           name,
+          price,
+          basePrice,
           cartKey,
           image,
-          price,
-          quantity,
+          quantity: 1,
           variant,
           addOns,
         });
@@ -65,8 +98,19 @@ export const addCart = async (req, res) => {
     } else {
       cart = await Cart.create({
         user: userId,
+        restaurant,
         items: [
-          { dish, name, image, cartKey, price, quantity, variant, addOns },
+          {
+            dish,
+            name,
+            image,
+            cartKey,
+            price,
+            basePrice,
+            quantity,
+            variant,
+            addOns,
+          },
         ],
       });
     }
@@ -90,11 +134,11 @@ export const updateCartQuantity = async (req, res) => {
   const { action, dishId, variant, addOns } = req.body;
   const userId = req.userId;
 
-  const cartKey = generateCartKey(dishId, variant, addOns);
-
-  if (!dishId || !variant || !action) {
+  if (!dishId || !action) {
     return res.status(400).json({ message: "Missing required fields" });
   }
+
+  const cartKey = generateCartKey(dishId, variant, addOns);
 
   try {
     const cart = await Cart.findOne({ user: userId });
@@ -118,7 +162,9 @@ export const updateCartQuantity = async (req, res) => {
     }
 
     if (action === "increase") {
-      item.quantity += 1;
+      if (item.quantity <= 10) {
+        item.quantity += 1;
+      }
     }
 
     await cart.save();

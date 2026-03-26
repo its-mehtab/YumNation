@@ -8,6 +8,11 @@ const cartSchema = new Schema(
       required: true,
       unique: true,
     },
+    restaurant: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Restaurant",
+      required: true,
+    },
     items: [
       {
         dish: {
@@ -30,10 +35,14 @@ const cartSchema = new Schema(
           type: String,
         },
 
+        basePrice: { type: Number, required: true },
+
         price: {
           type: Number,
           required: true,
         },
+
+        itemTotal: { type: Number, required: true },
 
         quantity: {
           type: Number,
@@ -42,12 +51,12 @@ const cartSchema = new Schema(
         },
 
         variant: {
-          type: String,
+          name: { type: String },
+          price: { type: Number },
         },
 
         addOns: [
           {
-            addOnId: { type: mongoose.Schema.Types.ObjectId },
             name: String,
             price: Number,
           },
