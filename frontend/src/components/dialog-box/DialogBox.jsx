@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Dialog, Flex, Text, TextField } from "@radix-ui/themes";
 
 const DialogBox = ({
+  btn,
   children,
   size = "450px",
   dialogBtnName,
@@ -11,9 +12,11 @@ const DialogBox = ({
   return (
     <Dialog.Root>
       <Dialog.Trigger>
-        <Button variant={btnVariant} size={btnSize}>
-          {dialogBtnName}
-        </Button>
+        {btn || (
+          <Button variant={btnVariant} size={btnSize}>
+            {dialogBtnName}
+          </Button>
+        )}
       </Dialog.Trigger>
 
       <Dialog.Content maxWidth={size}>{children}</Dialog.Content>

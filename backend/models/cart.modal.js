@@ -42,7 +42,7 @@ const cartSchema = new Schema(
           required: true,
         },
 
-        itemTotal: { type: Number, required: true },
+        // itemTotal: { type: Number, required: true },
 
         quantity: {
           type: Number,

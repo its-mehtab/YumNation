@@ -1,28 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import axios from "axios";
+import React from "react";
 
-const RestaurantHeader = () => {
-  const [restaurant, setRestaurant] = useState({});
-
-  const { serverURL } = useAuth();
-  const { slug } = useParams();
-
-  const fetchRestaurant = async () => {
-    try {
-      const { data } = await axios.get(`${serverURL}/api/restaurant/${slug}`);
-
-      setRestaurant(data);
-    } catch (error) {
-      console.log("Restaurant Error:", error?.response?.data || error.message);
-    }
-  };
-
-  useEffect(() => {
-    fetchRestaurant();
-  }, []);
-
+const RestaurantHeader = ({ restaurant }) => {
   return (
     <section className="mb-7">
       <h1 className="text-[28px] font-bold tracking-tight text-gray-900 mb-4">

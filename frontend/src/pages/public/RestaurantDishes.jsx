@@ -56,7 +56,7 @@ function MenuSearch() {
     </>
   );
 }
-function DishesSection() {
+function DishesSection({ restaurant }) {
   const [tab, setTab] = useState("recommended");
   const [restaurntDishes, setRestaurantDishes] = useState({});
   const [loading, setLoading] = useState(false);
@@ -130,7 +130,7 @@ function DishesSection() {
       </div>
       <div>
         {restaurntDishes[tab]?.map((dish) => (
-          <DishItem key={dish._id} dish={dish} />
+          <DishItem key={dish._id} dish={dish} restaurant={restaurant} />
         ))}
       </div>
     </section>
@@ -140,7 +140,24 @@ function DishesSection() {
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 
 const RestaurantDishes = () => {
+  const [restaurant, setRestaurant] = useState({});
+
+  const { serverURL } = useAuth();
   const { slug } = useParams();
+
+  const fetchRestaurant = async () => {
+    try {
+      const { data } = await axios.get(`${serverURL}/api/restaurant/${slug}`);
+
+      setRestaurant(data);
+    } catch (error) {
+      console.log("Restaurant Error:", error?.response?.data || error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchRestaurant();
+  }, []);
 
   return (
     <div className="max-w-3xl mx-auto px-4 pb-20 bg-white">
@@ -155,11 +172,11 @@ const RestaurantDishes = () => {
         <span className="text-gray-300">/</span>
         <span className="text-gray-800 font-semibold capitalize">{slug}</span>
       </nav>
-      <RestaurantHeader />
+      <RestaurantHeader restaurant={restaurant} />
       <DealsSection />
       <MenuSearch />
       <TopPicksSection />
-      <DishesSection />
+      <DishesSection restaurant={restaurant} />
     </div>
   );
 };

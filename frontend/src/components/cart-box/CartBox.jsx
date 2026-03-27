@@ -39,7 +39,6 @@ const CartBox = () => {
       >
         Shopping cart
       </h3>
-
       {cart?.length > 0 ? (
         cart.map((currProd) => {
           return (
@@ -55,7 +54,6 @@ const CartBox = () => {
           Cart is Empty
         </div>
       )}
-
       {cart?.length > 0 && (
         <div className="pt-4 border-t border-[#fc8019]">
           <div className="flex items-center gap-2 justify-between">

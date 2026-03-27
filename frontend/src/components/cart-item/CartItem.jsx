@@ -8,8 +8,10 @@ import { MinusIcon, PlusIcon } from "../../assets/icon/Icons";
 import { fetchAvailibility } from "../../utils/availibility";
 import { assets } from "../../assets/assets";
 
-const CartItem = ({ currProd, dishs }) => {
+const CartItem = ({ currProd }) => {
   const [quantity, setQuantity] = useState(currProd.quantity);
+
+  console.log(currProd);
 
   const { serverURL } = useAuth();
   const { setCart } = useCart();
@@ -106,7 +108,11 @@ const CartItem = ({ currProd, dishs }) => {
           <Link to={`/dish/${currProd.dish.slug}`}>{currProd.name}</Link>
         </h3>
         <p className="text-xs text-gray-500 font-medium mt-2">
-          {currProd.variant}
+          {currProd.variant.name} |{" "}
+          {/* {currProd.addOns
+            .map((a) => a.toLowerCase().trim())
+            .sort()
+            .join("+")} */}
         </p>
         <span
           onClick={handleDeleteCart}

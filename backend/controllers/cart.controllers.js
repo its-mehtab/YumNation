@@ -26,7 +26,7 @@ export const getUserCart = async (req, res) => {
 export const addCart = async (req, res) => {
   const userId = req.userId;
 
-  const { restaurant, dish, variant, addOns } = req.body;
+  const { restaurant, dish, quantity = 1, variant, addOns } = req.body;
 
   try {
     const dishDoc = await Dish.findById(dish);
@@ -41,21 +41,24 @@ export const addCart = async (req, res) => {
       !restaurantDoc ||
       !restaurantDoc.isOpen ||
       !restaurantDoc.isActive ||
-      !restaurantDoc.status !== "active"
+      restaurantDoc.status != "active"
     ) {
       return res.status(400).json({ message: "Restaurant unavailable" });
     }
 
-    let price = dish.price;
+    let price = dishDoc.price;
 
-    const variantExist = dish.variants.find((v) => v === variant);
+    const variantExist = dishDoc.variants.find((v) => v.name === variant);
+
     if (variantExist) {
       price = variantExist.price;
     }
 
+    const addOnsArr = [];
     addOns.forEach((a) => {
-      const addOnExist = dish.addOns.find((dishA) => dishA === a);
+      const addOnExist = dishDoc.addOns.find((dishA) => dishA.name === a);
 
+      addOnsArr.push(addOnExist);
       if (addOnExist) {
         price += addOnExist.price;
       }
@@ -69,18 +72,24 @@ export const addCart = async (req, res) => {
 
     const cartKey = generateCartKey(dish, variant, addOns);
 
-    if (cart.restaurant !== restaurant) {
-      cart.restaurant = restaurant;
-      cart.items = [];
-    }
-
     if (cart) {
+      if (cart.restaurant.toString() !== restaurant) {
+        cart.restaurant = restaurant;
+        cart.items = [];
+      }
+
       const itemIndex = cart.items.findIndex(
         (item) => item.cartKey === cartKey,
       );
 
+      if (quantity > 10 || cart.items[itemIndex].quantity + quantity > 10) {
+        return res.status(400).json({
+          message: "You can only order up to 10 of this item at a time",
+        });
+      }
+
       if (itemIndex > -1) {
-        cart.items[itemIndex].quantity += 1;
+        cart.items[itemIndex].quantity += quantity;
       } else {
         cart.items.push({
           dish,
@@ -89,9 +98,9 @@ export const addCart = async (req, res) => {
           basePrice,
           cartKey,
           image,
-          quantity: 1,
-          variant,
-          addOns,
+          quantity,
+          variant: variantExist,
+          addOns: addOnsArr,
         });
       }
       await cart.save();
@@ -108,8 +117,8 @@ export const addCart = async (req, res) => {
             price,
             basePrice,
             quantity,
-            variant,
-            addOns,
+            variant: variantExist,
+            addOns: addOnsArr,
           },
         ],
       });
