@@ -33,11 +33,13 @@ import CategorySkeleton from "../../components/skeleton/CategorySkeleton";
 import DishCardSkeleton from "../../components/skeleton/DishCardSkeleton";
 import { Skeleton } from "@radix-ui/themes";
 import { useAuth } from "../../context/AuthContext";
+import { useRestaurats } from "../../context/public/RestaurantsContext";
 
 const Home = () => {
   const { isLoggedIn } = useAuth();
   const { categories, loading } = useCategory();
-  const { dishes, loading: dishLoading } = useDish();
+  const { restaurants, restaurantLoading, setRestaurantLoading } =
+    useRestaurats();
 
   return (
     <div className="grid grid-cols-12 gap-6">
@@ -144,33 +146,22 @@ const Home = () => {
           <Swiper
             slidesPerView={3}
             spaceBetween={20}
-            // spaceBetween={0}
-            // centeredSlides={true}
-            // initialSlide={2}
-            // modules={[Navigation]}
-            // navigation={{
-            //   nextEl: ".custom-next",
-            //   prevEl: ".custom-prev",
-            // }}
-            // breakpoints={{
-            //   480: { slidesPerView: 1.5 },
-            //   767: { slidesPerView: 2.5 },
-            //   991: { slidesPerView: 3.5 },
-            //   1200: { slidesPerView: 4.2 },
-            // }}
+            modules={[Navigation]}
+            navigation={{
+              nextEl: ".custom-next",
+              prevEl: ".custom-prev",
+            }}
+            breakpoints={{
+              480: { slidesPerView: 1 },
+              767: { slidesPerView: 2 },
+              991: { slidesPerView: 3 },
+            }}
             className="mySwiper"
           >
             <SwiperSlide>
-              <RestaurantCard />
-            </SwiperSlide>
-            <SwiperSlide>
-              <RestaurantCard />
-            </SwiperSlide>
-            <SwiperSlide>
-              <RestaurantCard />
-            </SwiperSlide>
-            <SwiperSlide>
-              <RestaurantCard />
+              {restaurants.map((restaurant) => (
+                <RestaurantCard restaurant={restaurant} key={restaurant._id} />
+              ))}
             </SwiperSlide>
           </Swiper>
         </section>
@@ -253,7 +244,7 @@ const Home = () => {
             // }}
             className="mySwiper"
           >
-            {dishLoading
+            {/* {restaurantLoading
               ? Array.from({ length: 3 }).map((_, i) => (
                   <SwiperSlide key={i}>
                     <DishCardSkeleton />
@@ -265,7 +256,7 @@ const Home = () => {
                       <DishCard currDish={currDish} />
                     </SwiperSlide>
                   );
-                })}
+                })} */}
           </Swiper>
         </section>
       </div>

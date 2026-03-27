@@ -26,7 +26,7 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const subtotal = cart?.reduce(
+  const subtotal = cart?.items?.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0,
   );

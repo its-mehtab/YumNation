@@ -8,15 +8,15 @@ import { MinusIcon, PlusIcon } from "../../assets/icon/Icons";
 import { fetchAvailibility } from "../../utils/availibility";
 import { assets } from "../../assets/assets";
 
-const CartItem = ({ currProd }) => {
-  const [quantity, setQuantity] = useState(currProd.quantity);
-
-  console.log(currProd);
+const CartItem = ({ cartItem, restaurant }) => {
+  const [quantity, setQuantity] = useState(cartItem.quantity);
 
   const { serverURL } = useAuth();
   const { setCart } = useCart();
 
-  const { isUnavailable, statusText } = fetchAvailibility(currProd.dish);
+  const { isUnavailable, statusText } = fetchAvailibility(cartItem.dish);
+
+  const addOns = cartItem.addOns.map((a) => a.name);
 
   const handleQuantityMinus = async () => {
     if (quantity > 1) {
@@ -28,8 +28,9 @@ const CartItem = ({ currProd }) => {
         `${serverURL}/api/cart`,
         {
           action: "decrease",
-          dishId: currProd.dish._id,
-          variant: currProd.variant,
+          dishId: cartItem.dish._id,
+          variant: cartItem.variant.name,
+          addOns,
         },
         { withCredentials: true },
       );
@@ -52,8 +53,9 @@ const CartItem = ({ currProd }) => {
         `${serverURL}/api/cart`,
         {
           action: "increase",
-          dishId: currProd.dish._id,
-          variant: currProd.variant,
+          dishId: cartItem.dish._id,
+          variant: cartItem.variant.name,
+          addOns,
         },
         { withCredentials: true },
       );
@@ -70,14 +72,15 @@ const CartItem = ({ currProd }) => {
     try {
       const { data } = await axios.delete(`${serverURL}/api/cart`, {
         data: {
-          dishId: currProd.dish._id,
-          variant: currProd.variant,
+          dishId: cartItem.dish._id,
+          variant: cartItem.variant.name,
+          addOns,
         },
         withCredentials: true,
       });
 
       setCart(data);
-      notifySuccess(`${currProd.name} removed from cart`);
+      notifySuccess(`${cartItem.name} removed from cart`);
     } catch (error) {
       console.log("Delete Cart Error:", error?.response?.data || error.message);
       notifyError("Cart remove failed");
@@ -86,16 +89,16 @@ const CartItem = ({ currProd }) => {
   };
 
   useEffect(() => {
-    setQuantity(currProd.quantity);
-  }, [currProd.quantity]);
+    setQuantity(cartItem.quantity);
+  }, [cartItem.quantity]);
 
   return (
     <div className="flex flex-wrap gap-4 items-center mb-8">
       <Link
-        to={`/dish/${currProd.dish.slug}`}
-        className={`w-17.5 min-w-17.5 h-17.5 rounded-lg border flex justify-center items-center border-[#fc8019] ${!currProd.dish.isAvailable ? "grayscale" : ""}`}
+        to={`/restaurant/${restaurant.slug}`}
+        className={`w-17.5 min-w-17.5 h-17.5 rounded-lg border flex justify-center items-center border-[#fc8019] ${!cartItem.dish.isAvailable ? "grayscale" : ""}`}
       >
-        {/* <img src={currProd.image} alt="" className="w-full" /> */}
+        {/* <img src={cartItem.image} alt="" className="w-full" /> */}
         <img src={assets.dish2} alt="" className="w-full" />
       </Link>
       <div>
@@ -105,14 +108,20 @@ const CartItem = ({ currProd }) => {
           </p>
         )}
         <h3 className="text-sm font-semibold text-gray-700 hover:text-[#fc8019] transition-all">
-          <Link to={`/dish/${currProd.dish.slug}`}>{currProd.name}</Link>
+          <Link to={`/restaurant/${restaurant.slug}`}>{cartItem.name}</Link>
         </h3>
         <p className="text-xs text-gray-500 font-medium mt-2">
-          {currProd.variant.name} |{" "}
-          {/* {currProd.addOns
-            .map((a) => a.toLowerCase().trim())
-            .sort()
-            .join("+")} */}
+          {cartItem.variant.name}
+          {cartItem.addOns.length > 0 && (
+            <>
+              {" "}
+              |{" "}
+              {cartItem.addOns
+                .map((a) => a.name)
+                .sort()
+                .join("+")}
+            </>
+          )}
         </p>
         <span
           onClick={handleDeleteCart}
@@ -123,7 +132,7 @@ const CartItem = ({ currProd }) => {
       </div>
       <div className="md:ml-auto text-end">
         <div className="text-md font-semibold text-[#fc8019]">
-          +${(currProd.price * currProd.quantity).toFixed(2)}
+          +${(cartItem.price * cartItem.quantity).toFixed(2)}
         </div>
         <div className="flex justify-start items-center border border-[#fc8019] rounded-lg mt-2">
           <span

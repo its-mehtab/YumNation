@@ -35,16 +35,20 @@ const CartBox = () => {
   ) : (
     <div>
       <h3
-        className={`text-[#fc8019] text-xs capitalize font-semibold mb-3 ${!cart?.length > 0 && "text-center"}`}
+        className={`text-[#fc8019] text-xs capitalize font-semibold mb-3 ${!cart.items?.length > 0 && "text-center"}`}
       >
         Shopping cart
       </h3>
-      {cart?.length > 0 ? (
-        cart.map((currProd) => {
+      {cart.items?.length > 0 ? (
+        cart.items.map((cartItem) => {
           return (
             <CartItem
-              currProd={currProd}
-              key={`${currProd.dish._id}-${currProd.variant}`}
+              restaurant={cart.restaurant}
+              cartItem={cartItem}
+              key={`${cartItem.dish._id}-${cartItem.variant.name}-${cartItem.addOns
+                .map((a) => a.name)
+                .sort()
+                .join("+")}`}
             />
           );
         })
@@ -54,7 +58,7 @@ const CartBox = () => {
           Cart is Empty
         </div>
       )}
-      {cart?.length > 0 && (
+      {cart.items?.length > 0 && (
         <div className="pt-4 border-t border-[#fc8019]">
           <div className="flex items-center gap-2 justify-between">
             <span className="text-xs font-medium text-gray-500">

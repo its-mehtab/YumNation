@@ -15,6 +15,7 @@ import Checkout from "../pages/checkout/Checkout";
 import UserLayout from "../layout/UserLayout";
 import Restaurants from "../pages/public/Restaurants";
 import RestaurantDishes from "../pages/public/RestaurantDishes";
+import FloatingCart from "../components/public/FloatingCart";
 
 const PublicRoutes = () => {
   const { isLoggedIn, user } = useAuth();
@@ -23,30 +24,34 @@ const PublicRoutes = () => {
   if (user?.role === "restaurant") return <Navigate to="/owner" />;
 
   return (
-    <UserLayout>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/restaurants" element={<Restaurants />} />
-        <Route path="/restaurant/:slug" element={<RestaurantDishes />} />
-        <Route path="/shop" element={<Shop />} />
-        <Route path="/dish/:slug" element={<Dish />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route
-          path="/login"
-          element={!isLoggedIn ? <Login /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/signup"
-          element={!isLoggedIn ? <SignUp /> : <Navigate to="/" />}
-        />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/wishlist" element={<Wishlist />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/order/:id" element={<OrderDetails />} />
-        <Route path="/thankyou" element={<ThankYou />} />
-      </Routes>
-    </UserLayout>
+    <>
+      <UserLayout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/restaurants" element={<Restaurants />} />
+          <Route path="/restaurant/:slug" element={<RestaurantDishes />} />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/dish/:slug" element={<Dish />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route
+            path="/login"
+            element={!isLoggedIn ? <Login /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/signup"
+            element={!isLoggedIn ? <SignUp /> : <Navigate to="/" />}
+          />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/order/:id" element={<OrderDetails />} />
+          <Route path="/thankyou" element={<ThankYou />} />
+        </Routes>
+      </UserLayout>
+
+      <FloatingCart />
+    </>
   );
 };
 

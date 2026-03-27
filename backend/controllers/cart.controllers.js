@@ -8,14 +8,18 @@ export const getUserCart = async (req, res) => {
 
   try {
     const cart = await Cart.findOne({ user: userId })
+      .populate("restaurant", "name slug")
       .populate("items.dish", "name slug isAvailable variants")
+      .select("restaurant items")
       .lean();
+
+    console.log(cart);
 
     if (!cart) {
       return res.status(200).json([]);
     }
 
-    return res.status(200).json(cart.items);
+    return res.status(200).json(cart);
   } catch (error) {
     return res
       .status(500)
@@ -82,13 +86,19 @@ export const addCart = async (req, res) => {
         (item) => item.cartKey === cartKey,
       );
 
-      if (quantity > 10 || cart.items[itemIndex].quantity + quantity > 10) {
+      if (quantity > 10) {
         return res.status(400).json({
           message: "You can only order up to 10 of this item at a time",
         });
       }
 
       if (itemIndex > -1) {
+        if (cart.items[itemIndex].quantity + quantity > 10) {
+          return res.status(400).json({
+            message: "You can only order up to 10 of this item at a time",
+          });
+        }
+
         cart.items[itemIndex].quantity += quantity;
       } else {
         cart.items.push({
@@ -124,14 +134,12 @@ export const addCart = async (req, res) => {
       });
     }
 
-    await cart.populate("items.dish", "name slug isAvailable variants");
+    const updatedCart = await Cart.findOne({ user: userId })
+      .populate("restaurant", "name slug")
+      .populate("items.dish", "name slug isAvailable variants")
+      .select("restaurant items");
 
-    const updatedCart = await Cart.findOne({ user: userId }).populate(
-      "items.dish",
-      "name slug isAvailable variants",
-    );
-
-    return res.status(201).json(updatedCart.items);
+    return res.status(201).json(updatedCart);
   } catch (error) {
     return res
       .status(500)
@@ -178,12 +186,12 @@ export const updateCartQuantity = async (req, res) => {
 
     await cart.save();
 
-    const updatedCart = await cart.populate(
-      "items.dish",
-      "name slug isAvailable variants",
-    );
+    const updatedCart = await Cart.findOne({ user: userId })
+      .populate("restaurant", "name slug")
+      .populate("items.dish", "name slug isAvailable variants")
+      .select("restaurant items");
 
-    return res.status(200).json(updatedCart.items);
+    return res.status(200).json(updatedCart);
   } catch (error) {
     return res
       .status(500)
@@ -195,7 +203,6 @@ export const removeFromCart = async (req, res) => {
   const userId = req.userId;
 
   const { dishId, variant, addOns } = req.body;
-  console.log(dishId);
 
   const cartKey = generateCartKey(dishId, variant, addOns);
 
@@ -211,13 +218,16 @@ export const removeFromCart = async (req, res) => {
         },
       },
       { new: true },
-    ).populate("items.dish", "name slug isAvailable variants");
+    )
+      .populate("restaurant", "name slug")
+      .populate("items.dish", "name slug isAvailable variants")
+      .select("restaurant items");
 
     if (!cart) {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-    return res.status(200).json(cart.items);
+    return res.status(200).json(cart);
   } catch (error) {
     return res.status(500).json({
       message: "Remove from cart error",
