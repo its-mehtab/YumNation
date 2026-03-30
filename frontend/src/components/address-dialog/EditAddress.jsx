@@ -9,6 +9,8 @@ import AddressDialog from "./AddressDialog";
 import AddressForm from "./AddressForm";
 
 const EditAddress = ({ address }) => {
+  const [isModalOpen, setIsModalOpen] = useState();
+
   const [formData, setFormData] = useState({
     fullName: address.fullName,
     phoneNumber: address.phoneNumber,
@@ -44,6 +46,7 @@ const EditAddress = ({ address }) => {
               : item;
         }),
       );
+      setIsModalOpen(false);
       notifySuccess("Address update successfully");
     } catch (error) {
       notifyError("Address updated failed");
@@ -55,7 +58,13 @@ const EditAddress = ({ address }) => {
   };
 
   return (
-    <DialogBox dialogBtnName={"Edit"} btnSize={"1"} btnVariant={"outline"}>
+    <DialogBox
+      isModalOpen={isModalOpen}
+      setIsModalOpen={setIsModalOpen}
+      dialogBtnName={"Edit"}
+      btnSize={"1"}
+      btnVariant={"outline"}
+    >
       <AddressForm
         title={"Edit Address"}
         description={"Update your address details for delivery."}

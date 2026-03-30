@@ -44,7 +44,10 @@ const CartItem = ({ cartItem, restaurant }) => {
   };
 
   const handleQuantityPlus = async () => {
-    if (quantity >= 10) return;
+    if (quantity >= 10) {
+      notifyError("You can only order up to 10 of this item at a time");
+      return;
+    }
 
     setQuantity(quantity + 1);
 

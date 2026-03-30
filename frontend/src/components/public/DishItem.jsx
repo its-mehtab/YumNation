@@ -9,6 +9,7 @@ import { notifyError, notifySuccess } from "../../utils/toast";
 
 const DishItem = ({ dish, restaurant }) => {
   const [isDescTrimmed, setIsDescTrimmed] = useState(true);
+  const [isDishOpen, setIsDishOpen] = useState(false);
 
   const { cart, setCart } = useCart();
   const { serverURL } = useAuth();
@@ -37,11 +38,6 @@ const DishItem = ({ dish, restaurant }) => {
     );
   };
 
-  // const handleAddToCart = () => {
-  //   setAdded(true);
-  //   setTimeout(() => setAdded(false), 1500);
-  // };
-
   // const { isUnavailable, statusText } = fetchAvailibility(currDish);
 
   const handleAddCart = async () => {
@@ -66,7 +62,10 @@ const DishItem = ({ dish, restaurant }) => {
 
       setCart(data);
 
+      setAdded(true);
+      setTimeout(() => setAdded(false), 1500);
       notifySuccess(`${dish.name} added to cart`);
+      setIsDishOpen(false);
     } catch (error) {
       console.log("Cart Error:", error?.response?.data || error.message);
       notifyError(error?.response?.data.message);
@@ -119,10 +118,14 @@ const DishItem = ({ dish, restaurant }) => {
         />
         {(dish.variants.length > 0 || dish.addOns > 0) && (
           <DialogBox
+            isModalOpen={isDishOpen}
             size={"550px"}
             dialogBtnName="ADD"
             btn={
-              <button className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-white border border-gray-200 rounded-lg px-5 py-1.5 text-[13px] font-bold text-orange-600 shadow-sm whitespace-nowrap hover:bg-orange-50 transition-colors">
+              <button
+                onClick={() => setIsDishOpen(true)}
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-white border border-gray-200 rounded-lg px-5 py-1.5 text-[13px] font-bold text-orange-600 shadow-sm whitespace-nowrap hover:bg-orange-50 transition-colors"
+              >
                 ADD
               </button>
             }
@@ -252,7 +255,7 @@ const DishItem = ({ dish, restaurant }) => {
                   {quantity}
                 </span>
                 <button
-                  onClick={() => setQuantity((q) => q + 1)}
+                  onClick={() => setQuantity((q) => Math.min(10, q + 1))}
                   className="w-9 h-9 flex items-center justify-center bg-gray-50 hover:bg-gray-100 text-gray-700 text-lg transition-colors"
                 >
                   +

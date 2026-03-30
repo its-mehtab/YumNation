@@ -7,6 +7,7 @@ import { notifyError, notifySuccess } from "../../utils/toast";
 import AddressForm from "./AddressForm";
 
 const AddNewAddress = () => {
+  const [isModalOpen, setIsModalOpen] = useState();
   const [formData, setFormData] = useState({
     fullName: "",
     phoneNumber: "",
@@ -40,6 +41,7 @@ const AddNewAddress = () => {
 
         return [...updatedAddresses, data];
       });
+      setIsModalOpen(false);
       notifySuccess("Address Added successfully");
       setFormData({
         fullName: "",
@@ -65,7 +67,12 @@ const AddNewAddress = () => {
   };
 
   return (
-    <DialogBox dialogBtnName={"Add New Address"} btnVariant={"outline"}>
+    <DialogBox
+      isModalOpen={isModalOpen}
+      setIsModalOpen={setIsModalOpen}
+      dialogBtnName={"Add New Address"}
+      btnVariant={"outline"}
+    >
       <AddressForm
         title={"Add a new address"}
         description={"Add your address details for delivery."}

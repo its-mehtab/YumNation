@@ -10,9 +10,9 @@ const wishlistSchema = new Schema(
     },
     items: [
       {
-        dish: {
+        restaurant: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Dish",
+          ref: "Restaurant",
           required: true,
         },
 
@@ -21,14 +21,40 @@ const wishlistSchema = new Schema(
           required: true,
         },
 
-        image: {
+        descripton: {
           type: String,
-        },
-
-        price: {
-          type: Number,
           required: true,
         },
+
+        dishes: [
+          {
+            dish: {
+              type: mongoose.Schema.Types.ObjectId,
+              ref: "Dish",
+              required: true,
+            },
+
+            name: {
+              type: String,
+              required: true,
+            },
+
+            image: {
+              type: String,
+            },
+
+            price: {
+              type: Number,
+              required: true,
+            },
+
+            foodType: {
+              type: String,
+              enum: ["veg", "non-veg", "vegan"],
+              required: true,
+            },
+          },
+        ],
       },
     ],
   },

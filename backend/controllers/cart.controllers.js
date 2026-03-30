@@ -179,8 +179,12 @@ export const updateCartQuantity = async (req, res) => {
     }
 
     if (action === "increase") {
-      if (item.quantity <= 10) {
+      if (item.quantity < 10) {
         item.quantity += 1;
+      } else {
+        return res.status(400).json({
+          message: "You can only order up to 10 of this item at a time",
+        });
       }
     }
 

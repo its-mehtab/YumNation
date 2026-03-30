@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Dialog, Flex, Text, TextField } from "@radix-ui/themes";
 import DialogBox from "../dialog-box/DialogBox";
 import { useAddress } from "../../context/AddressContext";
@@ -10,6 +10,8 @@ import { notifyError, notifySuccess } from "../../utils/toast";
 import AddNewAddress from "./AddNewAddress";
 
 const AddressDialog = () => {
+  const [isModalOpen, setIsModalOpen] = useState();
+
   const { addresses, setAddresses } = useAddress();
   const { serverURL } = useAuth();
 
@@ -27,6 +29,7 @@ const AddressDialog = () => {
         );
       });
 
+      setIsModalOpen(false);
       notifySuccess("Default Address Changed");
     } catch (error) {
       notifyError(error?.response?.data || error.message);
@@ -46,6 +49,7 @@ const AddressDialog = () => {
       setAddresses((prev) => {
         return prev.filter((item) => item._id !== id);
       });
+      setIsModalOpen(false);
       notifySuccess("Address Deleted");
     } catch (error) {
       notifyError(error?.response?.data || error.message);
@@ -57,7 +61,11 @@ const AddressDialog = () => {
   };
 
   return (
-    <DialogBox dialogBtnName={"Change Address"}>
+    <DialogBox
+      isModalOpen={isModalOpen}
+      setIsModalOpen={setIsModalOpen}
+      dialogBtnName={"Change Address"}
+    >
       <Dialog.Title color="gray">Change Address</Dialog.Title>
       <Dialog.Description size="2" mb="4" color="gray">
         Update your address for delivery.

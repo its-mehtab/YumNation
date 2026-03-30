@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, CartIcon } from "../../assets/icon/Icons";
+import {
+  ArrowRight,
+  CartIcon,
+  MinusIcon,
+  PlusIcon,
+} from "../../assets/icon/Icons";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import { notifyError } from "../../utils/toast";
@@ -39,7 +44,7 @@ const mockCart = {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const CartItem = ({ item, onIncrease, onDecrease, onRemove }) => {
-  const [quantity, setQuantity] = useState();
+  const [quantity, setQuantity] = useState(item.quantity);
 
   const { serverURL } = useAuth();
   const { cart, setCart } = useCart();
@@ -72,7 +77,10 @@ const CartItem = ({ item, onIncrease, onDecrease, onRemove }) => {
   };
 
   const handleQuantityPlus = async () => {
-    if (quantity >= 10) return;
+    if (quantity >= 10) {
+      notifyError("You can only order up to 10 of this item at a time");
+      return;
+    }
 
     setQuantity(quantity + 1);
 
@@ -99,7 +107,7 @@ const CartItem = ({ item, onIncrease, onDecrease, onRemove }) => {
   return (
     <div className="flex items-center gap-3 py-3 border-b border-gray-50 last:border-0">
       {/* Image */}
-      <div className="w-12 h-12 min-w-12 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-xl overflow-hidden">
+      <div className="w-12 h-12 min-w-12 rounded-lg bg-orange-50 border border-orange-100 flex items-center justify-center text-xl overflow-hidden">
         {item.image ? (
           <img
             src={item.image}
@@ -140,18 +148,18 @@ const CartItem = ({ item, onIncrease, onDecrease, onRemove }) => {
       <div className="flex items-center gap-2 shrink-0">
         <button
           onClick={handleQuantityMinus}
-          className="w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 text-sm font-bold flex items-center justify-center transition-colors"
+          className="w-7 h-7 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-600 text-sm font-bold flex items-center justify-center transition-colors"
         >
-          −
+          <MinusIcon />
         </button>
         <span className="text-sm font-bold text-gray-700 w-4 text-center">
-          {item.quantity}
+          {quantity}
         </span>
         <button
           onClick={handleQuantityPlus}
-          className="w-7 h-7 rounded-lg bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-bold flex items-center justify-center transition-colors"
+          className="w-7 h-7 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-bold flex items-center justify-center transition-colors"
         >
-          +
+          <PlusIcon color={"#fff"} />
         </button>
       </div>
     </div>
