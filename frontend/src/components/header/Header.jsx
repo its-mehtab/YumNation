@@ -3,7 +3,7 @@ import { assets } from "../../assets/assets";
 import { Link, NavLink } from "react-router-dom";
 import { ChevronRightIcon, WishlistIcon } from "../../assets/icon/Icons";
 import SearchBox from "../search-box/SearchBox";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 
 const Header = () => {
   const [navActive, setNavActive] = useState(false);

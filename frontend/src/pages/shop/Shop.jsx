@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import DishCard from "../../components/dish-card/DishCard";
-import { useDish } from "../../context/DishContext";
+import { useDish } from "../../context/public/DishContext";
 import FilterBox from "./FilterBox";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import DishCardSkeleton from "../../components/skeleton/DishCardSkeleton";

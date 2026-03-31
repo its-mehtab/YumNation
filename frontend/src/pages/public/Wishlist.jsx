@@ -1,150 +1,334 @@
-import React from "react";
-import { assets } from "../../assets/assets";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useWishlist } from "../../context/WishlistContext";
-import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
-import { notifyError, notifySuccess } from "../../utils/toast";
-import { useCart } from "../../context/CartContext";
-import { EmptyWishlistIcon } from "../../assets/icon/Icons";
-import { fetchAvailibility } from "../../utils/availibility";
+import VegBadge from "../../components/public/VegBadge";
+import {
+  DeleteIcon,
+  DelhiveryBoxIcon,
+  LocationIcon,
+  StarIcon,
+  TimeIcon,
+} from "../../assets/icon/Icons";
+import { useWishlist } from "../../context/user/WishlistContext";
 
+// ── Mock data ─────────────────────────────────────────────────────────────────
+const mockWishlist = [
+  {
+    restaurant: {
+      _id: "r1",
+      name: "Pizza Palace",
+      slug: "pizza-palace-kolkata",
+      logo: null,
+      rating: 4.5,
+      deliveryTime: 35,
+      deliveryFee: 2.5,
+      isOpen: true,
+      address: { city: "Kolkata" },
+    },
+    dishes: [
+      {
+        _id: "d1",
+        name: "Margherita Pizza",
+        price: 12,
+        foodType: "veg",
+        image: null,
+      },
+      {
+        _id: "d2",
+        name: "Pepperoni Pizza",
+        price: 15,
+        foodType: "non-veg",
+        image: null,
+      },
+      { _id: "d3", name: "Tiramisu", price: 7, foodType: "veg", image: null },
+    ],
+  },
+  {
+    restaurant: {
+      _id: "r2",
+      name: "Spice Garden",
+      slug: "spice-garden-chennai",
+      logo: null,
+      rating: 4.6,
+      deliveryTime: 40,
+      deliveryFee: 3,
+      isOpen: false,
+      address: { city: "Chennai" },
+    },
+    dishes: [
+      {
+        _id: "d4",
+        name: "Chicken Biryani",
+        price: 14,
+        foodType: "non-veg",
+        image: null,
+      },
+      {
+        _id: "d5",
+        name: "Veg Biryani",
+        price: 11,
+        foodType: "veg",
+        image: null,
+      },
+    ],
+  },
+  {
+    restaurant: {
+      _id: "r3",
+      name: "Burger Barn",
+      slug: "burger-barn-mumbai",
+      logo: null,
+      rating: 4.2,
+      deliveryTime: 30,
+      deliveryFee: 2,
+      isOpen: true,
+      address: { city: "Mumbai" },
+    },
+    dishes: [
+      {
+        _id: "d6",
+        name: "Classic Smash Burger",
+        price: 13,
+        foodType: "non-veg",
+        image: null,
+      },
+    ],
+  },
+];
+
+// ── Main ──────────────────────────────────────────────────────────────────────
 const Wishlist = () => {
-  const { wishlist, setWishlist, loading, setLoading } = useWishlist();
-  const { setCart } = useCart();
-  const { serverURL } = useAuth();
+  const { wishlist, setWishlist } = useWishlist();
 
-  const handleWishlistRemove = async (currProd) => {
-    if (loading) return;
-    setLoading(true);
-    try {
-      const { data } = await axios.delete(
-        `${serverURL}/api/wishlist/${currProd.dish._id}`,
-        { withCredentials: true },
-      );
+  const totalDishes = wishlist.reduce((a, g) => a + g.dishes.length, 0);
 
-      setWishlist(data);
-      notifySuccess(`${currProd.name} Removed from wishlist`);
-    } catch (error) {
-      console.log("Cart Error:", error?.response?.data || error.message);
-      notifyError("Wishlist remove failed");
-    } finally {
-      setLoading(false);
-    }
+  const handleRemoveDish = (restaurantId, dishId) => {
+    setWishlist((prev) =>
+      prev
+        .map((g) =>
+          g.restaurant._id === restaurantId
+            ? { ...g, dishes: g.dishes.filter((d) => d._id !== dishId) }
+            : g,
+        )
+        .filter((g) => g.dishes.length > 0),
+    );
   };
 
-  const handleAddCart = async (currDish) => {
-    if (loading) return;
-    setLoading(true);
+  const handleRemoveRestaurant = (restaurantId) => {
+    setWishlist((prev) =>
+      prev.filter((g) => g.restaurant._id !== restaurantId),
+    );
+  };
 
-    try {
-      const { data } = await axios.post(
-        `${serverURL}/api/cart`,
-        {
-          dish: currDish.dish._id,
-          name: currDish.name,
-          image: "kjgdh.jpg",
-          price: currDish.price,
-          quantity: 1,
-          variant: currDish.dish.variants[0].name,
-        },
-        { withCredentials: true },
-      );
-
-      setCart([...data]);
-
-      notifySuccess(`${currDish.name} added to cart`);
-    } catch (error) {
-      console.log("Cart Error:", error?.response?.data || error.message);
-      notifyError(error?.response?.data || error.message);
-      setCart(null);
-    } finally {
-      setLoading(false);
-    }
+  const handleAddToCart = (dish) => {
+    console.log("Adding to cart:", dish.name);
+    // replace with addToCart(dish) from useCart()
   };
 
   return (
-    <>
-      <section>
-        <ul className="border border-gray-200 p-3 lg:px-6 rounded-xl">
-          {wishlist?.length > 0 ? (
-            wishlist?.map((currProd) => {
-              const { isUnavailable, statusText } = fetchAvailibility(
-                currProd.dish,
-              );
+    <div className="max-w-5xl mx-auto px-4">
+      {/* ── Page header ── */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-xl font-bold text-gray-700">My Wishlist</h1>
+          {wishlist.length > 0 && (
+            <p className="text-xs text-gray-400 mt-0.5">
+              {totalDishes} saved dish{totalDishes > 1 ? "es" : ""} across{" "}
+              {wishlist.length} restaurant{wishlist.length > 1 ? "s" : ""}
+            </p>
+          )}
+        </div>
+        {wishlist.length > 0 && (
+          <button
+            onClick={() => setWishlist([])}
+            className="text-xs font-semibold text-red-400 hover:text-red-500 border border-red-100 hover:border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors"
+          >
+            Clear All
+          </button>
+        )}
+      </div>
 
-              return (
-                <li
-                  key={currProd._id}
-                  className="flex gap-4 items-center py-3 border-t border-gray-100 first:border-t-0"
-                >
-                  <Link
-                    to={`/dish/${currProd.dish.slug}`}
-                    className={`w-20 min-w-20 ${isUnavailable ? "grayscale" : ""}`}
-                  >
-                    {/* <img src={currProd.img} alt="" className="w-full" /> */}
-                    <img src={assets.dish2} alt="" className="w-full" />
-                  </Link>
-                  <div>
-                    {isUnavailable && (
-                      <p className="text-xs bg-red-500 text-white font-medium mb-2 px-2 py-0.5 inline-block rounded-sm">
-                        {statusText}
-                      </p>
+      {/* ── Empty state ── */}
+      {wishlist.length === 0 && (
+        <div className="bg-white rounded-2xl border border-[#fc8019] text-center py-20 px-4">
+          <div className="text-5xl mb-4">🤍</div>
+          <h2 className="text-base font-bold text-gray-700 mb-1">
+            Your wishlist is empty
+          </h2>
+          <p className="text-sm text-gray-400 mb-6">
+            Save dishes you love and order them anytime
+          </p>
+          <Link
+            to="/restaurants"
+            className="inline-flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
+          >
+            Browse Restaurants
+          </Link>
+        </div>
+      )}
+
+      {/* ── Wishlist groups ── */}
+      <div className="space-y-5">
+        {wishlist.map((group) => {
+          const { restaurant, dishes } = group;
+          return (
+            <div
+              key={restaurant._id}
+              className="bg-white rounded-2xl border border-[#fc8019] overflow-hidden"
+            >
+              {/* ── Restaurant header ── */}
+              <div className="flex items-center gap-4 px-6 py-4 border-b border-orange-100">
+                <Link to={`/restaurants/${restaurant.slug}`}>
+                  <div className="w-11 h-11 min-w-11 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-xl overflow-hidden hover:border-orange-200 transition-colors">
+                    {group.logo ? (
+                      <img
+                        src={group.logo}
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      "🏪"
                     )}
-                    <Link to={`/dish/${currProd.dish.slug}`}>
-                      <h3 className="text-sm text-gray-700 font-semibold">
-                        {currProd.name}
-                      </h3>
-                    </Link>
-                    <div className="mt-2 text-md text-gray-600">
-                      ${currProd.price.toFixed(2)}
-                    </div>
                   </div>
-                  <div className="ml-auto flex gap-5 md:gap-10 items-center">
-                    <div
-                      onClick={() => {
-                        if (isUnavailable) {
-                          notifyError(`${currProd.name} is ${statusText}`);
-                          return;
-                        }
-                        handleAddCart(currProd);
-                      }}
-                      className={`hidden md:block px-5 py-2 rounded-md  bg-[#fc8019] text-white hover:bg-[#c57300] transition ${isUnavailable ? "grayscale cursor-not-allowed" : "cursor-pointer"}`}
+                </Link>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Link
+                      to={`/restaurant/${restaurant.slug}`}
+                      className="text-sm font-bold text-gray-700 hover:text-[#fc8019] transition-colors"
                     >
-                      Move to Cart
-                    </div>
+                      {group.name}
+                    </Link>
                     <span
-                      onClick={() => handleWishlistRemove(currProd)}
-                      className="cursor-pointer p-1 text-gray-600 hover:text-black"
+                      className={`text-xs font-semibold px-2 py-0.5 rounded-full ${restaurant.isOpen ? "bg-green-50 text-green-600" : "bg-gray-100 text-gray-400"}`}
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2}
-                        stroke="currentColor"
-                        className="h-5 w-5"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
+                      {restaurant.isOpen ? "Open" : "Closed"}
                     </span>
                   </div>
-                </li>
-              );
-            })
-          ) : (
-            <li className="flex items-center flex-col py-4">
-              <EmptyWishlistIcon size={80} color={"#858585"} />
-              <div className="mt-2 text-gray-500">Wishlist is Empty</div>
-            </li>
-          )}
-        </ul>
-      </section>
-    </>
+                  <p className="text-xs text-gray-400 flex gap-2 mt-1">
+                    <span className="flex gap-1">
+                      <LocationIcon size={17} /> {restaurant.address.city}
+                    </span>
+                    <span className="flex gap-1">
+                      <StarIcon size={14} /> {restaurant.rating}
+                    </span>
+                    <span className="flex gap-1">
+                      <TimeIcon size={14} /> {restaurant.deliveryTime} min
+                    </span>
+                    <span className="flex gap-1">
+                      <DelhiveryBoxIcon size={14} /> ${restaurant.deliveryFee}{" "}
+                      delivery
+                    </span>
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3 shrink-0">
+                  <Link
+                    to={`/restaurant/${restaurant.slug}`}
+                    className="text-xs font-semibold text-[#fc8019] border border-orange-200 px-3 py-1.5 rounded-lg hover:bg-orange-50 transition-colors"
+                  >
+                    View Menu
+                  </Link>
+                  <button
+                    onClick={() => handleRemoveRestaurant(restaurant._id)}
+                    className="p-1.5 rounded-lg hover:bg-red-50 text-gray-300 hover:text-red-400 transition-colors"
+                    title="Remove restaurant from wishlist"
+                  >
+                    <DeleteIcon />
+                  </button>
+                </div>
+              </div>
+
+              {/* ── Dishes table ── */}
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-orange-50">
+                    <th className="text-left px-6 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      Dish
+                    </th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      Type
+                    </th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      Price
+                    </th>
+                    <th className="text-right px-6 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-orange-50">
+                  {dishes.map((dish) => (
+                    <tr
+                      key={dish._id}
+                      className="hover:bg-orange-50/40 transition-colors"
+                    >
+                      {/* Dish name + image */}
+                      <td className="px-6 py-3.5">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 min-w-9 rounded-lg bg-orange-50 border border-orange-100 flex items-center justify-center text-base overflow-hidden">
+                            {dish.image ? (
+                              <img
+                                src={dish.image}
+                                alt={dish.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              "🍽️"
+                            )}
+                          </div>
+                          <span className="font-medium text-gray-700">
+                            {dish.name}
+                          </span>
+                        </div>
+                      </td>
+                      {/* Food type */}
+                      <td className="px-4 py-3.5">
+                        <div className="flex items-center gap-1.5">
+                          <VegBadge isNonVeg={dish.foodType === "non-veg"} />
+                          <span className="text-xs text-gray-500 capitalize">
+                            {dish.foodType}
+                          </span>
+                        </div>
+                      </td>
+                      {/* Price */}
+                      <td className="px-4 py-3.5 font-bold text-[#fc8019]">
+                        ${dish.price}
+                      </td>
+                      {/* Actions */}
+                      <td className="px-6 py-3.5">
+                        <div className="flex items-center justify-end gap-2">
+                          {restaurant.isOpen ? (
+                            <button
+                              onClick={() => handleAddToCart(dish)}
+                              className="flex items-center gap-1.5 bg-[#fc8019] hover:bg-[#e5721f] text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+                            >
+                              + Add to Cart
+                            </button>
+                          ) : (
+                            <span className="text-xs text-gray-400 font-medium">
+                              Restaurant closed
+                            </span>
+                          )}
+                          <button
+                            onClick={() =>
+                              handleRemoveDish(restaurant._id, dish._id)
+                            }
+                            className="p-1.5 rounded-lg hover:bg-red-50 text-gray-300 hover:text-red-400 transition-colors"
+                          >
+                            <DeleteIcon />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 };
 

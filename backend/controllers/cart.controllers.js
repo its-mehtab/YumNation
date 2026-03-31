@@ -13,8 +13,6 @@ export const getUserCart = async (req, res) => {
       .select("restaurant items")
       .lean();
 
-    console.log(cart);
-
     if (!cart) {
       return res.status(200).json([]);
     }

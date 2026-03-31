@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { ChevronRightIcon, SearchIcon } from "../../assets/icon/Icons";
 import { Link, NavLink } from "react-router-dom";
 import { assets } from "../../assets/assets";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 
 const RestaurantHeader = () => {
   const [navActive, setNavActive] = useState(false);

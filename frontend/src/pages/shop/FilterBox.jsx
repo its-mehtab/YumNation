@@ -1,6 +1,6 @@
 import React from "react";
 import RangeSlider from "./RangeSlider";
-import { useCategory } from "../../context/CategoryContext";
+import { useCategory } from "../../context/public/CategoryContext";
 import Chip from "./Chip";
 import Checkbox from "@mui/material/Checkbox";
 

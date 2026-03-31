@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { useCart } from "../../context/CartContext";
+import { useCart } from "../../context/user/CartContext";
 import { Button as RxButton } from "@radix-ui/themes";
 import Button from "../../components/button/Button";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 import { Cross2Icon } from "@radix-ui/react-icons";
-import { useAddress } from "../../context/AddressContext";
-import { useOrders } from "../../context/OrderContext";
+import { useAddress } from "../../context/user/AddressContext";
+import { useOrders } from "../../context/user/OrderContext";
 import { useNavigate } from "react-router-dom";
 import { notifyError } from "../../utils/toast";
 

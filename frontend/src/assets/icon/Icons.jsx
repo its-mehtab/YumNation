@@ -270,11 +270,11 @@ export const FriesIcon = () => {
   );
 };
 
-export const WishlistIcon = () => {
+export const WishlistIcon = ({ size = 20 }) => {
   return (
     <svg
-      width={20}
-      height={20}
+      width={size}
+      height={size}
       viewBox="0 0 20 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -287,16 +287,16 @@ export const WishlistIcon = () => {
   );
 };
 
-export const WishlistIconRed = () => {
+export const WishlistIconRed = ({ size = 20 }) => {
   return (
     <svg
-      width="20"
-      height="20"
+      width={size}
+      height={size}
       viewBox="0 0 20 20"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        fill="#FF3B3B"
+        fill="#fff"
         d="M14.3632 1.53088C13.4699 1.54512 12.5961 1.80055 11.8299 2.2714C11.0638 2.74224 10.4325 3.41181 9.99988 4.2125C9.56724 3.41181 8.93598 2.74224 8.16985 2.2714C7.40374 1.80055 6.52989 1.54512 5.63657 1.53088C4.21249 1.59426 2.87078 2.23238 1.90456 3.30582C0.938349 4.37926 0.426166 5.80077 0.479915 7.25979C0.479915 10.9548 4.2768 14.9902 7.46123 17.7262C8.17223 18.3382 9.07118 18.6737 9.99988 18.6737C10.9285 18.6737 11.8275 18.3382 12.5385 17.7262C15.7229 14.9902 19.5199 10.9548 19.5199 7.25979C19.5736 5.80077 19.0614 4.37926 18.0952 3.30582C17.129 2.23238 15.7873 1.59426 14.3632 1.53088Z"
       />
     </svg>
@@ -572,7 +572,7 @@ export const ChevronRightIcon = ({ size, addClass }) => {
   );
 };
 
-export const LocationIcon = ({ size = 24, color }) => {
+export const LocationIcon = ({ size = 24, color = "#fc8019" }) => {
   return (
     <svg
       width={size}
@@ -794,6 +794,320 @@ export const FilterIcon = ({ size = "14", color = "currentColor" }) => {
           id="path6014"
           d="m311 116.01215c-2.40719 0-4.43155 1.72541-4.89844 4h-3.10156c-.55228 0-1 .44772-1 1s.44772 1 1 1h3.10156c.46689 2.27459 2.49125 4 4.89844 4s4.43155-1.72541 4.89844-4h13.10156c.55228 0 1-.44772 1-1s-.44772-1-1-1h-13.10156c-.46689-2.27459-2.49125-4-4.89844-4zm0 2c1.66867 0 3 1.33133 3 3s-1.33133 3-3 3-3-1.33133-3-3 1.33133-3 3-3z"
         />
+      </g>
+    </svg>
+  );
+};
+
+export const DelhiveryBoxIcon = ({ size = "14", color = "#fc8019" }) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      fill={color}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 -57 512 512"
+    >
+      <path d="m506.8125 95.679688-172-94.445313c-2.996094-1.644531-6.628906-1.644531-9.625 0l-64.679688 35.515625c-1.460937.40625-2.824218 1.152344-3.980468 2.183594l-103.339844 56.746094c-3.199219 1.757812-5.1875 5.117187-5.1875 8.765624v20.445313h-115.375c-5.523438 0-10 4.480469-10 10 0 5.523437 4.476562 10 10 10h115.375v36h-57.332031c-5.523438 0-10 4.480469-10 10 0 5.523437 4.476562 10 10 10h57.332031v52h-84c-5.523438 0-10 4.480469-10 10 0 5.523437 4.476562 10 10 10h84v20.449219c0 3.648437 1.988281 7.007812 5.1875 8.765625l172 94.445312c1.5.824219 3.15625 1.234375 4.8125 1.234375s3.3125-.410156 4.8125-1.234375l172-94.445312c3.199219-1.757813 5.1875-5.117188 5.1875-8.765625v-44.78125c0-5.519532-4.476562-10-10-10s-10 4.480468-10 10v38.863281l-152 83.464844v-166.078125l48.339844-26.542969v42.125c0 3.539063 1.867187 6.8125 4.910156 8.609375 1.566406.925781 3.328125 1.390625 5.089844 1.390625 1.65625 0 3.316406-.410156 4.820312-1.238281l36.859375-20.285156c3.191407-1.757813 5.175781-5.113282 5.175781-8.761719v-53.058594l46.804688-25.699219v47.210938c0 5.523437 4.476562 10 10 10s10-4.476563 10-10v-64.113282c0-3.648437-1.988281-7.007812-5.1875-8.765624zm-186.8125 275.207031-152-83.464844v-166.074219l152 83.460938zm10-183.402344-151.222656-83.039063 47.527344-26.097656 151.226562 83.039063zm68.308594-37.507813-151.226563-83.039062 16.394531-9 151.222657 83.039062zm26.886718 44.21875-16.855468 9.277344v-36.1875l16.855468-9.257812zm10.28125-64.628906-151.222656-83.039062 45.746094-25.117188 151.222656 83.035156zm0 0" />
+      <path d="m502 198.5625c-2.628906 0-5.210938 1.058594-7.070312 2.929688-1.859376 1.859374-2.929688 4.429687-2.929688 7.070312 0 2.628906 1.070312 5.210938 2.929688 7.070312 1.859374 1.859376 4.441406 2.929688 7.070312 2.929688s5.210938-1.070312 7.070312-2.929688c1.859376-1.859374 2.929688-4.441406 2.929688-7.070312 0-2.640625-1.070312-5.210938-2.929688-7.070312-1.859374-1.871094-4.441406-2.929688-7.070312-2.929688zm0 0" />
+      <path d="m24.332031 252.890625h-14.332031c-5.523438 0-10 4.480469-10 10 0 5.523437 4.476562 10 10 10h14.332031c5.523438 0 10-4.476563 10-10 0-5.519531-4.476562-10-10-10zm0 0" />
+      <path d="m60.671875 190.890625c0-2.628906-1.070313-5.207031-2.933594-7.066406-1.859375-1.863281-4.4375-2.933594-7.066406-2.933594-2.632813 0-5.210937 1.070313-7.070313 2.933594-1.871093 1.859375-2.929687 4.4375-2.929687 7.066406 0 2.632813 1.058594 5.210937 2.929687 7.070313 1.859376 1.859374 4.4375 2.929687 7.070313 2.929687 2.628906 0 5.207031-1.066406 7.066406-2.929687 1.863281-1.859376 2.933594-4.4375 2.933594-7.070313zm0 0" />
+    </svg>
+  );
+};
+
+export const TimeIcon = ({ size = "16", color = "#fc8019" }) => {
+  return (
+    <svg
+      id="svg1734"
+      xmlSpace="preserve"
+      width={size}
+      height={size}
+      viewBox="0 0 682.66669 682.66669"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      stroke={color}
+    >
+      <defs id="defs1738">
+        <clipPath clipPathUnits="userSpaceOnUse" id="clipPath1748">
+          <path d="M 0,512 H 512 V 0 H 0 Z" id="path1746" />
+        </clipPath>
+      </defs>
+      <g id="g1740" transform="matrix(1.3333333,0,0,-1.3333333,0,682.66667)">
+        <g id="g1742">
+          <g id="g1744" clipPath="url(#clipPath1748)">
+            <g id="g1750" transform="translate(414.6342,51.2314)">
+              <path
+                d="m 0,0 c -74.428,-48.468 -175.086,-40.046 -240.398,25.266 -74.981,74.981 -74.981,196.549 0,271.529 74.981,74.981 196.548,74.981 271.529,0 65.251,-65.251 73.718,-165.782 25.402,-240.189"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1752"
+              />
+            </g>
+            <g id="g1754" transform="translate(445.7652,76.4976)">
+              <path
+                d="M 0,0 V 0"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1756"
+              />
+            </g>
+            <g id="g1758" transform="translate(310.0006,67.1331)">
+              <path
+                d="m 0,0 c -80.153,0 -145.129,64.976 -145.129,145.129 0,80.153 64.976,145.129 145.129,145.129 80.153,0 145.129,-64.976 145.129,-145.129 C 145.129,64.976 80.153,0 0,0 Z"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1760"
+              />
+            </g>
+            <g id="g1762" transform="translate(273.8483,443.7379)">
+              <path
+                d="m 0,0 h 72 c 13.255,0 24,10.745 24,24 v 0 C 96,37.255 85.255,48 72,48 H 0 C -13.255,48 -24,37.255 -24,24 v 0 C -24,10.745 -13.255,0 0,0 Z"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1764"
+              />
+            </g>
+            <g id="g1766" transform="translate(344.0551,404.2621)">
+              <path
+                d="M 0,0 V 39.476 H -68.414 V 0"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1768"
+              />
+            </g>
+            <g id="g1770" transform="translate(328.9551,231.2166)">
+              <path
+                d="M 0,0 51.373,51.373"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1772"
+              />
+            </g>
+            <g id="g1774" transform="translate(288.9265,212.2621)">
+              <path
+                d="m 0,0 c 0,-11.639 9.435,-21.074 21.074,-21.074 11.639,0 21.074,9.435 21.074,21.074 0,11.639 -9.435,21.074 -21.074,21.074 C 9.435,21.074 0,11.639 0,0 Z"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1776"
+              />
+            </g>
+            <g id="g1778" transform="translate(416.9196,212.14)">
+              <path
+                d="M 0,0 H -9.264"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1780"
+              />
+            </g>
+            <g id="g1782" transform="translate(203.0817,212.3842)">
+              <path
+                d="M 0,0 H 9.264"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1784"
+              />
+            </g>
+            <g id="g1786" transform="translate(310.1228,319.1811)">
+              <path
+                d="M 0,0 V -9.264"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1788"
+              />
+            </g>
+            <g id="g1790" transform="translate(309.8785,105.3432)">
+              <path
+                d="M 0,0 V 9.264"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1792"
+              />
+            </g>
+            <g id="g1794" transform="translate(294.1852,228.0776)">
+              <path
+                d="M 0,0 -27.149,27.149"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1796"
+              />
+            </g>
+            <g id="g1798" transform="translate(324.9023,227.1638)">
+              <path
+                d="M 0,0 53.973,53.972"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1800"
+              />
+            </g>
+            <g id="g1802" transform="translate(126.7609,150.5582)">
+              <path
+                d="M 0,0 H -76.761"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1804"
+              />
+            </g>
+            <g id="g1806" transform="translate(118.0007,208.9946)">
+              <path
+                d="M 0,0 H -54.001"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1808"
+              />
+            </g>
+            <g id="g1810" transform="translate(124.0942,267.431)">
+              <path
+                d="M 0,0 H -114.094"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1812"
+              />
+            </g>
+            <g id="g1814" transform="translate(149.4276,325.8674)">
+              <path
+                d="M 0,0 H -71.261"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1816"
+              />
+            </g>
+            <g id="g1818" transform="translate(10,150.5582)">
+              <path
+                d="M 0,0 V 0"
+                style={{
+                  fill: "none",
+                  strokeWidth: 20,
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  strokeMiterlimit: 10,
+                  strokeDasharray: "none",
+                  strokeOpacity: 1,
+                }}
+                id="path1820"
+              />
+            </g>
+          </g>
+        </g>
       </g>
     </svg>
   );

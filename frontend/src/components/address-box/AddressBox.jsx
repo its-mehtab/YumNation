@@ -2,7 +2,7 @@ import React from "react";
 import { LocationIcon } from "../../assets/icon/Icons";
 import AddressDialog from "../address-dialog/AddressDialog";
 import EditAddress from "../address-dialog/EditAddress";
-import { useAddress } from "../../context/AddressContext";
+import { useAddress } from "../../context/user/AddressContext";
 import AddNewAddress from "../address-dialog/AddNewAddress";
 import AddressSkeleton from "../skeleton/AddressSkeleton";
 import { Button } from "@radix-ui/themes";

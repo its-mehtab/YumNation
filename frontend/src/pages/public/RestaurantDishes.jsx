@@ -5,12 +5,13 @@ import "swiper/css";
 import "swiper/css/navigation";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 import { SearchIcon } from "../../assets/icon/Icons";
 import DealsSection from "../../components/public/DealsSection";
 import RestaurantHeader from "../../components/public/RestaurantHeader";
 import DishItem from "../../components/public/DishItem";
 import TopPicksSection from "../../components/public/TopPicksSection";
+import { useWishlist } from "../../context/user/WishlistContext";
 
 // ─── COMPONENTS ───────────────────────────────────────────────────────────────
 
@@ -63,6 +64,8 @@ function DishesSection({ restaurant }) {
 
   const { serverURL } = useAuth();
   const { slug } = useParams();
+  const { wishlist } = useWishlist();
+  // console.log(wishlist);
 
   const groupDishes = (dishes) => {
     const menu = {};

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 import { useDish } from "../../context/owner/DishContext";
 import axios, { Axios } from "axios";
 import { notifySuccess } from "../../utils/toast";

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../user/AuthContext";
 
 const DishContext = createContext();
 

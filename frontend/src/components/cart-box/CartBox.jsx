@@ -1,5 +1,5 @@
 import React from "react";
-import { useCart } from "../../context/CartContext";
+import { useCart } from "../../context/user/CartContext";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../button/Button";
 import { assets } from "../../assets/assets";
@@ -7,7 +7,7 @@ import CartItem from "../cart-item/CartItem";
 import CartSkeleton from "../skeleton/CartSkeleton";
 import { notifyError, notifyInfo } from "../../utils/toast";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 
 const CartBox = () => {
   const { cart, setCart, subtotal, loading, setLoading, fetchUserCart } =

@@ -1,17 +1,60 @@
 import React, { useEffect, useState } from "react";
 import VegBadge from "../../components/public/VegBadge";
-import { useCart } from "../../context/CartContext";
+import { useCart } from "../../context/user/CartContext";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 import DialogBox from "../dialog-box/DialogBox";
 import { Dialog } from "@radix-ui/themes";
 import { notifyError, notifySuccess } from "../../utils/toast";
+import { WishlistIcon, WishlistIconRed } from "../../assets/icon/Icons";
+import { useWishlist } from "../../context/user/WishlistContext";
 
 const DishItem = ({ dish, restaurant }) => {
   const [isDescTrimmed, setIsDescTrimmed] = useState(true);
   const [isDishOpen, setIsDishOpen] = useState(false);
 
-  const { cart, setCart } = useCart();
+  const { wishlist, setWishlist } = useWishlist();
+  const restaurantWishlst = wishlist?.find(
+    (w) => w.restaurant._id === restaurant._id,
+  );
+
+  const wishlistActive = restaurantWishlst?.dishes?.some(
+    (d) => d.dish._id === dish._id,
+  );
+
+  const handleWishlist = async () => {
+    // setWishlist((prev) => {
+    //   const wishlistIndex = prev.findIndex(
+    //     (w) => w.restaurant._id === restaurant._id,
+    //   );
+
+    //   if (wishlistIndex > -1) {
+    //     const dishIndex = wishlist.findIndex((w) => w.dishes._id === dish._id);
+    //     if (dishIndex > -1) {
+    //       return prev.slice(dishIndex, 1);
+    //     } else {
+    //       return [...prev];
+    //     }
+    //   } else{
+    //     return [...prev, {}]
+    //   }
+    // });
+    try {
+      const { data } = await axios.post(
+        `${serverURL}/api/wishlist`,
+        { dishId: dish._id, restaurantId: restaurant._id },
+        { withCredentials: true },
+      );
+
+      setWishlist(data);
+      // notifySuccess(`${dish.name} added to wishlist`);
+    } catch (error) {
+      console.log("Cart Error:", error?.response?.data || error.message);
+      notifyError("wishlist not added");
+    }
+  };
+
+  const { setCart } = useCart();
   const { serverURL } = useAuth();
 
   const [selectedVariant, setSelectedVariant] = useState(
@@ -108,6 +151,12 @@ const DishItem = ({ dish, restaurant }) => {
       </div>
 
       <div className="relative shrink-0 pb-4">
+        <span
+          onClick={handleWishlist}
+          className="text-white hover:text-[#cccccc] cursor-pointer absolute top-2 right-2 z-10 drop-shadow-[0_0_4px_rgba(0,0,0)]"
+        >
+          {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}
+        </span>
         <img
           src={
             "https://images.unsplash.com/photo-1574484284002-952d92456975?w=200&q=80"

@@ -9,7 +9,7 @@ import {
 import { useDish } from "../../context/owner/DishContext";
 import ConfirmationModal from "../../components/common/ConfirmationModal";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
 
 // ── Status Badge ──────────────────────────────────────────────────────────────

@@ -1,8 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/user/AuthContext";
+import { useCart } from "../../context/user/CartContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { MinusIcon, PlusIcon } from "../../assets/icon/Icons";
 import { fetchAvailibility } from "../../utils/availibility";

@@ -1,5 +1,5 @@
 import AdminLayout from "../layout/AdminLayout";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/user/AuthContext";
 import { Navigate, Route, Routes } from "react-router-dom";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import AdminOrders from "../pages/admin/AdminOrders";

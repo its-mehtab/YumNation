@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 import { useRestaurants } from "../../context/admin/RestaurantsContext";
 import { Link } from "react-router-dom";
 import { DeleteIcon, ViewIcon } from "../../assets/icon/Icons";

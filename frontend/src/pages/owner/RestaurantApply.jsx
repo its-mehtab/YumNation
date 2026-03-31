@@ -4,7 +4,7 @@ import { Switch } from "@radix-ui/themes";
 import Input from "../../components/common/Input";
 import Field from "../../components/common/Field";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 import { useRestaurant } from "../../context/owner/RestaurantContext";
 
 // ── Step config ───────────────────────────────────────────────────────────────

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { useCategory } from "../../context/CategoryContext";
+import { useCategory } from "../../context/public/CategoryContext";
 import { Switch } from "@radix-ui/themes";
 import Field from "../common/Field";
 import Input from "../common/Input";

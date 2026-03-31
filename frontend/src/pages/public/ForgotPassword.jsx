@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { assets } from "../../assets/assets";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "../../components/input/Input";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 import axios from "axios";
-import { useValidate } from "../../context/ValidateContext";
+import { useValidate } from "../../context/public/ValidateContext";
 
 const ForgotPassword = () => {
   const [step, setStep] = useState(1);

@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useContext, useState } from "react";
 import { createContext } from "react";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../user/AuthContext";
 
 const RestaurantContext = createContext();
 

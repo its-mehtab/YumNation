@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import DialogBox from "../dialog-box/DialogBox";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
-import { useAddress } from "../../context/AddressContext";
+import { useAuth } from "../../context/user/AuthContext";
+import { useAddress } from "../../context/user/AddressContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import AddressForm from "./AddressForm";
 

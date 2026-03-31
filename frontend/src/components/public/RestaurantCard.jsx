@@ -5,28 +5,11 @@ import { assets, Icon } from "../../assets/assets";
 import { StarIcon } from "../../assets/icon/Icons";
 
 const RestaurantCard = ({ restaurant = {} }) => {
-  const [wishlistActive, setWishlistActive] = useState(false);
-
   const isUnavailable = false;
   const statusText = "Currently Unavailable";
 
-  const handleWishlist = () => {
-    setWishlistActive((prev) => !prev);
-  };
-
-  const handleAddCart = () => {
-    console.log("Added to cart");
-  };
-
   return (
     <div className={`relative ${isUnavailable ? "grayscale" : ""}`}>
-      <span
-        onClick={handleWishlist}
-        className="text-[#B7B7B7] hover:text-[#027a36] cursor-pointer absolute top-4 right-4 z-10"
-      >
-        {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}
-      </span>
-
       <Link className="relative block" to={`/restaurant/${restaurant.slug}`}>
         {isUnavailable && (
           <span className="bg-[#fc8019] text-white text-md absolute top-1/2 -left-4 -translate-y-1/2 -right-4 text-center">

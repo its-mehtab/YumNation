@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useAddress } from "../context/AddressContext";
-import { useCart } from "../context/CartContext";
-import { useOrders } from "../context/OrderContext";
-import { useWishlist } from "../context/WishlistContext";
+import { useAuth } from "./user/AuthContext";
+import { useAddress } from "./user/AddressContext";
+import { useCart } from "./user/CartContext";
+import { useOrders } from "./user/OrderContext";
+import { useWishlist } from "./user/WishlistContext";
 import { useRestaurant } from "./owner/RestaurantContext";
 import { useRestaurants } from "./admin/RestaurantsContext";
 import { useDish } from "./owner/DishContext";

@@ -4,7 +4,7 @@ import { useRestaurants } from "../../context/admin/RestaurantsContext";
 import { DeleteIcon } from "../../assets/icon/Icons";
 import AdminRestaurantsItem from "../../components/admin/AdminRestaurantItem";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 import RejectModal from "../../components/admin/RejectModal";
 
 // ── Main ──────────────────────────────────────────────────────────────────────

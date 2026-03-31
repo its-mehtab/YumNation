@@ -6,11 +6,11 @@ import {
   WishlistIcon,
   WishlistIconRed,
 } from "../../assets/icon/Icons";
-import { useAuth } from "../../context/AuthContext";
-import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/user/AuthContext";
+import { useCart } from "../../context/user/CartContext";
 import axios from "axios";
 import { notifyError, notifySuccess } from "../../utils/toast";
-import { useWishlist } from "../../context/WishlistContext";
+import { useWishlist } from "../../context/user/WishlistContext";
 import { StarIcon } from "../../assets/icon/Icons";
 import { fetchAvailibility } from "../../utils/availibility";
 

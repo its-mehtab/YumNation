@@ -24,7 +24,7 @@ import {
   ChevronRightIcon,
   LocationIcon,
 } from "../../assets/icon/Icons";
-import { useCategory } from "../../context/CategoryContext";
+import { useCategory } from "../../context/public/CategoryContext";
 import { useDish } from "../../context/owner/DishContext";
 import { Link } from "react-router-dom";
 import CartBox from "../../components/cart-box/CartBox";
@@ -32,7 +32,7 @@ import AddressBox from "../../components/address-box/AddressBox";
 import CategorySkeleton from "../../components/skeleton/CategorySkeleton";
 import DishCardSkeleton from "../../components/skeleton/DishCardSkeleton";
 import { Skeleton } from "@radix-ui/themes";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 import { useRestaurats } from "../../context/public/RestaurantsContext";
 
 const Home = () => {

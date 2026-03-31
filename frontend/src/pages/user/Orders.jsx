@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Skeleton, Table } from "@radix-ui/themes";
 import { assets } from "../../assets/assets";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { useOrders } from "../../context/OrderContext";
+import { useOrders } from "../../context/user/OrderContext";
 import dayjs from "dayjs";
 import { ChevronRightIcon, LocationIcon } from "../../assets/icon/Icons";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 
 const Orders = () => {
   const { serverURL } = useAuth();

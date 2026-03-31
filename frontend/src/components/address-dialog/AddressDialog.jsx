@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Button, Dialog, Flex, Text, TextField } from "@radix-ui/themes";
 import DialogBox from "../dialog-box/DialogBox";
-import { useAddress } from "../../context/AddressContext";
+import { useAddress } from "../../context/user/AddressContext";
 import { LocationIcon } from "../../assets/icon/Icons";
 import EditAddress from "./EditAddress";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import AddNewAddress from "./AddNewAddress";
 

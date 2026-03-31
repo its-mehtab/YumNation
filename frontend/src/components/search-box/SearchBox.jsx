@@ -3,7 +3,7 @@ import { SearchIcon } from "../../assets/icon/Icons";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/free-mode";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 import axios from "axios";
 import RecentSearchWrap from "../recent-search-wrap/RecentSearchWrap";
 import DishCardSm from "../dish-card-sm/DishCardSm";

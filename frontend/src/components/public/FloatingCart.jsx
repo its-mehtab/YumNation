@@ -6,8 +6,8 @@ import {
   MinusIcon,
   PlusIcon,
 } from "../../assets/icon/Icons";
-import { useCart } from "../../context/CartContext";
-import { useAuth } from "../../context/AuthContext";
+import { useCart } from "../../context/user/CartContext";
+import { useAuth } from "../../context/user/AuthContext";
 import { notifyError } from "../../utils/toast";
 import axios from "axios";
 
@@ -259,9 +259,12 @@ const FloatingCart = () => {
                 <p className="text-xs font-bold text-gray-700">Your Order</p>
                 <p className="text-xs text-gray-400 mt-0.5">
                   from{" "}
-                  <span className="text-[#fc8019] font-semibold">
+                  <Link
+                    to={`/restaurant/${cart.restaurant.slug}`}
+                    className="text-[#fc8019] font-semibold"
+                  >
                     {cart.restaurant.name}
-                  </span>
+                  </Link>
                 </p>
               </div>
               <button

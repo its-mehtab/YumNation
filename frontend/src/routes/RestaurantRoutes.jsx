@@ -1,5 +1,5 @@
 import RestaurantLayout from "../layout/RestaurantLayout";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/user/AuthContext";
 import { Navigate, Route, Routes } from "react-router-dom";
 import RestaurantDashboard from "../pages/owner/RestaurantDashboard";
 import RestaurantOrders from "../pages/owner/RestaurantOrders";

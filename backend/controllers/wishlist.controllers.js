@@ -1,13 +1,17 @@
+import Dish from "../models/dish.modal.js";
+import Restaurant from "../models/restaurant.modal.js";
 import Wishlist from "../models/wishlist.modal.js";
 
 export const getUserWishlist = async (req, res) => {
   const userId = req.userId;
 
   try {
-    const wishlist = await Wishlist.findOne({ user: userId }).populate(
-      "items.dish",
-      "name slug variants isAvailable",
-    );
+    const wishlist = await Wishlist.findOne({ user: userId })
+      .populate(
+        "items.restaurant",
+        "name slug rating deliveryTime deliveryFee isOpen address",
+      )
+      .populate("items.dishes.dish", "name slug variants isAvailable");
 
     if (!wishlist) {
       return res.status(200).json([]);
@@ -22,35 +26,87 @@ export const getUserWishlist = async (req, res) => {
 };
 
 export const toggleWishlist = async (req, res) => {
-  const { dishId, name, image, price } = req.body;
+  const { restaurantId, dishId } = req.body;
   const userId = req.userId;
 
   try {
+    const [restaurantExist, dishExist] = await Promise.all([
+      Restaurant.findById(restaurantId),
+      Dish.findById(dishId),
+    ]);
+
+    if (!restaurantExist) {
+      return res.status(404).json({ message: "Restaurant Not Found" });
+    }
+    if (!dishExist) {
+      return res.status(404).json({ message: "Dish Not Found" });
+    }
+
     let wishlist = await Wishlist.findOne({ user: userId });
 
     if (wishlist) {
-      const index = wishlist.items.findIndex(
-        (item) => item.dish.toString() === dishId,
+      const restaurantIndex = wishlist.items.findIndex(
+        (item) => item.restaurant.toString() === restaurantId,
       );
 
-      if (index > -1) {
-        wishlist.items.splice(index, 1);
+      if (restaurantIndex > -1) {
+        const index = wishlist.items[restaurantIndex].dishes.findIndex(
+          (item) => item.dish.toString() === dishId,
+        );
+
+        if (index > -1) {
+          wishlist.items[restaurantIndex].dishes.splice(index, 1);
+        } else {
+          wishlist.items[restaurantIndex].dishes.push({
+            dish: dishId,
+            name: dishExist.name,
+            image: dishExist.image,
+            price: dishExist.price,
+            foodType: dishExist.foodType,
+          });
+        }
       } else {
-        wishlist.items.push({ dish: dishId, name, image, price });
+        wishlist.items.push({
+          restaurant: restaurantId,
+          name: restaurantExist.name,
+          logo: restaurantExist.logo,
+          dishes: {
+            dish: dishId,
+            name: dishExist.name,
+            image: dishExist.image,
+            price: dishExist.price,
+            foodType: dishExist.foodType,
+          },
+        });
       }
 
       await wishlist.save();
     } else {
       wishlist = await Wishlist.create({
         user: userId,
-        items: [{ dish: dishId, name, image, price }],
+        items: [
+          {
+            restaurant: restaurantId,
+            name: restaurantExist.name,
+            logo: restaurantExist.logo,
+            dishes: {
+              dish: dishId,
+              name: dishExist.name,
+              image: dishExist.image,
+              price: dishExist.price,
+              foodType: dishExist.foodType,
+            },
+          },
+        ],
       });
     }
 
-    const updatedWishlist = await Wishlist.findOne({ user: userId }).populate(
-      "items.dish",
-      "name slug variants isAvailable",
-    );
+    const updatedWishlist = await Wishlist.findOne({ user: userId })
+      .populate(
+        "items.restaurant",
+        "name slug rating deliveryTime deliveryFee isOpen address",
+      )
+      .populate("items.dishes.dish", "name slug variants isAvailable");
 
     return res.status(201).json(updatedWishlist.items);
   } catch (error) {
@@ -71,7 +127,7 @@ export const removeFromWishlist = async (req, res) => {
       return res.status(404).json({ message: "Wishlist not found" });
     }
 
-    const index = wishlist.items.findIndex(
+    const index = wishlist.items.dishes.findIndex(
       (item) => item.dish.toString() === dishId,
     );
 
@@ -79,13 +135,15 @@ export const removeFromWishlist = async (req, res) => {
       return res.status(404).json({ message: "Dish not found in wishlist" });
     }
 
-    wishlist.items.splice(index, 1);
+    wishlist.items.dishes.splice(index, 1);
     await wishlist.save();
 
-    const updatedWishlist = await wishlist.populate(
-      "items.dish",
-      "name slug variants isAvailable",
-    );
+    const updatedWishlist = await wishlist
+      .populate(
+        "items.restaurant",
+        "name slug rating deliveryTime deliveryFee isOpen address",
+      )
+      .populate("items.dishes.dish", "name slug variants isAvailable");
 
     return res.status(200).json(updatedWishlist.items);
   } catch (error) {

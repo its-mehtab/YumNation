@@ -4,7 +4,7 @@ import Field from "../../components/common/Field";
 import Input from "../../components/common/Input";
 import { useRestaurant } from "../../context/owner/RestaurantContext";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 import slugify from "slugify";
 
 // ── Mock data ─────────────────────────────────────────────────────────────────

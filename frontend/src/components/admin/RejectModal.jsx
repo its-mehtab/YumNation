@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { Spinner } from "@radix-ui/themes";
 

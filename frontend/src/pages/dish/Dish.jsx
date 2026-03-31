@@ -4,10 +4,10 @@ import { WishlistIcon, WishlistIconRed } from "../../assets/icon/Icons";
 import "./dish.css";
 import DishGallery from "./DishGallery";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
-import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/user/AuthContext";
+import { useCart } from "../../context/user/CartContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
-import { useWishlist } from "../../context/WishlistContext";
+import { useWishlist } from "../../context/user/WishlistContext";
 import { fetchAvailibility } from "../../utils/availibility";
 import DishDetailsSkeleton from "../../components/skeleton/DishDetailsSkeleton";
 

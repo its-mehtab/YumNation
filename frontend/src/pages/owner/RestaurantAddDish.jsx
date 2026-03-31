@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 import { notifySuccess } from "../../utils/toast";
 import { useDish } from "../../context/owner/DishContext";
 import DishForm from "../../components/owner/DishForm";

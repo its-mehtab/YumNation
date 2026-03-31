@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { assets } from "../../assets/assets";
 import { FacebookIcon, GoogleIcon } from "../../assets/icon/Icons";
-import { useValidate } from "../../context/ValidateContext";
+import { useValidate } from "../../context/public/ValidateContext";
 import axios from "axios";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/user/AuthContext";
 import Input from "../../components/input/Input";
 
 const Login = () => {

@@ -21,7 +21,7 @@ const wishlistSchema = new Schema(
           required: true,
         },
 
-        descripton: {
+        logo: {
           type: String,
           required: true,
         },
