@@ -89,13 +89,15 @@ export const toggleWishlist = async (req, res) => {
             restaurant: restaurantId,
             name: restaurantExist.name,
             logo: restaurantExist.logo,
-            dishes: {
-              dish: dishId,
-              name: dishExist.name,
-              image: dishExist.image,
-              price: dishExist.price,
-              foodType: dishExist.foodType,
-            },
+            dishes: [
+              {
+                dish: dishId,
+                name: dishExist.name,
+                image: dishExist.image,
+                price: dishExist.price,
+                foodType: dishExist.foodType,
+              },
+            ],
           },
         ],
       });
@@ -121,58 +123,49 @@ export const removeFromWishlist = async (req, res) => {
   const { dishId, restaurantId } = req.params;
 
   try {
-
-    let wishlist = await Wishlist.findOneAndUpdate(
-      { user: userId, "items.restaurant": restaurantId },
-      {
-        $pull: {
-          "items.$.dishes": { dish: dishId },
-        },
-      },
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
-
-    // console.log(wishlist.items[0].dishes);
+    let wishlist = await Wishlist.findOne({ user: userId });
 
     if (!wishlist) {
-      return res
-        .status(404)
-        .json({ message: "Wishlist or Restaurant not found" });
+      return res.status(404).json({ message: "Wishlist aurant not found" });
     }
 
-    // const restaurantIndex = wishlist.items.findIndex(
-    //   (r) => r.restaurant._id.toString() === restaurantId,
-    // );
+    const restaurantIndex = wishlist.items.findIndex(
+      (r) => r.restaurant._id.toString() === restaurantId,
+    );
 
-    // if (restaurantIndex === -1) {
-    //   return res
-    //     .status(404)
-    //     .json({ message: "Restaurant not found in wishlist" });
-    // }
+    if (restaurantIndex === -1) {
+      return res
+        .status(404)
+        .json({ message: "Restaurant not found in wishlist" });
+    }
+    console.log({ dishId });
 
-    // const index = wishlist.items[restaurantIndex].dishes.findIndex(
-    //   (item) => item.dish.toString() === dishId,
-    // );
+    const index = wishlist.items[restaurantIndex].dishes.findIndex((item) => {
+      console.log(item.dish.toString());
 
-    // if (index === -1) {
-    //   return res.status(404).json({ message: "Dish not found in wishlist" });
-    // }
+      return item.dish.toString() === dishId;
+    });
 
-    // wishlist.items[restaurantIndex].dishes.splice(index, 1);
+    if (index === -1) {
+      return res.status(404).json({ message: "Dish not found in wishlist" });
+    }
 
-    // await wishlist.save();
+    wishlist.items[restaurantIndex].dishes.splice(index, 1);
 
-    // const updatedWishlist = await wishlist
-    //   .populate(
-    //     "items.restaurant",
-    //     "name slug rating deliveryTime deliveryFee isOpen address",
-    //   )
-    //   .populate("items.dishes.dish", "name slug variants isAvailable");
+    if (wishlist.items[restaurantIndex].dishes.length < 1) {
+      wishlist.items.splice(restaurantIndex, 1);
+    }
 
-    return res.status(200).json(wishlist.items);
+    await wishlist.save();
+
+    const updatedWishlist = await Wishlist.findOne({ user: userId })
+      .populate(
+        "items.restaurant",
+        "name slug rating deliveryTime deliveryFee isOpen address",
+      )
+      .populate("items.dishes.dish", "name slug variants isAvailable");
+
+    return res.status(200).json(updatedWishlist.items);
   } catch (error) {
     return res.status(500).json({
       message: "Remove from Wishlist error",
@@ -186,51 +179,33 @@ export const removeRestaurantFromWishlist = async (req, res) => {
   const { restaurantId } = req.params;
 
   try {
-    let wishlist = await Wishlist.findOneAndUpdate(
-      {
-        user: userId,
-        "items.restaurant": restaurantId,
-      },
-      {
-        $pull: {
-          items: { restaurant: restaurantId },
-        },
-      },
-      {
-        new: true,
-      },
-    )
+    let wishlist = await Wishlist.findOne({ user: userId });
+
+    if (!wishlist) {
+      return res.status(404).json({ message: "Wishlist not found" });
+    }
+
+    const index = wishlist.items.findIndex(
+      (item) => item.restaurant._id.toString() === restaurantId,
+    );
+
+    if (index === -1) {
+      return res
+        .status(404)
+        .json({ message: "Restaurant not found in wishlist" });
+    }
+
+    wishlist.items.splice(index, 1);
+    await wishlist.save();
+
+    const updatedWishlist = await Wishlist.findOne({ user: userId })
       .populate(
         "items.restaurant",
         "name slug rating deliveryTime deliveryFee isOpen address",
       )
       .populate("items.dishes.dish", "name slug variants isAvailable");
 
-    // if (!wishlist) {
-    //   return res.status(404).json({ message: "Wishlist not found" });
-    // }
-
-    // const index = wishlist.items.findIndex(
-    //   (item) => item.restaurant._id.toString() === restaurantId,
-    // );
-
-    // if (index === -1) {
-    //   return res
-    //     .status(404)
-    //     .json({ message: "Restaurant not found in wishlist" });
-    // }
-
-    // wishlist.items[index].splice(index, 1);
-    // await wishlist.save();
-
-    // const updatedWishlist = await wishlist
-    //   .populate(
-    //     "items.restaurant",
-    //     "name slug rating deliveryTime deliveryFee isOpen address",
-    //   )
-    //   .populate("items.dishes.dish", "name slug variants isAvailable");
-
-    return res.status(200).json(wishlist.items);
+    return res.status(200).json(updatedWishlist.items);
   } catch (error) {
     return res.status(500).json({
       message: "Remove from Wishlist error",

@@ -24,7 +24,10 @@ const Wishlist = () => {
       prev
         .map((g) =>
           g.restaurant._id === restaurantId
-            ? { ...g, dishes: g.dishes.filter((d) => d._id !== dishId) }
+            ? {
+                ...g,
+                dishes: g.dishes.filter((d) => d.dish._id !== dishId),
+              }
             : g,
         )
         .filter((g) => g.dishes.length > 0),
@@ -32,24 +35,40 @@ const Wishlist = () => {
 
     try {
       const { data } = await axios.delete(
-        `${serverURL}/api/wishlist/${dishId}/${restaurantId}`,
+        `${serverURL}/api/wishlist/${restaurantId}/dishes/${dishId}`,
         { withCredentials: true },
       );
-
-      console.log(data);
 
       notifySuccess("Remove wishlist successfully");
     } catch (error) {
       setWishlist(wishlist);
-      console.log("Cart Error:", error?.response?.data || error.message);
+      console.log(
+        "Remove wishlist Error:",
+        error?.response?.data || error.message,
+      );
       notifyError("Remove wishlist failed");
     }
   };
 
-  const handleRemoveRestaurant = (restaurantId) => {
+  const handleRemoveRestaurant = async (restaurantId) => {
     setWishlist((prev) =>
       prev.filter((g) => g.restaurant._id !== restaurantId),
     );
+
+    try {
+      await axios.delete(`${serverURL}/api/wishlist/${restaurantId}`, {
+        withCredentials: true,
+      });
+
+      notifySuccess("Remove restaurant wishlist successfully");
+    } catch (error) {
+      setWishlist(wishlist);
+      console.log(
+        "Remove wishlist Error:",
+        error?.response?.data || error.message,
+      );
+      notifyError("Remove restaurant wishlist failed");
+    }
   };
 
   const handleAddToCart = (dish) => {
@@ -244,9 +263,9 @@ const Wishlist = () => {
                             </span>
                           )}
                           <button
-                            onClick={() =>
-                              handleRemoveDish(restaurant._id, dish._id)
-                            }
+                            onClick={() => {
+                              handleRemoveDish(restaurant._id, dish.dish._id);
+                            }}
                             className="p-1.5 rounded-lg hover:bg-red-50 text-gray-300 hover:text-red-400 transition-colors"
                           >
                             <DeleteIcon />
