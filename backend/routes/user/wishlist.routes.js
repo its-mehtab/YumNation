@@ -10,6 +10,6 @@ const wishlistRouter = Router();
 
 wishlistRouter.get("/", checkAuth, getUserWishlist);
 wishlistRouter.post("/", checkAuth, toggleWishlist);
-wishlistRouter.delete("/:dishId", checkAuth, removeFromWishlist);
+wishlistRouter.delete("/:dishId/:restaurantId", checkAuth, removeFromWishlist);
 
 export default wishlistRouter;

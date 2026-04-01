@@ -9,99 +9,17 @@ import {
   TimeIcon,
 } from "../../assets/icon/Icons";
 import { useWishlist } from "../../context/user/WishlistContext";
+import axios from "axios";
+import { useAuth } from "../../context/user/AuthContext";
+import { notifyError, notifySuccess } from "../../utils/toast";
 
-// ── Mock data ─────────────────────────────────────────────────────────────────
-const mockWishlist = [
-  {
-    restaurant: {
-      _id: "r1",
-      name: "Pizza Palace",
-      slug: "pizza-palace-kolkata",
-      logo: null,
-      rating: 4.5,
-      deliveryTime: 35,
-      deliveryFee: 2.5,
-      isOpen: true,
-      address: { city: "Kolkata" },
-    },
-    dishes: [
-      {
-        _id: "d1",
-        name: "Margherita Pizza",
-        price: 12,
-        foodType: "veg",
-        image: null,
-      },
-      {
-        _id: "d2",
-        name: "Pepperoni Pizza",
-        price: 15,
-        foodType: "non-veg",
-        image: null,
-      },
-      { _id: "d3", name: "Tiramisu", price: 7, foodType: "veg", image: null },
-    ],
-  },
-  {
-    restaurant: {
-      _id: "r2",
-      name: "Spice Garden",
-      slug: "spice-garden-chennai",
-      logo: null,
-      rating: 4.6,
-      deliveryTime: 40,
-      deliveryFee: 3,
-      isOpen: false,
-      address: { city: "Chennai" },
-    },
-    dishes: [
-      {
-        _id: "d4",
-        name: "Chicken Biryani",
-        price: 14,
-        foodType: "non-veg",
-        image: null,
-      },
-      {
-        _id: "d5",
-        name: "Veg Biryani",
-        price: 11,
-        foodType: "veg",
-        image: null,
-      },
-    ],
-  },
-  {
-    restaurant: {
-      _id: "r3",
-      name: "Burger Barn",
-      slug: "burger-barn-mumbai",
-      logo: null,
-      rating: 4.2,
-      deliveryTime: 30,
-      deliveryFee: 2,
-      isOpen: true,
-      address: { city: "Mumbai" },
-    },
-    dishes: [
-      {
-        _id: "d6",
-        name: "Classic Smash Burger",
-        price: 13,
-        foodType: "non-veg",
-        image: null,
-      },
-    ],
-  },
-];
-
-// ── Main ──────────────────────────────────────────────────────────────────────
 const Wishlist = () => {
   const { wishlist, setWishlist } = useWishlist();
+  const { serverURL } = useAuth();
 
   const totalDishes = wishlist.reduce((a, g) => a + g.dishes.length, 0);
 
-  const handleRemoveDish = (restaurantId, dishId) => {
+  const handleRemoveDish = async (restaurantId, dishId) => {
     setWishlist((prev) =>
       prev
         .map((g) =>
@@ -111,6 +29,21 @@ const Wishlist = () => {
         )
         .filter((g) => g.dishes.length > 0),
     );
+
+    try {
+      const { data } = await axios.delete(
+        `${serverURL}/api/wishlist/${dishId}/${restaurantId}`,
+        { withCredentials: true },
+      );
+
+      console.log(data);
+
+      notifySuccess("Remove wishlist successfully");
+    } catch (error) {
+      setWishlist(wishlist);
+      console.log("Cart Error:", error?.response?.data || error.message);
+      notifyError("Remove wishlist failed");
+    }
   };
 
   const handleRemoveRestaurant = (restaurantId) => {

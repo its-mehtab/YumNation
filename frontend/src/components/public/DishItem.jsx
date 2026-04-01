@@ -18,27 +18,12 @@ const DishItem = ({ dish, restaurant }) => {
     (w) => w.restaurant._id === restaurant._id,
   );
 
-  const wishlistActive = restaurantWishlst?.dishes?.some(
-    (d) => d.dish._id === dish._id,
+  const [wishlistActive, setWishlistActive] = useState(
+    restaurantWishlst?.dishes?.some((d) => d.dish._id === dish._id),
   );
 
   const handleWishlist = async () => {
-    // setWishlist((prev) => {
-    //   const wishlistIndex = prev.findIndex(
-    //     (w) => w.restaurant._id === restaurant._id,
-    //   );
-
-    //   if (wishlistIndex > -1) {
-    //     const dishIndex = wishlist.findIndex((w) => w.dishes._id === dish._id);
-    //     if (dishIndex > -1) {
-    //       return prev.slice(dishIndex, 1);
-    //     } else {
-    //       return [...prev];
-    //     }
-    //   } else{
-    //     return [...prev, {}]
-    //   }
-    // });
+    setWishlistActive(!wishlistActive);
     try {
       const { data } = await axios.post(
         `${serverURL}/api/wishlist`,
@@ -47,10 +32,11 @@ const DishItem = ({ dish, restaurant }) => {
       );
 
       setWishlist(data);
-      // notifySuccess(`${dish.name} added to wishlist`);
+      notifySuccess(`${dish.name} added to wishlist`);
     } catch (error) {
+      setWishlistActive(wishlistActive);
       console.log("Cart Error:", error?.response?.data || error.message);
-      notifyError("wishlist not added");
+      notifyError("Add wishlist failed");
     }
   };
 
