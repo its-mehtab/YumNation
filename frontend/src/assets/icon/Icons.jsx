@@ -499,7 +499,7 @@ export const GoogleIcon = () => {
   );
 };
 
-export const StarIcon = ({ size, color }) => {
+export const StarIcon = ({ size = 14, color }) => {
   return (
     <svg
       className={color}

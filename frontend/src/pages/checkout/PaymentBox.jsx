@@ -198,7 +198,7 @@ const PaymentBox = ({ setError }) => {
       <div className="mt-6 border-t border-gray-300 pt-4 text-sm">
         <div className="flex justify-between">
           <span>Subtotal</span>
-          <span>${subtotal.toFixed(2)}</span>
+          <span>${subtotal?.toFixed(2)}</span>
         </div>
 
         {coupon.couponApplied && (

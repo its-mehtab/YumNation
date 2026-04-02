@@ -11,7 +11,7 @@ export const getUserWishlist = async (req, res) => {
         "items.restaurant",
         "name slug rating deliveryTime deliveryFee isOpen address",
       )
-      .populate("items.dishes.dish", "name slug variants isAvailable");
+      .populate("items.dishes.dish", "name slug variants addOns isAvailable");
 
     if (!wishlist) {
       return res.status(200).json([]);
@@ -108,7 +108,7 @@ export const toggleWishlist = async (req, res) => {
         "items.restaurant",
         "name slug rating deliveryTime deliveryFee isOpen address",
       )
-      .populate("items.dishes.dish", "name slug variants isAvailable");
+      .populate("items.dishes.dish", "name slug variants addOns isAvailable");
 
     return res.status(201).json(updatedWishlist.items);
   } catch (error) {
@@ -138,11 +138,8 @@ export const removeFromWishlist = async (req, res) => {
         .status(404)
         .json({ message: "Restaurant not found in wishlist" });
     }
-    console.log({ dishId });
 
     const index = wishlist.items[restaurantIndex].dishes.findIndex((item) => {
-      console.log(item.dish.toString());
-
       return item.dish.toString() === dishId;
     });
 
@@ -163,7 +160,7 @@ export const removeFromWishlist = async (req, res) => {
         "items.restaurant",
         "name slug rating deliveryTime deliveryFee isOpen address",
       )
-      .populate("items.dishes.dish", "name slug variants isAvailable");
+      .populate("items.dishes.dish", "name slug variants addOns isAvailable");
 
     return res.status(200).json(updatedWishlist.items);
   } catch (error) {
@@ -203,7 +200,7 @@ export const removeRestaurantFromWishlist = async (req, res) => {
         "items.restaurant",
         "name slug rating deliveryTime deliveryFee isOpen address",
       )
-      .populate("items.dishes.dish", "name slug variants isAvailable");
+      .populate("items.dishes.dish", "name slug variants addOns isAvailable");
 
     return res.status(200).json(updatedWishlist.items);
   } catch (error) {

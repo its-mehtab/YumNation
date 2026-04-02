@@ -24,8 +24,8 @@ const AppInit = () => {
     if (!user) return;
 
     if (user.role === "user") {
-      fetchAddress();
       fetchUserCart();
+      fetchAddress();
       fetchOrders();
       fetchWishlist();
     }

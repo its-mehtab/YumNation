@@ -5,6 +5,7 @@ import {
   DeleteIcon,
   DelhiveryBoxIcon,
   LocationIcon,
+  PlusIcon,
   StarIcon,
   TimeIcon,
 } from "../../assets/icon/Icons";
@@ -12,6 +13,7 @@ import { useWishlist } from "../../context/user/WishlistContext";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
+import AddToCartModal from "../../components/public/AddToCartModal";
 
 const Wishlist = () => {
   const { wishlist, setWishlist } = useWishlist();
@@ -251,12 +253,17 @@ const Wishlist = () => {
                       <td className="px-6 py-3.5">
                         <div className="flex items-center justify-end gap-2">
                           {restaurant.isOpen ? (
-                            <button
-                              onClick={() => handleAddToCart(dish)}
-                              className="flex items-center gap-1.5 bg-[#fc8019] hover:bg-[#e5721f] text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
+                            <AddToCartModal
+                              dish={dish.dish}
+                              restaurant={restaurant}
                             >
-                              + Add to Cart
-                            </button>
+                              {(dish?.dish?.variants?.length > 0 ||
+                                dish?.dish?.addOns?.length > 0) && (
+                                <button className="flex items-center gap-1.5 bg-[#fc8019] hover:bg-[#e5721f] text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors">
+                                  <PlusIcon color={"#fff"} /> Add to Cart
+                                </button>
+                              )}
+                            </AddToCartModal>
                           ) : (
                             <span className="text-xs text-gray-400 font-medium">
                               Restaurant closed

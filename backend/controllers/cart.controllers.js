@@ -8,8 +8,11 @@ export const getUserCart = async (req, res) => {
 
   try {
     const cart = await Cart.findOne({ user: userId })
-      .populate("restaurant", "name slug")
-      .populate("items.dish", "name slug isAvailable variants")
+      .populate(
+        "restaurant",
+        "name logo slug cuisine address isOpen rating deliveryFee deliveryTime",
+      )
+      .populate("items.dish", "name slug isAvailable variants addOns")
       .select("restaurant items")
       .lean();
 
@@ -133,8 +136,11 @@ export const addCart = async (req, res) => {
     }
 
     const updatedCart = await Cart.findOne({ user: userId })
-      .populate("restaurant", "name slug")
-      .populate("items.dish", "name slug isAvailable variants")
+      .populate(
+        "restaurant",
+        "name logo slug cuisine address isOpen rating deliveryFee deliveryTime",
+      )
+      .populate("items.dish", "name slug isAvailable variants addOns")
       .select("restaurant items");
 
     return res.status(201).json(updatedCart);
@@ -189,8 +195,11 @@ export const updateCartQuantity = async (req, res) => {
     await cart.save();
 
     const updatedCart = await Cart.findOne({ user: userId })
-      .populate("restaurant", "name slug")
-      .populate("items.dish", "name slug isAvailable variants")
+      .populate(
+        "restaurant",
+        "name logo slug cuisine address isOpen rating deliveryFee deliveryTime",
+      )
+      .populate("items.dish", "name slug isAvailable variants addOns")
       .select("restaurant items");
 
     return res.status(200).json(updatedCart);
@@ -221,8 +230,11 @@ export const removeFromCart = async (req, res) => {
       },
       { new: true },
     )
-      .populate("restaurant", "name slug")
-      .populate("items.dish", "name slug isAvailable variants")
+      .populate(
+        "restaurant",
+        "name logo slug cuisine address isOpen rating deliveryFee deliveryTime",
+      )
+      .populate("items.dish", "name slug isAvailable variants addOns")
       .select("restaurant items");
 
     if (!cart) {
