@@ -4,7 +4,12 @@ export const validateCartBeforeCheckout = async (req, res) => {
   const userId = req.userId;
 
   try {
-    const cart = await Cart.findOne({ user: userId }).populate("items.dish");
+    const cart = await Cart.findOne({ user: userId })
+      .populate(
+        "restaurant",
+        "name logo slug cuisine address isOpen rating deliveryFee deliveryTime",
+      )
+      .populate("items.dish", "name slug isAvailable variants addOns");
 
     if (!cart || cart.items.length === 0) {
       return res.status(400).json({ message: "Cart is empty" });
@@ -24,11 +29,13 @@ export const validateCartBeforeCheckout = async (req, res) => {
       let expectedPrice = dish.price;
 
       if (item.variant) {
-        const variantDoc = dish.variants.find((v) => v.name === item.variant);
+        const variantDoc = dish.variants.find(
+          (v) => v.name === item.variant.name,
+        );
 
         if (!variantDoc) {
           return res.status(400).json({
-            message: `Variant ${item.variant} no longer exists`,
+            message: `Variant ${item.variant.name} no longer exists`,
           });
         }
 
@@ -58,13 +65,13 @@ export const validateCartBeforeCheckout = async (req, res) => {
     if (priceChanged) {
       await cart.save();
 
-      return res.status(400).json({
+      return res.status(409).json({
         message: "Price updated. Please review before proceed.",
-        cart: cart.items,
+        cart: cart,
       });
     }
 
-    return res.status(200).json(cart.items);
+    return res.status(200).json(cart);
   } catch (error) {
     return res
       .status(500)

@@ -8,8 +8,6 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState({});
   const [loading, setLoading] = useState(false);
 
-  console.log(loading);
-
   const { serverURL } = useAuth();
 
   const fetchUserCart = async () => {

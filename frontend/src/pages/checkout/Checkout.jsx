@@ -32,7 +32,6 @@ const Checkout = () => {
 
   const { cart, setCart, loading: cartLoading } = useCart();
   const { loading: addressLoading } = useAddress();
-  console.log(cartLoading);
 
   const restaurant = cart?.restaurant;
 
@@ -65,78 +64,83 @@ const Checkout = () => {
             </Skeleton>
           )}
 
-          <Skeleton loading={cartLoading}>
-            <h2 className="text-base font-bold text-gray-700 mb-4 flex items-center gap-2">
-              Ordering From
-            </h2>
-          </Skeleton>
+          {restaurant && (
+            <>
+              <Skeleton loading={cartLoading}>
+                <h2 className="text-base font-bold text-gray-700 mb-4 flex items-center gap-2">
+                  Ordering From
+                </h2>
+              </Skeleton>
 
-          {cartLoading ? (
-            <Skeleton loading={true} className="h-20 w-full rounded-xl" />
-          ) : (
-            <div className="flex items-center gap-4 p-4 rounded-xl border border-orange-100 mb-5">
-              <Link to={`/restaurant/${restaurant?.slug}`}>
-                <div className="w-14 h-14 min-w-14 rounded-xl border border-orange-200 bg-white overflow-hidden flex items-center justify-center text-2xl">
-                  {restaurant.logo ? (
-                    <img
-                      src={restaurant.logo}
-                      alt={restaurant.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    "🏪"
-                  )}
-                </div>
-              </Link>
-
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Link
-                    to={`/restaurant/${restaurant.slug}`}
-                    className="font-bold text-gray-800 hover:text-[#fc8019] transition-colors text-[15px]"
-                  >
-                    {restaurant.name}
+              {cartLoading ? (
+                <Skeleton loading={true} className="h-20 w-full rounded-xl" />
+              ) : (
+                <div className="flex items-center gap-4 p-4 rounded-xl border border-orange-100 mb-5">
+                  <Link to={`/restaurant/${restaurant?.slug}`}>
+                    <div className="w-14 h-14 min-w-14 rounded-xl border border-orange-200 bg-white overflow-hidden flex items-center justify-center text-2xl">
+                      {restaurant?.logo ? (
+                        <img
+                          src={restaurant.logo}
+                          alt={restaurant.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        "🏪"
+                      )}
+                    </div>
                   </Link>
-                  <span
-                    className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
-                      restaurant.isOpen
-                        ? "bg-green-100 text-green-600"
-                        : "bg-gray-100 text-gray-400"
-                    }`}
-                  >
-                    {restaurant.isOpen ? "● Open" : "● Closed"}
-                  </span>
-                </div>
-                <p className="text-xs text-gray-400 mt-1">
-                  {restaurant.cuisine.map((c) => c).join(" · ")}
-                </p>
-                <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-500 flex-wrap">
-                  <span className="flex items-center gap-1">
-                    <LocationIcon size={16} />
-                    {restaurant.address.addressLine1}, {restaurant.address.city}
-                  </span>
-                  <span className="text-gray-300">•</span>
-                  <span className="flex items-center gap-1">
-                    <TimeIcon /> {restaurant.deliveryTime} min
-                  </span>
-                  <span className="text-gray-300">•</span>
-                  <span className="flex items-center gap-1">
-                    <StarIcon /> {restaurant.rating}
-                  </span>
-                  <span className="text-gray-300">•</span>
-                  <span className="flex items-center gap-1 text-[#fc8019] font-medium">
-                    ${restaurant.deliveryFee} delivery
-                  </span>
-                </div>
-              </div>
 
-              <Link
-                to={`/restaurant/${restaurant.slug}`}
-                className="shrink-0 text-xs font-semibold text-[#fc8019] border border-orange-200 px-3 py-1.5 rounded-lg hover:bg-white transition-colors hidden sm:block"
-              >
-                View Menu →
-              </Link>
-            </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Link
+                        to={`/restaurant/${restaurant?.slug}`}
+                        className="font-bold text-gray-800 hover:text-[#fc8019] transition-colors text-[15px]"
+                      >
+                        {restaurant?.name}
+                      </Link>
+                      <span
+                        className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                          restaurant?.isOpen
+                            ? "bg-green-100 text-green-600"
+                            : "bg-gray-100 text-gray-400"
+                        }`}
+                      >
+                        {restaurant?.isOpen ? "● Open" : "● Closed"}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {restaurant?.cuisine.map((c) => c).join(" · ")}
+                    </p>
+                    <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-500 flex-wrap">
+                      <span className="flex items-center gap-1">
+                        <LocationIcon size={16} />
+                        {restaurant?.address.addressLine1},{" "}
+                        {restaurant?.address.city}
+                      </span>
+                      <span className="text-gray-300">•</span>
+                      <span className="flex items-center gap-1">
+                        <TimeIcon /> {restaurant?.deliveryTime} min
+                      </span>
+                      <span className="text-gray-300">•</span>
+                      <span className="flex items-center gap-1">
+                        <StarIcon /> {restaurant?.rating}
+                      </span>
+                      <span className="text-gray-300">•</span>
+                      <span className="flex items-center gap-1 text-[#fc8019] font-medium">
+                        ${restaurant?.deliveryFee} delivery
+                      </span>
+                    </div>
+                  </div>
+
+                  <Link
+                    to={`/restaurant/${restaurant?.slug}`}
+                    className="shrink-0 text-xs font-semibold text-[#fc8019] border border-orange-200 px-3 py-1.5 rounded-lg hover:bg-white transition-colors hidden sm:block"
+                  >
+                    View Menu →
+                  </Link>
+                </div>
+              )}
+            </>
           )}
 
           <Skeleton loading={cartLoading}>
@@ -161,26 +165,19 @@ const Checkout = () => {
                     !currProd.dish.isAvailable ? "opacity-50" : ""
                   }`}
                 >
-                  {/* Dish Image */}
-                  <Link
-                    to={`/dish/${currProd.dish.slug}`}
-                    className="w-16 h-16 min-w-16 rounded-xl border border-orange-100 overflow-hidden bg-orange-50 flex items-center justify-center"
-                  >
+                  <div className="w-16 h-16 min-w-16 rounded-xl border border-orange-100 overflow-hidden bg-orange-50 flex items-center justify-center">
                     <img
                       src={assets.dish2}
                       alt={currProd.name}
                       className="w-full h-full object-cover"
                     />
-                  </Link>
+                  </div>
 
                   {/* Dish Details */}
                   <div className="flex-1 min-w-0">
-                    <Link
-                      to={`/dish/${currProd.dish.slug}`}
-                      className="font-semibold text-gray-700 hover:text-[#fc8019] transition-colors text-sm leading-snug line-clamp-1"
-                    >
+                    <div className="font-semibold text-gray-700 text-sm leading-snug line-clamp-1">
                       {currProd.name}
-                    </Link>
+                    </div>
                     <p className="text-xs text-gray-400 mt-0.5">
                       {currProd.variant?.name}
                       {currProd.addOns?.length > 0 &&

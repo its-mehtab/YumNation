@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useAuth } from "../context/user/AuthContext";
 import Home from "../pages/public/Home";
 import Dish from "../pages/dish/Dish";
@@ -19,6 +19,7 @@ import FloatingCart from "../components/public/FloatingCart";
 
 const PublicRoutes = () => {
   const { isLoggedIn, user } = useAuth();
+  const { pathname } = useLocation();
 
   if (user?.role === "admin") return <Navigate to="/admin" />;
   if (user?.role === "restaurant") return <Navigate to="/owner" />;
@@ -50,7 +51,7 @@ const PublicRoutes = () => {
         </Routes>
       </UserLayout>
 
-      <FloatingCart />
+      {pathname !== "/checkout" && <FloatingCart />}
     </>
   );
 };

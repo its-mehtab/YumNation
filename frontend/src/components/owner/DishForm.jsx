@@ -3,7 +3,7 @@ import { useCategory } from "../../context/public/CategoryContext";
 import { Switch } from "@radix-ui/themes";
 import Field from "../common/Field";
 import Input from "../common/Input";
-import { DeleteIcon, PlusIcon } from "../../assets/icon/Icons";
+import { DeleteIcon, EditIcon, PlusIcon } from "../../assets/icon/Icons";
 
 const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
   const [dishImage, setDishImage] = useState(null);
@@ -52,7 +52,18 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
       ["variants"]: prev.variants.filter((v) => v.name !== name),
     }));
 
-  // ── Add-ons ──
+  const editVariant = (name, price) => {
+    setForm((prev) => ({
+      ...prev,
+      ["variants"]: prev.variants.filter((v) => v.name !== name),
+    }));
+
+    setVariantInput({
+      name,
+      price,
+    });
+  };
+
   const addAddOn = () => {
     if (!addOnInput.name.trim() || !addOnInput.price) return;
     setForm((prev) => ({
@@ -67,6 +78,15 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
       ...prev,
       ["addOns"]: prev.addOns.filter((a) => a.name !== name),
     }));
+
+  const editAddOn = (name, price) => {
+    setForm((prev) => ({
+      ...prev,
+      ["addOns"]: prev.addOns.filter((a) => a.name !== name),
+    }));
+
+    setAddOnInput({ name, price });
+  };
 
   const handleClear = () => {
     setForm(initialForm);
@@ -140,9 +160,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
           </div>
         </div>
 
-        {/* ── Right — form fields ── */}
         <div className="col-span-9 space-y-5">
-          {/* ── Basic Info ── */}
           <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-6 space-y-4">
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
               Basic Info
@@ -197,7 +215,6 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
             </Field>
           </div>
 
-          {/* ── Pricing  ── */}
           <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-6 space-y-4">
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
               Pricing
@@ -248,7 +265,6 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
             </Field>
           </div>
 
-          {/* ── Variants ── */}
           <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-6 space-y-4">
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
@@ -259,10 +275,8 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
               </p>
             </div>
 
-            {/* Existing variants */}
             {form.variants?.length > 0 && (
               <div className="overflow-hidden rounded-xl border border-gray-100">
-                {/* Header */}
                 <div className="grid grid-cols-12 px-4 py-2 bg-gray-50 border-b border-gray-100">
                   <p className="col-span-5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                     Name
@@ -283,7 +297,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                     <p className="col-span-3 text-sm font-bold text-[#fc8019]">
                       ${v.price}
                     </p>
-                    <div className="col-span-1 flex justify-end">
+                    <div className="col-span-4 flex justify-end gap-2">
                       <button
                         type="button"
                         onClick={() => removeVariant(v.name)}
@@ -291,13 +305,19 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                       >
                         <DeleteIcon size="13" />
                       </button>
+                      <button
+                        type="button"
+                        onClick={() => editVariant(v.name, v.price)}
+                        className="text-red-400 hover:text-red-500 hover:bg-red-50 p-1 rounded-lg transition-colors"
+                      >
+                        <EditIcon size="13" />
+                      </button>
                     </div>
                   </div>
                 ))}
               </div>
             )}
 
-            {/* Add variant input */}
             <div className="flex items-center gap-3">
               <input
                 value={variantInput.name}
@@ -362,12 +382,18 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                     >
                       <DeleteIcon size="13" />
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => editAddOn(a.name, a.price)}
+                      className="text-red-400 hover:text-red-500 transition-colors ml-1"
+                    >
+                      <EditIcon size="13" />
+                    </button>
                   </div>
                 ))}
               </div>
             )}
 
-            {/* Add add-on input */}
             <div className="flex items-center gap-3">
               <input
                 value={addOnInput.name}
@@ -398,7 +424,6 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
             </div>
           </div>
 
-          {/* ── Footer buttons ── */}
           <div className="flex justify-end gap-3">
             <button
               type="button"
