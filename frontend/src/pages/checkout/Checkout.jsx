@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import Button from "../../components/button/Button";
+import React, { useState } from "react";
 import { LocationIcon, StarIcon, TimeIcon } from "../../assets/icon/Icons";
 import { assets } from "../../assets/assets";
 import AddressBox from "../../components/address-box/AddressBox";
@@ -9,28 +8,11 @@ import { Skeleton } from "@radix-ui/themes";
 import { useAddress } from "../../context/user/AddressContext";
 import CartSkeleton from "../../components/skeleton/CartSkeleton";
 import PaymentBox from "./PaymentBox";
-import axios from "axios";
-
-// 🔁 Replace with cart.restaurant later
-const STATIC_RESTAURANT = {
-  name: "Burger Barn",
-  slug: "burger-barn",
-  logo: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=80&q=80",
-  cuisine: "American • Burgers • Fast Food",
-  rating: 4.5,
-  deliveryTime: 30,
-  deliveryFee: 2.99,
-  address: {
-    street: "42 Market Street",
-    city: "New York",
-  },
-  isOpen: true,
-};
 
 const Checkout = () => {
   const [error, setError] = useState("");
 
-  const { cart, setCart, loading: cartLoading } = useCart();
+  const { cart, loading: cartLoading } = useCart();
   const { loading: addressLoading } = useAddress();
 
   const restaurant = cart?.restaurant;

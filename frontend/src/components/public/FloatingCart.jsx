@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   CartIcon,
@@ -8,42 +8,10 @@ import {
 } from "../../assets/icon/Icons";
 import { useCart } from "../../context/user/CartContext";
 import { useAuth } from "../../context/user/AuthContext";
-import { notifyError } from "../../utils/toast";
+import { notifyError, notifyInfo } from "../../utils/toast";
 import axios from "axios";
 
-// ── Mock cart data (replace with useCart()) ───────────────────────────────────
-const mockCart = {
-  items: [
-    {
-      _id: "1",
-      name: "Margherita Pizza",
-      price: 12,
-      quantity: 2,
-      image: null,
-      variant: 'Large (12")',
-    },
-    {
-      _id: "2",
-      name: "Garlic Bread",
-      price: 5,
-      quantity: 1,
-      image: null,
-      variant: null,
-    },
-    {
-      _id: "3",
-      name: "Coke",
-      price: 2.5,
-      quantity: 2,
-      image: null,
-      variant: "Regular (330ml)",
-    },
-  ],
-  restaurant: "Pizza Palace",
-};
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-const CartItem = ({ item, onIncrease, onDecrease, onRemove }) => {
+const CartItem = ({ item }) => {
   const [quantity, setQuantity] = useState(item.quantity);
 
   const { serverURL } = useAuth();
@@ -174,12 +142,14 @@ const FloatingCart = () => {
   const popupRef = useRef();
   const prevCountRef = useRef(0);
 
+  const navigate = useNavigate();
+
+  const { serverURL } = useAuth();
   const { cart, setCart } = useCart();
 
   const totalItems = cart?.items?.reduce((a, i) => a + i.quantity, 0);
   const totalPrice = cart?.items?.reduce((a, i) => a + i.price * i.quantity, 0);
 
-  // animate button when cart count changes
   useEffect(() => {
     if (totalItems > prevCountRef.current) {
       setAnimateBtn(true);
@@ -188,7 +158,6 @@ const FloatingCart = () => {
     prevCountRef.current = totalItems;
   }, [totalItems]);
 
-  // close on outside click
   useEffect(() => {
     const handleClick = (e) => {
       if (popupRef.current && !popupRef.current.contains(e.target)) {
@@ -199,30 +168,23 @@ const FloatingCart = () => {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  //   const handleIncrease = (id) =>
-  //     setCart((prev) => ({
-  //       ...prev,
-  //       items: prev.items.map((i) =>
-  //         i._id === id ? { ...i, quantity: i.quantity + 1 } : i,
-  //       ),
-  //     }));
-
-  //   const handleDecrease = (id) =>
-  //     setCart((prev) => ({
-  //       ...prev,
-  //       items: prev.items
-  //         .map((i) => (i._id === id ? { ...i, quantity: i.quantity - 1 } : i))
-  //         .filter((i) => i.quantity > 0),
-  //     }));
-
-  const handleRemove = (id) =>
-    setCart((prev) => ({
-      ...prev,
-      items: prev.items.filter((i) => i._id !== id),
-    }));
-
-  // hide if cart is empty
   if (totalItems === 0) return null;
+
+  const handleCheckout = async () => {
+    try {
+      await axios.get(`${serverURL}/api/checkout`, {
+        withCredentials: true,
+      });
+
+      navigate("/checkout");
+      setOpen(false);
+    } catch (error) {
+      console.log("Checkout Error:", error?.response?.data || error.message);
+      notifyInfo(error?.response?.data.message);
+
+      error?.response?.data?.cart && setCart(error?.response?.data?.cart);
+    }
+  };
 
   return (
     <>
@@ -250,7 +212,6 @@ const FloatingCart = () => {
         ref={popupRef}
         className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3"
       >
-        {/* ── Cart popup ── */}
         {open && (
           <div className="slide-up w-80 bg-white rounded-xl shadow-[0_8px_40px_rgba(0,0,0,0.18)] overflow-hidden">
             {/* Header */}
@@ -275,10 +236,9 @@ const FloatingCart = () => {
               </button>
             </div>
 
-            {/* Items */}
             <div className="px-4 max-h-72 overflow-y-auto">
               {cart.items.map((item) => (
-                <CartItem key={item._id} item={item} onRemove={handleRemove} />
+                <CartItem key={item._id} item={item} />
               ))}
             </div>
 
@@ -295,10 +255,9 @@ const FloatingCart = () => {
             </div>
 
             <div className="p-3">
-              <Link
-                to="/checkout"
-                onClick={() => setOpen(false)}
-                className="flex items-center justify-between w-full bg-[#fc8019] hover:bg-[#e5721f] text-white px-4 py-3 rounded-md transition-colors"
+              <div
+                onClick={handleCheckout}
+                className="flex items-center justify-between w-full bg-[#fc8019] hover:bg-[#e5721f] text-white px-4 py-3 rounded-md transition-colors cursor-pointer"
               >
                 <span className="text-xs font-semibold">
                   {totalItems} items
@@ -309,7 +268,7 @@ const FloatingCart = () => {
                 <span className="text-xs font-semibold">
                   ${(totalPrice + 2.5).toFixed(2)}
                 </span>
-              </Link>
+              </div>
             </div>
           </div>
         )}

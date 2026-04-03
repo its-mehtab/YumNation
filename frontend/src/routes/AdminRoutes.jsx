@@ -7,6 +7,7 @@ import AdminCategories from "../pages/admin/AdminCategories";
 import AdminOrderDetails from "../pages/admin/AdminOrderDetails";
 import AdminRestaurants from "../pages/admin/AdminRestaurants";
 import AdminRestaurantDetails from "../pages/admin/AdminRestaurantDetails";
+import AdminPromoCodes from "../pages/admin/AdminPromocodes";
 
 const AdminRoutes = () => {
   const { user } = useAuth();
@@ -24,6 +25,7 @@ const AdminRoutes = () => {
         <Route path="/categories" element={<AdminCategories />} />
         <Route path="/orders" element={<AdminOrders />} />
         <Route path="/orders/:id" element={<AdminOrderDetails />} />
+        <Route path="/promo" element={<AdminPromoCodes />} />
       </Routes>
     </AdminLayout>
   );
