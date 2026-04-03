@@ -35,14 +35,31 @@ export const verifyCoupon = async (req, res) => {
 };
 
 export const createCoupon = async (req, res) => {
-  const { code, discountType, value, minOrderAmount, expiresAt } = req.body;
+  const {
+    code,
+    discountType,
+    value,
+    minOrderAmount,
+    expiresAt,
+    title,
+    subTitle,
+    maxDiscount,
+    maxUses,
+    termsAndConditions,
+  } = req.body;
 
   if (
     !code ||
+    !title ||
+    !subTitle ||
     !discountType ||
     value == null ||
+    minOrderAmount ||
+    maxDiscount ||
+    maxUses ||
     !minOrderAmount ||
-    !expiresAt
+    !expiresAt ||
+    termsAndConditions
   ) {
     return res.status(400).json({ message: "All fields are required" });
   }
@@ -56,6 +73,12 @@ export const createCoupon = async (req, res) => {
       .status(400)
       .json({ message: "Percentage must be between 1 and 100" });
   }
+
+  // if (expiresAt < Date.new) {
+  //   return res
+  //     .status(400)
+  //     .json({ message: "Percentage must be between 1 and 100" });
+  // }
 
   try {
     const codeExists = await Coupon.findOne({
