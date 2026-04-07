@@ -73,6 +73,12 @@ export const createCoupon = async (req, res) => {
       .json({ message: "Percentage must be between 1 and 100" });
   }
 
+  // if (expiresAt < Date.new) {
+  //   return res
+  //     .status(400)
+  //     .json({ message: "Percentage must be between 1 and 100" });
+  // }
+
   try {
     const codeExists = await Coupon.findOne({
       code: code.trim().toUpperCase(),

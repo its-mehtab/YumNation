@@ -10,6 +10,12 @@ import {
   ViewIcon,
 } from "../../assets/icon/Icons";
 import dayjs from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import TextField from "@mui/material/TextField";
+import DialogBox from "../../components/dialog-box/DialogBox";
+import { Dialog } from "@radix-ui/themes";
 
 // ─── Static seed data — replace with API fetch ───────────────────────────────
 
@@ -156,73 +162,108 @@ const UsageBar = ({ uses, maxUses }) => {
   );
 };
 
+// ─── Section Divider ──────────────────────────────────────────────────────────
+
+const SectionDivider = ({ label }) => (
+  <div className="col-span-2 flex items-center gap-3 pt-2">
+    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
+      {label}
+    </span>
+    <div className="flex-1 h-px bg-gray-100" />
+  </div>
+);
+
 // ─── Preview Modal ────────────────────────────────────────────────────────────
 
-const PreviewModal = ({ promo, onClose }) => {
+const PreviewModal = ({ promo }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   if (!promo) return null;
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
-      onClick={onClose}
+    <DialogBox
+      isModalOpen={isModalOpen}
+      btn={
+        <button
+          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
+          onClick={() => setIsModalOpen(true)}
+        >
+          <ViewIcon />
+        </button>
+      }
     >
-      <div
-        className="bg-white rounded-2xl border border-gray-200 w-80 p-5 shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-3">
-          Preview — how users see it
-        </p>
+      <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
+        <div>
+          <Dialog.Title>
+            <p className="text-[11px] font-['Poppins'] font-bold text-gray-400 uppercase tracking-widest">
+              User Preview
+            </p>
+          </Dialog.Title>
+          <Dialog.Description>
+            <p className="text-sm font-bold text-gray-700 mt-0.5">
+              How customers see this
+            </p>
+          </Dialog.Description>
+        </div>
+      </div>
 
-        {/* Card preview matching screenshot */}
-        <div className="flex items-center gap-3 border border-gray-200 rounded-xl p-3 mb-4">
-          <div className="w-9 h-9 min-w-9 rounded-lg bg-orange-50 flex items-center justify-center">
-            <TargetIcon />
+      <div className="px-5 py-4 bg-orange-50/40 border-b border-dashed border-orange-100">
+        <div className="flex items-center gap-3 bg-white border border-orange-100 rounded-xl p-3 shadow-sm">
+          <div className="w-10 h-10 min-w-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center">
+            <TargetIcon className="text-[#fc8019]" />
           </div>
           <div>
-            <p className="text-sm font-bold text-gray-800">{promo.title}</p>
             <p className="text-[10px] font-semibold text-gray-400 mt-0.5 tracking-wider uppercase">
               {promo.subtitle}
             </p>
+            <p className="text-sm font-bold text-gray-800">{promo.title}</p>
           </div>
+          <span className="ml-auto font-mono text-xs font-bold bg-orange-50 text-orange-500 border border-orange-100 px-2 py-1 rounded-lg">
+            {promo.code}
+          </span>
         </div>
+      </div>
 
-        <hr className="border-gray-100 mb-3" />
-
+      <div className="px-5 py-4 border-b border-gray-100">
         <p className="text-sm font-bold text-gray-800 mb-1">{promo.title}</p>
-        <p className="text-xs text-gray-500 mb-3">
+        <p className="text-xs text-gray-500 leading-relaxed">
           {promo.type === "flat"
             ? `Get ₹${promo.value} off on orders above ₹${promo.minOrder || 0}`
             : `Get ${promo.value}% off (upto ₹${promo.maxDiscount ?? "∞"}) on orders above ₹${promo.minOrder || 0}`}
         </p>
+      </div>
 
-        <hr className="border-gray-100 mb-3" />
-
-        <p className="text-xs font-bold text-gray-700 mb-2">
-          Terms and Conditions
+      <div className="px-5 py-4">
+        <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-3">
+          Terms & Conditions
         </p>
-        <ul className="flex flex-col gap-1.5">
+        <ul className="flex flex-col gap-2">
           {(promo.terms || []).map((t, i) => (
-            <li key={i} className="flex gap-2 text-xs text-gray-500">
-              <span className="text-[#fc8019] shrink-0">•</span>
+            <li
+              key={i}
+              className="flex gap-2.5 text-xs text-gray-500 leading-relaxed"
+            >
+              <span className="text-[#fc8019] shrink-0 mt-px">•</span>
               {t}
             </li>
           ))}
         </ul>
+      </div>
 
+      <div className="px-5 pb-5">
         <button
-          onClick={onClose}
-          className="mt-4 w-full py-2 text-sm font-semibold text-gray-500 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+          onClick={() => setIsModalOpen(false)}
+          className="w-full py-2.5 text-sm font-semibold text-gray-500 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
         >
-          Close
+          Close Preview
         </button>
       </div>
-    </div>
+    </DialogBox>
   );
 };
 
 // ─── Create / Edit Modal ──────────────────────────────────────────────────────
 
-const PromoModal = ({ initial, onClose, onSave }) => {
+const PromoModal = ({ initial, onSave, btn }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState(
     initial
       ? {
@@ -235,6 +276,8 @@ const PromoModal = ({ initial, onClose, onSave }) => {
         }
       : EMPTY_FORM,
   );
+
+  console.log(form);
 
   const set = (k, v) => setForm((p) => ({ ...p, [k]: v }));
 
@@ -258,20 +301,34 @@ const PromoModal = ({ initial, onClose, onSave }) => {
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
-      onClick={onClose}
+    <DialogBox
+      isModalOpen={isModalOpen}
+      size="600px"
+      btn={<div onClick={() => setIsModalOpen(true)}>{btn}</div>}
     >
-      <div
-        className="bg-white rounded-2xl border border-gray-200 w-[520px] max-w-[95vw] max-h-[90vh] overflow-y-auto p-6 shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <h2 className="text-base font-bold text-gray-700 mb-5">
-          {initial ? "Edit promo code" : "New promo code"}
-        </h2>
+      {/* ── Modal Header ── */}
+      <div className="sticky top-0 z-10 bg-white px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+        <div>
+          <Dialog.Description>
+            <span className="text-[11px] font-['Poppins'] font-bold text-gray-400 uppercase tracking-widest">
+              {initial ? "Edit" : "Create"} Promo Code
+            </span>
+          </Dialog.Description>
+          <Dialog.Title>
+            <span className="text-base font-['Poppins'] font-bold text-gray-700 mt-0.5">
+              {initial ? `Editing — ${initial.code}` : "New discount offer"}
+            </span>
+          </Dialog.Title>
+        </div>
+      </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <Field label="Promo code *">
+      {/* ── Form Body ── */}
+      <div className="px-6 py-5">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+          {/* Section: Identity */}
+          <SectionDivider label="Identity" />
+
+          <Field label="Promo Code *">
             <input
               className="field outline-none uppercase"
               value={form.code}
@@ -298,7 +355,10 @@ const PromoModal = ({ initial, onClose, onSave }) => {
             />
           </Field>
 
-          <Field label="Discount type *">
+          {/* Section: Discount */}
+          <SectionDivider label="Discount Rules" />
+
+          <Field label="Discount Type *">
             <select
               className="field outline-none"
               value={form.type}
@@ -309,7 +369,7 @@ const PromoModal = ({ initial, onClose, onSave }) => {
             </select>
           </Field>
 
-          <Field label="Discount value *">
+          <Field label="Discount Value *">
             <input
               className="field outline-none"
               type="number"
@@ -319,7 +379,7 @@ const PromoModal = ({ initial, onClose, onSave }) => {
             />
           </Field>
 
-          <Field label="Min order amount">
+          <Field label="Min Order Amount">
             <input
               className="field outline-none"
               type="number"
@@ -329,7 +389,7 @@ const PromoModal = ({ initial, onClose, onSave }) => {
             />
           </Field>
 
-          <Field label="Max discount cap (for % type)">
+          <Field label="Max Discount Cap (% type)">
             <input
               className="field outline-none"
               type="number"
@@ -339,22 +399,16 @@ const PromoModal = ({ initial, onClose, onSave }) => {
             />
           </Field>
 
-          <Field label="Max total uses">
+          {/* Section: Validity */}
+          <SectionDivider label="Validity & Limits" />
+
+          <Field label="Max Total Uses">
             <input
               className="field outline-none"
               type="number"
               value={form.maxUses}
               onChange={(e) => set("maxUses", e.target.value)}
               placeholder="e.g. 500"
-            />
-          </Field>
-
-          <Field label="Valid till">
-            <input
-              className="field outline-none"
-              type="date"
-              value={form.validTill}
-              onChange={(e) => set("validTill", e.target.value)}
             />
           </Field>
 
@@ -369,7 +423,22 @@ const PromoModal = ({ initial, onClose, onSave }) => {
             </select>
           </Field>
 
-          <Field label="Terms & conditions (one per line)" full>
+          <Field label="Valid Till" full>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                defaultValue={dayjs()}
+                slotProps={{ textField: { fullWidth: true } }}
+                disablePast
+                minDate={dayjs().add(1, "day")}
+                format="DD/MM/YYYY"
+              />
+            </LocalizationProvider>
+          </Field>
+
+          {/* Section: Terms */}
+          <SectionDivider label="Terms & Conditions" />
+
+          <Field label="One term per line" full>
             <textarea
               className="field outline-none resize-none"
               rows={4}
@@ -381,23 +450,24 @@ const PromoModal = ({ initial, onClose, onSave }) => {
             />
           </Field>
         </div>
-
-        <div className="flex justify-end gap-2 mt-5 pt-4 border-t border-gray-100">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-sm font-semibold text-gray-500 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleSave}
-            className="px-5 py-2 text-sm font-semibold text-white bg-[#fc8019] hover:bg-[#e5721f] rounded-xl transition-colors"
-          >
-            {initial ? "Save changes" : "Create promo code"}
-          </button>
-        </div>
       </div>
-    </div>
+
+      {/* ── Modal Footer ── */}
+      <div className="sticky bottom-0 bg-white px-6 py-4 border-t border-gray-100 flex justify-end gap-2">
+        <button
+          onClick={() => setIsModalOpen(false)}
+          className="px-4 py-2 text-sm font-semibold text-gray-500 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleSave}
+          className="px-5 py-2 text-sm font-semibold text-white bg-[#fc8019] hover:bg-[#e5721f] rounded-xl transition-colors"
+        >
+          {initial ? "Save Changes" : "Create Promo Code"}
+        </button>
+      </div>
+    </DialogBox>
   );
 };
 
@@ -441,12 +511,10 @@ const AdminPromoCodes = () => {
     return matchQ && matchS && matchT;
   });
 
-  // ── CRUD handlers — wire to your API ──
+  // ── CRUD handlers ──
 
   const handleCreate = async (data) => {
     try {
-      // const { data: res } = await axios.post(`${serverURL}/api/promos`, data, { withCredentials: true });
-      // setPromos((p) => [res, ...p]);
       setPromos((p) => [
         { ...data, _id: Date.now().toString(), uses: 0 },
         ...p,
@@ -460,7 +528,6 @@ const AdminPromoCodes = () => {
 
   const handleEdit = async (data) => {
     try {
-      // await axios.put(`${serverURL}/api/promos/${editPromo._id}`, data, { withCredentials: true });
       setPromos((p) =>
         p.map((x) => (x._id === editPromo._id ? { ...x, ...data } : x)),
       );
@@ -474,7 +541,6 @@ const AdminPromoCodes = () => {
   const handleDelete = async (id) => {
     if (!confirm("Delete this promo code?")) return;
     try {
-      // await axios.delete(`${serverURL}/api/promos/${id}`, { withCredentials: true });
       setPromos((p) => p.filter((x) => x._id !== id));
       notifySuccess("Promo code deleted");
     } catch {
@@ -485,7 +551,6 @@ const AdminPromoCodes = () => {
   const handleToggleStatus = async (promo) => {
     const next = promo.status === "active" ? "inactive" : "active";
     try {
-      // await axios.patch(`${serverURL}/api/promos/${promo._id}`, { status: next }, { withCredentials: true });
       setPromos((p) =>
         p.map((x) => (x._id === promo._id ? { ...x, status: next } : x)),
       );
@@ -504,13 +569,17 @@ const AdminPromoCodes = () => {
             Manage discount codes and promotional offers
           </p>
         </div>
-        <button
-          onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-4 py-2 rounded-md transition-colors"
-        >
-          <PlusIcon size="16" color={"#fff"} />
-          New Promo Code
-        </button>
+        <PromoModal
+          btn={
+            <button
+              // onClick={() => setShowCreate(true)}
+              className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-4 py-2 rounded-md transition-colors"
+            >
+              <PlusIcon size="16" color={"#fff"} />
+              New Promo Code
+            </button>
+          }
+        />
       </div>
 
       {/* ── Stats ── */}
@@ -621,7 +690,6 @@ const AdminPromoCodes = () => {
                     </div>
                   </td>
 
-                  {/* Min Order */}
                   <td className="px-4 py-3.5 text-gray-500 text-[13px]">
                     ₹{p.minOrder || 0}
                   </td>
@@ -643,22 +711,19 @@ const AdminPromoCodes = () => {
                   </td>
 
                   <td className="px-4 py-3.5">
+                    {console.log(p)}
                     <div className="flex items-center gap-1.5">
+                      <PreviewModal promo={p} />
+                      <PromoModal
+                        initial={p}
+                        btn={
+                          <button className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors">
+                            <EditIcon />
+                          </button>
+                        }
+                      />
                       <button
                         className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
-                        onClick={() => setPreviewPromo(p)}
-                      >
-                        <ViewIcon />
-                      </button>
-                      <button
-                        className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
-                        onClick={() => setEditPromo(p)}
-                      >
-                        <EditIcon />
-                      </button>
-                      <button
-                        className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
-                        danger
                         onClick={() => handleDelete(p._id)}
                       >
                         <DeleteIcon />
@@ -673,12 +738,12 @@ const AdminPromoCodes = () => {
       </div>
 
       {/* ── Modals ── */}
-      {showCreate && (
+      {/* {showCreate && (
         <PromoModal
           onClose={() => setShowCreate(false)}
           onSave={handleCreate}
         />
-      )}
+      )} */}
       {editPromo && (
         <PromoModal
           initial={editPromo}
@@ -695,19 +760,5 @@ const AdminPromoCodes = () => {
     </div>
   );
 };
-
-// Small reusable action button
-const ActionBtn = ({ children, onClick, danger }) => (
-  <button
-    onClick={onClick}
-    className={`text-xs font-medium px-2.5 py-1.5 rounded-lg border transition-colors ${
-      danger
-        ? "border-gray-200 text-gray-400 hover:bg-red-50 hover:text-red-500 hover:border-red-200"
-        : "border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-    }`}
-  >
-    {children}
-  </button>
-);
 
 export default AdminPromoCodes;

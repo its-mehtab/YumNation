@@ -6,8 +6,6 @@ import { useAuth } from "../../context/user/AuthContext";
 import { ChevronRightIcon } from "@radix-ui/react-icons";
 
 const AdminHeader = () => {
-  const [navActive, setNavActive] = useState(false);
-
   const { user, isLoggedIn, logout } = useAuth();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -140,7 +138,7 @@ const AdminHeader = () => {
             {user?.firstName}
             <ChevronRightIcon
               size={12}
-              addClass={`${isOpen ? "rotate-90" : ""}`}
+              className={`${isOpen ? "rotate-90 transition-all" : ""}`}
             />
           </div>
 
