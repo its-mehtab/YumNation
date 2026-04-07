@@ -35,14 +35,30 @@ export const verifyCoupon = async (req, res) => {
 };
 
 export const createCoupon = async (req, res) => {
-  const { code, discountType, value, minOrderAmount, expiresAt } = req.body;
+  const {
+    code,
+    title,
+    subTitle,
+    discountType,
+    value,
+    minOrderAmount,
+    maxDiscount,
+    maxUses,
+    maxUsesPerUser,
+    expiresAt,
+  } = req.body;
 
   if (
-    !code ||
-    !discountType ||
-    value == null ||
-    !minOrderAmount ||
-    !expiresAt
+    code ||
+    title ||
+    subTitle ||
+    discountType ||
+    value ||
+    minOrderAmount ||
+    maxDiscount ||
+    maxUses ||
+    maxUsesPerUser ||
+    expiresAt
   ) {
     return res.status(400).json({ message: "All fields are required" });
   }
