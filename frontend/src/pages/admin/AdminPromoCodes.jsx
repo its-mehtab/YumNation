@@ -109,8 +109,7 @@ const EMPTY_FORM = {
   minOrder: "",
   maxDiscount: "",
   maxUses: "",
-  validTill: "",
-  status: "active",
+  validTill: dayjs().add(1, "day"),
   terms: "",
 };
 
@@ -271,21 +270,20 @@ const PromoModal = ({ initial, onSave, btn }) => {
           terms: (initial.terms || []).join("\n"),
           value: String(initial.value),
           minOrder: String(initial.minOrder ?? ""),
-          maxDiscount: String(initial.maxDiscount ?? ""),
-          maxUses: String(initial.maxUses ?? ""),
+          maxDiscount: initial.maxDiscount ?? "",
+          maxUses: initial.maxUses,
+          validTill: initial.validTill
+            ? dayjs(initial.validTill)
+            : dayjs().add(1, "day"),
         }
       : EMPTY_FORM,
   );
 
-  console.log(form);
-
   const set = (k, v) => setForm((p) => ({ ...p, [k]: v }));
 
   const handleSave = () => {
-    if (!form.code.trim() || !form.title.trim()) {
-      notifyError("Code and title are required.");
-      return;
-    }
+    console.log(form);
+
     onSave({
       ...form,
       code: form.code.toUpperCase().trim(),
@@ -307,7 +305,7 @@ const PromoModal = ({ initial, onSave, btn }) => {
       btn={<div onClick={() => setIsModalOpen(true)}>{btn}</div>}
     >
       {/* ── Modal Header ── */}
-      <div className="sticky top-0 z-10 bg-white px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <div className="sticky top-0 z-10 bg-white px-6 pt-4 flex items-center justify-between">
         <div>
           <Dialog.Description>
             <span className="text-[11px] font-['Poppins'] font-bold text-gray-400 uppercase tracking-widest">
@@ -323,7 +321,7 @@ const PromoModal = ({ initial, onSave, btn }) => {
       </div>
 
       {/* ── Form Body ── */}
-      <div className="px-6 py-5">
+      <div className="px-6">
         <div className="grid grid-cols-2 gap-x-4 gap-y-4">
           {/* Section: Identity */}
           <SectionDivider label="Identity" />
@@ -412,24 +410,29 @@ const PromoModal = ({ initial, onSave, btn }) => {
             />
           </Field>
 
-          <Field label="Status">
-            <select
+          <Field label="Max Per User">
+            <input
               className="field outline-none"
-              value={form.status}
-              onChange={(e) => set("status", e.target.value)}
-            >
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-            </select>
+              type="number"
+              value={form.maxUsesPerUser}
+              onChange={(e) => set("maxUsesPerUser", e.target.value)}
+              placeholder="e.g. 5"
+            />
           </Field>
 
           <Field label="Valid Till" full>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
-                defaultValue={dayjs()}
+                value={form.validTill}
+                onChange={(newValue) => {
+                  if (newValue && newValue.isValid()) {
+                    // ✅ guard against invalid intermediate values
+                    set("validTill", newValue);
+                  }
+                }}
                 slotProps={{ textField: { fullWidth: true } }}
                 disablePast
-                minDate={dayjs().add(1, "day")}
+                minDate={dayjs().add(1, "day").startOf("day")}
                 format="DD/MM/YYYY"
               />
             </LocalizationProvider>
@@ -453,7 +456,7 @@ const PromoModal = ({ initial, onSave, btn }) => {
       </div>
 
       {/* ── Modal Footer ── */}
-      <div className="sticky bottom-0 bg-white px-6 py-4 border-t border-gray-100 flex justify-end gap-2">
+      <div className="sticky bottom-0 bg-white px-6 py-4 flex justify-end gap-2">
         <button
           onClick={() => setIsModalOpen(false)}
           className="px-4 py-2 text-sm font-semibold text-gray-500 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"

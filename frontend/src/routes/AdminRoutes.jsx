@@ -7,7 +7,7 @@ import AdminCategories from "../pages/admin/AdminCategories";
 import AdminOrderDetails from "../pages/admin/AdminOrderDetails";
 import AdminRestaurants from "../pages/admin/AdminRestaurants";
 import AdminRestaurantDetails from "../pages/admin/AdminRestaurantDetails";
-import AdminPromoCodes from "../pages/admin/AdminPromocodes";
+import AdminPromoCodes from "../pages/admin/AdminPromoCodes";
 
 const AdminRoutes = () => {
   const { user } = useAuth();
