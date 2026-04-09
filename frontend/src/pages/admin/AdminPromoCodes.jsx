@@ -16,6 +16,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import TextField from "@mui/material/TextField";
 import DialogBox from "../../components/dialog-box/DialogBox";
 import { Dialog } from "@radix-ui/themes";
+import { useCoupon } from "../../context/admin/CouponContext";
 
 // ─── Static seed data — replace with API fetch ───────────────────────────────
 
@@ -24,14 +25,14 @@ const SEED = [
     _id: "1",
     code: "SAVE99",
     title: "Items At ₹99",
-    subtitle: "ON SELECT ITEMS",
-    type: "flat",
+    subTitle: "ON SELECT ITEMS",
+    discountType: "flat",
     value: 99,
-    minOrder: 199,
+    minOrderAmount: 199,
     maxDiscount: null,
     maxUses: 500,
     uses: 312,
-    validTill: "2026-12-31",
+    expiresAt: "2026-12-31",
     status: "active",
     terms: [
       "Offer will be applicable automatically.",
@@ -45,14 +46,14 @@ const SEED = [
     _id: "2",
     code: "WELCOME50",
     title: "50% Off First Order",
-    subtitle: "FOR NEW USERS",
-    type: "percentage",
+    subTitle: "FOR NEW USERS",
+    discountType: "percentage",
     value: 50,
-    minOrder: 149,
+    minOrderAmount: 149,
     maxDiscount: 100,
     maxUses: 1000,
     uses: 876,
-    validTill: "2026-06-30",
+    expiresAt: "2026-06-30",
     status: "active",
     terms: [
       "Valid only on your first order.",
@@ -64,14 +65,14 @@ const SEED = [
     _id: "3",
     code: "FREESHIP",
     title: "Free Delivery",
-    subtitle: "NO DELIVERY FEE",
-    type: "flat",
+    subTitle: "NO DELIVERY FEE",
+    discountType: "flat",
     value: 0,
-    minOrder: 99,
+    minOrderAmount: 99,
     maxDiscount: null,
     maxUses: 200,
     uses: 200,
-    validTill: "2026-03-31",
+    expiresAt: "2026-03-31",
     status: "inactive",
     terms: [
       "Valid on orders above ₹99.",
@@ -83,14 +84,14 @@ const SEED = [
     _id: "4",
     code: "FEAST20",
     title: "Get 20% Off",
-    subtitle: "ON ORDERS ABOVE ₹299",
-    type: "percentage",
+    subTitle: "ON ORDERS ABOVE ₹299",
+    discountType: "percentage",
     value: 20,
-    minOrder: 299,
+    minOrderAmount: 299,
     maxDiscount: 80,
     maxUses: 300,
     uses: 145,
-    validTill: "2026-09-30",
+    expiresAt: "2026-09-30",
     status: "active",
     terms: [
       "Valid on select restaurants only.",
@@ -103,13 +104,14 @@ const SEED = [
 const EMPTY_FORM = {
   code: "",
   title: "",
-  subtitle: "",
-  type: "flat",
+  subTitle: "",
+  discountType: "flat",
   value: "",
-  minOrder: "",
+  minOrderAmount: "",
   maxDiscount: "",
   maxUses: "",
-  validTill: dayjs().add(1, "day"),
+  maxUsesPerUser: "",
+  expiresAt: dayjs().add(1, "day"),
   terms: "",
 };
 
@@ -211,7 +213,7 @@ const PreviewModal = ({ promo }) => {
           </div>
           <div>
             <p className="text-[10px] font-semibold text-gray-400 mt-0.5 tracking-wider uppercase">
-              {promo.subtitle}
+              {promo.subTitle}
             </p>
             <p className="text-sm font-bold text-gray-800">{promo.title}</p>
           </div>
@@ -224,9 +226,9 @@ const PreviewModal = ({ promo }) => {
       <div className="px-5 py-4 border-b border-gray-100">
         <p className="text-sm font-bold text-gray-800 mb-1">{promo.title}</p>
         <p className="text-xs text-gray-500 leading-relaxed">
-          {promo.type === "flat"
-            ? `Get ₹${promo.value} off on orders above ₹${promo.minOrder || 0}`
-            : `Get ${promo.value}% off (upto ₹${promo.maxDiscount ?? "∞"}) on orders above ₹${promo.minOrder || 0}`}
+          {promo.discountType === "flat"
+            ? `Get ₹${promo.value} off on orders above ₹${promo.minOrderAmount || 0}`
+            : `Get ${promo.value}% off (upto ₹${promo.maxDiscount ?? "∞"}) on orders above ₹${promo.minOrderAmount || 0}`}
         </p>
       </div>
 
@@ -263,17 +265,20 @@ const PreviewModal = ({ promo }) => {
 
 const PromoModal = ({ initial, onSave, btn }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { coupon, setCoupon } = useCoupon();
+  const { serverURL } = useAuth();
   const [form, setForm] = useState(
     initial
       ? {
           ...initial,
           terms: (initial.terms || []).join("\n"),
           value: String(initial.value),
-          minOrder: String(initial.minOrder ?? ""),
+          minOrderAmount: String(initial.minOrderAmount ?? ""),
           maxDiscount: initial.maxDiscount ?? "",
           maxUses: initial.maxUses,
-          validTill: initial.validTill
-            ? dayjs(initial.validTill)
+          maxUsesPerUser: initial.maxUsesPerUser,
+          expiresAt: initial.expiresAt
+            ? dayjs(initial.expiresAt)
             : dayjs().add(1, "day"),
         }
       : EMPTY_FORM,
@@ -281,14 +286,25 @@ const PromoModal = ({ initial, onSave, btn }) => {
 
   const set = (k, v) => setForm((p) => ({ ...p, [k]: v }));
 
-  const handleSave = () => {
-    console.log(form);
+  const handleSave = async () => {
+    console.log({ ...form, expiresAt: form.expiresAt.toISOString() });
+
+    try {
+      const { data } = await axios.post(`${serverURL}/api/admin/coupon`, form, {
+        withCredentials: true,
+      });
+
+      console.log(data);
+      setCoupon(data);
+    } catch (error) {
+      console.log("Coupon Error:", error?.response?.data || error.message);
+    }
 
     onSave({
       ...form,
       code: form.code.toUpperCase().trim(),
       value: parseFloat(form.value) || 0,
-      minOrder: parseFloat(form.minOrder) || 0,
+      minOrderAmount: parseFloat(form.minOrderAmount) || 0,
       maxDiscount: form.maxDiscount ? parseFloat(form.maxDiscount) : null,
       maxUses: form.maxUses ? parseInt(form.maxUses) : null,
       terms: form.terms
@@ -344,11 +360,11 @@ const PromoModal = ({ initial, onSave, btn }) => {
             />
           </Field>
 
-          <Field label="Subtitle (shown on card)" full>
+          <Field label="SubTitle (shown on card)" full>
             <input
               className="field outline-none"
-              value={form.subtitle}
-              onChange={(e) => set("subtitle", e.target.value)}
+              value={form.subTitle}
+              onChange={(e) => set("subTitle", e.target.value)}
               placeholder="e.g. ON SELECT ITEMS"
             />
           </Field>
@@ -356,11 +372,11 @@ const PromoModal = ({ initial, onSave, btn }) => {
           {/* Section: Discount */}
           <SectionDivider label="Discount Rules" />
 
-          <Field label="Discount Type *">
+          <Field label="Discount discountType *">
             <select
               className="field outline-none"
-              value={form.type}
-              onChange={(e) => set("type", e.target.value)}
+              value={form.discountType}
+              onChange={(e) => set("discountType", e.target.value)}
             >
               <option value="flat">Flat (fixed amount)</option>
               <option value="percentage">Percentage (%)</option>
@@ -370,27 +386,27 @@ const PromoModal = ({ initial, onSave, btn }) => {
           <Field label="Discount Value *">
             <input
               className="field outline-none"
-              type="number"
+              discountType="number"
               value={form.value}
               onChange={(e) => set("value", e.target.value)}
-              placeholder={form.type === "flat" ? "e.g. 99" : "e.g. 20"}
+              placeholder={form.discountType === "flat" ? "e.g. 99" : "e.g. 20"}
             />
           </Field>
 
           <Field label="Min Order Amount">
             <input
               className="field outline-none"
-              type="number"
-              value={form.minOrder}
-              onChange={(e) => set("minOrder", e.target.value)}
+              discountType="number"
+              value={form.minOrderAmount}
+              onChange={(e) => set("minOrderAmount", e.target.value)}
               placeholder="e.g. 199"
             />
           </Field>
 
-          <Field label="Max Discount Cap (% type)">
+          <Field label="Max Discount Cap (% discountType)">
             <input
               className="field outline-none"
-              type="number"
+              discountType="number"
               value={form.maxDiscount}
               onChange={(e) => set("maxDiscount", e.target.value)}
               placeholder="e.g. 150"
@@ -403,7 +419,7 @@ const PromoModal = ({ initial, onSave, btn }) => {
           <Field label="Max Total Uses">
             <input
               className="field outline-none"
-              type="number"
+              discountType="number"
               value={form.maxUses}
               onChange={(e) => set("maxUses", e.target.value)}
               placeholder="e.g. 500"
@@ -413,7 +429,7 @@ const PromoModal = ({ initial, onSave, btn }) => {
           <Field label="Max Per User">
             <input
               className="field outline-none"
-              type="number"
+              discountType="number"
               value={form.maxUsesPerUser}
               onChange={(e) => set("maxUsesPerUser", e.target.value)}
               placeholder="e.g. 5"
@@ -423,14 +439,16 @@ const PromoModal = ({ initial, onSave, btn }) => {
           <Field label="Valid Till" full>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
-                value={form.validTill}
+                value={form.expiresAt}
                 onChange={(newValue) => {
-                  if (newValue && newValue.isValid()) {
-                    // ✅ guard against invalid intermediate values
-                    set("validTill", newValue);
+                  if (newValue !== null) {
+                    set("expiresAt", newValue);
                   }
                 }}
-                slotProps={{ textField: { fullWidth: true } }}
+                slotProps={{
+                  textField: { fullWidth: true },
+                  popper: { disablePortal: true },
+                }}
                 disablePast
                 minDate={dayjs().add(1, "day").startOf("day")}
                 format="DD/MM/YYYY"
@@ -490,7 +508,7 @@ const AdminPromoCodes = () => {
   const [promos, setPromos] = useState(SEED);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
-  const [filterType, setFilterType] = useState("");
+  const [filterdiscountType, setFilterdiscountType] = useState("");
 
   const [showCreate, setShowCreate] = useState(false);
   const [editPromo, setEditPromo] = useState(null);
@@ -500,7 +518,7 @@ const AdminPromoCodes = () => {
   const total = promos.length;
   const active = promos.filter((p) => p.status === "active").length;
   const totalUses = promos.reduce((s, p) => s + (p.uses || 0), 0);
-  const flatCount = promos.filter((p) => p.type === "flat").length;
+  const flatCount = promos.filter((p) => p.discountType === "flat").length;
 
   // ── Filter ──
   const filtered = promos.filter((p) => {
@@ -510,7 +528,7 @@ const AdminPromoCodes = () => {
       p.code.toLowerCase().includes(q) ||
       p.title.toLowerCase().includes(q);
     const matchS = !filterStatus || p.status === filterStatus;
-    const matchT = !filterType || p.type === filterType;
+    const matchT = !filterdiscountType || p.discountType === filterdiscountType;
     return matchQ && matchS && matchT;
   });
 
@@ -616,11 +634,11 @@ const AdminPromoCodes = () => {
             <option value="inactive">Inactive</option>
           </select>
           <select
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
+            value={filterdiscountType}
+            onChange={(e) => setFilterdiscountType(e.target.value)}
             className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] bg-white"
           >
-            <option value="">All types</option>
+            <option value="">All discountTypes</option>
             <option value="flat">Flat</option>
             <option value="percentage">Percentage</option>
           </select>
@@ -678,23 +696,25 @@ const AdminPromoCodes = () => {
                       {p.title}
                     </p>
                     <p className="text-[11px] text-gray-400 mt-0.5">
-                      {p.subtitle}
+                      {p.subTitle}
                     </p>
                   </td>
 
                   <td className="px-4 py-3.5">
                     <div className="flex items-center gap-2">
-                      <Badge variant={p.type}>
-                        {p.type === "flat" ? "Flat" : "%"}
+                      <Badge variant={p.discountType}>
+                        {p.discountType === "flat" ? "Flat" : "%"}
                       </Badge>
                       <span className="font-semibold text-gray-700">
-                        {p.type === "flat" ? `₹${p.value}` : `${p.value}%`}
+                        {p.discountType === "flat"
+                          ? `₹${p.value}`
+                          : `${p.value}%`}
                       </span>
                     </div>
                   </td>
 
                   <td className="px-4 py-3.5 text-gray-500 text-[13px]">
-                    ₹{p.minOrder || 0}
+                    ₹{p.minOrderAmount || 0}
                   </td>
 
                   <td className="px-4 py-3.5">
@@ -702,7 +722,7 @@ const AdminPromoCodes = () => {
                   </td>
 
                   <td className="px-4 py-3.5 text-[12px] text-gray-400">
-                    {dayjs(p.validTill).format("DD MMM, YYYY") || "—"}
+                    {dayjs(p.expiresAt).format("DD MMM, YYYY") || "—"}
                   </td>
 
                   <td className="px-4 py-3.5">
@@ -714,7 +734,6 @@ const AdminPromoCodes = () => {
                   </td>
 
                   <td className="px-4 py-3.5">
-                    {console.log(p)}
                     <div className="flex items-center gap-1.5">
                       <PreviewModal promo={p} />
                       <PromoModal
@@ -747,13 +766,13 @@ const AdminPromoCodes = () => {
           onSave={handleCreate}
         />
       )} */}
-      {editPromo && (
+      {/* {editPromo && (
         <PromoModal
           initial={editPromo}
           onClose={() => setEditPromo(null)}
           onSave={handleEdit}
         />
-      )}
+      )} */}
       {previewPromo && (
         <PreviewModal
           promo={previewPromo}

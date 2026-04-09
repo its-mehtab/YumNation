@@ -48,6 +48,18 @@ export const createCoupon = async (req, res) => {
     expiresAt,
   } = req.body;
 
+  console.log({
+    code,
+    title,
+    subTitle,
+    discountType,
+    value,
+    minOrderAmount,
+    maxUses,
+    maxUsesPerUser,
+    expiresAt,
+  });
+
   if (
     code ||
     title ||
@@ -55,7 +67,7 @@ export const createCoupon = async (req, res) => {
     discountType ||
     value ||
     minOrderAmount ||
-    maxDiscount ||
+    (discountType === "percentage" && maxDiscount) ||
     maxUses ||
     maxUsesPerUser ||
     expiresAt

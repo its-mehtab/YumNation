@@ -18,6 +18,7 @@ import restaurantOwnerRouter from "./routes/owner/restaurantOwner.routes.js";
 import dishOwnerRouter from "./routes/owner/dishOwner.routes.js";
 import restaurantAdminRouter from "./routes/admin/restaurantAdmin.routes.js";
 import dishAdminRouter from "./routes/admin/dishAdmin.routes.js";
+import couponAdminRouter from "./routes/admin/couponAdmin.routes.js";
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -42,6 +43,7 @@ app.use("/api/cart", cartRouter);
 app.use("/api/wishlist", wishlistRouter);
 app.use("/api/address", addressRouter);
 app.use("/api/coupon", couponRouter);
+app.use("/api/admin/coupon", couponAdminRouter);
 app.use("/api/checkout", checkoutRouter);
 app.use("/api/order", orderRouter);
 

@@ -7,6 +7,7 @@ import { useWishlist } from "./user/WishlistContext";
 import { useRestaurant } from "./owner/RestaurantContext";
 import { useRestaurants } from "./admin/RestaurantsContext";
 import { useDish } from "./owner/DishContext";
+import { useCoupon } from "./admin/CouponContext";
 
 const AppInit = () => {
   const { user } = useAuth();
@@ -19,6 +20,7 @@ const AppInit = () => {
   const { getRestaurantDishes } = useDish();
 
   const { fetchRestaurants } = useRestaurants();
+  const { fetchCoupon } = useCoupon();
 
   useEffect(() => {
     if (!user) return;
@@ -37,6 +39,7 @@ const AppInit = () => {
 
     if (user.role === "admin") {
       fetchRestaurants();
+      fetchCoupon();
     }
   }, [user]);
 
