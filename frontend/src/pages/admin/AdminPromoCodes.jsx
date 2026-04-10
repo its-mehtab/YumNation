@@ -1,22 +1,14 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
 import { notifySuccess, notifyError } from "../../utils/toast";
-import { TargetIcon } from "@radix-ui/react-icons";
-import {
-  DeleteIcon,
-  EditIcon,
-  PlusIcon,
-  ViewIcon,
-} from "../../assets/icon/Icons";
+import { DeleteIcon, EditIcon, PlusIcon } from "../../assets/icon/Icons";
 import dayjs from "dayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import TextField from "@mui/material/TextField";
-import DialogBox from "../../components/dialog-box/DialogBox";
-import { Dialog } from "@radix-ui/themes";
+import UsageBar from "../../components/admin/UsageBar";
+import PromoModal from "../../components/admin/PromoModal";
+import PreviewModal from "../../components/common/PreviewModal";
 import { useCoupon } from "../../context/admin/CouponContext";
+import ConfirmationModal from "../../components/common/ConfirmationModal";
+import axios from "axios";
 
 // ─── Static seed data — replace with API fetch ───────────────────────────────
 
@@ -34,7 +26,7 @@ const SEED = [
     uses: 312,
     expiresAt: "2026-12-31",
     status: "active",
-    terms: [
+    termsAndConditions: [
       "Offer will be applicable automatically.",
       "Offer is applicable only on items with discount tags.",
       "This offer cannot be combined with other coupons.",
@@ -55,7 +47,7 @@ const SEED = [
     uses: 876,
     expiresAt: "2026-06-30",
     status: "active",
-    terms: [
+    termsAndConditions: [
       "Valid only on your first order.",
       "Max discount capped at ₹100.",
       "Cannot be combined with other offers.",
@@ -74,7 +66,7 @@ const SEED = [
     uses: 200,
     expiresAt: "2026-03-31",
     status: "inactive",
-    terms: [
+    termsAndConditions: [
       "Valid on orders above ₹99.",
       "Not valid on premium restaurants.",
       "One use per user.",
@@ -93,27 +85,13 @@ const SEED = [
     uses: 145,
     expiresAt: "2026-09-30",
     status: "active",
-    terms: [
+    termsAndConditions: [
       "Valid on select restaurants only.",
       "Discount capped at ₹80.",
       "Offer valid once per user per day.",
     ],
   },
 ];
-
-const EMPTY_FORM = {
-  code: "",
-  title: "",
-  subTitle: "",
-  discountType: "flat",
-  value: "",
-  minOrderAmount: "",
-  maxDiscount: "",
-  maxUses: "",
-  maxUsesPerUser: "",
-  expiresAt: dayjs().add(1, "day"),
-  terms: "",
-};
 
 // ─── Stat Card ────────────────────────────────────────────────────────────────
 
@@ -137,375 +115,20 @@ const Badge = ({ children, variant }) => {
   };
   return (
     <span
-      className={`inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${styles[variant] || styles.inactive}`}
+      className={`flex text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${styles[variant] || styles.inactive}`}
     >
       {children}
     </span>
   );
 };
 
-// ─── Usage Bar ────────────────────────────────────────────────────────────────
-
-const UsageBar = ({ uses, maxUses }) => {
-  const pct = maxUses ? Math.min(100, Math.round((uses / maxUses) * 100)) : 50;
-  return (
-    <div>
-      <span className="text-xs text-gray-600">
-        {uses} / {maxUses ?? "∞"}
-      </span>
-      <div className="mt-1 h-1 w-20 bg-gray-100 rounded-full overflow-hidden">
-        <div
-          className="h-full rounded-full bg-[#fc8019] transition-all"
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-    </div>
-  );
-};
-
-// ─── Section Divider ──────────────────────────────────────────────────────────
-
-const SectionDivider = ({ label }) => (
-  <div className="col-span-2 flex items-center gap-3 pt-2">
-    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
-      {label}
-    </span>
-    <div className="flex-1 h-px bg-gray-100" />
-  </div>
-);
-
-// ─── Preview Modal ────────────────────────────────────────────────────────────
-
-const PreviewModal = ({ promo }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  if (!promo) return null;
-  return (
-    <DialogBox
-      isModalOpen={isModalOpen}
-      btn={
-        <button
-          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
-          onClick={() => setIsModalOpen(true)}
-        >
-          <ViewIcon />
-        </button>
-      }
-    >
-      <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-        <div>
-          <Dialog.Title>
-            <p className="text-[11px] font-['Poppins'] font-bold text-gray-400 uppercase tracking-widest">
-              User Preview
-            </p>
-          </Dialog.Title>
-          <Dialog.Description>
-            <p className="text-sm font-bold text-gray-700 mt-0.5">
-              How customers see this
-            </p>
-          </Dialog.Description>
-        </div>
-      </div>
-
-      <div className="px-5 py-4 bg-orange-50/40 border-b border-dashed border-orange-100">
-        <div className="flex items-center gap-3 bg-white border border-orange-100 rounded-xl p-3 shadow-sm">
-          <div className="w-10 h-10 min-w-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center">
-            <TargetIcon className="text-[#fc8019]" />
-          </div>
-          <div>
-            <p className="text-[10px] font-semibold text-gray-400 mt-0.5 tracking-wider uppercase">
-              {promo.subTitle}
-            </p>
-            <p className="text-sm font-bold text-gray-800">{promo.title}</p>
-          </div>
-          <span className="ml-auto font-mono text-xs font-bold bg-orange-50 text-orange-500 border border-orange-100 px-2 py-1 rounded-lg">
-            {promo.code}
-          </span>
-        </div>
-      </div>
-
-      <div className="px-5 py-4 border-b border-gray-100">
-        <p className="text-sm font-bold text-gray-800 mb-1">{promo.title}</p>
-        <p className="text-xs text-gray-500 leading-relaxed">
-          {promo.discountType === "flat"
-            ? `Get ₹${promo.value} off on orders above ₹${promo.minOrderAmount || 0}`
-            : `Get ${promo.value}% off (upto ₹${promo.maxDiscount ?? "∞"}) on orders above ₹${promo.minOrderAmount || 0}`}
-        </p>
-      </div>
-
-      <div className="px-5 py-4">
-        <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-3">
-          Terms & Conditions
-        </p>
-        <ul className="flex flex-col gap-2">
-          {(promo.terms || []).map((t, i) => (
-            <li
-              key={i}
-              className="flex gap-2.5 text-xs text-gray-500 leading-relaxed"
-            >
-              <span className="text-[#fc8019] shrink-0 mt-px">•</span>
-              {t}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="px-5 pb-5">
-        <button
-          onClick={() => setIsModalOpen(false)}
-          className="w-full py-2.5 text-sm font-semibold text-gray-500 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
-        >
-          Close Preview
-        </button>
-      </div>
-    </DialogBox>
-  );
-};
-
-// ─── Create / Edit Modal ──────────────────────────────────────────────────────
-
-const PromoModal = ({ initial, onSave, btn }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { coupon, setCoupon } = useCoupon();
-  const { serverURL } = useAuth();
-  const [form, setForm] = useState(
-    initial
-      ? {
-          ...initial,
-          terms: (initial.terms || []).join("\n"),
-          value: String(initial.value),
-          minOrderAmount: String(initial.minOrderAmount ?? ""),
-          maxDiscount: initial.maxDiscount ?? "",
-          maxUses: initial.maxUses,
-          maxUsesPerUser: initial.maxUsesPerUser,
-          expiresAt: initial.expiresAt
-            ? dayjs(initial.expiresAt)
-            : dayjs().add(1, "day"),
-        }
-      : EMPTY_FORM,
-  );
-
-  const set = (k, v) => setForm((p) => ({ ...p, [k]: v }));
-
-  const handleSave = async () => {
-    console.log({ ...form, expiresAt: form.expiresAt.toISOString() });
-
-    try {
-      const { data } = await axios.post(`${serverURL}/api/admin/coupon`, form, {
-        withCredentials: true,
-      });
-
-      console.log(data);
-      setCoupon(data);
-    } catch (error) {
-      console.log("Coupon Error:", error?.response?.data || error.message);
-    }
-
-    onSave({
-      ...form,
-      code: form.code.toUpperCase().trim(),
-      value: parseFloat(form.value) || 0,
-      minOrderAmount: parseFloat(form.minOrderAmount) || 0,
-      maxDiscount: form.maxDiscount ? parseFloat(form.maxDiscount) : null,
-      maxUses: form.maxUses ? parseInt(form.maxUses) : null,
-      terms: form.terms
-        .split("\n")
-        .map((t) => t.trim())
-        .filter(Boolean),
-    });
-  };
-
-  return (
-    <DialogBox
-      isModalOpen={isModalOpen}
-      size="600px"
-      btn={<div onClick={() => setIsModalOpen(true)}>{btn}</div>}
-    >
-      {/* ── Modal Header ── */}
-      <div className="sticky top-0 z-10 bg-white px-6 pt-4 flex items-center justify-between">
-        <div>
-          <Dialog.Description>
-            <span className="text-[11px] font-['Poppins'] font-bold text-gray-400 uppercase tracking-widest">
-              {initial ? "Edit" : "Create"} Promo Code
-            </span>
-          </Dialog.Description>
-          <Dialog.Title>
-            <span className="text-base font-['Poppins'] font-bold text-gray-700 mt-0.5">
-              {initial ? `Editing — ${initial.code}` : "New discount offer"}
-            </span>
-          </Dialog.Title>
-        </div>
-      </div>
-
-      {/* ── Form Body ── */}
-      <div className="px-6">
-        <div className="grid grid-cols-2 gap-x-4 gap-y-4">
-          {/* Section: Identity */}
-          <SectionDivider label="Identity" />
-
-          <Field label="Promo Code *">
-            <input
-              className="field outline-none uppercase"
-              value={form.code}
-              onChange={(e) => set("code", e.target.value)}
-              placeholder="e.g. SAVE99"
-            />
-          </Field>
-
-          <Field label="Title *">
-            <input
-              className="field outline-none"
-              value={form.title}
-              onChange={(e) => set("title", e.target.value)}
-              placeholder="e.g. Items At ₹99"
-            />
-          </Field>
-
-          <Field label="SubTitle (shown on card)" full>
-            <input
-              className="field outline-none"
-              value={form.subTitle}
-              onChange={(e) => set("subTitle", e.target.value)}
-              placeholder="e.g. ON SELECT ITEMS"
-            />
-          </Field>
-
-          {/* Section: Discount */}
-          <SectionDivider label="Discount Rules" />
-
-          <Field label="Discount discountType *">
-            <select
-              className="field outline-none"
-              value={form.discountType}
-              onChange={(e) => set("discountType", e.target.value)}
-            >
-              <option value="flat">Flat (fixed amount)</option>
-              <option value="percentage">Percentage (%)</option>
-            </select>
-          </Field>
-
-          <Field label="Discount Value *">
-            <input
-              className="field outline-none"
-              discountType="number"
-              value={form.value}
-              onChange={(e) => set("value", e.target.value)}
-              placeholder={form.discountType === "flat" ? "e.g. 99" : "e.g. 20"}
-            />
-          </Field>
-
-          <Field label="Min Order Amount">
-            <input
-              className="field outline-none"
-              discountType="number"
-              value={form.minOrderAmount}
-              onChange={(e) => set("minOrderAmount", e.target.value)}
-              placeholder="e.g. 199"
-            />
-          </Field>
-
-          <Field label="Max Discount Cap (% discountType)">
-            <input
-              className="field outline-none"
-              discountType="number"
-              value={form.maxDiscount}
-              onChange={(e) => set("maxDiscount", e.target.value)}
-              placeholder="e.g. 150"
-            />
-          </Field>
-
-          {/* Section: Validity */}
-          <SectionDivider label="Validity & Limits" />
-
-          <Field label="Max Total Uses">
-            <input
-              className="field outline-none"
-              discountType="number"
-              value={form.maxUses}
-              onChange={(e) => set("maxUses", e.target.value)}
-              placeholder="e.g. 500"
-            />
-          </Field>
-
-          <Field label="Max Per User">
-            <input
-              className="field outline-none"
-              discountType="number"
-              value={form.maxUsesPerUser}
-              onChange={(e) => set("maxUsesPerUser", e.target.value)}
-              placeholder="e.g. 5"
-            />
-          </Field>
-
-          <Field label="Valid Till" full>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                value={form.expiresAt}
-                onChange={(newValue) => {
-                  if (newValue !== null) {
-                    set("expiresAt", newValue);
-                  }
-                }}
-                slotProps={{
-                  textField: { fullWidth: true },
-                  popper: { disablePortal: true },
-                }}
-                disablePast
-                minDate={dayjs().add(1, "day").startOf("day")}
-                format="DD/MM/YYYY"
-              />
-            </LocalizationProvider>
-          </Field>
-
-          {/* Section: Terms */}
-          <SectionDivider label="Terms & Conditions" />
-
-          <Field label="One term per line" full>
-            <textarea
-              className="field outline-none resize-none"
-              rows={4}
-              value={form.terms}
-              onChange={(e) => set("terms", e.target.value)}
-              placeholder={
-                "Offer valid on select restaurants\nCannot be combined with other coupons\nOffer valid till Dec 31, 2026"
-              }
-            />
-          </Field>
-        </div>
-      </div>
-
-      {/* ── Modal Footer ── */}
-      <div className="sticky bottom-0 bg-white px-6 py-4 flex justify-end gap-2">
-        <button
-          onClick={() => setIsModalOpen(false)}
-          className="px-4 py-2 text-sm font-semibold text-gray-500 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleSave}
-          className="px-5 py-2 text-sm font-semibold text-white bg-[#fc8019] hover:bg-[#e5721f] rounded-xl transition-colors"
-        >
-          {initial ? "Save Changes" : "Create Promo Code"}
-        </button>
-      </div>
-    </DialogBox>
-  );
-};
-
-// Small helper wrapper for form fields
-const Field = ({ label, children, full }) => (
-  <div className={`flex flex-col gap-1.5 ${full ? "col-span-2" : ""}`}>
-    <label className="text-xs font-semibold text-gray-500">{label}</label>
-    {children}
-  </div>
-);
-
 // ─── Main AdminPromoCodes Page ─────────────────────────────────────────────────────
 
 const AdminPromoCodes = () => {
   const { serverURL } = useAuth();
+  const { coupon } = useCoupon();
 
-  const [promos, setPromos] = useState(SEED);
+  const [promos, setPromos] = useState(coupon);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filterdiscountType, setFilterdiscountType] = useState("");
@@ -560,8 +183,10 @@ const AdminPromoCodes = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("Delete this promo code?")) return;
     try {
+      await axios.delete(`${serverURL}/api/admin/coupon/${id}`, {
+        withCredentials: true,
+      });
       setPromos((p) => p.filter((x) => x._id !== id));
       notifySuccess("Promo code deleted");
     } catch {
@@ -654,7 +279,6 @@ const AdminPromoCodes = () => {
                 "Code",
                 "Title",
                 "Discount",
-                "Min Order",
                 "Usage",
                 "Valid Till",
                 "Status",
@@ -713,10 +337,6 @@ const AdminPromoCodes = () => {
                     </div>
                   </td>
 
-                  <td className="px-4 py-3.5 text-gray-500 text-[13px]">
-                    ₹{p.minOrderAmount || 0}
-                  </td>
-
                   <td className="px-4 py-3.5">
                     <UsageBar uses={p.uses || 0} maxUses={p.maxUses} />
                   </td>
@@ -744,12 +364,18 @@ const AdminPromoCodes = () => {
                           </button>
                         }
                       />
-                      <button
-                        className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
-                        onClick={() => handleDelete(p._id)}
-                      >
-                        <DeleteIcon />
-                      </button>
+                      <ConfirmationModal
+                        button={
+                          <button className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors">
+                            <DeleteIcon />
+                          </button>
+                        }
+                        heading="Delete this promo code?"
+                        description={
+                          "Are you sure you want to delete this coupon? This action cannot be undone and the Coupon will be removed from the list."
+                        }
+                        onClick={async () => await handleDelete(p._id)}
+                      />
                     </div>
                   </td>
                 </tr>

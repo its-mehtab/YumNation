@@ -16,7 +16,6 @@ export const CouponProvider = ({ children }) => {
         withCredentials: true,
       });
 
-      console.log(data);
       setCoupon(data);
     } catch (error) {
       console.log("Coupon Error:", error?.response?.data || error.message);

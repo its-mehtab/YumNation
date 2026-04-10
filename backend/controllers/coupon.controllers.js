@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Cart from "../models/cart.modal.js";
 import Coupon from "../models/coupon.modal.js";
 import { validateCoupon } from "../services/coupon.service.js";
@@ -42,35 +43,23 @@ export const createCoupon = async (req, res) => {
     discountType,
     value,
     minOrderAmount,
-    maxDiscount,
     maxUses,
     maxUsesPerUser,
     expiresAt,
+    termsAndConditions,
   } = req.body;
 
-  console.log({
-    code,
-    title,
-    subTitle,
-    discountType,
-    value,
-    minOrderAmount,
-    maxUses,
-    maxUsesPerUser,
-    expiresAt,
-  });
-
   if (
-    code ||
-    title ||
-    subTitle ||
-    discountType ||
-    value ||
-    minOrderAmount ||
-    (discountType === "percentage" && maxDiscount) ||
-    maxUses ||
-    maxUsesPerUser ||
-    expiresAt
+    !code ||
+    !title ||
+    !subTitle ||
+    !discountType ||
+    !value ||
+    !minOrderAmount ||
+    !maxUses ||
+    !maxUsesPerUser ||
+    !expiresAt ||
+    !termsAndConditions
   ) {
     return res.status(400).json({ message: "All fields are required" });
   }
@@ -85,12 +74,6 @@ export const createCoupon = async (req, res) => {
       .json({ message: "Percentage must be between 1 and 100" });
   }
 
-  // if (expiresAt < Date.new) {
-  //   return res
-  //     .status(400)
-  //     .json({ message: "Percentage must be between 1 and 100" });
-  // }
-
   try {
     const codeExists = await Coupon.findOne({
       code: code.trim().toUpperCase(),
@@ -101,16 +84,66 @@ export const createCoupon = async (req, res) => {
     }
 
     const coupon = await Coupon.create({
+      ...req.body,
       code: code.trim().toUpperCase(),
-      discountType,
-      value,
-      minOrderAmount,
-      expiresAt,
     });
 
     return res.status(201).json(coupon);
   } catch (error) {
-    console.error("verifyCoupon error:", error); // 👈 add this
+    console.error("Craetew Coupon error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const updateCoupon = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { ...updateData } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: "Coupon ID is required" });
+    }
+
+    const coupon = await Coupon.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!coupon) {
+      return res.status(404).json({ message: "Coupon not found" });
+    }
+
+    return res.status(200).json(coupon);
+  } catch (error) {
+    console.error("Update Coupon error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const deleteCoupon = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ message: "Coupon ID is required" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid Coupon ID" });
+    }
+
+    const coupon = await Coupon.findByIdAndDelete(id);
+
+    if (!coupon) {
+      return res.status(404).json({ message: "Coupon not found" });
+    }
+
+    return res.status(200).json({
+      message: "Coupon deleted successfully",
+      coupon,
+    });
+  } catch (error) {
+    console.error("Delete Coupon error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
