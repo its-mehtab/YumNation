@@ -28,7 +28,7 @@ const EMPTY_FORM = {
 
 const PromoModal = ({ initial, btn }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { coupon, setCoupon } = useCoupon();
+  const { setCoupons } = useCoupon();
   const { serverURL } = useAuth();
   const [form, setForm] = useState(
     initial
@@ -74,14 +74,18 @@ const PromoModal = ({ initial, btn }) => {
         });
       }
 
-      setCoupon(response.data);
+      setCoupons((prev) =>
+        initial
+          ? prev.map((p) => (p._id === response.data._id ? response.data : p))
+          : [...prev, response.data],
+      );
       setIsModalOpen(false);
 
       notifySuccess(
-        initial ? "Coupon updated successfully" : "New coupon added",
+        initial ? "Coupons updated successfully" : "New coupons added",
       );
     } catch (error) {
-      console.log("Coupon Error:", error?.response?.data || error.message);
+      console.log("Coupons Error:", error?.response?.data || error.message);
 
       notifyError(
         error?.response?.data || (initial ? "Update failed" : "Create failed"),
@@ -181,15 +185,17 @@ const PromoModal = ({ initial, btn }) => {
             />
           </Field>
 
-          <Field label="Max Discount Cap (% discountType)">
-            <input
-              className="field outline-none"
-              type="number"
-              value={form.maxDiscount}
-              onChange={(e) => set("maxDiscount", e.target.value)}
-              placeholder="e.g. 150"
-            />
-          </Field>
+          {form.discountType === "percentage" && (
+            <Field label="Max Discount Cap (% discountType)">
+              <input
+                className="field outline-none"
+                type="number"
+                value={form.maxDiscount}
+                onChange={(e) => set("maxDiscount", e.target.value)}
+                placeholder="e.g. 150"
+              />
+            </Field>
+          )}
 
           {/* Section: Validity */}
           <SectionDivider label="Validity & Limits" />
@@ -244,7 +250,7 @@ const PromoModal = ({ initial, btn }) => {
               value={form.termsAndConditions}
               onChange={(e) => set("termsAndConditions", e.target.value)}
               placeholder={
-                "Offer valid on select restaurants\nCannot be combined with other coupons\nOffer valid till Dec 31, 2026"
+                "Offer valid on select restaurants\nCannot be combined with other couponss\nOffer valid till Dec 31, 2026"
               }
             />
           </Field>
@@ -255,13 +261,13 @@ const PromoModal = ({ initial, btn }) => {
       <div className="sticky bottom-0 bg-white px-6 py-4 flex justify-end gap-2">
         <button
           onClick={() => setIsModalOpen(false)}
-          className="px-4 py-2 text-sm font-semibold text-gray-500 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+          className="px-4 py-2 text-sm font-semibold text-gray-500 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors"
         >
           Cancel
         </button>
         <button
           onClick={handleSave}
-          className="px-5 py-2 text-sm font-semibold text-white bg-[#fc8019] hover:bg-[#e5721f] rounded-xl transition-colors"
+          className="px-5 py-2 text-sm font-semibold text-white bg-[#fc8019] hover:bg-[#e5721f] rounded-md transition-colors"
         >
           {initial ? "Save Changes" : "Create Promo Code"}
         </button>

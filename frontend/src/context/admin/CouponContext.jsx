@@ -5,7 +5,7 @@ import { useAuth } from "../user/AuthContext";
 const CouponContext = createContext();
 
 export const CouponProvider = ({ children }) => {
-  const [coupon, setCoupon] = useState([]);
+  const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(false);
   const { serverURL } = useAuth();
 
@@ -16,7 +16,7 @@ export const CouponProvider = ({ children }) => {
         withCredentials: true,
       });
 
-      setCoupon(data);
+      setCoupons(data);
     } catch (error) {
       console.log("Coupon Error:", error?.response?.data || error.message);
     } finally {
@@ -26,7 +26,7 @@ export const CouponProvider = ({ children }) => {
 
   return (
     <CouponContext.Provider
-      value={{ coupon, setCoupon, fetchCoupon, loading, setLoading }}
+      value={{ coupons, setCoupons, fetchCoupon, loading, setLoading }}
     >
       {children}
     </CouponContext.Provider>

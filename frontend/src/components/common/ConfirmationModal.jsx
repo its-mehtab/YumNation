@@ -37,13 +37,13 @@ const ConfirmationModal = ({ button, heading, description, onClick }) => {
         </AlertDialog.Description>
         <Flex gap="3" mt="4" justify="end">
           <AlertDialog.Cancel asChild>
-            <button className="w-full py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors">
+            <button className="w-full py-2.5 rounded-md border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors">
               Cancel
             </button>
           </AlertDialog.Cancel>
           <button
             onClick={handleConfirm}
-            className="w-full flex justify-center items-center gap-2 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-semibold transition-colors disabled:opacity-40"
+            className="w-full flex justify-center items-center gap-2 py-2.5 rounded-md bg-red-500 hover:bg-red-600 text-white text-sm font-semibold transition-colors disabled:opacity-40"
           >
             Confirm
             <Spinner loading={loading} />

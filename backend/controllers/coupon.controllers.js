@@ -24,6 +24,7 @@ export const verifyCoupon = async (req, res) => {
     return res.status(200).json({
       code: coupon.code,
       discountType: coupon.discountType,
+      maxDiscount: coupon.maxDiscount,
       value: coupon.value,
       minOrderAmount: coupon.minOrderAmount,
     });
@@ -44,6 +45,7 @@ export const createCoupon = async (req, res) => {
     value,
     minOrderAmount,
     maxUses,
+    maxDiscount,
     maxUsesPerUser,
     expiresAt,
     termsAndConditions,
@@ -72,6 +74,9 @@ export const createCoupon = async (req, res) => {
     return res
       .status(400)
       .json({ message: "Percentage must be between 1 and 100" });
+  }
+  if (discountType === "percentage" && !maxDiscount) {
+    return res.status(400).json({ message: "maxDiscount is required" });
   }
 
   try {

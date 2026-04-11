@@ -10,89 +10,6 @@ import { useCoupon } from "../../context/admin/CouponContext";
 import ConfirmationModal from "../../components/common/ConfirmationModal";
 import axios from "axios";
 
-// ─── Static seed data — replace with API fetch ───────────────────────────────
-
-const SEED = [
-  {
-    _id: "1",
-    code: "SAVE99",
-    title: "Items At ₹99",
-    subTitle: "ON SELECT ITEMS",
-    discountType: "flat",
-    value: 99,
-    minOrderAmount: 199,
-    maxDiscount: null,
-    maxUses: 500,
-    uses: 312,
-    expiresAt: "2026-12-31",
-    status: "active",
-    termsAndConditions: [
-      "Offer will be applicable automatically.",
-      "Offer is applicable only on items with discount tags.",
-      "This offer cannot be combined with other coupons.",
-      "Offer is only valid on select restaurants.",
-      "Offer valid till Dec 31, 2026 11:59 PM",
-    ],
-  },
-  {
-    _id: "2",
-    code: "WELCOME50",
-    title: "50% Off First Order",
-    subTitle: "FOR NEW USERS",
-    discountType: "percentage",
-    value: 50,
-    minOrderAmount: 149,
-    maxDiscount: 100,
-    maxUses: 1000,
-    uses: 876,
-    expiresAt: "2026-06-30",
-    status: "active",
-    termsAndConditions: [
-      "Valid only on your first order.",
-      "Max discount capped at ₹100.",
-      "Cannot be combined with other offers.",
-    ],
-  },
-  {
-    _id: "3",
-    code: "FREESHIP",
-    title: "Free Delivery",
-    subTitle: "NO DELIVERY FEE",
-    discountType: "flat",
-    value: 0,
-    minOrderAmount: 99,
-    maxDiscount: null,
-    maxUses: 200,
-    uses: 200,
-    expiresAt: "2026-03-31",
-    status: "inactive",
-    termsAndConditions: [
-      "Valid on orders above ₹99.",
-      "Not valid on premium restaurants.",
-      "One use per user.",
-    ],
-  },
-  {
-    _id: "4",
-    code: "FEAST20",
-    title: "Get 20% Off",
-    subTitle: "ON ORDERS ABOVE ₹299",
-    discountType: "percentage",
-    value: 20,
-    minOrderAmount: 299,
-    maxDiscount: 80,
-    maxUses: 300,
-    uses: 145,
-    expiresAt: "2026-09-30",
-    status: "active",
-    termsAndConditions: [
-      "Valid on select restaurants only.",
-      "Discount capped at ₹80.",
-      "Offer valid once per user per day.",
-    ],
-  },
-];
-
 // ─── Stat Card ────────────────────────────────────────────────────────────────
 
 const StatCard = ({ label, value, color }) => (
@@ -126,25 +43,20 @@ const Badge = ({ children, variant }) => {
 
 const AdminPromoCodes = () => {
   const { serverURL } = useAuth();
-  const { coupon } = useCoupon();
+  const { coupons, setCoupons } = useCoupon();
 
-  const [promos, setPromos] = useState(coupon);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
   const [filterdiscountType, setFilterdiscountType] = useState("");
 
-  const [showCreate, setShowCreate] = useState(false);
-  const [editPromo, setEditPromo] = useState(null);
-  const [previewPromo, setPreviewPromo] = useState(null);
-
   // ── Stats ──
-  const total = promos.length;
-  const active = promos.filter((p) => p.status === "active").length;
-  const totalUses = promos.reduce((s, p) => s + (p.uses || 0), 0);
-  const flatCount = promos.filter((p) => p.discountType === "flat").length;
+  const total = coupons.length;
+  const active = coupons.filter((p) => p.status === "active").length;
+  const totalUses = coupons.reduce((s, p) => s + (p.uses || 0), 0);
+  const flatCount = coupons.filter((p) => p.discountType === "flat").length;
 
   // ── Filter ──
-  const filtered = promos.filter((p) => {
+  const filtered = coupons.filter((p) => {
     const q = search.toLowerCase();
     const matchQ =
       !q ||
@@ -155,39 +67,12 @@ const AdminPromoCodes = () => {
     return matchQ && matchS && matchT;
   });
 
-  // ── CRUD handlers ──
-
-  const handleCreate = async (data) => {
-    try {
-      setPromos((p) => [
-        { ...data, _id: Date.now().toString(), uses: 0 },
-        ...p,
-      ]);
-      setShowCreate(false);
-      notifySuccess("Promo code created");
-    } catch {
-      notifyError("Failed to create promo code");
-    }
-  };
-
-  const handleEdit = async (data) => {
-    try {
-      setPromos((p) =>
-        p.map((x) => (x._id === editPromo._id ? { ...x, ...data } : x)),
-      );
-      setEditPromo(null);
-      notifySuccess("Promo code updated");
-    } catch {
-      notifyError("Failed to update promo code");
-    }
-  };
-
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${serverURL}/api/admin/coupon/${id}`, {
         withCredentials: true,
       });
-      setPromos((p) => p.filter((x) => x._id !== id));
+      setCoupons((p) => p.filter((x) => x._id !== id));
       notifySuccess("Promo code deleted");
     } catch {
       notifyError("Failed to delete promo code");
@@ -197,7 +82,7 @@ const AdminPromoCodes = () => {
   const handleToggleStatus = async (promo) => {
     const next = promo.status === "active" ? "inactive" : "active";
     try {
-      setPromos((p) =>
+      setCoupons((p) =>
         p.map((x) => (x._id === promo._id ? { ...x, status: next } : x)),
       );
       notifySuccess(`Promo ${next === "active" ? "activated" : "deactivated"}`);
@@ -372,7 +257,7 @@ const AdminPromoCodes = () => {
                         }
                         heading="Delete this promo code?"
                         description={
-                          "Are you sure you want to delete this coupon? This action cannot be undone and the Coupon will be removed from the list."
+                          "Are you sure you want to delete this coupons? This action cannot be undone and the Coupons will be removed from the list."
                         }
                         onClick={async () => await handleDelete(p._id)}
                       />
@@ -384,27 +269,6 @@ const AdminPromoCodes = () => {
           </tbody>
         </table>
       </div>
-
-      {/* ── Modals ── */}
-      {/* {showCreate && (
-        <PromoModal
-          onClose={() => setShowCreate(false)}
-          onSave={handleCreate}
-        />
-      )} */}
-      {/* {editPromo && (
-        <PromoModal
-          initial={editPromo}
-          onClose={() => setEditPromo(null)}
-          onSave={handleEdit}
-        />
-      )} */}
-      {previewPromo && (
-        <PreviewModal
-          promo={previewPromo}
-          onClose={() => setPreviewPromo(null)}
-        />
-      )}
     </div>
   );
 };
