@@ -56,7 +56,7 @@ const Orders = () => {
           Looks like you haven't placed any orders yet.
         </p>
         <Link
-          to="/shop"
+          to="/restaurants"
           className="bg-[#fc8019] text-white px-6 py-2.5 rounded-md text-sm font-semibold hover:bg-[#e5721f] transition-colors"
         >
           Browse Menu
@@ -120,9 +120,7 @@ const Orders = () => {
                         </div>
                         <div>
                           <h3 className="flex gap-2 text-sm font-semibold text-gray-700 hover:text-[#fc8019] transition-all">
-                            <div to={`/dish/${order.items[0].dish.slug}`}>
-                              {order.items[0].name}
-                            </div>
+                            <div to={``}>{order.items[0].name}</div>
                             {order.items.length > 1 && (
                               <div className="text-lg text-[#fc8019]">
                                 +{order.items.length - 1}
@@ -130,7 +128,18 @@ const Orders = () => {
                             )}
                           </h3>
                           <p className="text-xs text-gray-500 font-medium mt-2">
-                            {order.items[0].variant} × {order.items[0].quantity}
+                            {order.items[0].variant.name}
+                            {order.items[0].addOns?.length > 0 && (
+                              <>
+                                {" "}
+                                |{" "}
+                                {order.items[0].addOns
+                                  ?.map((a) => a.name)
+                                  .sort()
+                                  .join("+")}
+                              </>
+                            )}{" "}
+                            × {order.items[0].quantity}
                           </p>
                         </div>
                       </div>

@@ -238,7 +238,19 @@ const OrderDetails = () => {
                   </p>
                 </Link>
                 {item.variant && (
-                  <p className="text-xs text-gray-400 mt-0.5">{item.variant}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    {item.variant.name}
+                    {item.addOns?.length > 0 && (
+                      <>
+                        {" "}
+                        |{" "}
+                        {item.addOns
+                          .map((a) => a.name)
+                          .sort()
+                          .join("+")}
+                      </>
+                    )}
+                  </p>
                 )}
               </div>
               <div className="text-right shrink-0">

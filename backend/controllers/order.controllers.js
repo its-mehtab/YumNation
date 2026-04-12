@@ -77,7 +77,7 @@ export const createOrder = async (req, res) => {
         coupon.discountType === "flat"
           ? coupon.value
           : coupon.discountType === "percentage"
-            ? (cartTotal * coupon.value) / 100
+            ? Math.min((cartTotal * coupon.value) / 100, coupon.maxDiscount)
             : 0;
     }
 
@@ -88,6 +88,11 @@ export const createOrder = async (req, res) => {
 
     const order = await Order.create({
       user: userId,
+      restaurant: cart.restaurant._id,
+      restaurantSnapshot: {
+        name: cart.restaurant.name,
+        logo: cart.restaurant.logo,
+      },
       items: cart.items,
       deliveryAddress,
       subtotal,

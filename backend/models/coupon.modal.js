@@ -56,10 +56,6 @@ const couponSchema = new Schema(
       required: true,
       index: true,
     },
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
     termsAndConditions: [
       {
         type: String,

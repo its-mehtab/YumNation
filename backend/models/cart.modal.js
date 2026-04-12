@@ -57,8 +57,8 @@ const cartSchema = new Schema(
 
         addOns: [
           {
-            name: String,
-            price: Number,
+            name: { type: String, required: true },
+            price: { type: Number, required: true },
           },
         ],
       },

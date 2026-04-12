@@ -8,6 +8,23 @@ const orderSchema = new Schema(
       required: true,
     },
 
+    restaurant: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Restaurant",
+      required: true,
+    },
+
+    restaurantSnapshot: {
+      name: {
+        type: String,
+        required: true,
+      },
+      logo: {
+        type: String,
+        required: true,
+      },
+    },
+
     items: [
       {
         dish: {
@@ -37,13 +54,14 @@ const orderSchema = new Schema(
         },
 
         variant: {
-          type: String,
+          name: { type: String },
+          price: { type: Number },
         },
 
         addOns: [
           {
-            type: String,
-            price: Number,
+            name: { type: String, required: true },
+            price: { type: Number, required: true },
           },
         ],
       },

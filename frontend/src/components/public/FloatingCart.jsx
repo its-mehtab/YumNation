@@ -136,7 +136,6 @@ const CartItem = ({ item }) => {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 const FloatingCart = () => {
-  //   const [cart, setCart] = useState(mockCart);
   const [open, setOpen] = useState(false);
   const [animateBtn, setAnimateBtn] = useState(false);
   const popupRef = useRef();

@@ -7,12 +7,19 @@ export const validateCartBeforeCheckout = async (req, res) => {
     const cart = await Cart.findOne({ user: userId })
       .populate(
         "restaurant",
-        "name logo slug cuisine address isOpen rating deliveryFee deliveryTime",
+        "name logo slug cuisine address isOpen rating deliveryFee deliveryTime status",
       )
       .populate("items.dish", "name slug isAvailable variants addOns");
 
     if (!cart || cart.items.length === 0) {
       return res.status(400).json({ message: "Cart is empty" });
+    }
+    if (!cart.restaurant.isOpen) {
+      return res.status(400).json({ message: "Restaurant is closed" });
+    }
+
+    if (cart.restaurant.status !== "active") {
+      return res.status(400).json({ message: "Restaurant is not active" });
     }
 
     let priceChanged = false;

@@ -19,9 +19,19 @@ const restaurantSchema = new Schema(
       required: true,
     },
 
-    email: { type: String, required: true },
+    email: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      match: [/^\S+@\S+\.\S+$/, "Please use a valid email"],
+    },
 
-    phone: { type: String, required: true },
+    phone: {
+      type: String,
+      required: true,
+      match: [/^[0-9]{10}$/, "Please use a valid 10-digit phone number"],
+    },
 
     logo: { type: String },
 
@@ -35,8 +45,15 @@ const restaurantSchema = new Schema(
         state: { type: String, required: true },
         pinCode: { type: String, required: true },
         coordinates: {
-          lat: { type: Number },
-          lng: { type: Number },
+          type: {
+            type: String,
+            enum: ["Point"],
+            default: "Point",
+          },
+          coordinates: {
+            type: [Number], // [lng, lat]
+            index: "2dsphere",
+          },
         },
       },
       required: true,

@@ -81,12 +81,18 @@ const AdminPromoCodes = () => {
 
   const handleToggleStatus = async (promo) => {
     const next = promo.status === "active" ? "inactive" : "active";
+    setCoupons((p) =>
+      p.map((x) => (x._id === promo._id ? { ...x, status: next } : x)),
+    );
     try {
-      setCoupons((p) =>
-        p.map((x) => (x._id === promo._id ? { ...x, status: next } : x)),
+      await axios.patch(
+        `${serverURL}/api/admin/coupon/${promo._id}`,
+        { status: next },
+        { withCredentials: true },
       );
       notifySuccess(`Promo ${next === "active" ? "activated" : "deactivated"}`);
     } catch {
+      setCoupons(coupons);
       notifyError("Failed to update status");
     }
   };
@@ -216,7 +222,7 @@ const AdminPromoCodes = () => {
                       </Badge>
                       <span className="font-semibold text-gray-700">
                         {p.discountType === "flat"
-                          ? `₹${p.value}`
+                          ? `$${p.value}`
                           : `${p.value}%`}
                       </span>
                     </div>

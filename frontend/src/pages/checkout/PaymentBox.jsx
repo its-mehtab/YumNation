@@ -17,6 +17,7 @@ const PaymentBox = ({ setError }) => {
     couponApplied: "",
     invalidCouponMsg: "",
     discountType: null,
+    maxDiscount: null,
     value: 0,
   });
 
@@ -40,7 +41,7 @@ const PaymentBox = ({ setError }) => {
     coupon.discountType === "flat"
       ? coupon.value
       : coupon.discountType === "percentage"
-        ? (coupon.value * subtotal) / 100
+        ? Math.min((coupon.value * subtotal) / 100, coupon.maxDiscount)
         : 0;
 
   const tax = (subtotal * 5) / 100;
@@ -64,6 +65,8 @@ const PaymentBox = ({ setError }) => {
 
       setCoupon({
         discountType: data.discountType,
+        maxDiscount:
+          data.discountType === "percentage" ? data.maxDiscount : null,
         value: data.value,
         couponCode: "",
         invalidCouponMsg: "",

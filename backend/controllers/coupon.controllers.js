@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Cart from "../models/cart.modal.js";
 import Coupon from "../models/coupon.modal.js";
 import { validateCoupon } from "../services/coupon.service.js";
+import Order from "../models/order.modal.js";
 
 export const getCoupons = async (req, res) => {
   try {
@@ -19,6 +20,9 @@ export const verifyCoupon = async (req, res) => {
   const { code } = req.params;
 
   try {
+    const userCouponUsed = await Order.countDocuments({ user: userId, code });
+    console.log(userCouponUsed);
+
     const { coupon } = await validateCoupon(userId, code);
 
     return res.status(200).json({
