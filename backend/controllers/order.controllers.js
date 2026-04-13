@@ -42,10 +42,12 @@ export const getOrderById = async (req, res) => {
   const userId = req.userId;
 
   try {
-    const order = await Order.findOne({ user: userId, _id: id }).populate(
-      "items.dish",
-      "slug",
-    );
+    const order = await Order.findOne({ user: userId, _id: id })
+      .populate("items.dish", "slug")
+      .populate(
+        "restaurant",
+        "name logo slug cuisine address isOpen rating deliveryFee deliveryTime status",
+      );
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });

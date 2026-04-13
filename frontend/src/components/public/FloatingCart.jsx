@@ -272,32 +272,34 @@ const FloatingCart = () => {
           </div>
         )}
 
-        <button
-          onClick={() => setOpen((p) => !p)}
-          className={`flex items-center gap-3 bg-[#fc8019] hover:bg-[#e5721f] text-white pl-4 pr-5 py-3.5 rounded-md shadow-[0_4px_20px_rgba(252,128,25,0.5)] transition-colors ${animateBtn ? "pop-in" : ""}`}
-        >
-          <div className="relative">
-            <CartIcon />
-            <span className="absolute -top-1 -right-2 w-4 h-4 bg-white text-[#fc8019] text-xs font-medium rounded-full flex items-center justify-center leading-none">
-              {totalItems}
+        {cart?.items?.length > 0 && (
+          <button
+            onClick={() => setOpen((p) => !p)}
+            className={`flex items-center gap-3 bg-[#fc8019] hover:bg-[#e5721f] text-white pl-4 pr-5 py-3.5 rounded-md shadow-[0_4px_20px_rgba(252,128,25,0.5)] transition-colors ${animateBtn ? "pop-in" : ""}`}
+          >
+            <div className="relative">
+              <CartIcon />
+              <span className="absolute -top-1 -right-2 w-4 h-4 bg-white text-[#fc8019] text-xs font-medium rounded-full flex items-center justify-center leading-none">
+                {totalItems}
+              </span>
+            </div>
+
+            <div className="text-left">
+              <p className="text-xs font-semibold leading-none">
+                {totalItems} item{totalItems > 1 ? "s" : ""}
+              </p>
+              <p className="text-xs opacity-80 mt-0.5 leading-none">
+                {cart?.restaurant?.name}
+              </p>
+            </div>
+
+            <div className="w-px h-6 bg-white/30 mx-1" />
+
+            <span className="text-sm font-semibold">
+              ${totalPrice?.toFixed(2)}
             </span>
-          </div>
-
-          <div className="text-left">
-            <p className="text-xs font-semibold leading-none">
-              {totalItems} item{totalItems > 1 ? "s" : ""}
-            </p>
-            <p className="text-xs opacity-80 mt-0.5 leading-none">
-              {cart?.restaurant?.name}
-            </p>
-          </div>
-
-          <div className="w-px h-6 bg-white/30 mx-1" />
-
-          <span className="text-sm font-semibold">
-            ${totalPrice?.toFixed(2)}
-          </span>
-        </button>
+          </button>
+        )}
       </div>
     </>
   );

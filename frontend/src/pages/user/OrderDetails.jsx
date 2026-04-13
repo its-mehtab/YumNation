@@ -4,6 +4,9 @@ import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
 import dayjs from "dayjs";
 import { assets } from "../../assets/assets";
+import { Skeleton } from "@radix-ui/themes";
+import { LocationIcon, TimeIcon } from "../../assets/icon/Icons";
+import { StarIcon } from "@radix-ui/react-icons";
 
 // ── Status config ────────────────────────────────────────────────────────────
 const STATUSES = [
@@ -206,6 +209,80 @@ const OrderDetails = () => {
                 last={i === STATUSES.length - 1}
               />
             ))}
+          </div>
+        </div>
+      )}
+
+      {order && loading ? (
+        <Skeleton loading={true} className="h-20 w-full rounded-xl" />
+      ) : (
+        <div className="p-4 rounded-xl border border-gray-300 mb-5">
+          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">
+            Ordering From
+          </p>
+          <div className="flex items-center gap-4">
+            <Link to={`/restaurant/${order?.restaurant?.slug}`}>
+              <div className="w-14 h-14 min-w-14 rounded-xl border border-orange-200 bg-white overflow-hidden flex items-center justify-center text-2xl">
+                {order?.restaurantSnapshot.logo ? (
+                  <img
+                    src={order?.restaurantSnapshot.logo}
+                    alt={order?.restaurantSnapshot.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  "🏪"
+                )}
+              </div>
+            </Link>
+
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Link
+                  to={`/restaurant/${order?.restaurant?.slug}`}
+                  className="font-bold text-gray-800 hover:text-[#fc8019] transition-colors text-[15px]"
+                >
+                  {order?.restaurantSnapshot?.name}
+                </Link>
+                <span
+                  className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                    order?.restaurant?.isOpen
+                      ? "bg-green-100 text-green-600"
+                      : "bg-gray-100 text-gray-400"
+                  }`}
+                >
+                  {order?.restaurant?.isOpen ? "● Open" : "● Closed"}
+                </span>
+              </div>
+              <p className="text-xs text-gray-400 mt-1">
+                {order?.restaurant?.cuisine.map((c) => c).join(" · ")}
+              </p>
+              <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-500 flex-wrap">
+                <span className="flex items-center gap-1">
+                  <LocationIcon size={16} />
+                  {order?.restaurant?.address.addressLine1},{" "}
+                  {order?.restaurant?.address.city}
+                </span>
+                <span className="text-gray-300">•</span>
+                <span className="flex items-center gap-1">
+                  <TimeIcon /> {order?.restaurant?.deliveryTime} min
+                </span>
+                <span className="text-gray-300">•</span>
+                <span className="flex items-center gap-1">
+                  <StarIcon /> {order?.restaurant?.rating}
+                </span>
+                <span className="text-gray-300">•</span>
+                <span className="flex items-center gap-1 text-[#fc8019] font-medium">
+                  ${order?.restaurant?.deliveryFee} delivery
+                </span>
+              </div>
+            </div>
+
+            <Link
+              to={`/restaurant/${order?.restaurant?.slug}`}
+              className="shrink-0 text-xs font-semibold text-[#fc8019] border border-orange-200 px-3 py-1.5 rounded-lg hover:bg-white transition-colors hidden sm:block"
+            >
+              View Menu →
+            </Link>
           </div>
         </div>
       )}
