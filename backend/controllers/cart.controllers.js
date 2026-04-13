@@ -60,7 +60,7 @@ export const addCart = async (req, res) => {
     }
 
     const addOnsArr = [];
-    addOns.forEach((a) => {
+    addOns?.forEach((a) => {
       const addOnExist = dishDoc.addOns.find((dishA) => dishA.name === a);
 
       addOnsArr.push(addOnExist);

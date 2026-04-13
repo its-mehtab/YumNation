@@ -5,7 +5,15 @@ import { useAuth } from "../../context/user/AuthContext";
 import dayjs from "dayjs";
 import { assets } from "../../assets/assets";
 import { Skeleton } from "@radix-ui/themes";
-import { LocationIcon, TimeIcon } from "../../assets/icon/Icons";
+import {
+  ConfirmedIcon,
+  DeliveredIcon,
+  DeliveryIcon,
+  LocationIcon,
+  PlacedIcon,
+  PreparingIcon,
+  TimeIcon,
+} from "../../assets/icon/Icons";
 import { StarIcon } from "@radix-ui/react-icons";
 
 // ── Status config ────────────────────────────────────────────────────────────
@@ -41,7 +49,7 @@ const TimelineStep = ({ label, icon, done, active, last }) => (
       />
       {/* dot */}
       <div
-        className={`w-9 h-9 rounded-full flex items-center justify-center z-10 border-2 transition-all duration-500 text-base
+        className={`w-12 h-12 rounded-full flex items-center justify-center z-10 border-2 transition-all duration-500 text-base
         ${
           active
             ? "border-[#fc8019] bg-[#fc8019] text-white scale-110 shadow-lg shadow-orange-200"
@@ -60,14 +68,20 @@ const TimelineStep = ({ label, icon, done, active, last }) => (
     </div>
     <p
       className={`text-xs mt-2 font-medium capitalize text-center leading-tight
-      ${active ? "text-[#fc8019]" : done ? "text-gray-600" : "text-gray-300"}`}
+      ${active ? "text-[#fc8019]" : done ? "text-gray-600" : "text-gray-400"}`}
     >
       {label}
     </p>
   </div>
 );
 
-const TIMELINE_ICONS = ["📋", "✅", "👨‍🍳", "🛵", "🎉"];
+const TIMELINE_ICONS = [
+  <PlacedIcon size={"60%"} color="currentColor" />,
+  <ConfirmedIcon size={"60%"} color="currentColor" />,
+  <PreparingIcon size={"60%"} color="currentColor" />,
+  <DeliveryIcon size={"60%"} color="currentColor" />,
+  <DeliveredIcon size={"60%"} color="currentColor" />,
+];
 
 // ── Price Row ────────────────────────────────────────────────────────────────
 const PriceRow = ({ label, value, highlight, strikethrough }) => (

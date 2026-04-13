@@ -5,7 +5,6 @@ import { useAuth } from "../../context/user/AuthContext";
 import { useCart } from "../../context/user/CartContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { MinusIcon, PlusIcon } from "../../assets/icon/Icons";
-import { fetchAvailibility } from "../../utils/availibility";
 import { assets } from "../../assets/assets";
 
 const CartItem = ({ cartItem, restaurant }) => {
@@ -13,8 +12,6 @@ const CartItem = ({ cartItem, restaurant }) => {
 
   const { serverURL } = useAuth();
   const { setCart } = useCart();
-
-  const { isUnavailable, statusText } = fetchAvailibility(cartItem.dish);
 
   const addOns = cartItem.addOns.map((a) => a.name);
 
@@ -105,17 +102,17 @@ const CartItem = ({ cartItem, restaurant }) => {
         <img src={assets.dish2} alt="" className="w-full" />
       </Link>
       <div>
-        {isUnavailable && (
+        {!cartItem.dish.isAvailable && (
           <p className="text-xs bg-red-500 text-white font-medium mb-2 px-2 py-0.5 inline-block rounded-sm">
-            {statusText}
+            Unavailable
           </p>
         )}
         <h3 className="text-sm font-semibold text-gray-700 hover:text-[#fc8019] transition-all">
           <Link to={`/restaurant/${restaurant.slug}`}>{cartItem.name}</Link>
         </h3>
         <p className="text-xs text-gray-500 font-medium mt-2">
-          {cartItem.variant.name}
-          {cartItem.addOns.length > 0 && (
+          {cartItem.variant?.name}
+          {cartItem.addOns?.length > 0 && (
             <>
               {" "}
               |{" "}

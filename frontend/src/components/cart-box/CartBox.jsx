@@ -45,8 +45,8 @@ const CartBox = () => {
             <CartItem
               restaurant={cart.restaurant}
               cartItem={cartItem}
-              key={`${cartItem.dish._id}-${cartItem.variant.name}-${cartItem.addOns
-                .map((a) => a.name)
+              key={`${cartItem.dish._id}-${cartItem.variant?.name}-${cartItem.addOns
+                ?.map((a) => a.name)
                 .sort()
                 .join("+")}`}
             />

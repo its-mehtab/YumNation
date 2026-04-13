@@ -128,7 +128,7 @@ const Orders = () => {
                             )}
                           </h3>
                           <p className="text-xs text-gray-500 font-medium mt-2">
-                            {order.items[0].variant.name}
+                            {order.items[0].variant?.name}
                             {order.items[0].addOns?.length > 0 && (
                               <>
                                 {" "}

@@ -30,7 +30,7 @@ const CartItem = ({ item }) => {
         {
           action: "decrease",
           dishId: item.dish._id,
-          variant: item.variant.name,
+          variant: item.variant?.name,
           addOns,
         },
         { withCredentials: true },
@@ -58,7 +58,7 @@ const CartItem = ({ item }) => {
         {
           action: "increase",
           dishId: item.dish._id,
-          variant: item.variant.name,
+          variant: item.variant?.name,
           addOns,
         },
         { withCredentials: true },

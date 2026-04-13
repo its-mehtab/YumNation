@@ -6,11 +6,13 @@ import { notifyError, notifySuccess } from "../../utils/toast";
 import { WishlistIcon, WishlistIconRed } from "../../assets/icon/Icons";
 import { useWishlist } from "../../context/user/WishlistContext";
 import AddToCartModal from "./AddToCartModal";
+import { useCart } from "../../context/user/CartContext";
 
 const DishItem = ({ dish, restaurant }) => {
   const [isDescTrimmed, setIsDescTrimmed] = useState(true);
 
   const { serverURL } = useAuth();
+  const { cart, setCart } = useCart();
   const { wishlist, setWishlist } = useWishlist();
   const restaurantWishlst = wishlist?.find(
     (w) => w.restaurant._id === restaurant._id,
@@ -35,6 +37,26 @@ const DishItem = ({ dish, restaurant }) => {
       setWishlistActive(wishlistActive);
       console.log("Cart Error:", error?.response?.data || error.message);
       notifyError("Add wishlist failed");
+    }
+  };
+
+  const handleAddCart = async (dish, restaurant) => {
+    try {
+      const { data } = await axios.post(
+        `${serverURL}/api/cart`,
+        {
+          dish: dish._id,
+          restaurant: restaurant._id,
+        },
+        { withCredentials: true },
+      );
+
+      setCart(data);
+
+      notifySuccess(`${dish.name} added to cart`);
+    } catch (error) {
+      console.log("Cart Error:", error?.response?.data || error.message);
+      notifyError(error?.response?.data.message);
     }
   };
 
@@ -94,6 +116,14 @@ const DishItem = ({ dish, restaurant }) => {
               ADD
             </button>
           </AddToCartModal>
+        )}
+        {(dish.variants.length === 0 || dish.addOns === 0) && (
+          <button
+            onClick={() => handleAddCart(dish, restaurant)}
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-white border border-gray-200 rounded-lg px-5 py-1.5 text-[13px] font-bold text-orange-600 shadow-sm whitespace-nowrap hover:bg-orange-50 transition-colors"
+          >
+            ADD
+          </button>
         )}
       </div>
     </div>

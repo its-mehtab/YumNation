@@ -8,7 +8,6 @@ import { useAuth } from "../../context/user/AuthContext";
 import { useCart } from "../../context/user/CartContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { useWishlist } from "../../context/user/WishlistContext";
-import { fetchAvailibility } from "../../utils/availibility";
 import DishDetailsSkeleton from "../../components/skeleton/DishDetailsSkeleton";
 
 const Dish = () => {
@@ -55,8 +54,8 @@ const Dish = () => {
     : mainDish?.price;
 
   const handleAddCart = async () => {
-    if (isUnavailable) {
-      notifyError(`${mainDish.name} is ${statusText}`);
+    if (!mainDish.dish.isAvailable) {
+      notifyError(`${mainDish.name} is Unavailable`);
       return;
     }
     setCartLoading(true);
@@ -135,14 +134,12 @@ const Dish = () => {
     getMainDish();
   }, [slug]);
 
-  const { isUnavailable, statusText } = mainDish
-    ? fetchAvailibility(mainDish)
-    : {};
-
   return loading ? (
     <DishDetailsSkeleton />
   ) : (
-    <section className={`fade-up ${isUnavailable ? "grayscale" : ""}`}>
+    <section
+      className={`fade-up ${!mainDish.dish.isAvailable ? "grayscale" : ""}`}
+    >
       <div className="grid grid-cols-9 gap-8">
         <div className="col-span-4">
           <ul className="flex mb-8 text-gray-600">
@@ -163,9 +160,9 @@ const Dish = () => {
           <DishGallery />
         </div>
         <div className="col-span-5 md:pr-5">
-          {isUnavailable && (
+          {!mainDish.dish.isAvailable && (
             <h3 className="mb-3 bg-[#fc8019] text-white px-3 py-1 rounded-md inline-block">
-              {statusText}
+              Unavailable
             </h3>
           )}
           <h2 className="text-2xl font-semibold text-gray-600">

@@ -1,11 +1,8 @@
 import React from "react";
 import { assets } from "../../assets/assets";
 import { Link } from "react-router-dom";
-import { fetchAvailibility } from "../../utils/availibility";
 
 const DishCardSm = ({ item, setIsSearchActive, setResults, setResultName }) => {
-  const { isUnavailable, statusText } = fetchAvailibility(item);
-
   return (
     <Link
       onClick={() => {
@@ -14,13 +11,13 @@ const DishCardSm = ({ item, setIsSearchActive, setResults, setResultName }) => {
         setResultName("");
       }}
       to={`dish/${item.slug}`}
-      className={`border text-[#b2b2b2] p-3 rounded-lg text-xl cursor-pointer text-center min-h-34 block ${isUnavailable && "grayscale"}`}
+      className={`border text-[#b2b2b2] p-3 rounded-lg text-xl cursor-pointer text-center min-h-34 block ${!item.dish.isAvailable && "grayscale"}`}
     >
       <div className="relative">
         <img src={assets.dish2} className="max-w-20 mx-auto" />
-        {isUnavailable && (
+        {!item.dish.isAvailable && (
           <span className="bg-[#fc8019] text-white text-xs absolute top-1/2 -left-3 -translate-y-1/2 -right-3 text-center px-2.5 py-1.5">
-            {statusText}
+            Unavailable
           </span>
         )}
       </div>

@@ -12,12 +12,9 @@ import axios from "axios";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { useWishlist } from "../../context/user/WishlistContext";
 import { StarIcon } from "../../assets/icon/Icons";
-import { fetchAvailibility } from "../../utils/availibility";
 
 const DishCard = ({ currDish, dishLoading }) => {
   const [wishlistActive, setWishlistActive] = useState(false);
-
-  const { isUnavailable, statusText } = fetchAvailibility(currDish);
 
   const { serverURL } = useAuth();
   const { setCart } = useCart();
@@ -29,11 +26,6 @@ const DishCard = ({ currDish, dishLoading }) => {
   } = useWishlist();
 
   const handleAddCart = async () => {
-    // if (isUnavailable) {
-    //   notifyError(`${currDish.name} is ${statusText}`);
-    //   return;
-    // }
-
     try {
       const { data } = await axios.post(
         `${serverURL}/api/cart`,
@@ -105,7 +97,7 @@ const DishCard = ({ currDish, dishLoading }) => {
 
   return (
     <div
-      className={`border border-[#b2b2b2] rounded-lg py-4 px-3.5 relative ${isUnavailable ? "grayscale" : ""}`}
+      className={`border border-[#b2b2b2] rounded-lg py-4 px-3.5 relative ${!currDish.isAvailable ? "grayscale" : ""}`}
     >
       <span className="bg-[#eb5757] text-white text-sm absolute -top-0.5 -left-px rounded-tl-lg rounded-br-md px-2.5 py-0.5">
         15% Off
@@ -117,9 +109,9 @@ const DishCard = ({ currDish, dishLoading }) => {
         {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}
       </span>
       <Link className="relative" to={`/dish/${currDish.slug}`}>
-        {isUnavailable && (
+        {!currDish.isAvailable && (
           <span className="bg-[#fc8019] text-white text-md absolute top-1/2 -left-4 -translate-y-1/2 -right-4 text-center px-2.5 py-1.5">
-            {statusText}
+            Unavailable
           </span>
         )}
         <img src={assets.dish2} alt="" className="h-31.5 mx-auto mb-3" />
