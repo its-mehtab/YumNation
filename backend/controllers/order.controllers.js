@@ -1,39 +1,51 @@
 import Cart from "../models/cart.modal.js";
+import Coupon from "../models/coupon.modal.js";
 import Order from "../models/order.modal.js";
 import { validateCoupon } from "../services/coupon.service.js";
+import { getPaginatedOrders } from "../services/order.service.js";
 
 export const getUserOrders = async (req, res) => {
-  const userId = req.userId;
-  const { page = 1, limit = 5 } = req.query;
-
   try {
-    const pageNum = Math.max(Number(page), 1);
-    const limitNum = Math.min(Number(limit), 50);
+    const result = await getPaginatedOrders({
+      filter: { user: req.userId },
+      page: req.query.page,
+      limit: req.query.limit,
+      populate: "items.dish",
+    });
+    console.log(result.orders);
 
-    const [orders, total] = await Promise.all([
-      Order.find({ user: userId })
-        .sort({ createdAt: -1 })
-        .skip((pageNum - 1) * limitNum)
-        .limit(limitNum)
-        .populate("items.dish", "slug"),
-
-      Order.countDocuments({ user: userId }),
-    ]);
-
-    if (orders.length === 0) {
-      return res.status(400).json({ message: "Order is empty" });
+    if (result.orders.length === 0) {
+      return res.status(404).json({ message: "No orders found" });
     }
 
-    res.status(200).json({
-      orders,
-      total,
-      page: pageNum,
-      pages: Math.ceil(total / limitNum),
-    });
+    res.status(200).json(result);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Internal server error:", error: error.message });
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+export const getAllOrders = async (req, res) => {
+  try {
+    const result = await getPaginatedOrders({
+      filter: {},
+      page: req.query.page,
+      limit: req.query.limit,
+      populate: "items.dish",
+    });
+
+    if (result.orders.length === 0) {
+      return res.status(404).json({ message: "No orders found" });
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
@@ -104,7 +116,20 @@ export const createOrder = async (req, res) => {
       totalAmount: total,
       paymentMethod,
       paymentStatus,
+      couponCode: coupon?.code || null,
     });
+
+    if (coupon) {
+      await Coupon.findOneAndUpdate(
+        {
+          _id: coupon._id,
+          usedCount: { $lt: coupon.maxUses },
+        },
+        {
+          $inc: { usedCount: 1 },
+        },
+      );
+    }
 
     await Cart.findOneAndDelete({ user: userId });
 

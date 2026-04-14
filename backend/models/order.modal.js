@@ -127,6 +127,8 @@ const orderSchema = new Schema(
       ],
       default: "placed",
     },
+
+    couponCode: { type: String, default: null },
   },
   { timestamps: true },
 );

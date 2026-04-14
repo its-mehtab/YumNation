@@ -8,6 +8,7 @@ import { useRestaurant } from "./owner/RestaurantContext";
 import { useRestaurants } from "./admin/RestaurantsContext";
 import { useDish } from "./owner/DishContext";
 import { useCoupon } from "./admin/CouponContext";
+import { useAdminOrders } from "./admin/AdminOrdersContext";
 
 const AppInit = () => {
   const { user } = useAuth();
@@ -20,6 +21,7 @@ const AppInit = () => {
   const { getRestaurantDishes } = useDish();
 
   const { fetchRestaurants } = useRestaurants();
+  const { fetchAdminOrders } = useAdminOrders();
   const { fetchCoupon } = useCoupon();
 
   useEffect(() => {
@@ -40,6 +42,7 @@ const AppInit = () => {
     if (user.role === "admin") {
       fetchRestaurants();
       fetchCoupon();
+      fetchAdminOrders();
     }
   }, [user]);
 

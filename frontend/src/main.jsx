@@ -19,6 +19,7 @@ import { RestaurantProvider } from "./context/owner/RestaurantContext.jsx";
 import { RestaurantsProvider as AdminRestaurantsProvider } from "./context/admin/RestaurantsContext.jsx";
 import { RestaurantsProvider } from "./context/public/RestaurantsContext.jsx";
 import { CouponProvider } from "./context/admin/CouponContext.jsx";
+import { AdminOrdersProvider } from "./context/admin/AdminOrdersContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -32,16 +33,18 @@ createRoot(document.getElementById("root")).render(
                   <AddressContextProvider>
                     <ValidateProvider>
                       <OrderContextProvider>
-                        <RestaurantProvider>
-                          <AdminRestaurantsProvider>
-                            <CouponProvider>
-                              <Theme accentColor="orange">
-                                <AppInit />
-                                <App />
-                              </Theme>
-                            </CouponProvider>
-                          </AdminRestaurantsProvider>
-                        </RestaurantProvider>
+                        <AdminOrdersProvider>
+                          <RestaurantProvider>
+                            <AdminRestaurantsProvider>
+                              <CouponProvider>
+                                <Theme accentColor="orange">
+                                  <AppInit />
+                                  <App />
+                                </Theme>
+                              </CouponProvider>
+                            </AdminRestaurantsProvider>
+                          </RestaurantProvider>
+                        </AdminOrdersProvider>
                       </OrderContextProvider>
                     </ValidateProvider>
                   </AddressContextProvider>

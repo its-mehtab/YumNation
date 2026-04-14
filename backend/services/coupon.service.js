@@ -1,5 +1,6 @@
 import Cart from "../models/cart.modal.js";
 import Coupon from "../models/coupon.modal.js";
+import Order from "../models/order.modal.js";
 
 export const validateCoupon = async (userId, code) => {
   const cart = await Cart.findOne({ user: userId }).populate(
@@ -32,14 +33,26 @@ export const validateCoupon = async (userId, code) => {
   if (coupon.expiresAt < Date.now()) {
     throw new Error("Coupon Expired");
   }
-  if (coupon.usedCount >= coupon.maxUses) {
-    throw new Error("Max Uses for this Coupon Exceeded");
-  }
-
-  if (cartTotal < coupon.minOrderAmount) {
+  if (
+    coupon.discountType === "percentage" &&
+    cartTotal < coupon.minOrderAmount
+  ) {
     throw new Error(
       `Minimum cart of $${coupon.minOrderAmount} is required for this Coupon`,
     );
+  }
+
+  const userCouponUsed = await Order.countDocuments({
+    user: userId,
+    couponCode: code,
+  });
+
+  if (userCouponUsed >= coupon.maxUsesPerUser) {
+    throw new Error("You've already used this promo code");
+  }
+
+  if (coupon.maxUses && coupon.usedCount >= coupon.maxUses) {
+    throw new Error("Promo code fully redeemed");
   }
 
   return { coupon, cart, cartTotal };

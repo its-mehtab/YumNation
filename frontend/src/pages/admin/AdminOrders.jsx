@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
+import { useAdminOrders } from "../../context/admin/AdminOrdersContext";
 
 // ── Mock data ────────────────────────────────────────────────────────────────
 const mockOrders = [
@@ -128,7 +129,7 @@ const StatusDropdown = ({ orderId, current, onChange }) => (
 
 // ── Main Component ───────────────────────────────────────────────────────────
 const AdminOrders = () => {
-  const [orders, setOrders] = useState(mockOrders);
+  const [orders, setOrders] = useAdminOrders();
   const [statusFilter, setStatusFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");

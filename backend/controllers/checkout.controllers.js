@@ -10,7 +10,6 @@ export const validateCartBeforeCheckout = async (req, res) => {
         "name logo slug cuisine address isOpen rating deliveryFee deliveryTime status",
       )
       .populate("items.dish", "name slug price isAvailable variants addOns");
-    //                                      ↑ also populate price — you need it for the base price check
 
     if (!cart || cart.items.length === 0) {
       return res.status(400).json({ message: "Cart is empty" });
