@@ -41,6 +41,11 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    status: {
+      type: String,
+      enam: ["active", inactive, "blocked"],
+      default: "active",
+    },
   },
   { timestamps: true },
 );

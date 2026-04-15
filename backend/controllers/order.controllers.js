@@ -14,7 +14,7 @@ export const getUserOrders = async (req, res) => {
     });
     console.log(result.orders);
 
-    if (result.orders.length === 0) {
+    if (result?.orders?.length === 0) {
       return res.status(404).json({ message: "No orders found" });
     }
 
@@ -36,7 +36,7 @@ export const getAllOrders = async (req, res) => {
       populate: "items.dish",
     });
 
-    if (result.orders.length === 0) {
+    if (result?.orders?.length === 0) {
       return res.status(404).json({ message: "No orders found" });
     }
 

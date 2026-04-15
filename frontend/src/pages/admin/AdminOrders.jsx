@@ -4,78 +4,6 @@ import dayjs from "dayjs";
 import { useAdminOrders } from "../../context/admin/AdminOrdersContext";
 
 // ── Mock data ────────────────────────────────────────────────────────────────
-const mockOrders = [
-  {
-    _id: "64f3a2b1c9e1234567890001",
-    user: { name: "John Doe", email: "john@example.com" },
-    items: [{ name: "Italian Pizza" }, { name: "Coke" }],
-    totalAmount: 89.5,
-    paymentMethod: "cod",
-    paymentStatus: "pending",
-    orderStatus: "placed",
-    deliveryAddress: { city: "New York", state: "NY" },
-    createdAt: "2026-03-10T10:20:00Z",
-  },
-  {
-    _id: "64f3a2b1c9e1234567890002",
-    user: { name: "Sara Smith", email: "sara@example.com" },
-    items: [{ name: "Veg Burger" }],
-    totalAmount: 24.0,
-    paymentMethod: "card",
-    paymentStatus: "paid",
-    orderStatus: "preparing",
-    deliveryAddress: { city: "Los Angeles", state: "CA" },
-    createdAt: "2026-03-10T11:05:00Z",
-  },
-  {
-    _id: "64f3a2b1c9e1234567890003",
-    user: { name: "Mike Johnson", email: "mike@example.com" },
-    items: [
-      { name: "Spaghetti" },
-      { name: "Garlic Bread" },
-      { name: "Tiramisu" },
-    ],
-    totalAmount: 56.75,
-    paymentMethod: "card",
-    paymentStatus: "paid",
-    orderStatus: "delivered",
-    deliveryAddress: { city: "Chicago", state: "IL" },
-    createdAt: "2026-03-09T18:30:00Z",
-  },
-  {
-    _id: "64f3a2b1c9e1234567890004",
-    user: { name: "Emily Davis", email: "emily@example.com" },
-    items: [{ name: "Red Velvet Cake" }],
-    totalAmount: 15.0,
-    paymentMethod: "cod",
-    paymentStatus: "pending",
-    orderStatus: "confirmed",
-    deliveryAddress: { city: "Houston", state: "TX" },
-    createdAt: "2026-03-10T09:15:00Z",
-  },
-  {
-    _id: "64f3a2b1c9e1234567890005",
-    user: { name: "Chris Brown", email: "chris@example.com" },
-    items: [{ name: "Chicken Wings" }, { name: "Fries" }],
-    totalAmount: 38.0,
-    paymentMethod: "card",
-    paymentStatus: "paid",
-    orderStatus: "out for delivery",
-    deliveryAddress: { city: "Phoenix", state: "AZ" },
-    createdAt: "2026-03-10T12:45:00Z",
-  },
-  {
-    _id: "64f3a2b1c9e1234567890006",
-    user: { name: "Anna Wilson", email: "anna@example.com" },
-    items: [{ name: "Margherita Pizza" }],
-    totalAmount: 22.5,
-    paymentMethod: "cod",
-    paymentStatus: "pending",
-    orderStatus: "cancelled",
-    deliveryAddress: { city: "Philadelphia", state: "PA" },
-    createdAt: "2026-03-08T14:10:00Z",
-  },
-];
 
 const STATUS_OPTIONS = [
   "all",
@@ -129,20 +57,20 @@ const StatusDropdown = ({ orderId, current, onChange }) => (
 
 // ── Main Component ───────────────────────────────────────────────────────────
 const AdminOrders = () => {
-  const [orders, setOrders] = useAdminOrders();
+  const { orders, setOrders, loading } = useAdminOrders();
   const [statusFilter, setStatusFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");
 
   // ── Filter + sort ──
-  const filtered = orders
+  const filtered = orders.items
     .filter((o) => {
       const matchStatus =
         statusFilter === "all" || o.orderStatus === statusFilter;
       const matchSearch =
-        o.user.name.toLowerCase().includes(search.toLowerCase()) ||
-        o._id.slice(-6).toLowerCase().includes(search.toLowerCase()) ||
-        o.items.some((i) =>
+        o?.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
+        o?._id?.slice(-6)?.toLowerCase().includes(search.toLowerCase()) ||
+        o?.items?.some((i) =>
           i.name.toLowerCase().includes(search.toLowerCase()),
         );
       return matchStatus && matchSearch;
@@ -165,16 +93,22 @@ const AdminOrders = () => {
     );
   };
 
+  console.log(orders);
+
   // ── Stats ──
   const stats = {
-    total: orders.length,
-    pending: orders.filter((o) => o.orderStatus === "placed").length,
-    preparing: orders.filter((o) => o.orderStatus === "preparing").length,
-    delivered: orders.filter((o) => o.orderStatus === "delivered").length,
-    revenue: orders
-      .filter((o) => o.paymentStatus === "paid")
+    total: orders.items?.length,
+    pending: orders.items?.filter((o) => o.orderStatus === "placed").length,
+    preparing: orders.items?.filter((o) => o.orderStatus === "preparing")
+      .length,
+    delivered: orders.items?.filter((o) => o.orderStatus === "delivered")
+      .length,
+    revenue: orders.items
+      ?.filter((o) => o.paymentStatus === "paid")
       .reduce((acc, o) => acc + o.totalAmount, 0),
   };
+
+  if (loading) return "Loading...";
 
   return (
     <div>
@@ -259,7 +193,7 @@ const AdminOrders = () => {
                 {s}
                 {s !== "all" && (
                   <span className="ml-1 opacity-70">
-                    ({orders.filter((o) => o.orderStatus === s).length})
+                    ({orders.items.filter((o) => o.orderStatus === s).length})
                   </span>
                 )}
               </button>

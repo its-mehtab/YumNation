@@ -17,7 +17,7 @@ export const AdminOrdersProvider = ({ children }) => {
         withCredentials: true,
       });
 
-      setOrders(data.orders);
+      setOrders(data);
     } catch (error) {
       console.log("Order Error:", error?.response?.data || error.message);
     } finally {

@@ -20,7 +20,7 @@ export const getPaginatedOrders = async ({
   ]);
 
   return {
-    orders,
+    items: orders,
     total,
     page: pageNum,
     pages: Math.ceil(total / limitNum),
