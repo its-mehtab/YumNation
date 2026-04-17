@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { useAuth } from "../../context/user/AuthContext";
 import { DeleteIcon, ViewIcon } from "../../assets/icon/Icons";
+import { useAllUsers } from "../../context/admin/AllUsersContext";
 
 // ─── Seed Data ────────────────────────────────────────────────────────────────
 
@@ -423,6 +424,10 @@ const AdminCustomers = () => {
   const [sortBy, setSortBy] = useState("joinedAt");
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
+  const { allUsers, fetchAllUsers } = useAllUsers();
+
+  console.log(allUsers);
+
   // ── Stats ──
   const total = customers.length;
   const active = customers.filter((c) => c.status === "active").length;
@@ -473,6 +478,10 @@ const AdminCustomers = () => {
     setCustomers((prev) => prev.filter((c) => c._id !== id));
     setSelectedCustomer(null);
   };
+
+  useEffect(() => {
+    fetchAllUsers();
+  }, []);
 
   return (
     <div>

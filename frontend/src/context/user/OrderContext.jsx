@@ -17,6 +17,8 @@ export const OrderContextProvider = ({ children }) => {
         withCredentials: true,
       });
 
+      console.log(data);
+
       setOrders(data);
     } catch (error) {
       console.log("Order Error:", error?.response?.data || error.message);

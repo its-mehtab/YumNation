@@ -1,6 +1,7 @@
 import Cart from "../models/cart.modal.js";
 import Coupon from "../models/coupon.modal.js";
 import Order from "../models/order.modal.js";
+import User from "../models/user.modal.js";
 import { validateCoupon } from "../services/coupon.service.js";
 import { getPaginatedOrders } from "../services/order.service.js";
 
@@ -12,7 +13,7 @@ export const getUserOrders = async (req, res) => {
       limit: req.query.limit,
       populate: "items.dish",
     });
-    console.log(result.orders);
+    // console.log(result.orders);
 
     if (result?.orders?.length === 0) {
       return res.status(404).json({ message: "No orders found" });
@@ -117,6 +118,11 @@ export const createOrder = async (req, res) => {
       paymentMethod,
       paymentStatus,
       couponCode: coupon?.code || null,
+    });
+
+    await User.findByIdAndUpdate(userId, {
+      $inc: { totalOrders: 1, totalSpent: total },
+      $set: { lastOrderAt: new Date() },
     });
 
     if (coupon) {

@@ -117,16 +117,59 @@ export const getUserData = async (req, res) => {
 };
 
 export const getAllUsers = async (req, res) => {
-  try {
-    const users = await User.find();
+  const { search, sort, status, page = 1, limit = 12 } = req.query;
 
-    if (!users) {
-      return res.status(400).json({ message: "No User found" });
+  try {
+    const query = { role: "user" };
+
+    if (status) query.status = status;
+
+    if (search) {
+      const regex = new RegExp(search, "i");
+      query.$or = [{ name: regex }, { email: regex }, { phone: regex }];
     }
 
-    return res.status(200).json(users);
+    const sortMap = {
+      latest_asc: { createdAt: 1 },
+      latest_desc: { createdAt: -1 },
+      highest_spent: { totalSpent: -1 },
+      most_orders: { totalOrders: -1 },
+      recent_order: { lastOrderAt: -1 },
+    };
+    const sortOption = sortMap[sort] || { createdAt: -1 };
+
+    const pageNum = Math.max(Number(page) || 1, 1);
+    const limitNum = Math.min(Number(limit) || 12, 40);
+    const skip = (pageNum - 1) * limitNum;
+
+    const [users, total] = await Promise.all([
+      User.find(query)
+        .sort(sortOption)
+        .skip(skip)
+        .limit(limitNum)
+        .select("-password -__v")
+        .lean(),
+      User.countDocuments(query),
+    ]);
+
+    if (users.length === 0) {
+      return res.status(404).json({ message: "No users found" });
+    }
+
+    return res.status(200).json({
+      users,
+      pagination: {
+        total,
+        page: pageNum,
+        limit: limitNum,
+        totalPages: Math.ceil(total / limitNum),
+        hasNext: pageNum < Math.ceil(total / limitNum),
+      },
+    });
   } catch (error) {
-    return res.status(500).json({ message: error });
+    return res
+      .status(500)
+      .json({ message: "Failed to fetch users", error: error.message });
   }
 };
 

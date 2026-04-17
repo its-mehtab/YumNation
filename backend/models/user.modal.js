@@ -43,9 +43,12 @@ const userSchema = new Schema(
     },
     status: {
       type: String,
-      enam: ["active", inactive, "blocked"],
+      enam: ["active", "inactive", "blocked"],
       default: "active",
     },
+    totalOrders: Number,
+    totalSpent: Number,
+    lastOrderAt: Date,
   },
   { timestamps: true },
 );

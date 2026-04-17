@@ -20,6 +20,7 @@ import { RestaurantsProvider as AdminRestaurantsProvider } from "./context/admin
 import { RestaurantsProvider } from "./context/public/RestaurantsContext.jsx";
 import { CouponProvider } from "./context/admin/CouponContext.jsx";
 import { AdminOrdersProvider } from "./context/admin/AdminOrdersContext.jsx";
+import { AllUsersProvider } from "./context/admin/AllUsersContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -36,12 +37,14 @@ createRoot(document.getElementById("root")).render(
                         <AdminOrdersProvider>
                           <RestaurantProvider>
                             <AdminRestaurantsProvider>
-                              <CouponProvider>
-                                <Theme accentColor="orange">
-                                  <AppInit />
-                                  <App />
-                                </Theme>
-                              </CouponProvider>
+                              <AllUsersProvider>
+                                <CouponProvider>
+                                  <Theme accentColor="orange">
+                                    <AppInit />
+                                    <App />
+                                  </Theme>
+                                </CouponProvider>
+                              </AllUsersProvider>
                             </AdminRestaurantsProvider>
                           </RestaurantProvider>
                         </AdminOrdersProvider>
