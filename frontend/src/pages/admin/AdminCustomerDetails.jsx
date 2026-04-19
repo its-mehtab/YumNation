@@ -217,7 +217,7 @@ const OrderRow = ({ order }) => (
     </td>
     <td className="px-4 py-3 text-right">
       <span className="text-[13px] font-bold text-gray-700">
-        ₹{order.totalAmount.toLocaleString()}
+        ${order.totalAmount.toLocaleString()}
       </span>
     </td>
   </tr>
@@ -316,7 +316,7 @@ const AdminCustomerDetails = () => {
               <h1 className="text-lg font-bold text-gray-800 capitalize">
                 {customer?.firstName} {customer?.lastName}
               </h1>
-              <StatusBadge status={status} />
+              <StatusBadge status={customer?.status} />
             </div>
             <div className="flex items-center gap-3 text-xs text-gray-400">
               <span>{customer?.email}</span>
@@ -388,7 +388,10 @@ const AdminCustomerDetails = () => {
             />
             <InfoRow label="Email" value={customer?.email} />
             {/* <InfoRow label="Phone" value={customer?.phone} /> */}
-            <InfoRow label="Status" value={<StatusBadge status={status} />} />
+            <InfoRow
+              label="Status"
+              value={<StatusBadge status={customer?.status} />}
+            />
             <InfoRow
               label="Joined"
               value={dayjs(customer?.createdAt).format("DD MMM YYYY")}
@@ -539,7 +542,7 @@ const AdminCustomerDetails = () => {
                       {filteredOrders.length !== 1 ? "s" : ""}
                     </td>
                     <td className="px-4 py-3 text-right text-sm font-bold text-gray-700">
-                      ₹
+                      $
                       {filteredOrders
                         .reduce((s, o) => s + o.totalAmount, 0)
                         .toLocaleString()}

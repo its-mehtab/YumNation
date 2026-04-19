@@ -50,8 +50,14 @@ const userSchema = new Schema(
       enam: ["active", "blocked"],
       default: "active",
     },
-    totalOrders: Number,
-    totalSpent: Number,
+    totalOrders: {
+      type: Number,
+      default: 0,
+    },
+    totalSpent: {
+      type: Number,
+      default: 0,
+    },
     lastOrderAt: Date,
   },
   { timestamps: true },

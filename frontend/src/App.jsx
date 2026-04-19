@@ -28,8 +28,6 @@ function App() {
     <>
       <Routes>
         <Route path="/*" element={<PublicRoutes />} />
-        {/* <Route path="/admin/*" element={<AdminRoutes />} /> */}
-        {/* <Route path="/owner/*" element={<RestaurantRoutes />} /> */}
 
         <Route path="/admin" element={<AdminRoutes />}>
           <Route index element={<AdminDashboard />} />

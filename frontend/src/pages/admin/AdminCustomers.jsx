@@ -4,7 +4,9 @@ import { useAuth } from "../../context/user/AuthContext";
 import { DeleteIcon, ViewIcon } from "../../assets/icon/Icons";
 import { useAllUsers } from "../../context/admin/AllUsersContext";
 import { Link } from "react-router-dom";
-
+import axios from "axios";
+import { notifyError, notifySuccess } from "../../utils/toast";
+import ConfirmationModal from "../../components/common/ConfirmationModal";
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const AVATAR_COLORS = [
@@ -60,30 +62,62 @@ const AdminCustomers = () => {
   const [sortBy, setSortBy] = useState("joinedAt");
 
   const { allUsers, setAllUsers, fetchAllUsers, loading } = useAllUsers();
+  const { serverURL } = useAuth();
 
-  // ── Stats ──
   const totalCustomer = allUsers.totalCustomer;
   const totalActive = allUsers.totalActive;
   const totalBlocked = allUsers.totalBlocked;
   const totalOrders = allUsers.totalActive;
 
-  // ── Actions ──
-  const handleToggleStatus = (customer) => {
-    const next =
-      customer.status === "blocked"
-        ? "active"
-        : customer.status === "active"
-          ? "blocked"
-          : "active";
+  const handleToggleStatus = async (customer) => {
+    const next = customer.status === "blocked" ? "active" : "blocked";
 
-    setAllUsers.items((prev) =>
-      prev.map((c) => (c._id === customer._id ? { ...c, status: next } : c)),
-    );
+    setAllUsers((prev) => ({
+      ...prev,
+      items: prev.items.map((c) =>
+        c._id === customer._id ? { ...c, status: next } : c,
+      ),
+    }));
+
+    try {
+      await axios.patch(
+        `${serverURL}/api/admin/user/${customer._id}`,
+        { status: next },
+        {
+          withCredentials: true,
+        },
+      );
+
+      notifySuccess(`${customer.firstName} ${next}`);
+    } catch (error) {
+      setAllUsers(allUsers);
+      console.log(
+        "User Status Update:",
+        error?.response?.data || error.message,
+      );
+      notifyError(
+        `Failed to ${next === "active" ? "activate" : "block"} ${customer.firstName}`,
+      );
+    }
   };
 
-  const handleDelete = (id) => {
-    if (!confirm("Permanently delete this customer?")) return;
-    setAllUsers.items((prev) => prev.filter((c) => c._id !== id));
+  const handleDelete = async (id) => {
+    setAllUsers((prev) => ({
+      ...prev,
+      items: prev.items.filter((c) => c._id !== id),
+    }));
+
+    try {
+      await axios.delete(`${serverURL}/api/admin/user/${id}`, {
+        withCredentials: true,
+      });
+
+      notifySuccess(`Succesfully deleted`);
+    } catch (error) {
+      setAllUsers(allUsers);
+      console.log("User delete:", error?.response?.data || error.message);
+      notifyError(`Failed to delete customer`);
+    }
   };
 
   useEffect(() => {
@@ -223,7 +257,7 @@ const AdminCustomers = () => {
                   {/* Total Spent */}
                   <td className="px-4 py-3.5">
                     <span className="font-semibold text-gray-700">
-                      ${c.totalSpent.toLocaleString()}
+                      ${c.totalSpent?.toLocaleString()}
                     </span>
                     <p className="text-[11px] text-gray-400 mt-0.5">
                       avg ${(c.totalSpent / c.totalOrders).toLocaleString()}
@@ -237,7 +271,7 @@ const AdminCustomers = () => {
 
                   {/* Joined */}
                   <td className="px-4 py-3.5 text-[12px] text-gray-400">
-                    {dayjs(c.joinedAt).format("DD MMM YYYY")}
+                    {dayjs(c.createdAt).format("DD MMM YYYY")}
                   </td>
 
                   {/* Status */}
@@ -256,12 +290,25 @@ const AdminCustomers = () => {
                       >
                         <ViewIcon />
                       </Link>
-                      <button
+                      <ConfirmationModal
+                        button={
+                          <button
+                            className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
+                            title="Delete"
+                          >
+                            <DeleteIcon size={15} />
+                          </button>
+                        }
+                        heading={`Delete ${c.firstName} from customers?`}
+                        description="Are you sure you want to delete this customer? This action cannot be undone and the customers will be removed from the list."
+                        onClick={async () => await handleDelete(c._id)}
+                      />
+                      {/* <button
                         onClick={() => handleDelete(c._id)}
                         className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
                       >
                         <DeleteIcon />
-                      </button>
+                      </button> */}
                     </div>
                   </td>
                 </tr>

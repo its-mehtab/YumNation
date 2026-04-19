@@ -6,12 +6,18 @@ import RestaurantPendingApproval from "../pages/owner/RestaurantPendingApproval"
 import RestaurantRejectedPage from "../pages/owner/RestaurantRejectedPage";
 import { useRestaurant } from "../context/owner/RestaurantContext";
 import RestaurantSuspended from "../pages/owner/RestaurantSuspended";
+import Loader from "../components/public/Loader";
 
 const RestaurantRoutes = () => {
   const { user, loading: authLoading } = useAuth();
   const { restaurant, loading } = useRestaurant();
 
-  if (authLoading) return <div>Loading...</div>;
+  if (authLoading)
+    return (
+      <div>
+        <Loader />
+      </div>
+    );
 
   if (user || restaurant) {
     if (!user || user?.role !== "restaurant") return <Navigate to="/" />;

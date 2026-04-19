@@ -1,11 +1,17 @@
 import AdminLayout from "../layout/AdminLayout";
 import { useAuth } from "../context/user/AuthContext";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import Loader from "../components/public/Loader";
 
 const AdminRoutes = () => {
   const { user, loading } = useAuth();
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div>
+        <Loader />
+      </div>
+    );
 
   if (!user) return <Navigate to="/login" />;
 
