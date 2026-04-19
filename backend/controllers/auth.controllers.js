@@ -146,12 +146,6 @@ export const getUserDetails = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "No user found" });
     }
-    if (orders?.length === 0) {
-      return res.status(404).json({ message: "No orders found" });
-    }
-    if (addresses?.length === 0) {
-      return res.status(404).json({ message: "No Address found" });
-    }
 
     return res.status(200).json({
       ...user,
@@ -181,7 +175,6 @@ export const getAllUsers = async (req, res) => {
 
     const sortMap = {
       latest_asc: { createdAt: 1 },
-      latest_desc: { createdAt: -1 },
       highest_spent: { totalSpent: -1 },
       most_orders: { totalOrders: -1 },
       recent_order: { lastOrderAt: -1 },

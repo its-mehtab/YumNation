@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { notifyError } from "../../utils/toast";
 
 // ── Mock data ────────────────────────────────────────────────────────────────
 const mockCategories = [
@@ -49,62 +50,204 @@ const mockCategories = [
 const CategoryModal = ({ category, onClose, onSave }) => {
   const [name, setName] = useState(category?.name || "");
   const [isActive, setIsActive] = useState(category?.isActive ?? true);
+  const [iconFile, setIconFile] = useState(null);
+  const [iconPreview, setIconPreview] = useState(category?.icon || null);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const handleFile = (file) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      notifyError("Please upload an image file");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      notifyError("Image must be under 2MB");
+      return;
+    }
+    setIconFile(file);
+    setIconPreview(URL.createObjectURL(file));
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    handleFile(e.dataTransfer.files[0]);
+  };
+
+  const handleRemoveIcon = () => {
+    setIconFile(null);
+    setIconPreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name.trim()) return;
-    onSave({ name, isActive });
+    onSave({ name, isActive, iconFile, iconPreview });
+    // In your real handler, build a FormData:
+    // const fd = new FormData();
+    // fd.append("name", name);
+    // fd.append("isActive", isActive);
+    // if (iconFile) fd.append("icon", iconFile);
+    // await axios.post("/api/categories", fd);
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm mx-4 p-6">
-        <h2 className="text-base font-bold text-gray-700 mb-5">
-          {category ? "Edit Category" : "Add Category"}
-        </h2>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+      <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-md mx-4 overflow-hidden">
+        {/* ── Header ── */}
+        <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
           <div>
-            <label className="block text-xs font-semibold text-gray-500 mb-1.5">
-              Category Name
-            </label>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Pizza"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
-              autoFocus
-            />
+            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+              {category ? "Edit" : "New"} Category
+            </p>
+            <p className="text-sm font-bold text-gray-700 mt-0.5">
+              {category ? `Editing — ${category.name}` : "Add a new category"}
+            </p>
           </div>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors text-xs font-bold"
+          >
+            ✕
+          </button>
+        </div>
 
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-semibold text-gray-500">
-              Status
-            </label>
-            <button
-              type="button"
-              onClick={() => setIsActive((p) => !p)}
-              className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${isActive ? "bg-[#fc8019]" : "bg-gray-200"}`}
-            >
-              <span
-                className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${isActive ? "translate-x-5" : "translate-x-0"}`}
+        <form onSubmit={handleSubmit}>
+          <div className="px-5 py-5 space-y-4">
+            {/* ── Icon Upload ── */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 mb-2">
+                Category Icon
+              </label>
+
+              {iconPreview ? (
+                // Preview state
+                <div className="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-xl">
+                  <div className="w-14 h-14 rounded-xl border border-gray-200 bg-white overflow-hidden shrink-0 flex items-center justify-center">
+                    <img
+                      src={iconPreview}
+                      alt="icon preview"
+                      className="w-full h-full object-contain p-1"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold text-gray-700 truncate">
+                      {iconFile?.name || "Current icon"}
+                    </p>
+                    {iconFile && (
+                      <p className="text-[11px] text-gray-400 mt-0.5">
+                        {(iconFile.size / 1024).toFixed(1)} KB
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="text-[11px] font-semibold text-[#fc8019] hover:underline"
+                    >
+                      Change
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleRemoveIcon}
+                      className="text-[11px] font-semibold text-gray-400 hover:text-red-500 transition-colors"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                // Drop zone
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDragging(true);
+                  }}
+                  onDragLeave={() => setIsDragging(false)}
+                  onDrop={handleDrop}
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`cursor-pointer flex flex-col items-center justify-center gap-2 py-4 rounded-xl border-2 border-dashed transition-colors ${
+                    isDragging
+                      ? "border-[#fc8019] bg-orange-50"
+                      : "border-gray-200 bg-gray-50 hover:border-[#fc8019] hover:bg-orange-50/40"
+                  }`}
+                >
+                  <div className="w-10 h-10 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-300 text-xl shadow-sm">
+                    🖼
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs font-semibold text-gray-500">
+                      Drop icon here or{" "}
+                      <span className="text-[#fc8019]">browse</span>
+                    </p>
+                    <p className="text-[11px] text-gray-400 mt-0.5">
+                      PNG, JPG, SVG · max 2MB
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => handleFile(e.target.files[0])}
               />
-            </button>
+            </div>
+
+            {/* ── Category Name ── */}
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 mb-1.5">
+                Category Name *
+              </label>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. Pizza"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
+                autoFocus
+              />
+            </div>
+
+            {/* ── Status Toggle ── */}
+            <div className="flex items-center justify-between py-3 px-3 bg-gray-50 rounded-xl border border-gray-100">
+              <div>
+                <p className="text-xs font-semibold text-gray-600">Status</p>
+                <p className="text-[11px] text-gray-400 mt-0.5">
+                  {isActive ? "Visible to customers" : "Hidden from customers"}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsActive((p) => !p)}
+                className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${isActive ? "bg-[#fc8019]" : "bg-gray-200"}`}
+              >
+                <span
+                  className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${isActive ? "translate-x-5" : "translate-x-0"}`}
+                />
+              </button>
+            </div>
           </div>
 
-          <div className="flex gap-3 pt-2">
+          {/* ── Footer ── */}
+          <div className="px-5 pb-5 flex gap-3 border-t border-gray-100 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-2.5 rounded-lg border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
+              className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 py-2.5 rounded-lg bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors"
+              disabled={!name.trim()}
+              className="flex-1 py-2.5 rounded-xl bg-[#fc8019] hover:bg-[#e5721f] disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
             >
-              {category ? "Update" : "Add"}
+              {category ? "Save Changes" : "Add Category"}
             </button>
           </div>
         </form>

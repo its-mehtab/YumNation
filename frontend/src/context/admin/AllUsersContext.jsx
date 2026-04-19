@@ -8,6 +8,14 @@ export const AllUsersProvider = ({ children }) => {
   const [allUsers, setAllUsers] = useState({});
   const [loading, setLoading] = useState(false);
 
+  const [filter, setFilter] = useState({
+    search: "",
+    filterStatus: "",
+    sortBy: "recent_order",
+    page: 1,
+    limit: 1,
+  });
+
   const { serverURL } = useAuth();
 
   const fetchAllUsers = async () => {
@@ -16,6 +24,13 @@ export const AllUsersProvider = ({ children }) => {
     setLoading(true);
     try {
       const { data } = await axios.get(`${serverURL}/api/admin/users`, {
+        params: {
+          search: filter.search,
+          status: filter.filterStatus,
+          sort: filter.sortBy,
+          page: filter.page,
+          limit: filter.limit,
+        },
         withCredentials: true,
       });
 
@@ -31,7 +46,15 @@ export const AllUsersProvider = ({ children }) => {
 
   return (
     <AllUsersContext.Provider
-      value={{ allUsers, setAllUsers, loading, setLoading, fetchAllUsers }}
+      value={{
+        allUsers,
+        setAllUsers,
+        loading,
+        setLoading,
+        fetchAllUsers,
+        filter,
+        setFilter,
+      }}
     >
       {children}
     </AllUsersContext.Provider>

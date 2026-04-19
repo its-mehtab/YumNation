@@ -57,11 +57,8 @@ const StatusBadge = ({ status }) => {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 const AdminCustomers = () => {
-  const [search, setSearch] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
-  const [sortBy, setSortBy] = useState("joinedAt");
-
-  const { allUsers, setAllUsers, fetchAllUsers, loading } = useAllUsers();
+  const { allUsers, setAllUsers, fetchAllUsers, loading, filter, setFilter } =
+    useAllUsers();
   const { serverURL } = useAuth();
 
   const totalCustomer = allUsers.totalCustomer;
@@ -122,7 +119,12 @@ const AdminCustomers = () => {
 
   useEffect(() => {
     fetchAllUsers();
-  }, []);
+  }, [filter.page, filter.limit, filter.sortBy, filter.filterStatus]);
+
+  useEffect(() => {
+    const delay = setTimeout(fetchAllUsers, 400);
+    return () => clearTimeout(delay);
+  }, [filter.search]);
 
   if (loading) return "loading...";
 
@@ -152,29 +154,37 @@ const AdminCustomers = () => {
         <div className="flex items-center gap-3">
           <input
             placeholder="Search name, email or phone..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            value={filter.search}
+            onChange={(e) =>
+              setFilter((prev) => ({ ...prev, search: e.target.value }))
+            }
             className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors w-64"
           />
           <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
+            value={filter.filterStatus}
+            onChange={(e) =>
+              setFilter((prev) => ({
+                ...prev,
+                filterStatus: e.target.value,
+              }))
+            }
             className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] bg-white"
           >
             <option value="">All status</option>
             <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
             <option value="blocked">Blocked</option>
           </select>
           <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
+            value={filter.sortBy}
+            onChange={(e) =>
+              setFilter((prev) => ({ ...prev, sortBy: e.target.value }))
+            }
             className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] bg-white"
           >
-            <option value="joinedAt">Newest first</option>
-            <option value="lastOrderAt">Recent order</option>
-            <option value="totalSpent">Highest spent</option>
-            <option value="totalOrders">Most orders</option>
+            <option value="latest_asc">Newest first</option>
+            <option value="recent_order">Recent order</option>
+            <option value="highest_spent">Highest spent</option>
+            <option value="most_orders">Most orders</option>
           </select>
         </div>
       </div>

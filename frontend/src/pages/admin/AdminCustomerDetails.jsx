@@ -341,9 +341,9 @@ const AdminCustomerDetails = () => {
           >
             {status === "blocked" ? "Unblock" : "Block Customer"}
           </button>
-          <button className="px-4 py-2 text-xs font-semibold text-gray-500 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+          {/* <button className="px-4 py-2 text-xs font-semibold text-gray-500 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
             Send Message
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -407,34 +407,40 @@ const AdminCustomerDetails = () => {
           <div className="bg-white rounded-2xl border border-gray-200 p-5">
             <SectionHeader title="Saved Addresses" />
             <div className="flex flex-col gap-2">
-              {customer?.addresses.map((addr) => (
-                <div
-                  key={addr._id}
-                  className={`p-3 rounded-xl border text-xs ${
-                    addr.isDefault
-                      ? "bg-orange-50 border-orange-100"
-                      : "bg-gray-50 border-gray-100"
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span
-                      className={`font-bold text-[10px] uppercase tracking-wider ${addr.isDefault ? "text-[#fc8019]" : "text-gray-400"}`}
-                    >
-                      {addr.addressType}
-                    </span>
-                    {addr.isDefault && (
-                      <span className="text-[10px] font-semibold text-[#fc8019]">
-                        Default
+              {customer?.addresses.length === 0 ? (
+                <p className="text-xs text-gray-400">No address added yet</p>
+              ) : (
+                customer?.addresses.map((addr) => (
+                  <div
+                    key={addr._id}
+                    className={`p-3 rounded-xl border text-xs ${
+                      addr.isDefault
+                        ? "bg-orange-50 border-orange-100"
+                        : "bg-gray-50 border-gray-100"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span
+                        className={`font-bold text-[10px] uppercase tracking-wider ${addr.isDefault ? "text-[#fc8019]" : "text-gray-400"}`}
+                      >
+                        {addr.addressType}
                       </span>
-                    )}
+                      {addr.isDefault && (
+                        <span className="text-[10px] font-semibold text-[#fc8019]">
+                          Default
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-gray-600 leading-relaxed">
+                      {addr.addressLine1}, {addr.addressLine2}, {addr.pinCode},
+                      <br />
+                      {addr.city}, {addr.state}, {addr.country}, {addr.pinCode}
+                    </p>
                   </div>
-                  <p className="text-gray-600 leading-relaxed">
-                    {addr.addressLine1}, {addr.addressLine2}, {addr.pinCode},
-                    <br />
-                    {addr.city}, {addr.state}, {addr.country}, {addr.pinCode}
-                  </p>
-                </div>
-              ))}
+                ))
+              )}
+              {/* {customer?.addresses.length > 0 &&
+                } */}
             </div>
           </div>
 
