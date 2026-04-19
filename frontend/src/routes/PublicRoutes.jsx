@@ -18,8 +18,10 @@ import RestaurantDishes from "../pages/public/RestaurantDishes";
 import FloatingCart from "../components/public/FloatingCart";
 
 const PublicRoutes = () => {
-  const { isLoggedIn, user } = useAuth();
+  const { isLoggedIn, user, loading } = useAuth();
   const { pathname } = useLocation();
+
+  if (loading) return null;
 
   if (user?.role === "admin") return <Navigate to="/admin" />;
   if (user?.role === "restaurant") return <Navigate to="/owner" />;

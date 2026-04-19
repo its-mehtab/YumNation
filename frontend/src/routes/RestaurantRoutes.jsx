@@ -1,23 +1,17 @@
 import RestaurantLayout from "../layout/RestaurantLayout";
 import { useAuth } from "../context/user/AuthContext";
-import { Navigate, Route, Routes } from "react-router-dom";
-import RestaurantDashboard from "../pages/owner/RestaurantDashboard";
-import RestaurantOrders from "../pages/owner/RestaurantOrders";
-import RestaurantOrderDetails from "../pages/owner/RestaurantOrderDetails";
-import RestaurantDishes from "../pages/owner/RestaurantDishes";
-import RestaurantAddDish from "../pages/owner/RestaurantAddDish";
-import RestaurantDishDetails from "../pages/owner/RestaurantDishDetails";
-import RestaurantSettings from "../pages/owner/RestaurantSettings";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import RestaurantApply from "../pages/owner/RestaurantApply";
 import RestaurantPendingApproval from "../pages/owner/RestaurantPendingApproval";
 import RestaurantRejectedPage from "../pages/owner/RestaurantRejectedPage";
 import { useRestaurant } from "../context/owner/RestaurantContext";
 import RestaurantSuspended from "../pages/owner/RestaurantSuspended";
-import RestaurantEditDish from "../pages/owner/RestaurantEditDish";
 
 const RestaurantRoutes = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { restaurant, loading } = useRestaurant();
+
+  if (authLoading) return <div>Loading...</div>;
 
   if (user || restaurant) {
     if (!user || user?.role !== "restaurant") return <Navigate to="/" />;
@@ -35,16 +29,7 @@ const RestaurantRoutes = () => {
 
   return (
     <RestaurantLayout>
-      <Routes>
-        <Route path="/" element={<RestaurantDashboard />} />
-        <Route path="/orders" element={<RestaurantOrders />} />
-        <Route path="/orders/:id" element={<RestaurantOrderDetails />} />
-        <Route path="/dishes" element={<RestaurantDishes />} />
-        <Route path="/dish/:id" element={<RestaurantDishDetails />} />
-        <Route path="/dish/add" element={<RestaurantAddDish />} />
-        <Route path="/dish/edit/:id" element={<RestaurantEditDish />} />
-        <Route path="/settings" element={<RestaurantSettings />} />
-      </Routes>
+      <Outlet />
     </RestaurantLayout>
   );
 };

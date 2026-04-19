@@ -15,6 +15,10 @@ const userSchema = new Schema(
       required: true,
       unique: true,
     },
+    avatar: {
+      type: String,
+      default: null,
+    },
     // username: {
     //   type: String,
     //   required: true,
@@ -43,7 +47,7 @@ const userSchema = new Schema(
     },
     status: {
       type: String,
-      enam: ["active", "inactive", "blocked"],
+      enam: ["active", "blocked"],
       default: "active",
     },
     totalOrders: Number,

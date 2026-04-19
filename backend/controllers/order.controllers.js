@@ -13,7 +13,6 @@ export const getUserOrders = async (req, res) => {
       limit: req.query.limit,
       populate: "items.dish",
     });
-    // console.log(result.orders);
 
     if (result?.orders?.length === 0) {
       return res.status(404).json({ message: "No orders found" });

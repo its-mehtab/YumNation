@@ -5,14 +5,13 @@ const authContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   // const navigate = useNavigate();
   // const location = useLocation();
   const serverURL = "http://localhost:4000";
   const isLoggedIn = !!user;
 
   const getUserData = async () => {
-    setLoading(true);
     try {
       const res = await axios.get(serverURL + "/api/getuserdata", {
         withCredentials: true,

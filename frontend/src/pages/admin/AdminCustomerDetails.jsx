@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../../context/user/AuthContext";
 
 // ─── Mock Data (replace with API fetch by id) ─────────────────────────────────
 
@@ -116,16 +118,6 @@ const MOCK_CUSTOMER = {
   deviceInfo: "Android 13 · Samsung Galaxy S23",
 };
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-const getInitials = (name) =>
-  name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-
 // ─── Small reusable pieces ────────────────────────────────────────────────────
 
 const StatusBadge = ({ status }) => {
@@ -199,25 +191,25 @@ const OrderRow = ({ order }) => (
     </td>
     <td className="px-4 py-3">
       <p className="text-[13px] font-semibold text-gray-700">
-        {order.restaurant}
+        {order.restaurantSnapshot.name}
       </p>
       <p className="text-[11px] text-gray-400 mt-0.5">
-        {order.items} item{order.items !== 1 ? "s" : ""}
+        {order.items.length} item{order.items.length !== 1 ? "s" : ""}
       </p>
     </td>
     <td className="px-4 py-3 text-[12px] text-gray-500">
-      {dayjs(order.date).format("DD MMM YYYY")}
+      {dayjs(order.createdAt).format("DD MMM YYYY")}
     </td>
     <td className="px-4 py-3">
-      <StatusBadge status={order.status} />
+      <StatusBadge status={order.orderStatus} />
     </td>
-    <td className="px-4 py-3 text-[12px] text-gray-500">
+    <td className="px-4 py-3 text-[12px] text-gray-500 uppercase">
       {order.paymentMethod}
     </td>
     <td className="px-4 py-3">
-      {order.coupon ? (
+      {order.couponCode ? (
         <span className="font-mono text-[11px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-lg border border-gray-200">
-          {order.coupon}
+          {order.couponCode}
         </span>
       ) : (
         <span className="text-[11px] text-gray-300">—</span>
@@ -225,7 +217,7 @@ const OrderRow = ({ order }) => (
     </td>
     <td className="px-4 py-3 text-right">
       <span className="text-[13px] font-bold text-gray-700">
-        ₹{order.total}
+        ₹{order.totalAmount.toLocaleString()}
       </span>
     </td>
   </tr>
@@ -234,28 +226,53 @@ const OrderRow = ({ order }) => (
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 const AdminCustomerDetails = () => {
-  // const { id } = useParams();
-  // const navigate = useNavigate();
-  // Replace MOCK_CUSTOMER with: const [customer, setCustomer] = useState(null);
-  // useEffect(() => { axios.get(`/api/customers/${id}`).then(...) }, [id]);
+  const [customer, setCustomer] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const customer = MOCK_CUSTOMER;
+  const { id } = useParams();
+  const { serverURL } = useAuth();
+  const navigate = useNavigate();
 
-  const [status, setStatus] = useState(customer.status);
+  const fetchUserData = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(`${serverURL}/api/admin/user/${id}`, {
+        withCredentials: true,
+      });
+
+      console.log(data);
+
+      setCustomer(data);
+    } catch (error) {
+      console.log("Order Error:", error?.response?.data || error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, [id]);
+
+  // const customer = MOCK_CUSTOMER;
+
+  const [status, setStatus] = useState(customer?.status);
   const [orderSearch, setOrderSearch] = useState("");
   const [orderFilter, setOrderFilter] = useState("");
 
-  const deliveredOrders = customer.orders.filter(
+  if (loading) return "loading...";
+
+  const deliveredOrders = customer?.orders.items.filter(
     (o) => o.status === "delivered",
   );
-  const cancelledOrders = customer.orders.filter(
+  const cancelledOrders = customer?.orders.items.filter(
     (o) => o.status === "cancelled",
   );
-  const cancelRate = customer.orders.length
-    ? Math.round((cancelledOrders.length / customer.orders.length) * 100)
+  const cancelRate = customer?.orders.items.length
+    ? Math.round((cancelledOrders.length / customer?.orders.items.length) * 100)
     : 0;
 
-  const filteredOrders = customer.orders.filter((o) => {
+  const filteredOrders = customer?.orders.items.filter((o) => {
     const q = orderSearch.toLowerCase();
     const matchQ =
       !q ||
@@ -268,7 +285,7 @@ const AdminCustomerDetails = () => {
   const handleToggleStatus = () => {
     const next = status === "blocked" ? "active" : "blocked";
     setStatus(next);
-    // await axios.patch(`/api/customers/${customer._id}`, { status: next });
+    // await axios.patch(`/api/customers/${customer?._id}`, { status: next });
   };
 
   return (
@@ -276,35 +293,38 @@ const AdminCustomerDetails = () => {
       {/* ── Breadcrumb ── */}
       <div className="flex items-center gap-2 text-xs text-gray-400 mb-5">
         <button
-          // onClick={() => navigate("/admin/customers")}
+          onClick={() => navigate("/admin/customers")}
           className="hover:text-[#fc8019] transition-colors font-medium"
         >
           Customers
         </button>
         <span>/</span>
-        <span className="text-gray-600 font-semibold">{customer.name}</span>
+        <span className="text-gray-600 font-semibold capitalize">
+          {customer?.firstName} {customer?.lastName}
+        </span>
       </div>
 
       {/* ── Top Header Card ── */}
       <div className="bg-white rounded-2xl border border-gray-200 p-5 mb-5 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center text-[#fc8019] text-xl font-bold">
-            {getInitials(customer.name)}
+            {customer?.firstName.slice(0, 1).toUpperCase()}
+            {customer?.lastName.slice(0, 1).toUpperCase()}
           </div>
           <div>
             <div className="flex items-center gap-2.5 mb-1">
-              <h1 className="text-lg font-bold text-gray-800">
-                {customer.name}
+              <h1 className="text-lg font-bold text-gray-800 capitalize">
+                {customer?.firstName} {customer?.lastName}
               </h1>
               <StatusBadge status={status} />
             </div>
             <div className="flex items-center gap-3 text-xs text-gray-400">
-              <span>{customer.email}</span>
+              <span>{customer?.email}</span>
               <span>•</span>
-              <span>{customer.phone}</span>
-              <span>•</span>
+              {/* <span>{customer?.phone}</span>
+              <span>•</span> */}
               <span>
-                Joined {dayjs(customer.joinedAt).format("DD MMM YYYY")}
+                Joined {dayjs(customer?.joinedAt).format("DD MMM YYYY")}
               </span>
             </div>
           </div>
@@ -331,18 +351,21 @@ const AdminCustomerDetails = () => {
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-5">
         <StatBox
           label="Total Orders"
-          value={customer.totalOrders}
+          value={customer?.totalOrders}
           color="#fc8019"
         />
         <StatBox
           label="Total Spent"
-          value={`₹${customer.totalSpent.toLocaleString()}`}
+          value={`$${customer?.totalSpent.toLocaleString()}`}
           color="#1f2937"
         />
-        <StatBox label="Avg Order Value" value={`₹${customer.avgOrderValue}`} />
+        <StatBox
+          label="Avg Order Value"
+          value={`$${(customer?.totalSpent / customer?.totalOrders).toLocaleString()}`}
+        />
         <StatBox
           label="Cancelled Orders"
-          value={cancelledOrders.length}
+          value={cancelledOrders?.length}
           color="#ef4444"
         />
         <StatBox
@@ -361,27 +384,27 @@ const AdminCustomerDetails = () => {
             <SectionHeader title="Account Info" />
             <InfoRow
               label="Customer ID"
-              value={`#${customer._id.padStart(6, "0")}`}
+              value={`#${customer?._id.padStart(6, "0")}`}
             />
-            <InfoRow label="Email" value={customer.email} />
-            <InfoRow label="Phone" value={customer.phone} />
+            <InfoRow label="Email" value={customer?.email} />
+            {/* <InfoRow label="Phone" value={customer?.phone} /> */}
             <InfoRow label="Status" value={<StatusBadge status={status} />} />
             <InfoRow
               label="Joined"
-              value={dayjs(customer.joinedAt).format("DD MMM YYYY")}
+              value={dayjs(customer?.createdAt).format("DD MMM YYYY")}
             />
             <InfoRow
               label="Last Order"
-              value={dayjs(customer.lastOrderAt).format("DD MMM YYYY")}
+              value={dayjs(customer?.lastOrderAt).format("DD MMM YYYY")}
             />
-            <InfoRow label="Device" value={customer.deviceInfo} />
+            {/* <InfoRow label="Device" value={customer?.deviceInfo} /> */}
           </div>
 
           {/* Delivery Addresses */}
           <div className="bg-white rounded-2xl border border-gray-200 p-5">
             <SectionHeader title="Saved Addresses" />
             <div className="flex flex-col gap-2">
-              {customer.addresses.map((addr) => (
+              {customer?.addresses.map((addr) => (
                 <div
                   key={addr._id}
                   className={`p-3 rounded-xl border text-xs ${
@@ -394,7 +417,7 @@ const AdminCustomerDetails = () => {
                     <span
                       className={`font-bold text-[10px] uppercase tracking-wider ${addr.isDefault ? "text-[#fc8019]" : "text-gray-400"}`}
                     >
-                      {addr.label}
+                      {addr.addressType}
                     </span>
                     {addr.isDefault && (
                       <span className="text-[10px] font-semibold text-[#fc8019]">
@@ -403,7 +426,9 @@ const AdminCustomerDetails = () => {
                     )}
                   </div>
                   <p className="text-gray-600 leading-relaxed">
-                    {addr.address}
+                    {addr.addressLine1}, {addr.addressLine2}, {addr.pinCode},
+                    <br />
+                    {addr.city}, {addr.state}, {addr.country}, {addr.pinCode}
                   </p>
                 </div>
               ))}
@@ -413,11 +438,11 @@ const AdminCustomerDetails = () => {
           {/* Coupons Used */}
           <div className="bg-white rounded-2xl border border-gray-200 p-5">
             <SectionHeader title="Coupons Used" />
-            {customer.couponsUsed.length === 0 ? (
+            {customer?.couponsUsed?.length === 0 ? (
               <p className="text-xs text-gray-400">No coupons used yet</p>
             ) : (
               <div className="flex flex-wrap gap-2">
-                {customer.couponsUsed.map((c) => (
+                {customer?.couponsUsed?.map((c) => (
                   <span
                     key={c}
                     className="font-mono text-xs font-bold text-orange-600 bg-orange-50 border border-orange-100 px-2.5 py-1 rounded-lg"
@@ -427,19 +452,6 @@ const AdminCustomerDetails = () => {
                 ))}
               </div>
             )}
-          </div>
-
-          {/* Favourite */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5">
-            <SectionHeader title="Favourite Restaurant" />
-            <div className="flex items-center gap-3 bg-orange-50 border border-orange-100 rounded-xl p-3">
-              <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center text-[#fc8019] font-bold text-sm">
-                ★
-              </div>
-              <p className="text-sm font-semibold text-gray-700">
-                {customer.favouriteRestaurant}
-              </p>
-            </div>
           </div>
         </div>
 
@@ -453,7 +465,7 @@ const AdminCustomerDetails = () => {
                   Order History
                 </p>
                 <p className="text-sm font-bold text-gray-700 mt-0.5">
-                  {customer.totalOrders} orders · {deliveredOrders.length}{" "}
+                  {customer?.totalOrders} orders · {deliveredOrders?.length}{" "}
                   delivered
                 </p>
               </div>
@@ -499,7 +511,7 @@ const AdminCustomerDetails = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {filteredOrders.length === 0 ? (
+                {filteredOrders?.length === 0 ? (
                   <tr>
                     <td
                       colSpan={7}
@@ -509,14 +521,14 @@ const AdminCustomerDetails = () => {
                     </td>
                   </tr>
                 ) : (
-                  filteredOrders.map((order) => (
+                  filteredOrders?.map((order) => (
                     <OrderRow key={order._id} order={order} />
                   ))
                 )}
               </tbody>
 
               {/* Footer summary */}
-              {filteredOrders.length > 0 && (
+              {filteredOrders?.length > 0 && (
                 <tfoot>
                   <tr className="border-t border-gray-100 bg-gray-50">
                     <td
@@ -529,7 +541,7 @@ const AdminCustomerDetails = () => {
                     <td className="px-4 py-3 text-right text-sm font-bold text-gray-700">
                       ₹
                       {filteredOrders
-                        .reduce((s, o) => s + o.total, 0)
+                        .reduce((s, o) => s + o.totalAmount, 0)
                         .toLocaleString()}
                     </td>
                   </tr>
@@ -556,7 +568,7 @@ const AdminCustomerDetails = () => {
           <button
             onClick={() => {
               if (confirm("Permanently delete this customer?")) {
-                // await axios.delete(`/api/customers/${customer._id}`);
+                // await axios.delete(`/api/customers/${customer?._id}`);
                 // navigate("/admin/customers");
               }
             }}

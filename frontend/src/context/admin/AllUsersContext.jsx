@@ -5,7 +5,7 @@ import { useAuth } from "../user/AuthContext";
 const AllUsersContext = createContext();
 
 export const AllUsersProvider = ({ children }) => {
-  const [allUsers, setAllUsers] = useState();
+  const [allUsers, setAllUsers] = useState({});
   const [loading, setLoading] = useState(false);
 
   const { serverURL } = useAuth();

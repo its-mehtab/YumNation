@@ -3,6 +3,9 @@ import User from "../models/user.modal.js";
 import generateToken from "../config/token.js";
 import { sendOtpMail } from "../utils/mail.js";
 import crypto from "crypto";
+import Order from "../models/order.modal.js";
+import Address from "../models/address.modal.js";
+import { getPaginatedOrders } from "../services/order.service.js";
 
 export const signUp = async (req, res) => {
   try {
@@ -116,6 +119,53 @@ export const getUserData = async (req, res) => {
   }
 };
 
+export const getUserDetails = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const [user, orders, addresses, couponsUsed] = await Promise.all([
+      User.findById(userId).select("-password -__v").lean(),
+      await getPaginatedOrders({
+        filter: { user: userId },
+        page: req.query.page,
+        limit: req.query.limit,
+        populate: "items.dish",
+      }),
+
+      Address.find({ user: userId }).select("-addressKey -user -__v").sort({
+        isDefault: -1,
+        createdAt: -1,
+      }),
+
+      await Order.distinct("couponCode", {
+        user: userId,
+        couponCode: { $ne: null },
+      }),
+    ]);
+
+    if (!user) {
+      return res.status(404).json({ message: "No user found" });
+    }
+    if (orders?.length === 0) {
+      return res.status(404).json({ message: "No orders found" });
+    }
+    if (addresses?.length === 0) {
+      return res.status(404).json({ message: "No Address found" });
+    }
+
+    return res.status(200).json({
+      ...user,
+      orders,
+      addresses,
+      couponsUsed,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Failed to fetch users", error: error.message });
+  }
+};
+
 export const getAllUsers = async (req, res) => {
   const { search, sort, status, page = 1, limit = 12 } = req.query;
 
@@ -142,7 +192,14 @@ export const getAllUsers = async (req, res) => {
     const limitNum = Math.min(Number(limit) || 12, 40);
     const skip = (pageNum - 1) * limitNum;
 
-    const [users, total] = await Promise.all([
+    const [
+      users,
+      total,
+      totalCustomer,
+      totalActive,
+      totalBlocked,
+      totalOrders,
+    ] = await Promise.all([
       User.find(query)
         .sort(sortOption)
         .skip(skip)
@@ -150,6 +207,10 @@ export const getAllUsers = async (req, res) => {
         .select("-password -__v")
         .lean(),
       User.countDocuments(query),
+      User.countDocuments({ role: "user" }),
+      User.countDocuments({ status: "active", role: "user" }),
+      User.countDocuments({ status: "blocked", role: "user" }),
+      Order.countDocuments(),
     ]);
 
     if (users.length === 0) {
@@ -157,19 +218,56 @@ export const getAllUsers = async (req, res) => {
     }
 
     return res.status(200).json({
-      users,
+      items: users,
       pagination: {
         total,
         page: pageNum,
         limit: limitNum,
         totalPages: Math.ceil(total / limitNum),
+        hasPrev: pageNum > Math.ceil(total / limitNum),
         hasNext: pageNum < Math.ceil(total / limitNum),
       },
+      totalCustomer,
+      totalActive,
+      totalBlocked,
+      totalOrders,
     });
   } catch (error) {
     return res
       .status(500)
       .json({ message: "Failed to fetch users", error: error.message });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  try {
+    const id = req.userId;
+
+    const allowedUpdates = ["name", "email", "avatar", "status"];
+    const updates = {};
+
+    for (let key of allowedUpdates) {
+      if (req.body[key] !== undefined) {
+        updates[key] = req.body[key];
+      }
+    }
+
+    const user = await User.findByIdAndUpdate(id, updates, {
+      new: true,
+      runValidators: true,
+    }).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Something went wrong",
+      error: error.message,
+    });
   }
 };
 
