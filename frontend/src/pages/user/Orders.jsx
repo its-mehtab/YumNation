@@ -45,7 +45,7 @@ const Orders = () => {
     fetchOrders();
   }, [page]);
 
-  if (!loading && (!orders?.orders || orders?.orders?.length === 0)) {
+  if (!loading && (!orders?.items || orders?.items?.length === 0)) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
         <div className="text-6xl mb-4">🛍️</div>
@@ -102,7 +102,7 @@ const Orders = () => {
                   ))}
                 </Table.Row>
               ))
-            : orders?.orders?.map((order) => {
+            : orders?.items?.map((order) => {
                 return (
                   <Table.Row
                     onClick={() => navigate(`/order/${order._id}`)}

@@ -35,7 +35,7 @@ const categorySchema = new Schema(
       ref: "User",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 categorySchema.pre("save", slugGenerator);

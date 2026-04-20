@@ -3,11 +3,40 @@ import Dish from "../models/dish.modal.js";
 
 export const getCategories = async (req, res) => {
   try {
-    const data = await Category.find();
-    // console.log(data);
-    return res.status(200).json(data);
+    const categories = await Category.find().select("-createdBy");
+    return res.status(200).json(categories);
   } catch (error) {
-    // console.log(error);
+    return res
+      .status(500)
+      .json({ message: "unable to find categories", error: error.message });
+  }
+};
+
+export const getCategoriesForAdmin = async (req, res) => {
+  try {
+    const categories = await Category.aggregate([
+      {
+        $lookup: {
+          from: "dishes",
+          localField: "_id",
+          foreignField: "category",
+          as: "dishes",
+        },
+      },
+      {
+        $addFields: {
+          dishCount: { $size: "$dishes" },
+        },
+      },
+      {
+        $project: {
+          dishes: 0,
+        },
+      },
+    ]);
+
+    return res.status(200).json(categories);
+  } catch (error) {
     return res
       .status(500)
       .json({ message: "unable to find categories", error: error.message });

@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { notifyError } from "../../utils/toast";
+import { useCategories } from "../../context/admin/categoryAdminContext";
 
 // ── Mock data ────────────────────────────────────────────────────────────────
 const mockCategories = [
@@ -261,6 +262,10 @@ const AdminCategories = () => {
   const [categories, setCategories] = useState(mockCategories);
   const [search, setSearch] = useState("");
   const [modal, setModal] = useState(null); // null | "add" | { ...category }
+
+  const { categories: c } = useCategories();
+
+  console.log(c);
 
   const filtered = categories.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase()),

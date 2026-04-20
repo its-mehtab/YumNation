@@ -21,6 +21,7 @@ import dishAdminRouter from "./routes/admin/dishAdmin.routes.js";
 import couponAdminRouter from "./routes/admin/couponAdmin.routes.js";
 import usersAdminRouter from "./routes/admin/usersAdmin.routes.js";
 import orderAdminRouter from "./routes/admin/orderAdmin.routes.js";
+import categoryAdminRouter from "./routes/admin/categoryAdmin.routes.js";
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -36,6 +37,7 @@ app.use(
 app.use("/api", authRouter);
 app.use("/api/admin", usersAdminRouter);
 app.use("/api/categories", categoryRouter);
+app.use("/api/admin/categories", categoryAdminRouter);
 app.use("/api/dish", dishRouter);
 app.use("/api/owner/dish", dishOwnerRouter);
 app.use("/api/admin/dish", dishAdminRouter);
