@@ -55,7 +55,11 @@ const Header = () => {
             </div>
             <div className="flex items-center justify-center md:items-stretch md:justify-start mx-5 md:mx-0">
               <Link to="/" className="flex shrink-0 items-center">
-                <img src={assets.logo} alt="logo" className="h-8 w-auto" />
+                <img
+                  src={assets.logoWhite}
+                  alt="logo"
+                  className="h-12 w-auto"
+                />
               </Link>
             </div>
 

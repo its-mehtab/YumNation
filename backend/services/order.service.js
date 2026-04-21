@@ -3,7 +3,7 @@ import Order from "../models/order.modal.js";
 export const getPaginatedOrders = async ({
   filter = {},
   page = 1,
-  limit = 5,
+  limit = 1,
   populate = "",
 }) => {
   const pageNum = Math.max(Number(page), 1);
@@ -21,7 +21,7 @@ export const getPaginatedOrders = async ({
 
   return {
     items: orders,
-    total,
+    totalOrders: total,
     page: pageNum,
     pages: Math.ceil(total / limitNum),
   };

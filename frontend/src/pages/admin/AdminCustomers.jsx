@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import ConfirmationModal from "../../components/common/ConfirmationModal";
+import Pagination from "@mui/material/Pagination";
+import { Spinner } from "@radix-ui/themes";
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const AVATAR_COLORS = [
@@ -117,6 +119,10 @@ const AdminCustomers = () => {
     }
   };
 
+  const handlePageChange = (event, value) => {
+    setFilter((prev) => ({ ...prev, page: value }));
+  };
+
   useEffect(() => {
     fetchAllUsers();
   }, [filter.page, filter.limit, filter.sortBy, filter.filterStatus]);
@@ -126,7 +132,14 @@ const AdminCustomers = () => {
     return () => clearTimeout(delay);
   }, [filter.search]);
 
-  if (loading) return "loading...";
+  if (loading)
+    return (
+      <div className="relative h-100">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Spinner size="3" />
+        </div>
+      </div>
+    );
 
   return (
     <div>
@@ -326,6 +339,15 @@ const AdminCustomers = () => {
             )}
           </tbody>
         </table>
+      </div>
+      <div className="mt-6 flex justify-center">
+        <Pagination
+          count={allUsers?.pagination?.totalPages || 1}
+          page={filter.page}
+          onChange={handlePageChange}
+          variant="outlined"
+          shape="rounded"
+        />
       </div>
     </div>
   );

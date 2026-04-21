@@ -1,5 +1,5 @@
 import logo from "./logo.png";
-import logoYellow from "./logo-yellow.png";
+import logoWhite from "./logo-white.png";
 import bannerImg1 from "./banner-1.jpg";
 import bannerImg2 from "./banner-2.jpg";
 import bannerImg3 from "./banner-3.jpg";
@@ -13,7 +13,7 @@ import EmptyCartImg from "./empty-cart-img.png";
 
 export const assets = {
   logo,
-  logoYellow,
+  logoWhite,
   bannerImg1,
   bannerImg2,
   bannerImg3,

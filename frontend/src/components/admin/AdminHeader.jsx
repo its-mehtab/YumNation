@@ -25,7 +25,7 @@ const AdminHeader = () => {
   return (
     <div className="flex gap-14 items-center py-4 bg-[#fc8019] px-8">
       <NavLink to="/admin" className="flex shrink-0 items-center">
-        <img src={assets.logo} alt="logo" className="h-8 w-auto" />
+        <img src={assets.logoWhite} alt="logo" className="h-14 w-auto" />
       </NavLink>
       <div
         className={`flex items-center w-full gap-3 px-3.5 py-1.5 [#fc8e32] border rounded-lg border-[#ffa052] max-w-xl relative`}

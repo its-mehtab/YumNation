@@ -3,120 +3,7 @@ import dayjs from "dayjs";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
-
-// ─── Mock Data (replace with API fetch by id) ─────────────────────────────────
-
-const MOCK_CUSTOMER = {
-  _id: "1",
-  name: "Arjun Mehta",
-  email: "arjun.mehta@gmail.com",
-  phone: "+91 98765 43210",
-  status: "active",
-  joinedAt: "2024-03-12",
-  lastOrderAt: "2026-04-10",
-  totalOrders: 24,
-  totalSpent: 4820,
-  avgOrderValue: 200,
-  addresses: [
-    {
-      _id: "a1",
-      label: "Home",
-      address: "12, Park Street, Kolkata, WB 700016",
-      isDefault: true,
-    },
-    {
-      _id: "a2",
-      label: "Office",
-      address: "45, Sector V, Salt Lake, Kolkata, WB 700091",
-      isDefault: false,
-    },
-  ],
-  orders: [
-    {
-      _id: "ORD-001",
-      restaurant: "Behrouz Biryani",
-      items: 3,
-      total: 340,
-      status: "delivered",
-      date: "2026-04-10",
-      paymentMethod: "UPI",
-      coupon: "SAVE99",
-    },
-    {
-      _id: "ORD-002",
-      restaurant: "McDonald's",
-      items: 2,
-      total: 210,
-      status: "delivered",
-      date: "2026-03-28",
-      paymentMethod: "Card",
-      coupon: null,
-    },
-    {
-      _id: "ORD-003",
-      restaurant: "Pizza Hut",
-      items: 4,
-      total: 580,
-      status: "cancelled",
-      date: "2026-03-15",
-      paymentMethod: "UPI",
-      coupon: null,
-    },
-    {
-      _id: "ORD-004",
-      restaurant: "KFC",
-      items: 1,
-      total: 195,
-      status: "delivered",
-      date: "2026-03-01",
-      paymentMethod: "COD",
-      coupon: "FEAST20",
-    },
-    {
-      _id: "ORD-005",
-      restaurant: "Domino's",
-      items: 2,
-      total: 420,
-      status: "delivered",
-      date: "2026-02-18",
-      paymentMethod: "UPI",
-      coupon: null,
-    },
-    {
-      _id: "ORD-006",
-      restaurant: "Barbeque Nation",
-      items: 5,
-      total: 890,
-      status: "delivered",
-      date: "2026-02-05",
-      paymentMethod: "Card",
-      coupon: "WELCOME50",
-    },
-    {
-      _id: "ORD-007",
-      restaurant: "Subway",
-      items: 1,
-      total: 145,
-      status: "delivered",
-      date: "2026-01-22",
-      paymentMethod: "UPI",
-      coupon: null,
-    },
-    {
-      _id: "ORD-008",
-      restaurant: "The Bowl Company",
-      items: 2,
-      total: 310,
-      status: "cancelled",
-      date: "2026-01-10",
-      paymentMethod: "Card",
-      coupon: null,
-    },
-  ],
-  couponsUsed: ["SAVE99", "FEAST20", "WELCOME50"],
-  favouriteRestaurant: "Behrouz Biryani",
-  deviceInfo: "Android 13 · Samsung Galaxy S23",
-};
+import Pagination from "@mui/material/Pagination";
 
 // ─── Small reusable pieces ────────────────────────────────────────────────────
 
@@ -229,6 +116,13 @@ const AdminCustomerDetails = () => {
   const [customer, setCustomer] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const [filter, setFilter] = useState({
+    orderSearch: "",
+    orderFilter: "",
+    page: 1,
+    limit: 1,
+  });
+
   const { id } = useParams();
   const { serverURL } = useAuth();
   const navigate = useNavigate();
@@ -237,6 +131,13 @@ const AdminCustomerDetails = () => {
     setLoading(true);
     try {
       const { data } = await axios.get(`${serverURL}/api/admin/user/${id}`, {
+        params: {
+          search: filter.search,
+          status: filter.filterStatus,
+          sort: filter.sortBy,
+          page: filter.page,
+          limit: filter.limit,
+        },
         withCredentials: true,
       });
 
@@ -254,8 +155,6 @@ const AdminCustomerDetails = () => {
     fetchUserData();
   }, [id]);
 
-  // const customer = MOCK_CUSTOMER;
-
   const [status, setStatus] = useState(customer?.status);
   const [orderSearch, setOrderSearch] = useState("");
   const [orderFilter, setOrderFilter] = useState("");
@@ -272,15 +171,15 @@ const AdminCustomerDetails = () => {
     ? Math.round((cancelledOrders.length / customer?.orders.items.length) * 100)
     : 0;
 
-  const filteredOrders = customer?.orders.items.filter((o) => {
-    const q = orderSearch.toLowerCase();
-    const matchQ =
-      !q ||
-      o._id.toLowerCase().includes(q) ||
-      o.restaurant.toLowerCase().includes(q);
-    const matchF = !orderFilter || o.status === orderFilter;
-    return matchQ && matchF;
-  });
+  // const filteredOrders = customer?.orders.items.filter((o) => {
+  //   const q = orderSearch.toLowerCase();
+  //   const matchQ =
+  //     !q ||
+  //     o._id.toLowerCase().includes(q) ||
+  //     o.restaurant.toLowerCase().includes(q);
+  //   const matchF = !orderFilter || o.status === orderFilter;
+  //   return matchQ && matchF;
+  // });
 
   const handleToggleStatus = () => {
     const next = status === "blocked" ? "active" : "blocked";
@@ -491,9 +390,12 @@ const AdminCustomerDetails = () => {
                   className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs text-gray-600 outline-none focus:border-[#fc8019] bg-white"
                 >
                   <option value="">All</option>
+                  <option value="placed">Placed</option>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="preparing">Preparing</option>
+                  <option value="out_for_delivery">Out For Delivery</option>
                   <option value="delivered">Delivered</option>
                   <option value="cancelled">Cancelled</option>
-                  <option value="pending">Pending</option>
                 </select>
               </div>
             </div>
@@ -520,7 +422,7 @@ const AdminCustomerDetails = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {filteredOrders?.length === 0 ? (
+                {customer?.orders.items?.length === 0 ? (
                   <tr>
                     <td
                       colSpan={7}
@@ -530,26 +432,26 @@ const AdminCustomerDetails = () => {
                     </td>
                   </tr>
                 ) : (
-                  filteredOrders?.map((order) => (
+                  customer?.orders.items?.map((order) => (
                     <OrderRow key={order._id} order={order} />
                   ))
                 )}
               </tbody>
 
               {/* Footer summary */}
-              {filteredOrders?.length > 0 && (
+              {customer?.orders.items?.length > 0 && (
                 <tfoot>
                   <tr className="border-t border-gray-100 bg-gray-50">
                     <td
                       colSpan={6}
                       className="px-4 py-3 text-xs font-semibold text-gray-400"
                     >
-                      {filteredOrders.length} order
-                      {filteredOrders.length !== 1 ? "s" : ""}
+                      {customer?.orders.items.length} order
+                      {customer?.orders.items.length !== 1 ? "s" : ""}
                     </td>
                     <td className="px-4 py-3 text-right text-sm font-bold text-gray-700">
                       $
-                      {filteredOrders
+                      {customer?.orders.items
                         .reduce((s, o) => s + o.totalAmount, 0)
                         .toLocaleString()}
                     </td>
@@ -557,6 +459,17 @@ const AdminCustomerDetails = () => {
                 </tfoot>
               )}
             </table>
+          </div>
+          <div className="mt-6 flex justify-center">
+            <Pagination
+              count={customer?.orders?.pages}
+              page={customer?.orders?.page}
+              onChange={(e, value) =>
+                setFilter((prev) => ({ ...prev, page: value }))
+              }
+              variant="outlined"
+              shape="rounded"
+            />
           </div>
         </div>
       </div>

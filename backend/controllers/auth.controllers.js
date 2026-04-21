@@ -121,14 +121,38 @@ export const getUserData = async (req, res) => {
 
 export const getUserDetails = async (req, res) => {
   const { userId } = req.params;
+  const { search, sort, status, page = 1, limit = 12 } = req.query;
 
   try {
+    // const query = {};
+
+    // if (status) query.status = status;
+
+    // if (search) {
+    //   const regex = new RegExp(search, "i");
+    //   query.$or = [{ name: regex }, { email: regex }, { phone: regex }];
+    // }
+
+    // const sortMap = {
+    //   latest_asc: { createdAt: -1 },
+    //   highest_spent: { totalSpent: -1 },
+    //   most_orders: { totalOrders: -1 },
+    //   recent_order: { lastOrderAt: -1 },
+    // };
+    // const sortOption = sortMap[sort] || { createdAt: -1 };
+
+    // const pageNum = Math.max(Number(page) || 1, 1);
+    // const limitNum = Math.min(Number(limit) || 12, 40);
+    // const skip = (pageNum - 1) * limitNum;
+    // ===========
+
     const [user, orders, addresses, couponsUsed] = await Promise.all([
       User.findById(userId).select("-password -__v").lean(),
+
       await getPaginatedOrders({
         filter: { user: userId },
-        page: req.query.page,
-        limit: req.query.limit,
+        page: page,
+        limit: limit,
         populate: "items.dish",
       }),
 
@@ -174,7 +198,7 @@ export const getAllUsers = async (req, res) => {
     }
 
     const sortMap = {
-      latest_asc: { createdAt: 1 },
+      latest_asc: { createdAt: -1 },
       highest_spent: { totalSpent: -1 },
       most_orders: { totalOrders: -1 },
       recent_order: { lastOrderAt: -1 },
@@ -217,8 +241,6 @@ export const getAllUsers = async (req, res) => {
         page: pageNum,
         limit: limitNum,
         totalPages: Math.ceil(total / limitNum),
-        hasPrev: pageNum > Math.ceil(total / limitNum),
-        hasNext: pageNum < Math.ceil(total / limitNum),
       },
       totalCustomer,
       totalActive,
@@ -263,6 +285,7 @@ export const updateUser = async (req, res) => {
     });
   }
 };
+
 export const updateUserByAdmin = async (req, res) => {
   try {
     const { userId } = req.params;
