@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { useAdminOrders } from "../../context/admin/AdminOrdersContext";
+import Pagination from "@mui/material/Pagination";
 
 // ── Mock data ────────────────────────────────────────────────────────────────
 
@@ -57,43 +58,41 @@ const StatusDropdown = ({ orderId, current, onChange }) => (
 
 // ── Main Component ───────────────────────────────────────────────────────────
 const AdminOrders = () => {
-  const { orders, setOrders, loading } = useAdminOrders();
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState("newest");
+  const { orders, setOrders, loading, fetchAdminOrders, filter, setFilter } =
+    useAdminOrders();
 
   // ── Filter + sort ──
-  const filtered = orders.items
-    .filter((o) => {
-      const matchStatus =
-        statusFilter === "all" || o.orderStatus === statusFilter;
-      const matchSearch =
-        o?.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
-        o?._id?.slice(-6)?.toLowerCase().includes(search.toLowerCase()) ||
-        o?.items?.some((i) =>
-          i.name.toLowerCase().includes(search.toLowerCase()),
-        );
-      return matchStatus && matchSearch;
-    })
-    .sort((a, b) =>
-      sortBy === "newest"
-        ? new Date(b.createdAt) - new Date(a.createdAt)
-        : sortBy === "oldest"
-          ? new Date(a.createdAt) - new Date(b.createdAt)
-          : sortBy === "highest"
-            ? b.totalAmount - a.totalAmount
-            : a.totalAmount - b.totalAmount,
-    );
+  // const filtered = orders.items
+  //   .filter((o) => {
+  //     const matchStatus =
+  //       statusFilter === "all" || o.orderStatus === statusFilter;
+  //     const matchSearch =
+  //       o?.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
+  //       o?._id?.slice(-6)?.toLowerCase().includes(search.toLowerCase()) ||
+  //       o?.items?.some((i) =>
+  //         i.name.toLowerCase().includes(search.toLowerCase()),
+  //       );
+  //     return matchStatus && matchSearch;
+  //   })
+  //   .sort((a, b) =>
+  //     sortBy === "newest"
+  //       ? new Date(b.createdAt) - new Date(a.createdAt)
+  //       : sortBy === "oldest"
+  //         ? new Date(a.createdAt) - new Date(b.createdAt)
+  //         : sortBy === "highest"
+  //           ? b.totalAmount - a.totalAmount
+  //           : a.totalAmount - b.totalAmount,
+  //   );
 
   const handleStatusChange = (orderId, newStatus) => {
     setOrders((prev) =>
-      prev.map((o) =>
+      prev.items.map((o) =>
         o._id === orderId ? { ...o, orderStatus: newStatus } : o,
       ),
     );
   };
 
-  console.log(orders);
+  // console.log(orders);
 
   // ── Stats ──
   const stats = {
@@ -101,12 +100,14 @@ const AdminOrders = () => {
     pending: orders.items?.filter((o) => o.orderStatus === "placed").length,
     preparing: orders.items?.filter((o) => o.orderStatus === "preparing")
       .length,
-    delivered: orders.items?.filter((o) => o.orderStatus === "delivered")
+    delivered: orders?.items?.filter((o) => o.orderStatus === "delivered")
       .length,
-    revenue: orders.items
+    revenue: orders?.items
       ?.filter((o) => o.paymentStatus === "paid")
       .reduce((acc, o) => acc + o.totalAmount, 0),
   };
+
+  console.log(filter);
 
   if (loading) return "Loading...";
 
@@ -131,7 +132,7 @@ const AdminOrders = () => {
           { label: "Delivered", value: stats.delivered, emoji: "✅" },
           {
             label: "Revenue",
-            value: `$${stats.revenue.toFixed(2)}`,
+            value: `$${stats.revenue?.toFixed(2)}`,
             emoji: "💰",
           },
         ].map((s) => (
@@ -159,15 +160,25 @@ const AdminOrders = () => {
             <div className="flex items-center gap-3">
               {/* Search */}
               <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                value={filter.orderSearch}
+                onChange={(e) =>
+                  setFilter((prev) => ({
+                    ...prev,
+                    orderSearch: e.target.value,
+                  }))
+                }
                 placeholder="Search by name, order ID..."
                 className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors w-56"
               />
               {/* Sort */}
               <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
+                value={filter.sortBy}
+                onChange={(e) =>
+                  setFilter((prev) => ({
+                    ...prev,
+                    sortBy: e.target.value,
+                  }))
+                }
                 className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] bg-white"
               >
                 <option value="newest">Newest First</option>
@@ -183,9 +194,14 @@ const AdminOrders = () => {
             {STATUS_OPTIONS.map((s) => (
               <button
                 key={s}
-                onClick={() => setStatusFilter(s)}
+                onClick={() =>
+                  setFilter((prev) => ({
+                    ...prev,
+                    statusFilter: s,
+                  }))
+                }
                 className={`text-xs font-semibold px-3 py-1.5 rounded-full capitalize transition-colors ${
-                  statusFilter === s
+                  filter.statusFilter === s
                     ? "bg-[#fc8019] text-white"
                     : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                 }`}
@@ -193,14 +209,13 @@ const AdminOrders = () => {
                 {s}
                 {s !== "all" && (
                   <span className="ml-1 opacity-70">
-                    ({orders.items.filter((o) => o.orderStatus === s).length})
+                    ({orders?.items?.filter((o) => o.orderStatus === s).length})
                   </span>
                 )}
               </button>
             ))}
           </div>
         </div>
-
         {/* ── Table ── */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -234,7 +249,7 @@ const AdminOrders = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {filtered.map((order) => (
+              {orders.items?.map((order) => (
                 <tr
                   key={order._id}
                   className="hover:bg-gray-50 transition-colors"
@@ -249,7 +264,7 @@ const AdminOrders = () => {
                   {/* Customer */}
                   <td className="px-4 py-4">
                     <p className="font-semibold text-gray-700 text-xs">
-                      {order.user.name}
+                      {order.user.firstName}
                     </p>
                     <p className="text-xs text-gray-400 mt-0.5">
                       {order.user.email}
@@ -267,7 +282,6 @@ const AdminOrders = () => {
                       </p>
                     )}
                   </td>
-
                   {/* Address */}
                   <td className="px-4 py-4 text-xs text-gray-500">
                     {order.deliveryAddress.city}, {order.deliveryAddress.state}
@@ -337,10 +351,21 @@ const AdminOrders = () => {
               ))}
             </tbody>
           </table>
+          <div className="mt-6 flex justify-center">
+            <Pagination
+              count={orders.pagination?.totalPages}
+              page={filter.page}
+              onChange={(e, value) =>
+                setFilter((prev) => ({ ...prev, page: value }))
+              }
+              variant="outlined"
+              shape="rounded"
+            />
+          </div>
         </div>
 
         {/* Empty state */}
-        {filtered.length === 0 && (
+        {orders.items?.length === 0 && (
           <div className="text-center py-16 text-gray-400">
             <div className="text-4xl mb-3">📦</div>
             <p className="text-sm font-medium">No orders found</p>

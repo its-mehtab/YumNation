@@ -118,7 +118,7 @@ const AdminCustomerDetails = () => {
 
   const [filter, setFilter] = useState({
     orderSearch: "",
-    orderFilter: "",
+    statusFilter: "",
     page: 1,
     limit: 1,
   });
@@ -132,9 +132,8 @@ const AdminCustomerDetails = () => {
     try {
       const { data } = await axios.get(`${serverURL}/api/admin/user/${id}`, {
         params: {
-          search: filter.search,
-          status: filter.filterStatus,
-          sort: filter.sortBy,
+          search: filter.orderSearch,
+          statusFilter: filter.statusFilter,
           page: filter.page,
           limit: filter.limit,
         },
@@ -153,11 +152,11 @@ const AdminCustomerDetails = () => {
 
   useEffect(() => {
     fetchUserData();
-  }, [id]);
+  }, [id, filter.page, filter.orderStatus, filter.orderSearch]);
 
   const [status, setStatus] = useState(customer?.status);
-  const [orderSearch, setOrderSearch] = useState("");
-  const [orderFilter, setOrderFilter] = useState("");
+  // const [orderSearch, setOrderSearch] = useState("");
+  // const [orderFilter, setOrderFilter] = useState("");
 
   if (loading) return "loading...";
 
@@ -380,13 +379,23 @@ const AdminCustomerDetails = () => {
               <div className="flex items-center gap-2">
                 <input
                   placeholder="Search orders..."
-                  value={orderSearch}
-                  onChange={(e) => setOrderSearch(e.target.value)}
+                  value={filter.orderSearch}
+                  onChange={(e) =>
+                    setFilter((prev) => ({
+                      ...prev,
+                      orderSearch: e.target.value,
+                    }))
+                  }
                   className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs text-gray-600 outline-none focus:border-[#fc8019] transition-colors w-40"
                 />
                 <select
-                  value={orderFilter}
-                  onChange={(e) => setOrderFilter(e.target.value)}
+                  value={filter.orderStatus}
+                  onChange={(e) =>
+                    setFilter((prev) => ({
+                      ...prev,
+                      orderStatus: e.target.value,
+                    }))
+                  }
                   className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs text-gray-600 outline-none focus:border-[#fc8019] bg-white"
                 >
                   <option value="">All</option>
@@ -462,8 +471,8 @@ const AdminCustomerDetails = () => {
           </div>
           <div className="mt-6 flex justify-center">
             <Pagination
-              count={customer?.orders?.pages}
-              page={customer?.orders?.page}
+              count={customer?.orders?.pagination.totalPages}
+              page={filter.page}
               onChange={(e, value) =>
                 setFilter((prev) => ({ ...prev, page: value }))
               }

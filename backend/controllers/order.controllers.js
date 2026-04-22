@@ -28,11 +28,15 @@ export const getUserOrders = async (req, res) => {
 };
 
 export const getAllOrders = async (req, res) => {
+  const { search, sort, statusFilter, page = 1, limit = 12 } = req.query;
   try {
     const result = await getPaginatedOrders({
       filter: {},
-      page: req.query.page,
-      limit: req.query.limit,
+      search,
+      sort,
+      statusFilter,
+      page: page,
+      limit: limit,
       populate: "items.dish",
     });
 

@@ -21,7 +21,7 @@ const AppInit = () => {
   const { getRestaurantDishes } = useDish();
 
   const { fetchRestaurants } = useRestaurants();
-  const { fetchAdminOrders } = useAdminOrders();
+  // const { fetchAdminOrders } = useAdminOrders();
   const { fetchCoupon } = useCoupon();
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const AppInit = () => {
     if (user.role === "admin") {
       fetchRestaurants();
       fetchCoupon();
-      fetchAdminOrders();
+      // fetchAdminOrders();
     }
   }, [user]);
 

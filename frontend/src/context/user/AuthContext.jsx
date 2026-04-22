@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   // const navigate = useNavigate();
   // const location = useLocation();
-  const serverURL = "http://localhost:4000";
+  const serverURL = import.meta.env.VITE_API_KEY;
   const isLoggedIn = !!user;
 
   const getUserData = async () => {
