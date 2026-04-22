@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { notifyError } from "../../utils/toast";
-import { useCategories } from "../../context/admin/categoryAdminContext";
+import { useCategories } from "../../context/admin/CategoryAdminContext";
 
 // ── Mock data ────────────────────────────────────────────────────────────────
 const mockCategories = [
