@@ -46,7 +46,7 @@ export const getPaginatedOrders = async ({
     const [orders, total] = await Promise.all([
       Order.find(filter)
         .select(
-          "user items totalAmount orderStatus createdAt deliveryAddress restaurantSnapshot paymentStatus",
+          "user items totalAmount orderStatus createdAt deliveryAddress restaurantSnapshot paymentStatus paymentMethod",
         )
         .populate("user")
         .sort(sortOption)

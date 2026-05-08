@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { useAdminOrders } from "../../context/admin/AdminOrdersContext";
 import Pagination from "@mui/material/Pagination";
+import axios from "axios";
+import { useAuth } from "../../context/user/AuthContext";
+import { notifyError, notifySuccess } from "../../utils/toast";
 
 // ── Mock data ────────────────────────────────────────────────────────────────
 
@@ -58,6 +61,7 @@ const StatusDropdown = ({ orderId, current, onChange }) => (
 
 // ── Main Component ───────────────────────────────────────────────────────────
 const AdminOrders = () => {
+  const { serverURL } = useAuth();
   const { orders, setOrders, loading, fetchAdminOrders, filter, setFilter } =
     useAdminOrders();
 
@@ -84,19 +88,47 @@ const AdminOrders = () => {
   //           : a.totalAmount - b.totalAmount,
   //   );
 
-  const handleStatusChange = (orderId, newStatus) => {
-    setOrders((prev) =>
-      prev.items.map((o) =>
-        o._id === orderId ? { ...o, orderStatus: newStatus } : o,
-      ),
-    );
+  // console.log(orders);
+
+  const handleStatusChange = async (orderId, newStatus) => {
+    setOrders((prev) => ({
+      ...prev,
+      items: prev.items.map((o) => {
+        if (o._id !== orderId) return o;
+
+        let paymentStatus = o.paymentStatus;
+        console.log(o.paymentMethod, "cod");
+
+        if (o.paymentMethod === "cod") {
+          paymentStatus = newStatus === "delivered" ? "paid" : "pending";
+        }
+
+        return {
+          ...o,
+          orderStatus: newStatus,
+          paymentStatus,
+        };
+      }),
+    }));
+
+    try {
+      await axios.patch(
+        `${serverURL}/api/admin/orders/${orderId}/status`,
+        { status: newStatus },
+        { withCredentials: true },
+      );
+      notifySuccess("Order status updated");
+    } catch {
+      notifyError("Failed to update status");
+      fetchAdminOrders();
+    }
   };
 
   // console.log(orders);
 
   // ── Stats ──
   const stats = {
-    total: orders.items?.length,
+    total: orders?.pagination?.total,
     pending: orders.items?.filter((o) => o.orderStatus === "placed").length,
     preparing: orders.items?.filter((o) => o.orderStatus === "preparing")
       .length,
@@ -108,8 +140,6 @@ const AdminOrders = () => {
   };
 
   console.log(filter);
-
-  if (loading) return "Loading...";
 
   return (
     <div>
@@ -351,17 +381,6 @@ const AdminOrders = () => {
               ))}
             </tbody>
           </table>
-          <div className="mt-6 flex justify-center">
-            <Pagination
-              count={orders.pagination?.totalPages}
-              page={filter.page}
-              onChange={(e, value) =>
-                setFilter((prev) => ({ ...prev, page: value }))
-              }
-              variant="outlined"
-              shape="rounded"
-            />
-          </div>
         </div>
 
         {/* Empty state */}
@@ -371,6 +390,18 @@ const AdminOrders = () => {
             <p className="text-sm font-medium">No orders found</p>
           </div>
         )}
+      </div>
+
+      <div className="mt-6 flex justify-center">
+        <Pagination
+          count={orders.pagination?.totalPages}
+          page={filter.page}
+          onChange={(e, value) =>
+            setFilter((prev) => ({ ...prev, page: value }))
+          }
+          variant="outlined"
+          shape="rounded"
+        />
       </div>
     </div>
   );

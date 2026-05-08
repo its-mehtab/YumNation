@@ -132,17 +132,13 @@ const AdminCustomers = () => {
     return () => clearTimeout(delay);
   }, [filter.search]);
 
-  if (loading)
-    return (
-      <div className="relative h-100">
+  return (
+    <div className="relative">
+      {loading && (
         <div className="absolute inset-0 flex items-center justify-center">
           <Spinner size="3" />
         </div>
-      </div>
-    );
-
-  return (
-    <div>
+      )}
       {/* ── Page Header ── */}
       <div className="flex items-start justify-between mb-6">
         <div>

@@ -121,7 +121,7 @@ const orderSchema = new Schema(
         "placed",
         "confirmed",
         "preparing",
-        "out_for_delivery",
+        "out for delivery",
         "delivered",
         "cancelled",
       ],

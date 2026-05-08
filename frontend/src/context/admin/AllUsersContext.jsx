@@ -19,8 +19,6 @@ export const AllUsersProvider = ({ children }) => {
   const { serverURL } = useAuth();
 
   const fetchAllUsers = async () => {
-    console.log(`${serverURL}/api/admin/users`);
-
     setLoading(true);
     try {
       const { data } = await axios.get(`${serverURL}/api/admin/users`, {
@@ -33,8 +31,6 @@ export const AllUsersProvider = ({ children }) => {
         },
         withCredentials: true,
       });
-
-      console.log(data);
 
       setAllUsers(data);
     } catch (error) {

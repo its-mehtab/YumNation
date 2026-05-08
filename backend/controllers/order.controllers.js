@@ -77,6 +77,72 @@ export const getOrderById = async (req, res) => {
   }
 };
 
+const validStatuses = [
+  "placed",
+  "confirmed",
+  "preparing",
+  "out for delivery",
+  "delivered",
+  "cancelled",
+];
+
+export const updateOrderStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  if (!status)
+    return res.status(400).json({
+      message: "Status is required",
+    });
+
+  if (!validStatuses.includes(status))
+    return res.status(400).json({
+      message: "Invalid status",
+    });
+
+  try {
+    const order = await Order.findById(id);
+
+    if (!order)
+      return res.status(404).json({
+        message: "Order not found",
+      });
+
+    order.orderStatus = status;
+
+    if (order.paymentMethod === "cod") {
+      if (status === "delivered") {
+        order.paymentStatus = "paid";
+      } else {
+        order.paymentStatus = "pending";
+      }
+    }
+
+    // if (order.orderStatus === "delivered" && status !== "delivered") {
+    //   return res.status(400).json({
+    //     message: "Cannot revert delivered order",
+    //   });
+    // }
+
+    // order.orderStatus = status;
+
+    // if (order.paymentMethod === "cod" && status === "delivered") {
+    //   order.paymentStatus = "paid";
+    // }
+
+    await order.save();
+
+    return res.status(200).json(order);
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
 export const createOrder = async (req, res) => {
   const userId = req.userId;
   const { deliveryAddress, couponCode, paymentMethod, paymentStatus } =

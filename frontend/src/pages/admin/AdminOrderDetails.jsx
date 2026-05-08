@@ -2,6 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
+import {
+  ConfirmedIcon,
+  DeliveredIcon,
+  DeliveryIcon,
+  PlacedIcon,
+  PreparingIcon,
+} from "../../assets/icon/Icons";
+import { useAuth } from "../../context/user/AuthContext";
 
 // ── Mock order (replace with real API call) ──────────────────────────────────
 const mockOrder = {
@@ -76,23 +84,28 @@ const statusConfig = {
 };
 
 // ── Timeline ──────────────────────────────────────────────────────────────────
-const ICONS = ["📋", "✅", "👨‍🍳", "🛵", "🎉"];
+const ICONS = [
+  <PlacedIcon size={"20px"} color="currentColor" />,
+  <ConfirmedIcon size={"20px"} color="currentColor" />,
+  <PreparingIcon size={"20px"} color="currentColor" />,
+  <DeliveryIcon size={"20px"} color="currentColor" />,
+  <DeliveredIcon size={"20px"} color="currentColor" />,
+];
 
 const TimelineStep = ({ label, icon, done, active, last }) => (
   <div className="flex flex-col items-center flex-1">
+    {/* {console.log(last)} */}
     <div className="relative w-full flex items-center">
       <div
-        className={`flex-1 h-0.5 ${done && !active ? "bg-[#fc8019]" : "bg-gray-200"}`}
+        className={`flex-1 h-0.5 ${done ? "bg-[#fc8019]" : "bg-gray-200"}`}
         style={{ visibility: label === STATUSES[0] ? "hidden" : "visible" }}
       />
       <div
         className={`w-9 h-9 rounded-full flex items-center justify-center z-10 border-2 transition-all duration-300 text-sm
         ${
-          active
+          done
             ? "border-[#fc8019] bg-[#fc8019] text-white scale-110 shadow-lg shadow-orange-200"
-            : done
-              ? "border-[#fc8019] bg-white text-[#fc8019]"
-              : "border-gray-200 bg-white text-gray-300"
+            : "border-gray-200 bg-white text-gray-300"
         }`}
       >
         {icon}
@@ -142,6 +155,7 @@ const PriceRow = ({ label, value, highlight, green }) => (
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 const AdminOrderDetails = () => {
+  const { serverURL } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -150,8 +164,20 @@ const AdminOrderDetails = () => {
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState("");
 
+  // const fetchOrder = async () => {
+  //   try {
+  //     const order = await axios.get(`${serverURL}/api/admin/order/${id}`);
+
+  //     setOrder(order);
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   useEffect(() => {
-    // Replace with: axios.get(`${serverURL}/api/admin/order/${id}`, { withCredentials: true })
+    // fetchOrder();
     setTimeout(() => {
       setOrder(mockOrder);
       setLoading(false);
@@ -349,13 +375,13 @@ const AdminOrderDetails = () => {
                   key={s}
                   onClick={() => handleStatusChange(s)}
                   disabled={updating || s === status}
-                  className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium capitalize transition-all border
+                  className={`w-full flex items-center text-left px-4 py-2.5 rounded-xl text-sm font-medium capitalize transition-all border
                     ${
                       s === status
                         ? "border-[#fc8019] bg-orange-50 text-[#fc8019] cursor-default"
                         : s === "cancelled"
                           ? "border-red-100 text-red-400 hover:bg-red-50"
-                          : "border-gray-100 text-gray-500 hover:bg-gray-50"
+                          : "border-gray-100 text-gray-400 hover:bg-gray-50"
                     } disabled:opacity-50`}
                 >
                   <span className="mr-2">
@@ -363,7 +389,7 @@ const AdminOrderDetails = () => {
                   </span>
                   {s}
                   {s === status && (
-                    <span className="float-right text-xs">● current</span>
+                    <span className="ms-auto text-xs">● current</span>
                   )}
                 </button>
               ))}
