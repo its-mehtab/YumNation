@@ -69,7 +69,7 @@ const AdminOrders = () => {
   // const filtered = orders.items
   //   .filter((o) => {
   //     const matchStatus =
-  //       statusFilter === "all" || o.orderStatus === statusFilter;
+  //       orderStatus === "all" || o.orderStatus === orderStatus;
   //     const matchSearch =
   //       o?.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
   //       o?._id?.slice(-6)?.toLowerCase().includes(search.toLowerCase()) ||
@@ -221,17 +221,18 @@ const AdminOrders = () => {
 
           {/* Status filter tabs */}
           <div className="flex gap-2 flex-wrap">
+            {/* {console.log(filter)} */}
             {STATUS_OPTIONS.map((s) => (
               <button
                 key={s}
                 onClick={() =>
                   setFilter((prev) => ({
                     ...prev,
-                    statusFilter: s,
+                    orderStatus: s,
                   }))
                 }
                 className={`text-xs font-semibold px-3 py-1.5 rounded-full capitalize transition-colors ${
-                  filter.statusFilter === s
+                  filter.orderStatus === s
                     ? "bg-[#fc8019] text-white"
                     : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                 }`}
@@ -239,7 +240,7 @@ const AdminOrders = () => {
                 {s}
                 {s !== "all" && (
                   <span className="ml-1 opacity-70">
-                    ({orders?.items?.filter((o) => o.orderStatus === s).length})
+                    ({orders?.statusCount?.[s]})
                   </span>
                 )}
               </button>

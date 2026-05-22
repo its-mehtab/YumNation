@@ -10,7 +10,7 @@ export const AdminOrdersProvider = ({ children }) => {
 
   const [filter, setFilter] = useState({
     orderSearch: "",
-    statusFilter: "",
+    orderStatus: "all",
     sortBy: "newest",
     page: 1,
     limit: 2,
@@ -24,13 +24,15 @@ export const AdminOrdersProvider = ({ children }) => {
       const { data } = await axios.get(`${serverURL}/api/admin/orders`, {
         params: {
           search: filter.orderSearch,
-          statusFilter: filter.statusFilter,
+          orderStatus: filter.orderStatus,
           sort: filter.sortBy,
           page: filter.page,
           limit: filter.limit,
         },
         withCredentials: true,
       });
+
+      console.log(data);
 
       setOrders(data);
     } catch (error) {
@@ -42,7 +44,7 @@ export const AdminOrdersProvider = ({ children }) => {
 
   useEffect(() => {
     fetchAdminOrders();
-  }, [filter.page, filter.orderStatus, filter.orderSearchlter]);
+  }, [filter.page, filter.orderStatus, filter.orderSearch, filter.sortBy]);
 
   return (
     <AdminOrdersContext.Provider

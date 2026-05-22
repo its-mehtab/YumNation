@@ -15,6 +15,7 @@ import {
   TimeIcon,
 } from "../../assets/icon/Icons";
 import { StarIcon } from "@radix-ui/react-icons";
+import TimelineStep from "../../context/public/TimelineStep";
 
 // ── Status config ────────────────────────────────────────────────────────────
 const STATUSES = [
@@ -23,6 +24,14 @@ const STATUSES = [
   "preparing",
   "out for delivery",
   "delivered",
+];
+
+const ICONS = [
+  <PlacedIcon size={"20px"} color="currentColor" />,
+  <ConfirmedIcon size={"20px"} color="currentColor" />,
+  <PreparingIcon size={"20px"} color="currentColor" />,
+  <DeliveryIcon size={"20px"} color="currentColor" />,
+  <DeliveredIcon size={"20px"} color="currentColor" />,
 ];
 
 const statusConfig = {
@@ -37,51 +46,6 @@ const statusConfig = {
   delivered: { color: "#22c55e", bg: "#f0fdf4", label: "Delivered" },
   cancelled: { color: "#ef4444", bg: "#fef2f2", label: "Cancelled" },
 };
-
-// ── Timeline Step ────────────────────────────────────────────────────────────
-const TimelineStep = ({ label, icon, done, active, last }) => (
-  <div className="flex flex-col items-center flex-1">
-    <div className="relative w-full flex items-center">
-      {/* left line */}
-      <div
-        className={`flex-1 h-0.5 ${done && !active ? "bg-[#fc8019]" : "bg-gray-200"}`}
-        style={{ visibility: label === STATUSES[0] ? "hidden" : "visible" }}
-      />
-      {/* dot */}
-      <div
-        className={`w-12 h-12 rounded-full flex items-center justify-center z-10 border-2 transition-all duration-500 text-base
-        ${
-          active
-            ? "border-[#fc8019] bg-[#fc8019] text-white scale-110 shadow-lg shadow-orange-200"
-            : done
-              ? "border-[#fc8019] bg-white text-[#fc8019]"
-              : "border-gray-200 bg-white text-gray-300"
-        }`}
-      >
-        {icon}
-      </div>
-      {/* right line */}
-      <div
-        className={`flex-1 h-0.5 ${done && !last ? "bg-[#fc8019]" : "bg-gray-200"}`}
-        style={{ visibility: last ? "hidden" : "visible" }}
-      />
-    </div>
-    <p
-      className={`text-xs mt-2 font-medium capitalize text-center leading-tight
-      ${active ? "text-[#fc8019]" : done ? "text-gray-600" : "text-gray-400"}`}
-    >
-      {label}
-    </p>
-  </div>
-);
-
-const TIMELINE_ICONS = [
-  <PlacedIcon size={"60%"} color="currentColor" />,
-  <ConfirmedIcon size={"60%"} color="currentColor" />,
-  <PreparingIcon size={"60%"} color="currentColor" />,
-  <DeliveryIcon size={"60%"} color="currentColor" />,
-  <DeliveredIcon size={"60%"} color="currentColor" />,
-];
 
 // ── Price Row ────────────────────────────────────────────────────────────────
 const PriceRow = ({ label, value, highlight, strikethrough }) => (
@@ -217,7 +181,7 @@ const OrderDetails = () => {
               <TimelineStep
                 key={s}
                 label={s}
-                icon={TIMELINE_ICONS[i]}
+                icon={ICONS[i]}
                 done={i <= currentIdx}
                 active={i === currentIdx}
                 last={i === STATUSES.length - 1}
