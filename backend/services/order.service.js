@@ -9,6 +9,8 @@ export const getPaginatedOrders = async ({
   limit = 10,
   populate = "",
 }) => {
+  console.log(search);
+
   try {
     if (orderStatus !== "all" && orderStatus) {
       filter.orderStatus = orderStatus;
@@ -52,6 +54,8 @@ export const getPaginatedOrders = async ({
       outForDelivery,
       delivered,
       cancelled,
+
+      revenue,
     ] = await Promise.all([
       Order.find(filter)
         .select(
@@ -72,10 +76,28 @@ export const getPaginatedOrders = async ({
       Order.countDocuments({ orderStatus: "out for delivery" }),
       Order.countDocuments({ orderStatus: "delivered" }),
       Order.countDocuments({ orderStatus: "cancelled" }),
+
+      await Order.aggregate([
+        {
+          $match: {
+            paymentStatus: "paid",
+            orderStatus: "delivered",
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalRevenue: {
+              $sum: "$totalAmount",
+            },
+          },
+        },
+      ]),
     ]);
 
     return {
       items: orders,
+      totalRevenue: revenue[0]?.totalRevenue || 0,
       statusCount: {
         placed,
         confirmed,

@@ -51,7 +51,7 @@ app.use("/api/coupon", couponRouter);
 app.use("/api/admin/coupon", couponAdminRouter);
 app.use("/api/checkout", checkoutRouter);
 app.use("/api/order", orderRouter);
-app.use("/api/admin/orders", orderAdminRouter);
+app.use("/api/admin/order", orderAdminRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Home Page" });

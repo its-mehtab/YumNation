@@ -21,7 +21,7 @@ export const AdminOrdersProvider = ({ children }) => {
   const fetchAdminOrders = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`${serverURL}/api/admin/orders`, {
+      const { data } = await axios.get(`${serverURL}/api/admin/order`, {
         params: {
           search: filter.orderSearch,
           orderStatus: filter.orderStatus,
@@ -31,8 +31,6 @@ export const AdminOrdersProvider = ({ children }) => {
         },
         withCredentials: true,
       });
-
-      console.log(data);
 
       setOrders(data);
     } catch (error) {

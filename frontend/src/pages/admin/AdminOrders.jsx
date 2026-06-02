@@ -113,7 +113,7 @@ const AdminOrders = () => {
 
     try {
       await axios.patch(
-        `${serverURL}/api/admin/orders/${orderId}/status`,
+        `${serverURL}/api/admin/order/${orderId}/status`,
         { status: newStatus },
         { withCredentials: true },
       );
@@ -128,18 +128,12 @@ const AdminOrders = () => {
 
   // ── Stats ──
   const stats = {
-    total: orders?.pagination?.total,
-    pending: orders.items?.filter((o) => o.orderStatus === "placed").length,
-    preparing: orders.items?.filter((o) => o.orderStatus === "preparing")
-      .length,
-    delivered: orders?.items?.filter((o) => o.orderStatus === "delivered")
-      .length,
-    revenue: orders?.items
-      ?.filter((o) => o.paymentStatus === "paid")
-      .reduce((acc, o) => acc + o.totalAmount, 0),
+    total: orders?.pagination?.total || 0,
+    pending: orders?.statusCount?.placed || 0,
+    preparing: orders?.statusCount?.preparing || 0,
+    delivered: orders?.statusCount?.delivered || 0,
+    revenue: orders?.totalRevenue || 0,
   };
-
-  console.log(filter);
 
   return (
     <div>

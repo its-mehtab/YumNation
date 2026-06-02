@@ -30,8 +30,6 @@ export const getUserOrders = async (req, res) => {
 export const getAllOrders = async (req, res) => {
   const { search, sort, orderStatus, page = 1, limit = 12 } = req.query;
 
-  console.log(search, sort, orderStatus);
-
   try {
     const result = await getPaginatedOrders({
       filter: {},
@@ -67,6 +65,28 @@ export const getOrderById = async (req, res) => {
         "restaurant",
         "name logo slug cuisine address isOpen rating deliveryFee deliveryTime status",
       );
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    return res.status(200).json(order);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error:", error: error.message });
+  }
+};
+
+export const getAdminOrderById = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.userId;
+
+  try {
+    const order = await Order.findOne({ _id: id })
+      .populate("items.dish")
+      .populate("restaurant")
+      .populate("user");
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });

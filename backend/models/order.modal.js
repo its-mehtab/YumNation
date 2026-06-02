@@ -133,6 +133,12 @@ const orderSchema = new Schema(
   { timestamps: true },
 );
 
+orderSchema.index({
+  paymentStatus: 1,
+  orderStatus: 1,
+  createdAt: 1,
+});
+
 const Order = mongoose.model("Order", orderSchema);
 
 export default Order;

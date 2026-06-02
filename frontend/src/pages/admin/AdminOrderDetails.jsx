@@ -165,20 +165,24 @@ const AdminOrderDetails = () => {
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState("");
 
-  // const fetchOrder = async () => {
-  //   try {
-  //     const order = await axios.get(`${serverURL}/api/admin/order/${id}`);
+  const fetchOrder = async () => {
+    try {
+      const { data } = await axios.get(`${serverURL}/api/admin/order/${id}`, {
+        withCredentials: true,
+      });
 
-  //     setOrder(order);
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+      console.log(data);
+
+      setOrder(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // fetchOrder();
+    fetchOrder();
     setTimeout(() => {
       setOrder(mockOrder);
       setLoading(false);
@@ -208,7 +212,9 @@ const AdminOrderDetails = () => {
       </div>
     );
 
-  if (error && !order)
+  // console.log();
+
+  if (error || !order)
     return (
       <div className="text-center py-20">
         <div className="text-5xl mb-4">😕</div>
@@ -222,7 +228,7 @@ const AdminOrderDetails = () => {
       </div>
     );
 
-  const status = order.orderStatus;
+  const status = order?.orderStatus;
   const isCancelled = status === "cancelled";
   const currentIdx = STATUSES.indexOf(status);
   const cfg = statusConfig[status] || statusConfig.placed;
