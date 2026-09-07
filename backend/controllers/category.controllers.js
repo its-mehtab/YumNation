@@ -61,20 +61,28 @@ export const getCategoryBySlug = async (req, res) => {
 };
 
 export const createCategory = async (req, res) => {
-  const { name, description, image, parentCategory } = req.body;
+  const { name, description } = req.body;
   const userId = req.userId;
 
-  if (!name || !description) {
+  if (!name) {
     return res.status(400).json({
-      message: "Name and description are required",
+      message: "Name is required",
+    });
+  }
+
+  if (!req.file) {
+    return res.status(400).json({
+      message: "No image uploaded",
     });
   }
 
   try {
+    const imageUrl = await uploadToCloudinary(req.file.buffer);
+
     const category = await Category.create({
       name,
       description,
-      image,
+      image: imageUrl,
       createdBy: userId,
     });
 

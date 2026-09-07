@@ -6,11 +6,15 @@ import {
   ConfirmedIcon,
   DeliveredIcon,
   DeliveryIcon,
+  LocationIcon,
   PlacedIcon,
   PreparingIcon,
+  StarIcon,
+  TimeIcon,
 } from "../../assets/icon/Icons";
 import { useAuth } from "../../context/user/AuthContext";
 import TimelineStep from "../../context/public/TimelineStep";
+import { Skeleton } from "@radix-ui/themes";
 
 // ── Mock order (replace with real API call) ──────────────────────────────────
 const mockOrder = {
@@ -184,7 +188,7 @@ const AdminOrderDetails = () => {
   useEffect(() => {
     fetchOrder();
     setTimeout(() => {
-      setOrder(mockOrder);
+      // setOrder(mockOrder);
       setLoading(false);
     }, 600);
   }, [id]);
@@ -304,15 +308,86 @@ const AdminOrderDetails = () => {
             </Card>
           )}
 
+          {order && loading ? (
+            <Skeleton loading={true} className="h-20 w-full rounded-xl" />
+          ) : (
+            <div className="p-4 rounded-xl border border-gray-300 mb-5">
+              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">
+                Ordering From
+              </p>
+              <div className="flex items-center gap-4">
+                <Link to={`/admin/restaurants/${order?.restaurant?._id}`}>
+                  <div className="w-14 h-14 min-w-14 rounded-xl border border-orange-200 bg-white overflow-hidden flex items-center justify-center text-2xl">
+                    {order?.restaurantSnapshot.logo ? (
+                      <img
+                        src={order?.restaurantSnapshot.logo}
+                        alt={order?.restaurantSnapshot.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      "🏪"
+                    )}
+                  </div>
+                </Link>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Link
+                      to={`/admin/restaurants/${order?.restaurant?._id}`}
+                      className="font-bold text-gray-800 hover:text-[#fc8019] transition-colors text-[15px]"
+                    >
+                      {order?.restaurantSnapshot?.name}
+                    </Link>
+                    <span
+                      className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                        order?.restaurant?.isOpen
+                          ? "bg-green-100 text-green-600"
+                          : "bg-gray-100 text-gray-400"
+                      }`}
+                    >
+                      {order?.restaurant?.isOpen ? "● Open" : "● Closed"}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {order?.restaurant?.cuisine.map((c) => c).join(" · ")}
+                  </p>
+                  <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-500 flex-wrap">
+                    <span className="flex items-center gap-1">
+                      <LocationIcon size={16} />
+                      {order?.restaurant?.address.addressLine1},{" "}
+                      {order?.restaurant?.address.city}
+                    </span>
+                    <span className="text-gray-300">•</span>
+                    <span className="flex items-center gap-1">
+                      <TimeIcon /> {order?.restaurant?.deliveryTime} min
+                    </span>
+                    <span className="text-gray-300">•</span>
+                    <span className="flex items-center gap-1">
+                      <StarIcon /> {order?.restaurant?.rating}
+                    </span>
+                    <span className="text-gray-300">•</span>
+                    <span className="flex items-center gap-1 text-[#fc8019] font-medium">
+                      ${order?.restaurant?.deliveryFee} delivery
+                    </span>
+                  </div>
+                </div>
+
+                <Link
+                  to={`/admin/restaurants/${order?.restaurant?._id}`}
+                  className="shrink-0 text-xs font-semibold text-[#fc8019] border border-orange-200 px-3 py-1.5 rounded-lg hover:bg-white transition-colors hidden sm:block"
+                >
+                  View Restaurant →
+                </Link>
+              </div>
+            </div>
+          )}
+
           {/* Items */}
           <Card title={`Items (${order.items.length})`}>
             <div className="space-y-4">
               {order.items.map((item) => (
                 <div key={item._id} className="flex items-center gap-4">
-                  <Link
-                    to={`/dish/${item.dish?.slug}`}
-                    className="w-14 h-14 min-w-14 rounded-xl border border-orange-100 bg-orange-50 flex items-center justify-center overflow-hidden"
-                  >
+                  <div className="w-14 h-14 min-w-14 rounded-xl border border-orange-100 bg-orange-50 flex items-center justify-center overflow-hidden">
                     {item.image ? (
                       <img
                         src={item.image}
@@ -322,14 +397,14 @@ const AdminOrderDetails = () => {
                     ) : (
                       <span className="text-2xl">🍽️</span>
                     )}
-                  </Link>
+                  </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-gray-700 truncate">
                       {item.name}
                     </p>
                     {item.variant && (
                       <p className="text-xs text-gray-400 mt-0.5">
-                        {item.variant}
+                        {item.variant.name}
                       </p>
                     )}
                   </div>
@@ -407,12 +482,12 @@ const AdminOrderDetails = () => {
           {/* Customer */}
           <Card title="Customer">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-base font-bold text-[#fc8019]">
-                {order.user.name.charAt(0)}
+              <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-base font-bold text-[#fc8019] capitalize">
+                {order.user.firstName.charAt(0)}
               </div>
               <div>
                 <p className="text-sm font-semibold text-gray-700">
-                  {order.user.name}
+                  {order.user.firstName} {order.user.lastName}
                 </p>
                 <p className="text-xs text-gray-400">{order.user.email}</p>
               </div>
