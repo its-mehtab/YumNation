@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { useAuth } from "../../context/user/AuthContext";
-import { DeleteIcon, ViewIcon } from "../../assets/icon/Icons";
 import { useAllUsers } from "../../context/admin/AllUsersContext";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -9,47 +8,45 @@ import { notifyError, notifySuccess } from "../../utils/toast";
 import ConfirmationModal from "../../components/common/ConfirmationModal";
 import Pagination from "@mui/material/Pagination";
 import { Spinner } from "@radix-ui/themes";
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+import {
+  Users,
+  UserCheck,
+  UserX,
+  ShoppingBag,
+  Search,
+  Eye,
+  Trash2,
+} from "lucide-react";
+
+// ───pers ──────────────────────────────────────────────────────────────────
 
 const AVATAR_COLORS = [
-  "bg-orange-100 text-orange-600",
-  "bg-blue-100 text-blue-600",
-  "bg-green-100 text-green-600",
-  "bg-purple-100 text-purple-600",
-  "bg-pink-100 text-pink-600",
-  "bg-teal-100 text-teal-600",
+  "bg-orange-50 text-orange-600 border-orange-100",
+  "bg-blue-50 text-blue-600 border-blue-100",
+  "bg-green-50 text-green-600 border-green-100",
+  "bg-purple-50 text-purple-600 border-purple-100",
+  "bg-pink-50 text-pink-600 border-pink-100",
+  "bg-teal-50 text-teal-600 border-teal-100",
 ];
 
 const avatarColor = (id) => AVATAR_COLORS[parseInt(id) % AVATAR_COLORS.length];
 
-// ─── Stat Card ────────────────────────────────────────────────────────────────
-
-const StatCard = ({ label, value, color, sub }) => (
-  <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-    <p className="text-xs text-gray-400 font-medium mb-1">{label}</p>
-    <p className="text-2xl font-bold" style={{ color: color || "#1f2937" }}>
-      {value}
-    </p>
-    {sub && <p className="text-[11px] text-gray-400 mt-1">{sub}</p>}
-  </div>
-);
-
-// ─── Badge ────────────────────────────────────────────────────────────────────
+// ─── Status Badge ─────────────────────────────────────────────────────────────
 
 const StatusBadge = ({ status }) => {
   const styles = {
-    active: "bg-green-50 text-green-700 border border-green-100",
-    inactive: "bg-gray-100 text-gray-400 border border-gray-200",
-    blocked: "bg-red-50 text-red-500 border border-red-100",
+    active: "bg-green-50 text-green-700 border-green-200",
+    inactive: "bg-gray-100 text-gray-500 border-gray-200",
+    blocked: "bg-red-50 text-red-700 border-red-200",
   };
   const labels = {
-    active: "● Active",
-    inactive: "● Inactive",
-    blocked: "● Blocked",
+    active: "Active",
+    inactive: "Inactive",
+    blocked: "Blocked",
   };
   return (
     <span
-      className={`inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full ${styles[status] || styles.inactive}`}
+      className={`inline-block text-[11px] font-bold px-3 py-1 rounded-lg border ${styles[status] || styles.inactive} transition-colors`}
     >
       {labels[status] || status}
     </span>
@@ -66,7 +63,7 @@ const AdminCustomers = () => {
   const totalCustomer = allUsers.totalCustomer;
   const totalActive = allUsers.totalActive;
   const totalBlocked = allUsers.totalBlocked;
-  const totalOrders = allUsers.totalActive;
+  const totalOrders = allUsers.totalActive; // Might be a typo in original context, but left as is
 
   const handleToggleStatus = async (customer) => {
     const next = customer.status === "blocked" ? "active" : "blocked";
@@ -111,7 +108,7 @@ const AdminCustomers = () => {
         withCredentials: true,
       });
 
-      notifySuccess(`Succesfully deleted`);
+      notifySuccess(`Successfully deleted`);
     } catch (error) {
       setAllUsers(allUsers);
       console.log("User delete:", error?.response?.data || error.message);
@@ -133,218 +130,303 @@ const AdminCustomers = () => {
   }, [filter.search]);
 
   return (
-    <div className="relative">
+    <div className="relative space-y-6">
       {loading && (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/50 backdrop-blur-sm">
           <Spinner size="3" />
         </div>
       )}
+
       {/* ── Page Header ── */}
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-gray-700">Customers</h1>
-          <p className="text-xs text-gray-400 mt-0.5">
+          <h1 className="text-2xl font-bold text-gray-800 tracking-tight">
+            Customers
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
             View and manage your customer accounts
           </p>
         </div>
       </div>
 
       {/* ── Stats ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-        <StatCard label="Total customers" value={totalCustomer} />
-        <StatCard label="Active" value={totalActive} color="#3b6d11" />
-        <StatCard label="Blocked" value={totalBlocked} color="#ef4444" />
-        <StatCard label="Total orders" value={totalOrders} color="#fc8019" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          {
+            label: "Total Customers",
+            value: totalCustomer,
+            icon: Users,
+            color: "text-blue-600",
+            bg: "bg-blue-50",
+          },
+          {
+            label: "Active",
+            value: totalActive,
+            icon: UserCheck,
+            color: "text-green-600",
+            bg: "bg-green-50",
+          },
+          {
+            label: "Blocked",
+            value: totalBlocked,
+            icon: UserX,
+            color: "text-red-600",
+            bg: "bg-red-50",
+          },
+          {
+            label: "Total Orders",
+            value: totalOrders,
+            icon: ShoppingBag,
+            color: "text-orange-600",
+            bg: "bg-orange-50",
+          },
+        ].map((s) => (
+          <div
+            key={s.label}
+            className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]"
+          >
+            <div>
+              <p className="text-sm font-semibold text-gray-500 mb-2">
+                {s.label}
+              </p>
+              <p className="text-3xl font-bold text-gray-800">{s.value || 0}</p>
+            </div>
+            <div className={`p-4 rounded-xl ${s.bg} ${s.color}`}>
+              <s.icon size={28} strokeWidth={2.5} />
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* ── Toolbar ── */}
-      <div className="flex items-center justify-between mb-5">
-        <h2 className="text-base font-bold text-gray-700">All Customers</h2>
-        <div className="flex items-center gap-3">
-          <input
-            placeholder="Search name, email or phone..."
-            value={filter.search}
-            onChange={(e) =>
-              setFilter((prev) => ({ ...prev, search: e.target.value }))
-            }
-            className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors w-64"
-          />
-          <select
-            value={filter.filterStatus}
-            onChange={(e) =>
-              setFilter((prev) => ({
-                ...prev,
-                filterStatus: e.target.value,
-              }))
-            }
-            className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] bg-white"
-          >
-            <option value="">All status</option>
-            <option value="active">Active</option>
-            <option value="blocked">Blocked</option>
-          </select>
-          <select
-            value={filter.sortBy}
-            onChange={(e) =>
-              setFilter((prev) => ({ ...prev, sortBy: e.target.value }))
-            }
-            className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] bg-white"
-          >
-            <option value="latest_asc">Newest first</option>
-            <option value="recent_order">Recent order</option>
-            <option value="highest_spent">Highest spent</option>
-            <option value="most_orders">Most orders</option>
-          </select>
+      {/* ── Table Card ── */}
+      <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
+        {/* Toolbar */}
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-6 py-5 border-b border-gray-100 gap-4">
+          <h2 className="text-lg font-bold text-gray-800">All Customers</h2>
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
+            <div className="relative w-full sm:w-64">
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                size={18}
+              />
+              <input
+                placeholder="Search name, email..."
+                value={filter.search}
+                onChange={(e) =>
+                  setFilter((prev) => ({ ...prev, search: e.target.value }))
+                }
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all outline-none"
+              />
+            </div>
+            <select
+              value={filter.filterStatus}
+              onChange={(e) =>
+                setFilter((prev) => ({
+                  ...prev,
+                  filterStatus: e.target.value,
+                }))
+              }
+              className="w-full sm:w-auto bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-600 outline-none focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all"
+            >
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="blocked">Blocked</option>
+            </select>
+            <select
+              value={filter.sortBy}
+              onChange={(e) =>
+                setFilter((prev) => ({ ...prev, sortBy: e.target.value }))
+              }
+              className="w-full sm:w-auto bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-600 outline-none focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all"
+            >
+              <option value="latest_asc">Newest First</option>
+              <option value="recent_order">Recent Order</option>
+              <option value="highest_spent">Highest Spent</option>
+              <option value="most_orders">Most Orders</option>
+            </select>
+          </div>
         </div>
-      </div>
 
-      {/* ── Table ── */}
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-gray-100">
-              {[
-                "Customer",
-                "Contact",
-                "Orders",
-                "Total Spent",
-                "Last Order",
-                "Joined",
-                "Status",
-                "Actions",
-              ].map((h) => (
-                <th
-                  key={h}
-                  className="px-4 py-3 text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider bg-gray-50"
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-50">
-            {allUsers?.items?.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={8}
-                  className="text-center py-10 text-sm text-gray-400"
-                >
-                  No customers found
-                </td>
+        {/* Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-gray-50/50 text-gray-500">
+              <tr className="border-b border-gray-100">
+                {[
+                  "Customer",
+                  "Contact",
+                  "Orders",
+                  "Total Spent",
+                  "Last Order",
+                  "Joined",
+                  "Status",
+                  "Actions",
+                ].map((h) => (
+                  <th
+                    key={h}
+                    className="px-4 py-4 font-semibold uppercase tracking-wider text-xs first:pl-6"
+                  >
+                    {h}
+                  </th>
+                ))}
               </tr>
-            ) : (
-              allUsers?.items?.map((c) => (
-                <tr
-                  key={c._id}
-                  className="hover:bg-orange-50/30 transition-colors"
-                >
-                  {/* Customer */}
-                  <td className="px-4 py-3.5">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-8 h-8 rounded-md flex items-center justify-center text-xs font-bold shrink-0 ${avatarColor(c._id)}`}
-                      >
-                        {c.firstName?.slice(0, 1).toUpperCase()}
-                        {c.lastName?.slice(0, 1).toUpperCase()}
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {allUsers?.items?.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={8}
+                    className="text-center py-20 text-sm text-gray-500 font-medium"
+                  >
+                    <div className="flex flex-col items-center justify-center">
+                      <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                        <Users size={32} className="text-gray-400" />
                       </div>
-                      <div>
-                        <p className="font-semibold text-gray-700 text-[13px] capitalize">
-                          {`${c.firstName} ${c.lastName}`}
-                        </p>
-                        <p className="text-[11px] text-gray-400 mt-0.5">
-                          {c._id.padStart(6, "0")}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-
-                  {/* Contact */}
-                  <td className="px-4 py-3.5">
-                    <p className="text-[12px] text-gray-600">{c.email}</p>
-                    <p className="text-[11px] text-gray-400 mt-0.5">
-                      {c.phone}
-                    </p>
-                  </td>
-
-                  {/* Orders */}
-                  <td className="px-4 py-3.5">
-                    <span className="font-semibold text-gray-700">
-                      {c.totalOrders}
-                    </span>
-                  </td>
-
-                  {/* Total Spent */}
-                  <td className="px-4 py-3.5">
-                    <span className="font-semibold text-gray-700">
-                      ${c.totalSpent?.toLocaleString()}
-                    </span>
-                    <p className="text-[11px] text-gray-400 mt-0.5">
-                      avg ${(c.totalSpent / c.totalOrders).toLocaleString()}
-                    </p>
-                  </td>
-
-                  {/* Last Order */}
-                  <td className="px-4 py-3.5 text-[12px] text-gray-400">
-                    {dayjs(c.lastOrderAt).format("DD MMM YYYY")}
-                  </td>
-
-                  {/* Joined */}
-                  <td className="px-4 py-3.5 text-[12px] text-gray-400">
-                    {dayjs(c.createdAt).format("DD MMM YYYY")}
-                  </td>
-
-                  {/* Status */}
-                  <td className="px-4 py-3.5">
-                    <button onClick={() => handleToggleStatus(c)}>
-                      <StatusBadge status={c.status} />
-                    </button>
-                  </td>
-
-                  {/* Actions */}
-                  <td className="px-4 py-3.5">
-                    <div className="flex items-center gap-1.5">
-                      <Link
-                        to={`${c._id}`}
-                        className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
-                      >
-                        <ViewIcon />
-                      </Link>
-                      <ConfirmationModal
-                        button={
-                          <button
-                            className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
-                            title="Delete"
-                          >
-                            <DeleteIcon size={15} />
-                          </button>
-                        }
-                        heading={`Delete ${c.firstName} from customers?`}
-                        description="Are you sure you want to delete this customer? This action cannot be undone and the customers will be removed from the list."
-                        onClick={async () => await handleDelete(c._id)}
-                      />
-                      {/* <button
-                        onClick={() => handleDelete(c._id)}
-                        className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
-                      >
-                        <DeleteIcon />
-                      </button> */}
+                      <h3 className="text-lg font-bold text-gray-800 mb-1">
+                        No customers found
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        Try adjusting your filters or search
+                      </p>
                     </div>
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                allUsers?.items?.map((c) => (
+                  <tr
+                    key={c._id}
+                    className="hover:bg-gray-50/80 transition-colors group"
+                  >
+                    {/* Customer */}
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-10 h-10 rounded-xl border flex items-center justify-center text-sm font-bold shrink-0 ${avatarColor(c._id)}`}
+                        >
+                          {c.firstName?.slice(0, 1).toUpperCase()}
+                          {c.lastName?.slice(0, 1).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="font-bold text-gray-800 text-sm capitalize">
+                            {`${c.firstName} ${c.lastName}`}
+                          </p>
+                          <p className="text-xs font-mono text-gray-400 mt-0.5">
+                            #{c._id.slice(-6).toUpperCase()}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Contact */}
+                    <td className="px-4 py-4">
+                      <p className="text-xs font-medium text-gray-600">
+                        {c.email}
+                      </p>
+                      <p className="text-xs font-medium text-gray-500 mt-1">
+                        {c.phone}
+                      </p>
+                    </td>
+
+                    {/* Orders */}
+                    <td className="px-4 py-4">
+                      <span className="font-bold text-gray-800 bg-gray-50 px-3 py-1 rounded-lg border border-gray-200">
+                        {c.totalOrders}
+                      </span>
+                    </td>
+
+                    {/* Total Spent */}
+                    <td className="px-4 py-4">
+                      <span className="font-bold text-gray-800 text-sm">
+                        ${c.totalSpent?.toLocaleString()}
+                      </span>
+                      <p className="text-xs font-medium text-gray-400 mt-1">
+                        avg $
+                        {(
+                          c.totalSpent / Math.max(1, c.totalOrders)
+                        ).toLocaleString()}
+                      </p>
+                    </td>
+
+                    {/* Last Order */}
+                    <td className="px-4 py-4 text-xs font-medium text-gray-500">
+                      {c.lastOrderAt
+                        ? dayjs(c.lastOrderAt).format("DD MMM YYYY")
+                        : "Never"}
+                    </td>
+
+                    {/* Joined */}
+                    <td className="px-4 py-4 text-xs font-medium text-gray-500">
+                      {dayjs(c.createdAt).format("DD MMM YYYY")}
+                    </td>
+
+                    {/* Status */}
+                    <td className="px-4 py-4">
+                      <button
+                        onClick={() => handleToggleStatus(c)}
+                        className="active:scale-95 transition-transform"
+                      >
+                        <StatusBadge status={c.status} />
+                      </button>
+                    </td>
+
+                    {/* Actions */}
+                    <td className="px-4 py-4">
+                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
+                        <Link
+                          to={`${c._id}`}
+                          className="p-2 rounded-lg bg-white border border-gray-200 text-gray-400 hover:text-blue-600 hover:border-blue-400 shadow-sm transition-all"
+                          title="View Details"
+                        >
+                          <Eye size={16} />
+                        </Link>
+                        <ConfirmationModal
+                          button={
+                            <button
+                              className="p-2 rounded-lg bg-white border border-gray-200 text-gray-400 hover:text-red-600 hover:border-red-400 shadow-sm transition-all"
+                              title="Delete Customer"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          }
+                          heading={`Delete ${c.firstName} from customers?`}
+                          description="Are you sure you want to delete this customer? This action cannot be undone and the customer will be removed from the list."
+                          onClick={async () => await handleDelete(c._id)}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div className="mt-6 flex justify-center">
-        <Pagination
-          count={allUsers?.pagination?.totalPages || 1}
-          page={filter.page}
-          onChange={handlePageChange}
-          variant="outlined"
-          shape="rounded"
-        />
-      </div>
+
+      {allUsers?.pagination?.totalPages > 1 && (
+        <div className="mt-6 flex justify-center pb-6">
+          <Pagination
+            count={allUsers?.pagination?.totalPages || 1}
+            page={filter.page}
+            onChange={handlePageChange}
+            variant="outlined"
+            shape="rounded"
+            sx={{
+              "& .MuiPaginationItem-root": {
+                borderColor: "#e5e7eb",
+                color: "#374151",
+                "&.Mui-selected": {
+                  backgroundColor: "#fc8019",
+                  color: "white",
+                  borderColor: "#fc8019",
+                  "&:hover": {
+                    backgroundColor: "#e5721f",
+                  },
+                },
+              },
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };

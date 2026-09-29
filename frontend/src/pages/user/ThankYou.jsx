@@ -3,6 +3,7 @@ import Lottie from "lottie-react";
 import successAnimation from "../../assets/icon/Check Mark.json";
 import { FailedIcon } from "../../assets/icon/Icons";
 import { useLocation, useNavigate } from "react-router-dom";
+import { PartyPopper, Bike } from "lucide-react";
 
 const SummaryRow = ({ label, value, highlight }) => (
   <div
@@ -63,8 +64,8 @@ const ThankYou = () => {
           </div>
         )}
 
-        <h1 className="text-2xl font-bold mt-4 text-gray-800">
-          {isSuccess ? "Order Placed! 🎉" : "Payment Failed"}
+        <h1 className="text-2xl font-bold mt-4 text-gray-800 flex items-center justify-center gap-2">
+          {isSuccess ? <>Order Placed! <PartyPopper size={24} /></> : "Payment Failed"}
         </h1>
 
         <p className="text-sm text-gray-500 mt-2 leading-relaxed">
@@ -108,7 +109,7 @@ const ThankYou = () => {
 
         {isSuccess && (
           <div className="w-full mt-4 flex items-center gap-3 bg-orange-50 border border-orange-100 rounded-md px-4 py-3">
-            <span className="text-xl">🛵</span>
+            <Bike size={24} className="text-[#fc8019]" />
             <div className="text-left">
               <p className="text-xs text-gray-500">Estimated Delivery</p>
               <p className="text-sm font-semibold text-[#fc8019]">{eta}</p>

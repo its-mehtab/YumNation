@@ -3,15 +3,23 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
 import {
-  ConfirmedIcon,
-  DeliveredIcon,
-  DeliveryIcon,
-  LocationIcon,
-  PlacedIcon,
-  PreparingIcon,
-  StarIcon,
-  TimeIcon,
-} from "../../assets/icon/Icons";
+  CheckCircle2,
+  Package,
+  Clock,
+  Truck,
+  MapPin,
+  Star,
+  Banknote,
+  CreditCard,
+  Phone,
+  Store,
+  Utensils,
+  XCircle,
+  AlertCircle,
+  ChevronLeft,
+  ChevronRight,
+  Receipt,
+} from "lucide-react";
 import { useAuth } from "../../context/user/AuthContext";
 import TimelineStep from "../../context/public/TimelineStep";
 import { Skeleton } from "@radix-ui/themes";
@@ -76,81 +84,78 @@ const STATUSES = [
 ];
 
 const statusConfig = {
-  placed: { color: "#6366f1", bg: "#eef2ff", label: "Placed" },
-  confirmed: { color: "#f59e0b", bg: "#fffbeb", label: "Confirmed" },
-  preparing: { color: "#fc8019", bg: "#fff7ed", label: "Preparing" },
+  placed: {
+    color: "#4f46e5",
+    bg: "#eef2ff",
+    label: "Placed",
+    border: "border-indigo-200",
+  },
+  confirmed: {
+    color: "#d97706",
+    bg: "#fffbeb",
+    label: "Confirmed",
+    border: "border-amber-200",
+  },
+  preparing: {
+    color: "#c2410c",
+    bg: "#fff7ed",
+    label: "Preparing",
+    border: "border-orange-200",
+  },
   "out for delivery": {
-    color: "#3b82f6",
+    color: "#1d4ed8",
     bg: "#eff6ff",
     label: "Out for Delivery",
+    border: "border-blue-200",
   },
-  delivered: { color: "#22c55e", bg: "#f0fdf4", label: "Delivered" },
-  cancelled: { color: "#ef4444", bg: "#fef2f2", label: "Cancelled" },
+  delivered: {
+    color: "#15803d",
+    bg: "#f0fdf4",
+    label: "Delivered",
+    border: "border-green-200",
+  },
+  cancelled: {
+    color: "#b91c1c",
+    bg: "#fef2f2",
+    label: "Cancelled",
+    border: "border-red-200",
+  },
 };
 
 // ── Timeline ──────────────────────────────────────────────────────────────────
 const ICONS = [
-  <PlacedIcon size={"20px"} color="currentColor" />,
-  <ConfirmedIcon size={"20px"} color="currentColor" />,
-  <PreparingIcon size={"20px"} color="currentColor" />,
-  <DeliveryIcon size={"20px"} color="currentColor" />,
-  <DeliveredIcon size={"20px"} color="currentColor" />,
+  <Package size={20} className="text-indigo-600" />,
+  <CheckCircle2 size={20} className="text-amber-600" />,
+  <Clock size={20} className="text-orange-600" />,
+  <Truck size={20} className="text-blue-600" />,
+  <CheckCircle2 size={20} className="text-green-600" />,
 ];
 
-// const TimelineStep = ({ label, icon, done, active, last }) => (
-//   <div className="flex flex-col items-center flex-1">
-//     {/* {console.log(last)} */}
-//     <div className="relative w-full flex items-center">
-//       <div
-//         className={`flex-1 h-0.5 ${done ? "bg-[#fc8019]" : "bg-gray-200"}`}
-//         style={{ visibility: label === STATUSES[0] ? "hidden" : "visible" }}
-//       />
-//       <div
-//         className={`w-9 h-9 rounded-full flex items-center justify-center z-10 border-2 transition-all duration-300 text-sm
-//         ${
-//           done
-//             ? "border-[#fc8019] bg-[#fc8019] text-white scale-110 shadow-lg shadow-orange-200"
-//             : "border-gray-200 bg-white text-gray-300"
-//         }`}
-//       >
-//         {icon}
-//       </div>
-//       <div
-//         className={`flex-1 h-0.5 ${done && !last ? "bg-[#fc8019]" : "bg-gray-200"}`}
-//         style={{ visibility: last ? "hidden" : "visible" }}
-//       />
-//     </div>
-//     <p
-//       className={`text-xs mt-2 font-medium capitalize text-center leading-tight
-//       ${active ? "text-[#fc8019]" : done ? "text-gray-600" : "text-gray-300"}`}
-//     >
-//       {label}
-//     </p>
-//   </div>
-// );
-
 // ── Section card wrapper ──────────────────────────────────────────────────────
-const Card = ({ title, children }) => (
-  <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-5">
+const Card = ({ title, children, icon: Icon }) => (
+  <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden h-full">
     {title && (
-      <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">
-        {title}
-      </p>
+      <div className="flex items-center gap-2 px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+        {Icon && <Icon size={18} className="text-gray-400" />}
+        <h3 className="text-sm font-bold text-gray-800 tracking-wide">
+          {title}
+        </h3>
+      </div>
     )}
-    {children}
+    <div className={title ? "p-6" : "p-6"}>{children}</div>
   </div>
 );
 
 // ── Price row ─────────────────────────────────────────────────────────────────
 const PriceRow = ({ label, value, highlight, green }) => (
   <div
-    className={`flex justify-between py-1.5 text-sm
+    className={`flex justify-between py-2.5 text-sm
     ${
       highlight
-        ? "font-bold text-[#fc8019] text-base border-t border-dashed border-gray-200 mt-1 pt-3"
+        ? "font-bold text-[#fc8019] text-lg border-t-2 border-dashed border-gray-200 mt-2 pt-4"
         : green
-          ? "text-green-600 font-medium"
-          : "text-gray-600"
+          ? "text-green-600 font-bold"
+          : "text-gray-600 font-medium"
     }`}
   >
     <span>{label}</span>
@@ -208,24 +213,35 @@ const AdminOrderDetails = () => {
   // ── Loading ──
   if (loading)
     return (
-      <div className="space-y-4 animate-pulse">
-        <div className="h-6 bg-gray-200 rounded w-1/4" />
-        <div className="h-32 bg-gray-100 rounded-2xl" />
-        <div className="h-44 bg-gray-100 rounded-2xl" />
-        <div className="h-48 bg-gray-100 rounded-2xl" />
+      <div className="space-y-6 animate-pulse">
+        <div className="h-8 bg-gray-200 rounded-lg w-1/4" />
+        <div className="grid grid-cols-12 gap-6">
+          <div className="col-span-8 space-y-6">
+            <div className="h-32 bg-gray-100 rounded-3xl" />
+            <div className="h-44 bg-gray-100 rounded-3xl" />
+            <div className="h-64 bg-gray-100 rounded-3xl" />
+          </div>
+          <div className="col-span-4 space-y-6">
+            <div className="h-48 bg-gray-100 rounded-3xl" />
+            <div className="h-48 bg-gray-100 rounded-3xl" />
+          </div>
+        </div>
       </div>
     );
 
-  // console.log();
-
   if (error || !order)
     return (
-      <div className="text-center py-20">
-        <div className="text-5xl mb-4">😕</div>
-        <p className="text-gray-500 text-sm">{error}</p>
+      <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
+        <AlertCircle size={48} className="text-gray-300 mb-4" />
+        <h3 className="text-xl font-bold text-gray-800 mb-2">
+          Order Not Found
+        </h3>
+        <p className="text-gray-500 text-sm mb-6">
+          {error || "The requested order could not be loaded."}
+        </p>
         <Link
           to="/admin/orders"
-          className="text-[#fc8019] text-sm underline mt-2 block"
+          className="bg-[#fc8019] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#e5721f] transition-colors"
         >
           Back to Orders
         </Link>
@@ -238,62 +254,66 @@ const AdminOrderDetails = () => {
   const cfg = statusConfig[status] || statusConfig.placed;
 
   return (
-    <div>
+    <div className="space-y-6">
       {/* ── Page header ── */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
           <button
             onClick={() => navigate("/admin/orders")}
-            className="text-sm text-gray-400 hover:text-[#fc8019] transition-colors font-medium"
+            className="p-2 bg-white border border-gray-200 rounded-xl text-gray-500 hover:text-[#fc8019] hover:border-[#fc8019] transition-all"
           >
-            ← Back
+            <ChevronLeft size={20} />
           </button>
-          <h1 className="text-xl font-bold text-gray-700">Order Details</h1>
-        </div>
-        <div className="flex items-center gap-2 text-sm text-gray-400">
-          <Link
-            to="/admin/orders"
-            className="hover:text-[#fc8019] transition-colors"
-          >
-            Orders
-          </Link>
-          <span className="text-gray-300">›</span>
-          <span className="text-[#fc8019] font-medium">
-            #{order._id.slice(-8).toUpperCase()}
-          </span>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800 tracking-tight">
+              Order Details
+            </h1>
+            <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
+              <Link
+                to="/admin/orders"
+                className="hover:text-[#fc8019] transition-colors"
+              >
+                Orders
+              </Link>
+              <ChevronRight size={14} className="text-gray-400" />
+              <span className="text-[#fc8019] font-medium">
+                #{order._id.slice(-8).toUpperCase()}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* ── Left column ── */}
-        <div className="col-span-8 space-y-5">
+        <div className="lg:col-span-8 space-y-6">
           {/* Order meta */}
-          <Card>
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div>
-                <p className="text-xs text-gray-400 font-medium uppercase tracking-widest mb-1">
-                  Order ID
-                </p>
-                <p className="text-sm font-bold text-gray-700 font-mono">
+          <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 p-6 flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">
+                Order ID
+              </p>
+              <div className="flex items-center gap-3">
+                <p className="text-xl font-bold text-gray-800 font-mono">
                   #{order._id.slice(-10).toUpperCase()}
                 </p>
-                <p className="text-xs text-gray-400 mt-1">
+                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded font-medium">
                   {dayjs(order.createdAt).format("MMM D, YYYY h:mm A")}
-                </p>
+                </span>
               </div>
-              <span
-                className="text-xs font-semibold px-3 py-1.5 rounded-full capitalize"
-                style={{ color: cfg.color, background: cfg.bg }}
-              >
-                {cfg.label}
-              </span>
             </div>
-          </Card>
+            <span
+              className={`text-sm font-bold px-4 py-2 rounded-xl capitalize border ${cfg.border}`}
+              style={{ color: cfg.color, background: cfg.bg }}
+            >
+              {cfg.label}
+            </span>
+          </div>
 
           {/* Timeline */}
           {!isCancelled && (
-            <Card title="Delivery Progress">
-              <div className="flex items-start">
+            <Card title="Delivery Progress" icon={Truck}>
+              <div className="flex items-start pt-2">
                 {STATUSES.map((s, i) => (
                   <TimelineStep
                     key={s}
@@ -311,83 +331,89 @@ const AdminOrderDetails = () => {
           {order && loading ? (
             <Skeleton loading={true} className="h-20 w-full rounded-xl" />
           ) : (
-            <div className="p-4 rounded-xl border border-gray-300 mb-5">
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">
-                Ordering From
-              </p>
-              <div className="flex items-center gap-4">
-                <Link to={`/admin/restaurants/${order?.restaurant?._id}`}>
-                  <div className="w-14 h-14 min-w-14 rounded-xl border border-orange-200 bg-white overflow-hidden flex items-center justify-center text-2xl">
-                    {order?.restaurantSnapshot.logo ? (
-                      <img
-                        src={order?.restaurantSnapshot.logo}
-                        alt={order?.restaurantSnapshot.name}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      "🏪"
-                    )}
-                  </div>
-                </Link>
+            <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
+              <div className="flex items-center gap-2 px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+                <Store size={18} className="text-gray-400" />
+                <h3 className="text-sm font-bold text-gray-800 tracking-wide">
+                  Ordering From
+                </h3>
+              </div>
+              <div className="p-6">
+                <div className="flex items-center gap-5">
+                  <Link to={`/admin/restaurants/${order?.restaurant?._id}`}>
+                    <div className="w-16 h-16 min-w-[4rem] rounded-2xl border border-orange-100 bg-orange-50 shadow-sm overflow-hidden flex items-center justify-center text-orange-400">
+                      {order?.restaurantSnapshot.logo ? (
+                        <img
+                          src={order?.restaurantSnapshot.logo}
+                          alt={order?.restaurantSnapshot.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <Store size={24} />
+                      )}
+                    </div>
+                  </Link>
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <Link
-                      to={`/admin/restaurants/${order?.restaurant?._id}`}
-                      className="font-bold text-gray-800 hover:text-[#fc8019] transition-colors text-[15px]"
-                    >
-                      {order?.restaurantSnapshot?.name}
-                    </Link>
-                    <span
-                      className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
-                        order?.restaurant?.isOpen
-                          ? "bg-green-100 text-green-600"
-                          : "bg-gray-100 text-gray-400"
-                      }`}
-                    >
-                      {order?.restaurant?.isOpen ? "● Open" : "● Closed"}
-                    </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <Link
+                        to={`/admin/restaurants/${order?.restaurant?._id}`}
+                        className="font-bold text-gray-800 hover:text-[#fc8019] transition-colors text-lg"
+                      >
+                        {order?.restaurantSnapshot?.name}
+                      </Link>
+                      <span
+                        className={`text-xs font-bold px-2.5 py-1 rounded-lg border ${
+                          order?.restaurant?.isOpen
+                            ? "bg-green-50 text-green-700 border-green-200"
+                            : "bg-gray-100 text-gray-500 border-gray-200"
+                        }`}
+                      >
+                        {order?.restaurant?.isOpen ? "Open" : "Closed"}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-1 font-medium">
+                      {order?.restaurant?.cuisine?.map((c) => c).join(" · ")}
+                    </p>
+                    <div className="flex items-center gap-4 mt-2 text-xs font-medium text-gray-500 flex-wrap">
+                      <span className="flex items-center gap-1.5">
+                        <MapPin size={14} className="text-gray-400" />
+                        {order?.restaurant?.address.addressLine1},{" "}
+                        {order?.restaurant?.address.city}
+                      </span>
+                      <span className="w-1 h-1 rounded-full bg-gray-300" />
+                      <span className="flex items-center gap-1.5">
+                        <Clock size={14} className="text-gray-400" />{" "}
+                        {order?.restaurant?.deliveryTime} min
+                      </span>
+                      <span className="w-1 h-1 rounded-full bg-gray-300" />
+                      <span className="flex items-center gap-1.5 text-yellow-600">
+                        <Star size={14} fill="currentColor" />{" "}
+                        {order?.restaurant?.rating}
+                      </span>
+                    </div>
                   </div>
-                  <p className="text-xs text-gray-400 mt-1">
-                    {order?.restaurant?.cuisine.map((c) => c).join(" · ")}
-                  </p>
-                  <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-500 flex-wrap">
-                    <span className="flex items-center gap-1">
-                      <LocationIcon size={16} />
-                      {order?.restaurant?.address.addressLine1},{" "}
-                      {order?.restaurant?.address.city}
-                    </span>
-                    <span className="text-gray-300">•</span>
-                    <span className="flex items-center gap-1">
-                      <TimeIcon /> {order?.restaurant?.deliveryTime} min
-                    </span>
-                    <span className="text-gray-300">•</span>
-                    <span className="flex items-center gap-1">
-                      <StarIcon /> {order?.restaurant?.rating}
-                    </span>
-                    <span className="text-gray-300">•</span>
-                    <span className="flex items-center gap-1 text-[#fc8019] font-medium">
-                      ${order?.restaurant?.deliveryFee} delivery
-                    </span>
-                  </div>
+
+                  <Link
+                    to={`/admin/restaurants/${order?.restaurant?._id}`}
+                    className="shrink-0 text-sm font-bold text-[#fc8019] bg-orange-50 px-4 py-2 rounded-xl hover:bg-orange-100 transition-colors hidden sm:flex items-center gap-2"
+                  >
+                    View <ChevronRight size={16} />
+                  </Link>
                 </div>
-
-                <Link
-                  to={`/admin/restaurants/${order?.restaurant?._id}`}
-                  className="shrink-0 text-xs font-semibold text-[#fc8019] border border-orange-200 px-3 py-1.5 rounded-lg hover:bg-white transition-colors hidden sm:block"
-                >
-                  View Restaurant →
-                </Link>
               </div>
             </div>
           )}
 
           {/* Items */}
-          <Card title={`Items (${order.items.length})`}>
+          <Card title={`Order Items (${order.items.length})`} icon={Utensils}>
             <div className="space-y-4">
               {order.items.map((item) => (
-                <div key={item._id} className="flex items-center gap-4">
-                  <div className="w-14 h-14 min-w-14 rounded-xl border border-orange-100 bg-orange-50 flex items-center justify-center overflow-hidden">
+                <div
+                  key={item._id}
+                  className="flex items-center gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-gray-50 transition-colors"
+                >
+                  <div className="w-16 h-16 min-w-[4rem] rounded-xl border border-orange-100 bg-white flex items-center justify-center overflow-hidden text-orange-300 shadow-sm">
                     {item.image ? (
                       <img
                         src={item.image}
@@ -395,24 +421,24 @@ const AdminOrderDetails = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <span className="text-2xl">🍽️</span>
+                      <Utensils size={24} />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-700 truncate">
+                    <p className="text-base font-bold text-gray-800 truncate">
                       {item.name}
                     </p>
                     {item.variant && (
-                      <p className="text-xs text-gray-400 mt-0.5">
+                      <p className="text-sm font-medium text-gray-500 mt-0.5">
                         {item.variant.name}
                       </p>
                     )}
                   </div>
                   <div className="text-right shrink-0">
-                    <p className="text-sm font-bold text-gray-700">
+                    <p className="text-lg font-bold text-gray-800">
                       ${(item.price * item.quantity).toFixed(2)}
                     </p>
-                    <p className="text-xs text-gray-400 mt-0.5">
+                    <p className="text-sm font-medium text-gray-500 mt-0.5 bg-white px-2 py-0.5 rounded border border-gray-200 inline-block">
                       ${item.price.toFixed(2)} × {item.quantity}
                     </p>
                   </div>
@@ -422,33 +448,35 @@ const AdminOrderDetails = () => {
           </Card>
 
           {/* Bill summary */}
-          <Card title="Bill Summary">
-            <PriceRow
-              label="Subtotal"
-              value={`$${order.subtotal?.toFixed(2)}`}
-            />
-            <PriceRow
-              label="Delivery Fee"
-              value={`$${order.deliveryFee?.toFixed(2)}`}
-            />
-            <PriceRow label="Tax (5%)" value={`$${order.tax?.toFixed(2)}`} />
-            {order.discount > 0 && (
+          <Card title="Bill Summary" icon={Receipt}>
+            <div className="space-y-1">
               <PriceRow
-                label={`Coupon (${order.couponCode})`}
-                value={`-$${order.discount?.toFixed(2)}`}
-                green
+                label="Subtotal"
+                value={`$${order.subtotal?.toFixed(2)}`}
               />
-            )}
-            <PriceRow
-              label="Total"
-              value={`$${order.totalAmount?.toFixed(2)}`}
-              highlight
-            />
+              <PriceRow
+                label="Delivery Fee"
+                value={`$${order.deliveryFee?.toFixed(2)}`}
+              />
+              <PriceRow label="Tax (5%)" value={`$${order.tax?.toFixed(2)}`} />
+              {order.discount > 0 && (
+                <PriceRow
+                  label={`Coupon Discount (${order.couponCode})`}
+                  value={`-$${order.discount?.toFixed(2)}`}
+                  green
+                />
+              )}
+              <PriceRow
+                label="Total Amount"
+                value={`$${order.totalAmount?.toFixed(2)}`}
+                highlight
+              />
+            </div>
           </Card>
         </div>
 
         {/* ── Right column ── */}
-        <div className="col-span-4 space-y-5">
+        <div className="lg:col-span-4 space-y-6">
           {/* Update status */}
           <Card title="Update Status">
             <div className="space-y-2">
@@ -457,86 +485,128 @@ const AdminOrderDetails = () => {
                   key={s}
                   onClick={() => handleStatusChange(s)}
                   disabled={updating || s === status}
-                  className={`w-full flex items-center text-left px-4 py-2.5 rounded-xl text-sm font-medium capitalize transition-all border
+                  className={`w-full flex items-center justify-between text-left px-4 py-3 rounded-xl text-sm font-bold capitalize transition-all border
                     ${
                       s === status
-                        ? "border-[#fc8019] bg-orange-50 text-[#fc8019] cursor-default"
+                        ? "border-[#fc8019] bg-orange-50 text-[#fc8019] shadow-sm shadow-orange-500/10 cursor-default"
                         : s === "cancelled"
-                          ? "border-red-100 text-red-400 hover:bg-red-50"
-                          : "border-gray-100 text-gray-400 hover:bg-gray-50"
+                          ? "border-gray-200 text-gray-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+                          : "border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-gray-800"
                     } disabled:opacity-50`}
                 >
-                  <span className="mr-2">
-                    {ICONS[STATUSES.indexOf(s)] || "❌"}
-                  </span>
-                  {s}
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`${s === status ? "text-[#fc8019]" : s === "cancelled" ? "text-red-500" : "text-gray-400"}`}
+                    >
+                      {s === "cancelled" ? (
+                        <XCircle size={18} />
+                      ) : (
+                        ICONS[STATUSES.indexOf(s)]
+                      )}
+                    </span>
+                    {s}
+                  </div>
                   {s === status && (
-                    <span className="ms-auto text-xs">● current</span>
+                    <span className="text-[10px] uppercase tracking-wider bg-white px-2 py-1 rounded-md border border-orange-200">
+                      Current
+                    </span>
                   )}
                 </button>
               ))}
             </div>
-            {error && <p className="text-xs text-red-500 mt-2">{error}</p>}
+            {error && (
+              <p className="text-sm font-bold text-red-500 mt-4 text-center bg-red-50 py-2 rounded-lg">
+                {error}
+              </p>
+            )}
           </Card>
 
           {/* Customer */}
           <Card title="Customer">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-base font-bold text-[#fc8019] capitalize">
+            <div className="flex items-center gap-4 mb-4 pb-4 border-b border-gray-100">
+              <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center text-xl font-bold text-[#fc8019] capitalize">
                 {order.user.firstName.charAt(0)}
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-700">
+                <p className="text-base font-bold text-gray-800">
                   {order.user.firstName} {order.user.lastName}
                 </p>
-                <p className="text-xs text-gray-400">{order.user.email}</p>
+                <p className="text-sm text-gray-500">{order.user.email}</p>
               </div>
             </div>
             {order.user.phone && (
-              <p className="text-xs text-gray-500">📞 {order.user.phone}</p>
+              <div className="flex items-center gap-2 text-sm text-gray-600 font-medium mb-4">
+                <Phone size={16} className="text-gray-400" />
+                {order.user.phone}
+              </div>
             )}
             <Link
               to={`/admin/customers/${order.user._id}`}
-              className="mt-3 block text-center text-xs font-semibold text-[#fc8019] border border-orange-200 rounded-lg py-2 hover:bg-orange-50 transition-colors"
+              className="flex items-center justify-center gap-2 w-full text-sm font-bold text-[#fc8019] bg-orange-50 hover:bg-orange-100 rounded-xl py-2.5 transition-colors"
             >
-              View Customer →
+              View Profile <ChevronRight size={16} />
             </Link>
           </Card>
 
           {/* Delivery address */}
           <Card title="Delivery Address">
-            <p className="text-sm font-semibold text-gray-700">
-              {order.deliveryAddress?.fullName}
-            </p>
-            <p className="text-sm text-gray-500 mt-1 leading-relaxed">
-              {order.deliveryAddress?.addressLine1}
-              {order.deliveryAddress?.addressLine2 &&
-                `, ${order.deliveryAddress.addressLine2}`}
-              <br />
-              {order.deliveryAddress?.city}, {order.deliveryAddress?.state} —{" "}
-              {order.deliveryAddress?.pinCode}
-            </p>
-            {order.deliveryAddress?.phoneNumber && (
-              <p className="text-sm text-gray-500 mt-1.5">
-                📞 {order.deliveryAddress.phoneNumber}
-              </p>
-            )}
+            <div className="flex gap-3">
+              <MapPin size={20} className="text-gray-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-bold text-gray-800 mb-1">
+                  {order.deliveryAddress?.fullName}
+                </p>
+                <p className="text-sm text-gray-500 leading-relaxed font-medium">
+                  {order.deliveryAddress?.addressLine1}
+                  {order.deliveryAddress?.addressLine2 &&
+                    `, ${order.deliveryAddress.addressLine2}`}
+                  <br />
+                  {order.deliveryAddress?.city}, {order.deliveryAddress?.state}{" "}
+                  — {order.deliveryAddress?.pinCode}
+                </p>
+                {order.deliveryAddress?.phoneNumber && (
+                  <div className="flex items-center gap-2 text-sm text-gray-600 font-medium mt-3 bg-gray-50 px-3 py-2 rounded-lg w-fit border border-gray-100">
+                    <Phone size={14} className="text-gray-400" />
+                    {order.deliveryAddress.phoneNumber}
+                  </div>
+                )}
+              </div>
+            </div>
           </Card>
 
           {/* Payment */}
-          <Card title="Payment">
-            <div className="flex justify-between items-center">
-              <p className="text-sm font-semibold text-gray-700 capitalize">
-                {order.paymentMethod === "cod"
-                  ? "💵 Cash on Delivery"
-                  : "💳 Card"}
-              </p>
-              <span
-                className={`text-xs font-semibold px-3 py-1.5 rounded-full capitalize
-                ${order.paymentStatus === "paid" ? "bg-green-50 text-green-600" : "bg-yellow-50 text-yellow-600"}`}
-              >
-                {order.paymentStatus || "pending"}
-              </span>
+          <Card title="Payment Status">
+            <div className="flex flex-col gap-4">
+              <div className="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-100">
+                <div className="flex items-center gap-3">
+                  {order.paymentMethod === "cod" ? (
+                    <Banknote size={24} className="text-green-600" />
+                  ) : (
+                    <CreditCard size={24} className="text-blue-600" />
+                  )}
+                  <div>
+                    <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-0.5">
+                      Method
+                    </p>
+                    <p className="text-sm font-bold text-gray-800 capitalize">
+                      {order.paymentMethod === "cod"
+                        ? "Cash on Delivery"
+                        : "Card Payment"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center px-2">
+                <p className="text-sm font-bold text-gray-600 uppercase tracking-wider">
+                  Status
+                </p>
+                <span
+                  className={`text-xs font-bold px-3 py-1.5 rounded-lg border capitalize
+                  ${order.paymentStatus === "paid" ? "bg-green-50 text-green-700 border-green-200" : "bg-yellow-50 text-yellow-700 border-yellow-200"}`}
+                >
+                  {order.paymentStatus || "pending"}
+                </span>
+              </div>
             </div>
           </Card>
         </div>

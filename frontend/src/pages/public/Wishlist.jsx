@@ -14,6 +14,7 @@ import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import AddToCartModal from "../../components/public/AddToCartModal";
+import { Heart, Store, Utensils } from "lucide-react";
 
 const Wishlist = () => {
   const { wishlist, setWishlist } = useWishlist();
@@ -104,7 +105,7 @@ const Wishlist = () => {
       {/* ── Empty state ── */}
       {wishlist.length === 0 && (
         <div className="bg-white rounded-2xl border border-[#fc8019] text-center py-20 px-4">
-          <div className="text-5xl mb-4">🤍</div>
+          <Heart size={48} className="mx-auto mb-4 text-gray-300" />
           <h2 className="text-base font-bold text-gray-700 mb-1">
             Your wishlist is empty
           </h2>
@@ -140,7 +141,7 @@ const Wishlist = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      "🏪"
+                      <Store size={20} className="text-gray-400" />
                     )}
                   </div>
                 </Link>
@@ -228,7 +229,7 @@ const Wishlist = () => {
                                 className="w-full h-full object-cover"
                               />
                             ) : (
-                              "🍽️"
+                              <Utensils size={18} className="text-gray-400" />
                             )}
                           </div>
                           <span className="font-medium text-gray-700">

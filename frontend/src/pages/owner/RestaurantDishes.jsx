@@ -11,6 +11,7 @@ import ConfirmationModal from "../../components/common/ConfirmationModal";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
+import { Utensils } from "lucide-react";
 
 // ── Status Badge ──────────────────────────────────────────────────────────────
 const StatusBadge = ({ isAvailable }) => (
@@ -129,7 +130,7 @@ const RestaurantDishes = () => {
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <span className="text-lg">🍽️</span>
+                          <Utensils size={20} className="text-gray-400" />
                         )}
                       </div>
                       <span className="font-medium text-gray-700">
@@ -189,7 +190,7 @@ const RestaurantDishes = () => {
         {/* Empty state */}
         {sorted?.length === 0 && (
           <div className="text-center py-16 text-gray-400">
-            <div className="text-4xl mb-3">🍽️</div>
+            <div className="flex justify-center mb-3 text-gray-300"><Utensils size={40} /></div>
             {loading ? (
               <p className="text-sm font-medium mb-3">Dishes Loading...</p>
             ) : (

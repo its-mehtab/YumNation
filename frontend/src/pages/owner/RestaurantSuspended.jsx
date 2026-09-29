@@ -1,6 +1,7 @@
 import React from "react";
 import { useAuth } from "../../context/user/AuthContext";
 import { useRestaurant } from "../../context/owner/RestaurantContext";
+import { Ban, OctagonAlert, PackageX, Lock, Mail, ClipboardList, RefreshCcw } from "lucide-react";
 
 const RestaurantSuspended = () => {
   const { user, logout } = useAuth();
@@ -17,8 +18,8 @@ const RestaurantSuspended = () => {
 
         {/* ── Main card ── */}
         <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.08)] p-8 text-center">
-          <div className="w-20 h-20 rounded-full bg-gray-100 border-2 border-gray-200 flex items-center justify-center text-4xl mx-auto mb-5">
-            🚫
+          <div className="w-20 h-20 rounded-full bg-gray-100 border-2 border-gray-200 flex items-center justify-center mx-auto mb-5">
+            <Ban size={40} className="text-gray-400" />
           </div>
 
           <h1 className="text-xl font-bold text-gray-700 mb-2">
@@ -40,18 +41,18 @@ const RestaurantSuspended = () => {
             <div className="space-y-2.5">
               {[
                 {
-                  emoji: "🛑",
+                  icon: <OctagonAlert size={20} className="text-gray-500" />,
                   text: "Your restaurant is hidden from customers",
                 },
-                { emoji: "📦", text: "No new orders can be placed" },
-                { emoji: "🔒", text: "Dashboard access is restricted" },
+                { icon: <PackageX size={20} className="text-gray-500" />, text: "No new orders can be placed" },
+                { icon: <Lock size={20} className="text-gray-500" />, text: "Dashboard access is restricted" },
                 {
-                  emoji: "📧",
+                  icon: <Mail size={20} className="text-gray-500" />,
                   text: "You will be notified when the suspension is lifted",
                 },
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-3">
-                  <span className="text-base shrink-0">{item.emoji}</span>
+                  <span className="shrink-0 pt-0.5">{item.icon}</span>
                   <p className="text-xs text-gray-500 leading-relaxed">
                     {item.text}
                   </p>
@@ -69,20 +70,20 @@ const RestaurantSuspended = () => {
           <div className="space-y-2.5">
             {[
               {
-                emoji: "📧",
+                icon: <Mail size={20} className="text-gray-500" />,
                 text: "Contact our support team to understand the reason for suspension",
               },
               {
-                emoji: "📝",
+                icon: <ClipboardList size={20} className="text-gray-500" />,
                 text: "Resolve any outstanding issues flagged by our team",
               },
               {
-                emoji: "🔄",
+                icon: <RefreshCcw size={20} className="text-gray-500" />,
                 text: "Once resolved, your account will be reinstated",
               },
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-3">
-                <span className="text-base shrink-0">{item.emoji}</span>
+                <span className="shrink-0 pt-0.5">{item.icon}</span>
                 <p className="text-xs text-gray-500 leading-relaxed">
                   {item.text}
                 </p>
@@ -95,9 +96,9 @@ const RestaurantSuspended = () => {
         <div className="grid grid-cols-2 gap-3">
           <a
             href="mailto:support@yourapp.com"
-            className="py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors text-center"
+            className="flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors text-center"
           >
-            📧 Contact Support
+            <Mail size={16} /> Contact Support
           </a>
           <button
             onClick={logout}

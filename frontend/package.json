@@ -20,6 +20,7 @@
     "axios": "^1.13.2",
     "dayjs": "^1.11.19",
     "lottie-react": "^2.4.1",
+    "lucide-react": "^1.48.0",
     "nanoid": "^5.1.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

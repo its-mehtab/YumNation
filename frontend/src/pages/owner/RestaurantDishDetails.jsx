@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import { Pizza, Star } from "lucide-react";
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
 const mockDish = {
@@ -155,7 +156,7 @@ const RestaurantDishDetails = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-6xl">🍕</span>
+                <Pizza size={40} className="text-gray-400" />
               )}
             </div>
             {dish.images.length > 1 && (
@@ -174,7 +175,7 @@ const RestaurantDishDetails = () => {
                         className="w-full h-full object-cover rounded-lg"
                       />
                     ) : (
-                      "🍕"
+                      <Pizza size={24} className="text-gray-400" />
                     )}
                   </button>
                 ))}
@@ -273,8 +274,8 @@ const RestaurantDishDetails = () => {
                     />
                   </div>
                   {dish.isFeatured && (
-                    <span className="text-xs bg-yellow-50 text-yellow-600 font-semibold px-2 py-0.5 rounded-full">
-                      ⭐ Featured
+                    <span className="text-xs bg-yellow-50 text-yellow-600 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <Star size={12} /> Featured
                     </span>
                   )}
                   {!dish.isAvailable && (

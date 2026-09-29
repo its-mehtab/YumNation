@@ -4,6 +4,7 @@ import { Switch } from "@radix-ui/themes";
 import Field from "../common/Field";
 import Input from "../common/Input";
 import { DeleteIcon, EditIcon, PlusIcon } from "../../assets/icon/Icons";
+import { Camera, Circle, Leaf, Trash, Save } from "lucide-react";
 
 const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
   const [dishImage, setDishImage] = useState(null);
@@ -119,8 +120,8 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="text-center p-4">
-                <div className="text-3xl mb-2">📷</div>
+              <div className="text-center p-4 flex flex-col items-center">
+                <Camera size={32} className="mb-2 text-orange-400" />
                 <p className="text-xs text-gray-400 font-medium">Main Image</p>
               </div>
             )}
@@ -257,7 +258,13 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                       onChange={handleChange}
                       className="hidden"
                     />
-                    {type === "veg" ? "🟢" : type === "non-veg" ? "🔴" : "🌿"}{" "}
+                    {type === "veg" ? (
+                      <Circle size={14} className="text-green-500 fill-current" />
+                    ) : type === "non-veg" ? (
+                      <Circle size={14} className="text-red-500 fill-current" />
+                    ) : (
+                      <Leaf size={14} className="text-green-600 fill-current" />
+                    )}{" "}
                     {type}
                   </label>
                 ))}
@@ -428,16 +435,16 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
             <button
               type="button"
               onClick={handleClear}
-              className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
+              className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors flex items-center gap-1"
             >
-              🗑️ Clear
+              <Trash size={16} /> Clear
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2.5 rounded-xl bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors disabled:opacity-60"
+              className="px-6 py-2.5 rounded-xl bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors disabled:opacity-60 flex items-center gap-1"
             >
-              💾 {loading ? "Saving..." : "Save Dish"}
+              <Save size={16} /> {loading ? "Saving..." : "Save Dish"}
             </button>
           </div>
         </div>

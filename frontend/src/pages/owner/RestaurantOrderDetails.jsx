@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
+import { ClipboardList, CheckCircle, ChefHat, Bike, PartyPopper, Frown, Utensils, X, Phone, Banknote, CreditCard } from "lucide-react";
 
 // ── Mock order (replace with real API call) ──────────────────────────────────
 const mockOrder = {
@@ -76,7 +77,7 @@ const statusConfig = {
 };
 
 // ── Timeline ──────────────────────────────────────────────────────────────────
-const ICONS = ["📋", "✅", "👨‍🍳", "🛵", "🎉"];
+const ICONS = [<ClipboardList size={18} />, <CheckCircle size={18} />, <ChefHat size={18} />, <Bike size={18} />, <PartyPopper size={18} />];
 
 const TimelineStep = ({ label, icon, done, active, last }) => (
   <div className="flex flex-col items-center flex-1">
@@ -184,7 +185,7 @@ const RestaurantOrderDetails = () => {
   if (error && !order)
     return (
       <div className="text-center py-20">
-        <div className="text-5xl mb-4">😕</div>
+        <div className="flex justify-center mb-4 text-gray-400"><Frown size={48} /></div>
         <p className="text-gray-500 text-sm">{error}</p>
         <Link
           to="/admin/orders"
@@ -287,7 +288,7 @@ const RestaurantOrderDetails = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <span className="text-2xl">🍽️</span>
+                      <Utensils size={24} className="text-gray-400" />
                     )}
                   </Link>
                   <div className="flex-1 min-w-0">
@@ -349,7 +350,7 @@ const RestaurantOrderDetails = () => {
                   key={s}
                   onClick={() => handleStatusChange(s)}
                   disabled={updating || s === status}
-                  className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium capitalize transition-all border
+                  className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium capitalize transition-all border flex items-center
                     ${
                       s === status
                         ? "border-[#fc8019] bg-orange-50 text-[#fc8019] cursor-default"
@@ -358,8 +359,8 @@ const RestaurantOrderDetails = () => {
                           : "border-gray-100 text-gray-500 hover:bg-gray-50"
                     } disabled:opacity-50`}
                 >
-                  <span className="mr-2">
-                    {ICONS[STATUSES.indexOf(s)] || "❌"}
+                  <span className="mr-2 flex items-center justify-center">
+                    {ICONS[STATUSES.indexOf(s)] || <X size={18} />}
                   </span>
                   {s}
                   {s === status && (
@@ -385,7 +386,7 @@ const RestaurantOrderDetails = () => {
               </div>
             </div>
             {order.user.phone && (
-              <p className="text-xs text-gray-500">📞 {order.user.phone}</p>
+              <p className="text-xs text-gray-500 flex items-center gap-1.5"><Phone size={12} /> {order.user.phone}</p>
             )}
             <Link
               to={`/admin/customers/${order.user._id}`}
@@ -409,8 +410,8 @@ const RestaurantOrderDetails = () => {
               {order.deliveryAddress?.pinCode}
             </p>
             {order.deliveryAddress?.phoneNumber && (
-              <p className="text-sm text-gray-500 mt-1.5">
-                📞 {order.deliveryAddress.phoneNumber}
+              <p className="text-sm text-gray-500 mt-1.5 flex items-center gap-1.5">
+                <Phone size={14} /> {order.deliveryAddress.phoneNumber}
               </p>
             )}
           </Card>
@@ -418,10 +419,10 @@ const RestaurantOrderDetails = () => {
           {/* Payment */}
           <Card title="Payment">
             <div className="flex justify-between items-center">
-              <p className="text-sm font-semibold text-gray-700 capitalize">
+              <p className="text-sm font-semibold text-gray-700 capitalize flex items-center gap-1.5">
                 {order.paymentMethod === "cod"
-                  ? "💵 Cash on Delivery"
-                  : "💳 Card"}
+                  ? <><Banknote size={16} /> Cash on Delivery</>
+                  : <><CreditCard size={16} /> Card</>}
               </p>
               <span
                 className={`text-xs font-semibold px-3 py-1.5 rounded-full capitalize

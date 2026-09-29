@@ -4,107 +4,161 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
 import Pagination from "@mui/material/Pagination";
+import {
+  User,
+  MapPin,
+  Ticket,
+  ShieldAlert,
+  ShoppingBag,
+  DollarSign,
+  Ban,
+  Trash2,
+  ChevronLeft,
+  Mail,
+  Calendar,
+  AlertCircle,
+  Hash,
+  CheckCircle2,
+  Clock,
+  XCircle,
+} from "lucide-react";
 
 // ─── Small reusable pieces ────────────────────────────────────────────────────
 
 const StatusBadge = ({ status }) => {
   const map = {
-    active: "bg-green-50 text-green-700 border-green-100",
-    inactive: "bg-gray-100 text-gray-400 border-gray-200",
-    blocked: "bg-red-50 text-red-500 border-red-100",
-    delivered: "bg-green-50 text-green-700 border-green-100",
-    cancelled: "bg-red-50 text-red-500 border-red-100",
-    out_for_delivery: "bg-blue-50 text-blue-600 border-blue-100",
-    pending: "bg-yellow-50 text-yellow-600 border-yellow-100",
+    active: {
+      bg: "bg-green-50 text-green-700 border-green-200",
+      label: "Active",
+      icon: CheckCircle2,
+    },
+    inactive: {
+      bg: "bg-gray-100 text-gray-600 border-gray-200",
+      label: "Inactive",
+      icon: Clock,
+    },
+    blocked: {
+      bg: "bg-red-50 text-red-700 border-red-200",
+      label: "Blocked",
+      icon: Ban,
+    },
+    delivered: {
+      bg: "bg-green-50 text-green-700 border-green-200",
+      label: "Delivered",
+      icon: CheckCircle2,
+    },
+    cancelled: {
+      bg: "bg-red-50 text-red-700 border-red-200",
+      label: "Cancelled",
+      icon: XCircle,
+    },
+    out_for_delivery: {
+      bg: "bg-blue-50 text-blue-700 border-blue-200",
+      label: "Out for Delivery",
+      icon: Truck,
+    },
+    pending: {
+      bg: "bg-yellow-50 text-yellow-700 border-yellow-200",
+      label: "Pending",
+      icon: Clock,
+    },
   };
-  const label = {
-    active: "● Active",
-    inactive: "● Inactive",
-    blocked: "● Blocked",
-    delivered: "Delivered",
-    cancelled: "Cancelled",
-    out_for_delivery: "Out for Delivery",
-    pending: "Pending",
+
+  // Need to import Truck if out_for_delivery is used, let's just use Clock for fallback
+  const config = map[status] || {
+    bg: "bg-gray-100 text-gray-600 border-gray-200",
+    label: status,
+    icon: AlertCircle,
   };
+  const Icon = config.icon;
+
   return (
     <span
-      className={`inline-block text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${map[status] || "bg-gray-100 text-gray-400 border-gray-200"}`}
+      className={`inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-lg border ${config.bg}`}
     >
-      {label[status] || status}
+      <Icon size={14} />
+      {config.label}
     </span>
   );
 };
 
-const InfoRow = ({ label, value }) => (
-  <div className="flex items-start justify-between py-2.5 border-b border-gray-50 last:border-0">
-    <span className="text-xs text-gray-400 font-medium w-32 shrink-0">
-      {label}
-    </span>
-    <span className="text-xs text-gray-700 font-semibold text-right">
+const InfoRow = ({ label, value, icon: Icon }) => (
+  <div className="flex items-start justify-between py-3 border-b border-gray-50 last:border-0">
+    <div className="flex items-center gap-2 text-sm text-gray-500 font-medium w-36 shrink-0">
+      {Icon && <Icon size={16} className="text-gray-400" />}
+      <span>{label}</span>
+    </div>
+    <span className="text-sm text-gray-800 font-bold text-right truncate">
       {value}
     </span>
   </div>
 );
 
-const StatBox = ({ label, value, color, small }) => (
-  <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 flex flex-col gap-1">
-    <p className="text-[11px] text-gray-400 font-medium">{label}</p>
-    <p
-      className={`font-bold ${small ? "text-lg" : "text-2xl"}`}
-      style={{ color: color || "#1f2937" }}
-    >
-      {value}
-    </p>
+const StatBox = ({ label, value, color, icon: Icon, bgClass }) => (
+  <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] flex flex-col justify-between hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] transition-all gap-4">
+    <div className="flex items-center justify-between">
+      <div
+        className={`p-3 rounded-xl ${bgClass || "bg-gray-50 text-gray-600"}`}
+      >
+        {Icon && <Icon size={24} strokeWidth={2.5} />}
+      </div>
+    </div>
+    <div>
+      <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
+        {label}
+      </p>
+      <p className="font-bold text-2xl" style={{ color: color || "#1f2937" }}>
+        {value}
+      </p>
+    </div>
   </div>
 );
 
-const SectionHeader = ({ title }) => (
-  <div className="flex items-center gap-3 mb-4">
-    <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest whitespace-nowrap">
-      {title}
-    </span>
-    <div className="flex-1 h-px bg-gray-100" />
+const SectionHeader = ({ title, icon: Icon }) => (
+  <div className="flex items-center gap-2 px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+    {Icon && <Icon size={18} className="text-gray-400" />}
+    <h3 className="text-sm font-bold text-gray-800 tracking-wide">{title}</h3>
   </div>
 );
 
 // ─── Order Row ────────────────────────────────────────────────────────────────
 
 const OrderRow = ({ order }) => (
-  <tr className="hover:bg-orange-50/20 transition-colors">
-    <td className="px-4 py-3">
-      <span className="font-mono text-xs font-bold text-orange-600 bg-orange-50 border border-orange-100 px-2 py-0.5 rounded-lg">
-        {order._id}
+  <tr className="hover:bg-gray-50/80 transition-colors group">
+    <td className="px-6 py-4">
+      <span className="font-mono text-xs font-bold text-gray-600 bg-gray-100 border border-gray-200 px-2 py-1 rounded-md group-hover:bg-white group-hover:border-gray-300 transition-colors">
+        #{order._id.slice(-8).toUpperCase()}
       </span>
     </td>
-    <td className="px-4 py-3">
-      <p className="text-[13px] font-semibold text-gray-700">
+    <td className="px-6 py-4">
+      <p className="text-sm font-bold text-gray-800 truncate max-w-[150px]">
         {order.restaurantSnapshot.name}
       </p>
-      <p className="text-[11px] text-gray-400 mt-0.5">
+      <p className="text-xs font-medium text-gray-500 mt-0.5">
         {order.items.length} item{order.items.length !== 1 ? "s" : ""}
       </p>
     </td>
-    <td className="px-4 py-3 text-[12px] text-gray-500">
-      {dayjs(order.createdAt).format("DD MMM YYYY")}
+    <td className="px-6 py-4 text-xs font-medium text-gray-500">
+      {dayjs(order.createdAt).format("MMM D, YYYY")}
     </td>
-    <td className="px-4 py-3">
+    <td className="px-6 py-4">
       <StatusBadge status={order.orderStatus} />
     </td>
-    <td className="px-4 py-3 text-[12px] text-gray-500 uppercase">
+    <td className="px-6 py-4 text-xs font-bold text-gray-600 uppercase">
       {order.paymentMethod}
     </td>
-    <td className="px-4 py-3">
+    <td className="px-6 py-4">
       {order.couponCode ? (
-        <span className="font-mono text-[11px] font-bold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-lg border border-gray-200">
+        <span className="font-mono text-[11px] font-bold text-orange-700 bg-orange-50 px-2.5 py-1 rounded-lg border border-orange-200">
           {order.couponCode}
         </span>
       ) : (
         <span className="text-[11px] text-gray-300">—</span>
       )}
     </td>
-    <td className="px-4 py-3 text-right">
-      <span className="text-[13px] font-bold text-gray-700">
-        ${order.totalAmount.toLocaleString()}
+    <td className="px-6 py-4 text-right">
+      <span className="text-sm font-bold text-gray-800">
+        ${order.totalAmount.toFixed(2)}
       </span>
     </td>
   </tr>
@@ -155,30 +209,35 @@ const AdminCustomerDetails = () => {
   }, [id, filter.page, filter.orderStatus, filter.orderSearch]);
 
   const [status, setStatus] = useState(customer?.status);
-  // const [orderSearch, setOrderSearch] = useState("");
-  // const [orderFilter, setOrderFilter] = useState("");
 
-  if (loading) return "loading...";
+  useEffect(() => {
+    if (customer) setStatus(customer.status);
+  }, [customer]);
 
-  const deliveredOrders = customer?.orders.items.filter(
-    (o) => o.status === "delivered",
-  );
-  const cancelledOrders = customer?.orders.items.filter(
-    (o) => o.status === "cancelled",
-  );
-  const cancelRate = customer?.orders.items.length
-    ? Math.round((cancelledOrders.length / customer?.orders.items.length) * 100)
+  if (loading)
+    return (
+      <div className="space-y-6 animate-pulse">
+        <div className="h-24 bg-gray-100 rounded-3xl" />
+        <div className="grid grid-cols-5 gap-4">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="h-32 bg-gray-100 rounded-2xl" />
+          ))}
+        </div>
+        <div className="grid grid-cols-12 gap-6">
+          <div className="col-span-4 h-96 bg-gray-100 rounded-3xl" />
+          <div className="col-span-8 h-96 bg-gray-100 rounded-3xl" />
+        </div>
+      </div>
+    );
+
+  const deliveredOrders =
+    customer?.orders?.items?.filter((o) => o.status === "delivered") || [];
+  const cancelledOrders =
+    customer?.orders?.items?.filter((o) => o.status === "cancelled") || [];
+  const totalItems = customer?.orders?.items?.length || 0;
+  const cancelRate = totalItems
+    ? Math.round((cancelledOrders.length / totalItems) * 100)
     : 0;
-
-  // const filteredOrders = customer?.orders.items.filter((o) => {
-  //   const q = orderSearch.toLowerCase();
-  //   const matchQ =
-  //     !q ||
-  //     o._id.toLowerCase().includes(q) ||
-  //     o.restaurant.toLowerCase().includes(q);
-  //   const matchF = !orderFilter || o.status === orderFilter;
-  //   return matchQ && matchF;
-  // });
 
   const handleToggleStatus = () => {
     const next = status === "blocked" ? "active" : "blocked";
@@ -187,196 +246,298 @@ const AdminCustomerDetails = () => {
   };
 
   return (
-    <div className="max-w-6xl">
-      {/* ── Breadcrumb ── */}
-      <div className="flex items-center gap-2 text-xs text-gray-400 mb-5">
-        <button
-          onClick={() => navigate("/admin/customers")}
-          className="hover:text-[#fc8019] transition-colors font-medium"
-        >
-          Customers
-        </button>
-        <span>/</span>
-        <span className="text-gray-600 font-semibold capitalize">
-          {customer?.firstName} {customer?.lastName}
-        </span>
+    <div className="space-y-6">
+      {/* ── Page Header ── */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => navigate("/admin/customers")}
+            className="p-2 bg-white border border-gray-200 rounded-xl text-gray-500 hover:text-[#fc8019] hover:border-[#fc8019] transition-all"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800 tracking-tight">
+              Customer Details
+            </h1>
+            <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
+              <button
+                onClick={() => navigate("/admin/customers")}
+                className="hover:text-[#fc8019] transition-colors"
+              >
+                Customers
+              </button>
+              <ChevronRight size={14} className="text-gray-400" />
+              <span className="text-[#fc8019] font-medium capitalize">
+                {customer?.firstName} {customer?.lastName}
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* ── Top Header Card ── */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-5 mb-5 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center text-[#fc8019] text-xl font-bold">
-            {customer?.firstName.slice(0, 1).toUpperCase()}
-            {customer?.lastName.slice(0, 1).toUpperCase()}
+      <div className="bg-white rounded-3xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="flex items-center gap-6">
+          <div className="w-20 h-20 rounded-2xl bg-orange-100 flex items-center justify-center text-[#fc8019] text-3xl font-bold shadow-sm border border-orange-200">
+            {customer?.firstName?.slice(0, 1).toUpperCase()}
+            {customer?.lastName?.slice(0, 1).toUpperCase()}
           </div>
           <div>
-            <div className="flex items-center gap-2.5 mb-1">
-              <h1 className="text-lg font-bold text-gray-800 capitalize">
+            <div className="flex items-center gap-3 mb-2">
+              <h2 className="text-2xl font-bold text-gray-800 capitalize">
                 {customer?.firstName} {customer?.lastName}
-              </h1>
-              <StatusBadge status={customer?.status} />
+              </h2>
+              <StatusBadge status={status || "active"} />
             </div>
-            <div className="flex items-center gap-3 text-xs text-gray-400">
-              <span>{customer?.email}</span>
-              <span>•</span>
-              {/* <span>{customer?.phone}</span>
-              <span>•</span> */}
-              <span>
-                Joined {dayjs(customer?.joinedAt).format("DD MMM YYYY")}
+            <div className="flex items-center gap-4 text-sm font-medium text-gray-500 flex-wrap">
+              <span className="flex items-center gap-1.5">
+                <Mail size={16} className="text-gray-400" /> {customer?.email}
+              </span>
+              <span className="w-1 h-1 rounded-full bg-gray-300" />
+              <span className="flex items-center gap-1.5">
+                <Calendar size={16} className="text-gray-400" /> Joined{" "}
+                {dayjs(customer?.joinedAt || customer?.createdAt).format(
+                  "MMM D, YYYY",
+                )}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3 w-full md:w-auto">
           <button
             onClick={handleToggleStatus}
-            className={`px-4 py-2 text-xs font-semibold rounded-xl border transition-colors ${
+            className={`w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold rounded-xl border transition-all ${
               status === "blocked"
-                ? "bg-green-50 text-green-600 border-green-100 hover:bg-green-100"
-                : "bg-red-50 text-red-500 border-red-100 hover:bg-red-100"
+                ? "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
+                : "bg-red-50 text-red-700 border-red-200 hover:bg-red-100"
             }`}
           >
-            {status === "blocked" ? "Unblock" : "Block Customer"}
+            <Ban size={18} />
+            {status === "blocked" ? "Unblock Customer" : "Block Customer"}
           </button>
-          {/* <button className="px-4 py-2 text-xs font-semibold text-gray-500 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-            Send Message
-          </button> */}
         </div>
       </div>
 
       {/* ── Stats Row ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
         <StatBox
           label="Total Orders"
-          value={customer?.totalOrders}
-          color="#fc8019"
+          value={customer?.totalOrders || 0}
+          color="#2563eb"
+          icon={ShoppingBag}
+          bgClass="bg-blue-50 text-blue-600"
         />
         <StatBox
           label="Total Spent"
-          value={`$${customer?.totalSpent.toLocaleString()}`}
-          color="#1f2937"
+          value={`$${(customer?.totalSpent || 0).toLocaleString()}`}
+          color="#16a34a"
+          icon={DollarSign}
+          bgClass="bg-green-50 text-green-600"
         />
         <StatBox
           label="Avg Order Value"
-          value={`$${(customer?.totalSpent / customer?.totalOrders).toLocaleString()}`}
+          value={`$${customer?.totalOrders ? (customer.totalSpent / customer.totalOrders).toFixed(2) : "0.00"}`}
+          color="#d97706"
+          icon={CheckCircle2}
+          bgClass="bg-amber-50 text-amber-600"
         />
         <StatBox
           label="Cancelled Orders"
-          value={cancelledOrders?.length}
-          color="#ef4444"
+          value={cancelledOrders.length}
+          color="#dc2626"
+          icon={XCircle}
+          bgClass="bg-red-50 text-red-600"
         />
         <StatBox
           label="Cancellation Rate"
           value={`${cancelRate}%`}
-          color={cancelRate > 20 ? "#ef4444" : "#3b6d11"}
+          color={cancelRate > 20 ? "#dc2626" : "#4f46e5"}
+          icon={AlertCircle}
+          bgClass={
+            cancelRate > 20
+              ? "bg-red-50 text-red-600"
+              : "bg-indigo-50 text-indigo-600"
+          }
         />
       </div>
 
       {/* ── Two Column Layout ── */}
-      <div className="grid grid-cols-3 gap-5 mb-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left — Profile Info */}
-        <div className="col-span-1 flex flex-col gap-5">
+        <div className="lg:col-span-4 space-y-6">
           {/* Account Info */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5">
-            <SectionHeader title="Account Info" />
-            <InfoRow
-              label="Customer ID"
-              value={`#${customer?._id.padStart(6, "0")}`}
-            />
-            <InfoRow label="Email" value={customer?.email} />
-            {/* <InfoRow label="Phone" value={customer?.phone} /> */}
-            <InfoRow
-              label="Status"
-              value={<StatusBadge status={customer?.status} />}
-            />
-            <InfoRow
-              label="Joined"
-              value={dayjs(customer?.createdAt).format("DD MMM YYYY")}
-            />
-            <InfoRow
-              label="Last Order"
-              value={dayjs(customer?.lastOrderAt).format("DD MMM YYYY")}
-            />
-            {/* <InfoRow label="Device" value={customer?.deviceInfo} /> */}
+          <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
+            <SectionHeader title="Account Details" icon={User} />
+            <div className="p-6">
+              <InfoRow
+                label="Customer ID"
+                value={`#${customer?._id?.slice(-8).toUpperCase() || "UNKNOWN"}`}
+                icon={Hash}
+              />
+              <InfoRow
+                label="Email Address"
+                value={customer?.email}
+                icon={Mail}
+              />
+              <InfoRow
+                label="Current Status"
+                value={<StatusBadge status={status || "active"} />}
+              />
+              <InfoRow
+                label="Member Since"
+                value={dayjs(customer?.createdAt).format("MMM D, YYYY")}
+                icon={Calendar}
+              />
+              {customer?.lastOrderAt && (
+                <InfoRow
+                  label="Last Order"
+                  value={dayjs(customer?.lastOrderAt).format("MMM D, YYYY")}
+                  icon={Clock}
+                />
+              )}
+            </div>
           </div>
 
           {/* Delivery Addresses */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5">
-            <SectionHeader title="Saved Addresses" />
-            <div className="flex flex-col gap-2">
-              {customer?.addresses.length === 0 ? (
-                <p className="text-xs text-gray-400">No address added yet</p>
-              ) : (
-                customer?.addresses.map((addr) => (
-                  <div
-                    key={addr._id}
-                    className={`p-3 rounded-xl border text-xs ${
-                      addr.isDefault
-                        ? "bg-orange-50 border-orange-100"
-                        : "bg-gray-50 border-gray-100"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-1">
-                      <span
-                        className={`font-bold text-[10px] uppercase tracking-wider ${addr.isDefault ? "text-[#fc8019]" : "text-gray-400"}`}
-                      >
-                        {addr.addressType}
-                      </span>
-                      {addr.isDefault && (
-                        <span className="text-[10px] font-semibold text-[#fc8019]">
-                          Default
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-gray-600 leading-relaxed">
-                      {addr.addressLine1}, {addr.addressLine2}, {addr.pinCode},
-                      <br />
-                      {addr.city}, {addr.state}, {addr.country}, {addr.pinCode}
+          <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
+            <SectionHeader title="Saved Addresses" icon={MapPin} />
+            <div className="p-6">
+              <div className="flex flex-col gap-4">
+                {!customer?.addresses || customer.addresses.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-6 text-center">
+                    <MapPin size={32} className="text-gray-300 mb-2" />
+                    <p className="text-sm font-bold text-gray-700">
+                      No addresses
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      User hasn't saved any addresses.
                     </p>
                   </div>
-                ))
-              )}
-              {/* {customer?.addresses.length > 0 &&
-                } */}
+                ) : (
+                  customer?.addresses.map((addr) => (
+                    <div
+                      key={addr._id}
+                      className={`p-4 rounded-xl border ${
+                        addr.isDefault
+                          ? "bg-orange-50/50 border-orange-200"
+                          : "bg-gray-50 border-gray-100"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span
+                          className={`font-bold text-xs uppercase tracking-wider ${addr.isDefault ? "text-[#fc8019]" : "text-gray-500"}`}
+                        >
+                          {addr.addressType || "Address"}
+                        </span>
+                        {addr.isDefault && (
+                          <span className="text-[10px] font-bold bg-white px-2 py-1 rounded-md border border-orange-200 text-[#fc8019]">
+                            DEFAULT
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-gray-700 font-medium leading-relaxed">
+                        {addr.addressLine1}
+                        {addr.addressLine2 && `, ${addr.addressLine2}`}
+                        <br />
+                        {addr.city}, {addr.state} {addr.pinCode}
+                        {addr.country && (
+                          <>
+                            <br />
+                            {addr.country}
+                          </>
+                        )}
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           </div>
 
           {/* Coupons Used */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5">
-            <SectionHeader title="Coupons Used" />
-            {customer?.couponsUsed?.length === 0 ? (
-              <p className="text-xs text-gray-400">No coupons used yet</p>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                {customer?.couponsUsed?.map((c) => (
-                  <span
-                    key={c}
-                    className="font-mono text-xs font-bold text-orange-600 bg-orange-50 border border-orange-100 px-2.5 py-1 rounded-lg"
-                  >
-                    {c}
-                  </span>
-                ))}
+          <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
+            <SectionHeader title="Coupons Used" icon={Ticket} />
+            <div className="p-6">
+              {!customer?.couponsUsed || customer.couponsUsed.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-6 text-center">
+                  <Ticket size={32} className="text-gray-300 mb-2" />
+                  <p className="text-sm font-bold text-gray-700">No coupons</p>
+                  <p className="text-xs text-gray-500">
+                    User hasn't used any coupons.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {customer.couponsUsed.map((c) => (
+                    <span
+                      key={c}
+                      className="font-mono text-xs font-bold text-orange-700 bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5"
+                    >
+                      <Ticket size={12} /> {c}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* ── Danger Zone ── */}
+          <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-red-200 overflow-hidden">
+            <div className="flex items-center gap-2 px-6 py-4 border-b border-red-100 bg-red-50/50">
+              <ShieldAlert size={18} className="text-red-500" />
+              <h3 className="text-sm font-bold text-red-700 tracking-wide">
+                Danger Zone
+              </h3>
+            </div>
+            <div className="p-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm font-bold text-gray-800">
+                    Delete Customer Account
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1 font-medium leading-relaxed max-w-xs">
+                    Permanently removes the customer and all associated data.
+                    This action cannot be undone.
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    if (confirm("Permanently delete this customer?")) {
+                      // await axios.delete(`/api/customers/${customer?._id}`);
+                      // navigate("/admin/customers");
+                    }
+                  }}
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-bold text-red-600 bg-white border border-red-200 rounded-xl hover:bg-red-50 transition-colors shrink-0 shadow-sm"
+                >
+                  <Trash2 size={16} /> Delete
+                </button>
               </div>
-            )}
+            </div>
           </div>
         </div>
 
         {/* Right — Order History */}
-        <div className="col-span-2">
-          <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div className="lg:col-span-8">
+          <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
             {/* Table Header */}
-            <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-              <div>
-                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
-                  Order History
-                </p>
-                <p className="text-sm font-bold text-gray-700 mt-0.5">
-                  {customer?.totalOrders} orders · {deliveredOrders?.length}{" "}
-                  delivered
-                </p>
+            <div className="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-orange-50 text-orange-500 rounded-lg">
+                  <ShoppingBag size={20} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-gray-800">
+                    Order History
+                  </h3>
+                  <p className="text-sm font-medium text-gray-500 mt-0.5">
+                    {customer?.totalOrders || 0} total orders ·{" "}
+                    {deliveredOrders?.length || 0} delivered
+                  </p>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 w-full sm:w-auto">
                 <input
                   placeholder="Search orders..."
                   value={filter.orderSearch}
@@ -386,7 +547,7 @@ const AdminCustomerDetails = () => {
                       orderSearch: e.target.value,
                     }))
                   }
-                  className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs text-gray-600 outline-none focus:border-[#fc8019] transition-colors w-40"
+                  className="w-full sm:w-48 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all font-medium"
                 />
                 <select
                   value={filter.orderStatus}
@@ -396,9 +557,9 @@ const AdminCustomerDetails = () => {
                       orderStatus: e.target.value,
                     }))
                   }
-                  className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs text-gray-600 outline-none focus:border-[#fc8019] bg-white"
+                  className="w-full sm:w-auto border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-700 outline-none focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all bg-white"
                 >
-                  <option value="">All</option>
+                  <option value="">All Statuses</option>
                   <option value="placed">Placed</option>
                   <option value="confirmed">Confirmed</option>
                   <option value="preparing">Preparing</option>
@@ -409,104 +570,103 @@ const AdminCustomerDetails = () => {
               </div>
             </div>
 
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-100">
-                  {[
-                    "Order ID",
-                    "Restaurant",
-                    "Date",
-                    "Status",
-                    "Payment",
-                    "Coupon",
-                    "Total",
-                  ].map((h) => (
-                    <th
-                      key={h}
-                      className={`px-4 py-3 text-[10px] font-semibold text-gray-400 uppercase tracking-wider bg-gray-50 ${h === "Total" ? "text-right" : "text-left"}`}
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {customer?.orders.items?.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={7}
-                      className="text-center py-10 text-sm text-gray-400"
-                    >
-                      No orders found
-                    </td>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-gray-50/50 text-gray-500">
+                  <tr className="border-b border-gray-100">
+                    {[
+                      "Order ID",
+                      "Restaurant",
+                      "Date",
+                      "Status",
+                      "Method",
+                      "Coupon",
+                      "Total",
+                    ].map((h) => (
+                      <th
+                        key={h}
+                        className={`px-6 py-4 font-semibold uppercase tracking-wider text-xs ${h === "Total" ? "text-right" : ""}`}
+                      >
+                        {h}
+                      </th>
+                    ))}
                   </tr>
-                ) : (
-                  customer?.orders.items?.map((order) => (
-                    <OrderRow key={order._id} order={order} />
-                  ))
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {!customer?.orders?.items ||
+                  customer.orders.items.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="text-center py-12">
+                        <div className="flex flex-col items-center justify-center">
+                          <ShoppingBag
+                            size={40}
+                            className="text-gray-300 mb-3"
+                          />
+                          <p className="text-base font-bold text-gray-800">
+                            No orders found
+                          </p>
+                          <p className="text-sm text-gray-500 mt-1">
+                            This customer hasn't placed any orders yet.
+                          </p>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    customer.orders.items.map((order) => (
+                      <OrderRow key={order._id} order={order} />
+                    ))
+                  )}
+                </tbody>
+
+                {/* Footer summary */}
+                {customer?.orders?.items?.length > 0 && (
+                  <tfoot>
+                    <tr className="border-t-2 border-gray-100 bg-gray-50/50">
+                      <td
+                        colSpan={6}
+                        className="px-6 py-4 text-sm font-bold text-gray-500"
+                      >
+                        Showing {customer.orders.items.length} order
+                        {customer.orders.items.length !== 1 ? "s" : ""} on this
+                        page
+                      </td>
+                      <td className="px-6 py-4 text-right text-base font-bold text-gray-800">
+                        $
+                        {customer.orders.items
+                          .reduce((s, o) => s + o.totalAmount, 0)
+                          .toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })}
+                      </td>
+                    </tr>
+                  </tfoot>
                 )}
-              </tbody>
+              </table>
+            </div>
 
-              {/* Footer summary */}
-              {customer?.orders.items?.length > 0 && (
-                <tfoot>
-                  <tr className="border-t border-gray-100 bg-gray-50">
-                    <td
-                      colSpan={6}
-                      className="px-4 py-3 text-xs font-semibold text-gray-400"
-                    >
-                      {customer?.orders.items.length} order
-                      {customer?.orders.items.length !== 1 ? "s" : ""}
-                    </td>
-                    <td className="px-4 py-3 text-right text-sm font-bold text-gray-700">
-                      $
-                      {customer?.orders.items
-                        .reduce((s, o) => s + o.totalAmount, 0)
-                        .toLocaleString()}
-                    </td>
-                  </tr>
-                </tfoot>
-              )}
-            </table>
+            {customer?.orders?.pagination?.totalPages > 1 && (
+              <div className="p-6 flex justify-center border-t border-gray-100 bg-white">
+                <Pagination
+                  count={customer.orders.pagination.totalPages}
+                  page={filter.page}
+                  onChange={(e, value) =>
+                    setFilter((prev) => ({ ...prev, page: value }))
+                  }
+                  color="primary"
+                  sx={{
+                    "& .MuiPaginationItem-root.Mui-selected": {
+                      backgroundColor: "#fc8019",
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#e67316",
+                      },
+                    },
+                  }}
+                />
+              </div>
+            )}
           </div>
-          <div className="mt-6 flex justify-center">
-            <Pagination
-              count={customer?.orders?.pagination.totalPages}
-              page={filter.page}
-              onChange={(e, value) =>
-                setFilter((prev) => ({ ...prev, page: value }))
-              }
-              variant="outlined"
-              shape="rounded"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* ── Danger Zone ── */}
-      <div className="bg-white rounded-2xl border border-red-100 p-5">
-        <SectionHeader title="Danger Zone" />
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-semibold text-gray-700">
-              Delete this account
-            </p>
-            <p className="text-xs text-gray-400 mt-0.5">
-              Permanently removes the customer and all their data. This cannot
-              be undone.
-            </p>
-          </div>
-          <button
-            onClick={() => {
-              if (confirm("Permanently delete this customer?")) {
-                // await axios.delete(`/api/customers/${customer?._id}`);
-                // navigate("/admin/customers");
-              }
-            }}
-            className="px-4 py-2 text-xs font-semibold text-red-500 border border-red-200 rounded-xl hover:bg-red-50 transition-colors shrink-0"
-          >
-            Delete Account
-          </button>
         </div>
       </div>
     </div>

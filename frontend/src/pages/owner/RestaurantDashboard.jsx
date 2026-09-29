@@ -1,6 +1,18 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
+import {
+  Package,
+  Banknote,
+  Utensils,
+  Star,
+  CheckCircle,
+  Clock,
+  Circle,
+  Mailbox,
+  Plus,
+  Settings,
+} from "lucide-react";
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
 const restaurant = {
@@ -19,28 +31,28 @@ const stats = [
     value: "24",
     change: "+6 vs yesterday",
     up: true,
-    emoji: "📦",
+    icon: <Package size={30} className="text-indigo-400" />,
   },
   {
     label: "Today's Revenue",
     value: "$348",
     change: "+$82 vs yesterday",
     up: true,
-    emoji: "💵",
+    icon: <Banknote size={30} className="text-green-400" />,
   },
   {
     label: "Active Dishes",
     value: "18",
     change: "3 unavailable",
     up: null,
-    emoji: "🍽️",
+    icon: <Utensils size={30} className="text-orange-400" />,
   },
   {
     label: "Avg Rating",
     value: "4.5",
     change: "128 reviews",
     up: true,
-    emoji: "⭐",
+    icon: <Star size={30} className="text-yellow-400" />,
   },
 ];
 
@@ -173,7 +185,7 @@ const RestaurantDashboard = () => {
                 className="w-full h-full object-cover rounded-xl"
               />
             ) : (
-              "🍽️"
+              <Utensils size={24} />
             )}
           </div>
           <div>
@@ -181,17 +193,22 @@ const RestaurantDashboard = () => {
               {restaurant.name}
             </h1>
             <div className="flex items-center gap-3 mt-0.5">
-              <span className="text-xs text-gray-400">
-                ⭐ {restaurant.rating} · {restaurant.totalReviews} reviews · ⏱{" "}
+              <span className="text-xs text-gray-400 flex items-center">
+                <Star size={12} className="inline text-yellow-500 mr-1" />{" "}
+                {restaurant.rating} · {restaurant.totalReviews} reviews ·
+                <Clock
+                  size={12}
+                  className="inline text-gray-400 ml-1 mr-1"
+                />{" "}
                 {restaurant.deliveryTime} min
               </span>
               {restaurant.status === "active" ? (
-                <span className="text-xs bg-green-50 text-green-600 font-semibold px-2 py-0.5 rounded-full">
-                  Approved ✅
+                <span className="text-xs bg-green-50 text-green-600 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
+                  Approved <CheckCircle size={12} />
                 </span>
               ) : (
-                <span className="text-xs bg-yellow-50 text-yellow-600 font-semibold px-2 py-0.5 rounded-full">
-                  Pending Review ⏳
+                <span className="text-xs bg-yellow-50 text-yellow-600 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
+                  Pending Review <Clock size={12} />
                 </span>
               )}
             </div>
@@ -201,8 +218,18 @@ const RestaurantDashboard = () => {
         {/* Open / closed toggle */}
         <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)]">
           <div>
-            <p className="text-xs font-semibold text-gray-700">
-              {isOpen ? "🟢 Open for Orders" : "🔴 Closed"}
+            <p className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
+              {isOpen ? (
+                <>
+                  <Circle size={10} className="fill-green-500 text-green-500" />{" "}
+                  Open for Orders
+                </>
+              ) : (
+                <>
+                  <Circle size={10} className="fill-red-500 text-red-500" />{" "}
+                  Closed
+                </>
+              )}
             </p>
             <p className="text-xs text-gray-400 mt-0.5">
               {isOpen ? "Customers can order now" : "No new orders accepted"}
@@ -230,7 +257,7 @@ const RestaurantDashboard = () => {
                 {s.up === true ? "↑" : s.up === false ? "↓" : ""} {s.change}
               </p>
             </div>
-            <span className="text-3xl">{s.emoji}</span>
+            <div>{s.icon}</div>
           </Card>
         ))}
       </div>
@@ -422,7 +449,9 @@ const RestaurantDashboard = () => {
 
           {filteredOrders.length === 0 && (
             <div className="text-center py-12 text-gray-400">
-              <div className="text-3xl mb-2">📭</div>
+              <div className="flex justify-center mb-2 text-gray-300">
+                <Mailbox size={40} />
+              </div>
               <p className="text-sm font-medium">No orders found</p>
             </div>
           )}
@@ -435,21 +464,21 @@ const RestaurantDashboard = () => {
           {
             label: "Add New Dish",
             desc: "Add a dish to your menu",
-            emoji: "➕",
+            icon: <Plus size={30} className="text-orange-400" />,
             to: "/restaurant/dish/add",
             color: "border-orange-200 hover:bg-orange-50",
           },
           {
             label: "Manage Menu",
             desc: "Edit prices & availability",
-            emoji: "🍽️",
+            icon: <Utensils size={30} className="text-blue-400" />,
             to: "/restaurant/dishes",
             color: "border-blue-100 hover:bg-blue-50",
           },
           {
             label: "View Profile",
             desc: "Update restaurant details",
-            emoji: "⚙️",
+            icon: <Settings size={30} className="text-green-400" />,
             to: "/restaurant/settings",
             color: "border-green-100 hover:bg-green-50",
           },
@@ -459,7 +488,7 @@ const RestaurantDashboard = () => {
             to={action.to}
             className={`bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] border ${action.color} p-5 flex items-center gap-4 transition-colors`}
           >
-            <span className="text-3xl">{action.emoji}</span>
+            <div>{action.icon}</div>
             <div>
               <p className="text-sm font-bold text-gray-700">{action.label}</p>
               <p className="text-xs text-gray-400 mt-0.5">{action.desc}</p>

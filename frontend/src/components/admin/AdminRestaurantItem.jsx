@@ -3,22 +3,51 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/user/AuthContext";
 import { useRestaurants } from "../../context/admin/RestaurantsContext";
 import { Link } from "react-router-dom";
-import { DeleteIcon, ViewIcon } from "../../assets/icon/Icons";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import ConfirmationModal from "../common/ConfirmationModal";
+import {
+  Store,
+  MapPin,
+  Star,
+  Eye,
+  Trash2,
+  Check,
+  X,
+  ShieldAlert,
+} from "lucide-react";
 
 const statusConfig = {
-  active: { label: "Active", bg: "bg-green-50", text: "text-green-600" },
-  pending: { label: "Pending", bg: "bg-yellow-50", text: "text-yellow-600" },
-  rejected: { label: "Rejected", bg: "bg-red-50", text: "text-red-400" },
-  suspended: { label: "Suspended", bg: "bg-gray-100", text: "text-gray-500" },
+  active: {
+    label: "Active",
+    bg: "bg-green-50",
+    text: "text-green-700",
+    border: "border-green-200",
+  },
+  pending: {
+    label: "Pending",
+    bg: "bg-yellow-50",
+    text: "text-yellow-700",
+    border: "border-yellow-200",
+  },
+  rejected: {
+    label: "Rejected",
+    bg: "bg-red-50",
+    text: "text-red-700",
+    border: "border-red-200",
+  },
+  suspended: {
+    label: "Suspended",
+    bg: "bg-gray-100",
+    text: "text-gray-600",
+    border: "border-gray-200",
+  },
 };
 
 const StatusBadge = ({ status }) => {
   const cfg = statusConfig[status] || statusConfig.pending;
   return (
     <span
-      className={`text-xs font-semibold px-3 py-1 rounded-full ${cfg.bg} ${cfg.text}`}
+      className={`text-xs font-bold px-3 py-1.5 rounded-lg border ${cfg.bg} ${cfg.text} ${cfg.border}`}
     >
       {cfg.label}
     </span>
@@ -27,14 +56,12 @@ const StatusBadge = ({ status }) => {
 
 const StarRating = ({ rating }) =>
   rating > 0 ? (
-    <div className="flex items-center gap-1">
-      <span className="text-yellow-400 text-xs">★</span>
-      <span className="text-xs font-semibold text-gray-700">
-        {rating.toFixed(1)}
-      </span>
+    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-yellow-50 text-yellow-700 rounded-lg w-fit border border-yellow-100">
+      <Star size={14} className="fill-yellow-400 stroke-yellow-500" />
+      <span className="text-xs font-bold">{rating.toFixed(1)}</span>
     </div>
   ) : (
-    <span className="text-xs text-gray-300">—</span>
+    <span className="text-xs font-medium text-gray-400">—</span>
   );
 
 const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
@@ -113,27 +140,32 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
   }, []);
 
   return (
-    <tr key={r._id} className="hover:bg-gray-50 transition-colors">
+    <tr key={r._id} className="hover:bg-gray-50/80 transition-colors group">
       <td className="px-6 py-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 min-w-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-lg">
-            🏪
+          <div className="w-10 h-10 min-w-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-[#fc8019]">
+            <Store size={20} />
           </div>
-          <p className="font-semibold text-gray-700">{r.name}</p>
+          <p className="font-bold text-gray-800">{r.name}</p>
         </div>
       </td>
       <td className="px-4 py-4">
-        <p className="font-medium text-gray-700 text-xs">{r.owner.firstName}</p>
-        <p className="text-xs text-gray-400 mt-0.5">{r.email}</p>
+        <p className="font-bold text-gray-700 text-sm">{r.owner.firstName}</p>
+        <p className="text-xs text-gray-500 mt-0.5">{r.email}</p>
       </td>
-      <td className="px-4 py-4 text-gray-500 text-xs">📍 {r.address.city}</td>
-      <td className="px-4 py-4 text-gray-700 font-medium">
+      <td className="px-4 py-4 text-gray-600 text-xs">
+        <div className="flex items-center gap-1.5">
+          <MapPin size={14} className="text-gray-400" />
+          {r.address.city}
+        </div>
+      </td>
+      <td className="px-4 py-4 text-gray-600 font-medium">
         {restaurantDishes?.length || "—"}
       </td>
-      <td className="px-4 py-4 text-gray-700 font-medium">
+      <td className="px-4 py-4 text-gray-600 font-medium">
         {r.totalOrders > 0 ? r.totalOrders.toLocaleString() : "—"}
       </td>
-      <td className="px-4 py-4 font-semibold text-[#fc8019]">
+      <td className="px-4 py-4 font-bold text-[#fc8019]">
         {r.revenue > 0 ? `$${r.revenue.toLocaleString()}` : "—"}
       </td>
       <td className="px-4 py-4">
@@ -143,21 +175,21 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
         <StatusBadge status={r.status} />
       </td>
       <td className="px-4 py-4">
-        <div className="flex items-center gap-1 flex-wrap">
+        <div className="flex items-center gap-1.5 flex-wrap justify-end opacity-0 group-hover:opacity-100 transition-opacity">
           {/* Pending actions */}
           {r.status === "pending" && (
             <>
               <button
                 onClick={() => handleApprove(r._id)}
-                className="px-2.5 py-1 rounded-lg bg-green-50 text-green-600 text-xs font-semibold hover:bg-green-100 transition-colors"
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-green-50 text-green-700 text-xs font-bold hover:bg-green-100 hover:shadow-sm border border-green-200 transition-all"
               >
-                ✓ Approve
+                <Check size={14} strokeWidth={3} /> Approve
               </button>
               <button
                 onClick={() => setRejectTarget(r)}
-                className="px-2.5 py-1 rounded-lg bg-red-50 text-red-400 text-xs font-semibold hover:bg-red-100 transition-colors"
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red-700 text-xs font-bold hover:bg-red-100 hover:shadow-sm border border-red-200 transition-all"
               >
-                ✕ Reject
+                <X size={14} strokeWidth={3} /> Reject
               </button>
             </>
           )}
@@ -169,14 +201,17 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
               description={
                 <>
                   Are you sure you want to suspend{" "}
-                  <span className="text-gray-600 font-semibold">{r.name}</span>{" "}
-                  ? They will lose access to their dashboard and customers won't
+                  <span className="text-gray-800 font-bold">{r.name}</span> ?
+                  They will lose access to their dashboard and customers won't
                   be able to order from them.
                 </>
               }
               button={
-                <button className="px-2.5 py-1 rounded-lg bg-gray-100 text-gray-500 text-xs font-semibold hover:bg-gray-200 transition-colors">
-                  Suspend
+                <button
+                  className="flex items-center justify-center p-2 rounded-lg bg-white border border-gray-200 text-gray-400 hover:text-yellow-600 hover:border-yellow-400 shadow-sm transition-all"
+                  title="Suspend"
+                >
+                  <ShieldAlert size={16} />
                 </button>
               }
             />
@@ -184,7 +219,7 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
           {(r.status === "suspended" || r.status === "rejected") && (
             <button
               onClick={() => handleApprove(r._id)}
-              className="px-2.5 py-1 rounded-lg bg-green-50 text-green-600 text-xs font-semibold hover:bg-green-100 transition-colors"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-green-50 text-green-700 text-xs font-bold hover:bg-green-100 hover:shadow-sm border border-green-200 transition-all"
             >
               Reinstate
             </button>
@@ -192,9 +227,10 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
           {/* View */}
           <Link
             to={`/admin/restaurants/${r._id}`}
-            className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-blue-500 transition-colors"
+            className="flex items-center justify-center p-2 rounded-lg bg-white border border-gray-200 text-gray-400 hover:text-blue-600 hover:border-blue-400 shadow-sm transition-all"
+            title="View Details"
           >
-            <ViewIcon />
+            <Eye size={16} />
           </Link>
           {/* Delete */}
           <ConfirmationModal
@@ -203,17 +239,20 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
             description={
               <>
                 This will permanently delete{" "}
-                <span className="text-gray-600 font-semibold">{r.name}</span>{" "}
-                and all its dishes, orders, and data. This action{" "}
-                <span className="text-gray-600 font-semibold">
+                <span className="text-gray-800 font-bold">{r.name}</span> and
+                all its dishes, orders, and data. This action{" "}
+                <span className="text-gray-800 font-bold">
                   cannot be undone
                 </span>
                 .
               </>
             }
             button={
-              <button className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors">
-                <DeleteIcon />
+              <button
+                className="flex items-center justify-center p-2 rounded-lg bg-white border border-gray-200 text-gray-400 hover:text-red-600 hover:border-red-400 shadow-sm transition-all"
+                title="Delete"
+              >
+                <Trash2 size={16} />
               </button>
             }
           />

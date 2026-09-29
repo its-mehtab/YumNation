@@ -2,12 +2,31 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/user/AuthContext";
 import { useRestaurant } from "../../context/owner/RestaurantContext";
+import {
+  ClipboardList,
+  Search,
+  Mail,
+  Rocket,
+  Hourglass,
+  Clock,
+  Phone,
+  RefreshCcw,
+} from "lucide-react";
 
 const steps = [
-  { icon: "📝", label: "Application Submitted", done: true },
-  { icon: "🔍", label: "Under Review", done: false, active: true },
-  { icon: "📧", label: "Decision Email Sent", done: false },
-  { icon: "🚀", label: "Dashboard Unlocked", done: false },
+  {
+    icon: <ClipboardList size={20} />,
+    label: "Application Submitted",
+    done: true,
+  },
+  {
+    icon: <Search size={20} />,
+    label: "Under Review",
+    done: false,
+    active: true,
+  },
+  { icon: <Mail size={20} />, label: "Decision Email Sent", done: false },
+  { icon: <Rocket size={20} />, label: "Dashboard Unlocked", done: false },
 ];
 
 const RestaurantPendingApproval = () => {
@@ -26,10 +45,10 @@ const RestaurantPendingApproval = () => {
         <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.08)] p-8 text-center">
           {/* Animated hourglass */}
           <div
-            className="w-20 h-20 rounded-full bg-orange-50 border-2 border-orange-100 flex items-center justify-center text-4xl mx-auto mb-5"
+            className="w-20 h-20 rounded-full bg-orange-50 border-2 border-orange-100 flex items-center justify-center text-4xl mx-auto mb-5 text-orange-400"
             style={{ animation: "pulse 2s ease-in-out infinite" }}
           >
-            ⏳
+            <Hourglass size={40} />
           </div>
           <style>{`@keyframes pulse { 0%,100% { transform: scale(1) } 50% { transform: scale(1.08) } }`}</style>
 
@@ -89,21 +108,26 @@ const RestaurantPendingApproval = () => {
           <div className="space-y-2.5">
             {[
               {
-                emoji: "📧",
+                icon: <Mail size={16} />,
                 text: "You'll get an email when your application is approved or rejected",
               },
-              { emoji: "⏱", text: "Review usually takes 2–3 business days" },
               {
-                emoji: "📞",
+                icon: <Clock size={16} />,
+                text: "Review usually takes 2–3 business days",
+              },
+              {
+                icon: <Phone size={16} />,
                 text: "Our team may contact you for additional information",
               },
               {
-                emoji: "🔄",
+                icon: <RefreshCcw size={16} />,
                 text: "Check back here anytime to see your status",
               },
             ].map((item, i) => (
               <div key={i} className="flex items-start gap-3">
-                <span className="text-base shrink-0">{item.emoji}</span>
+                <span className="text-base shrink-0 text-gray-400 mt-0.5">
+                  {item.icon}
+                </span>
                 <p className="text-xs text-gray-500 leading-relaxed">
                   {item.text}
                 </p>
@@ -116,9 +140,9 @@ const RestaurantPendingApproval = () => {
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={() => window.location.reload()}
-            className="py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
+            className="py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
           >
-            🔄 Refresh Status
+            <RefreshCcw size={16} /> Refresh Status
           </button>
           <button
             onClick={logout}

@@ -1,5 +1,6 @@
 import Category from "../models/category.modal.js";
 import Dish from "../models/dish.modal.js";
+import { uploadToCloudinary } from "../services/cloudinaryService.js";
 
 export const getCategories = async (req, res) => {
   try {
@@ -100,8 +101,10 @@ export const createCategory = async (req, res) => {
 };
 
 export const updateCategory = async (req, res) => {
-  const { name, description, image, isActive } = req.body;
   const id = req.params.id;
+  const { name, description, isActive } = req.body;
+
+  console.log(req.body);
 
   if (!id) {
     return res.status(400).json({ message: "ID is required" });
@@ -117,7 +120,12 @@ export const updateCategory = async (req, res) => {
     if (name && category.name !== name) category.name = name;
     if (description && category.description !== description)
       category.description = description;
-    if (image !== undefined) category.image = image;
+    
+    if (req.file) {
+      const imageUrl = await uploadToCloudinary(req.file.buffer);
+      category.image = imageUrl;
+    }
+    
     if (isActive !== undefined) category.isActive = isActive;
 
     await category.save();
@@ -132,6 +140,40 @@ export const updateCategory = async (req, res) => {
 
     return res.status(500).json({
       message: "Unable to update category",
+      error: error.message,
+    });
+  }
+};
+
+export const updateCategoryStatus = async (req, res) => {
+  const id = req.params.id;
+
+  console.log(req.body);
+
+  if (!id) {
+    return res.status(400).json({ message: "ID is required" });
+  }
+
+  try {
+    const category = await Category.findById(id);
+    
+    if (!category) {
+      return res.status(404).json({ message: "Category Not Found" });
+    }
+    
+    category.isActive = !category.isActive;
+    await category.save();
+
+    return res.status(200).json(category);
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(400).json({
+        message: "Category with this name already exists",
+      });
+    }
+
+    return res.status(500).json({
+      message: "Unable to update category status",
       error: error.message,
     });
   }

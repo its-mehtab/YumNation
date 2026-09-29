@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
+import { Package, Sparkles, ChefHat, CheckCircle, Banknote } from "lucide-react";
 
 // ── Mock data ────────────────────────────────────────────────────────────────
 const mockOrders = [
@@ -190,14 +191,14 @@ const RestaurantOrders = () => {
       {/* ── Stats ── */}
       <div className="grid grid-cols-5 gap-4 mb-5">
         {[
-          { label: "Total Orders", value: stats.total, emoji: "📦" },
-          { label: "New Orders", value: stats.pending, emoji: "🆕" },
-          { label: "Preparing", value: stats.preparing, emoji: "👨‍🍳" },
-          { label: "Delivered", value: stats.delivered, emoji: "✅" },
+          { label: "Total Orders", value: stats.total, icon: <Package size={24} className="text-gray-400" /> },
+          { label: "New Orders", value: stats.pending, icon: <Sparkles size={24} className="text-blue-400" /> },
+          { label: "Preparing", value: stats.preparing, icon: <ChefHat size={24} className="text-orange-400" /> },
+          { label: "Delivered", value: stats.delivered, icon: <CheckCircle size={24} className="text-green-400" /> },
           {
             label: "Revenue",
             value: `$${stats.revenue.toFixed(2)}`,
-            emoji: "💰",
+            icon: <Banknote size={24} className="text-emerald-400" />,
           },
         ].map((s) => (
           <div
@@ -210,7 +211,7 @@ const RestaurantOrders = () => {
               </p>
               <p className="text-xl font-bold text-gray-700">{s.value}</p>
             </div>
-            <span className="text-2xl">{s.emoji}</span>
+            <div>{s.icon}</div>
           </div>
         ))}
       </div>
@@ -407,7 +408,7 @@ const RestaurantOrders = () => {
         {/* Empty state */}
         {filtered.length === 0 && (
           <div className="text-center py-16 text-gray-400">
-            <div className="text-4xl mb-3">📦</div>
+            <div className="flex justify-center mb-3 text-gray-300"><Package size={40} /></div>
             <p className="text-sm font-medium">No orders found</p>
           </div>
         )}

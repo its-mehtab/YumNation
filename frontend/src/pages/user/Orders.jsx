@@ -9,6 +9,7 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
+import { ShoppingBag } from "lucide-react";
 
 const Orders = () => {
   const { serverURL } = useAuth();
@@ -48,7 +49,7 @@ const Orders = () => {
   if (!loading && (!orders?.items || orders?.items?.length === 0)) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
-        <div className="text-6xl mb-4">🛍️</div>
+        <ShoppingBag size={60} className="mb-4 text-orange-400" />
         <h2 className="text-xl font-semibold text-gray-700 mb-2">
           No orders yet
         </h2>

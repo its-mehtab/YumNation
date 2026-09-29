@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/user/AuthContext";
 import { useRestaurant } from "../../context/owner/RestaurantContext";
+import { FileText, MapPin, Image as ImageIcon, Phone, Frown, RefreshCw, PenTool, Camera, Mail } from "lucide-react";
 
 const RestaurantRejectedPage = () => {
   const { user, logout } = useAuth();
@@ -13,18 +14,18 @@ const RestaurantRejectedPage = () => {
   const reason = restaurant?.rejectionReason || null;
 
   const commonReasons = [
-    { emoji: "📄", text: "Incomplete or inaccurate information provided" },
-    { emoji: "📍", text: "Address could not be verified" },
-    { emoji: "🖼️", text: "Missing or low quality images" },
-    { emoji: "📞", text: "Contact details could not be verified" },
+    { icon: <FileText size={16} className="text-gray-400" />, text: "Incomplete or inaccurate information provided" },
+    { icon: <MapPin size={16} className="text-gray-400" />, text: "Address could not be verified" },
+    { icon: <ImageIcon size={16} className="text-gray-400" />, text: "Missing or low quality images" },
+    { icon: <Phone size={16} className="text-gray-400" />, text: "Contact details could not be verified" },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12 fade-up">
       <div className="max-w-lg w-full space-y-4">
         <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.08)] p-8 text-center">
-          <div className="w-20 h-20 rounded-full bg-red-50 border-2 border-red-100 flex items-center justify-center text-4xl mx-auto mb-5">
-            😔
+          <div className="w-20 h-20 rounded-full bg-red-50 border-2 border-red-100 flex items-center justify-center mx-auto mb-5">
+            <Frown size={40} className="text-red-400" />
           </div>
 
           <h1 className="text-xl font-bold text-gray-700 mb-2">
@@ -54,7 +55,7 @@ const RestaurantRejectedPage = () => {
               <div className="space-y-2">
                 {commonReasons.map((r, i) => (
                   <div key={i} className="flex items-start gap-2.5">
-                    <span className="text-sm shrink-0">{r.emoji}</span>
+                    <span className="shrink-0">{r.icon}</span>
                     <p className="text-xs text-gray-500">{r.text}</p>
                   </div>
                 ))}
@@ -67,7 +68,7 @@ const RestaurantRejectedPage = () => {
               to={"/restaurant"}
               className="block w-full bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold py-3 rounded-xl transition-colors"
             >
-              🔄 Reapply Now
+              <span className="flex items-center justify-center gap-2"><RefreshCw size={16} /> Reapply Now</span>
             </Link>
             <p className="text-xs text-gray-400">
               Fix the issues above and submit a new application.
@@ -82,24 +83,24 @@ const RestaurantRejectedPage = () => {
           <div className="space-y-2.5">
             {[
               {
-                emoji: "✍️",
+                icon: <PenTool size={18} className="text-gray-400" />,
                 text: "Write a clear, detailed description of your restaurant and cuisine",
               },
               {
-                emoji: "📸",
+                icon: <Camera size={18} className="text-gray-400" />,
                 text: "Upload a high quality logo and cover image",
               },
               {
-                emoji: "📍",
+                icon: <MapPin size={18} className="text-gray-400" />,
                 text: "Make sure your address is complete and accurate",
               },
               {
-                emoji: "📞",
+                icon: <Phone size={18} className="text-gray-400" />,
                 text: "Use a valid phone number and email you have access to",
               },
             ].map((tip, i) => (
               <div key={i} className="flex items-start gap-3">
-                <span className="text-base shrink-0">{tip.emoji}</span>
+                <span className="shrink-0">{tip.icon}</span>
                 <p className="text-xs text-gray-500 leading-relaxed">
                   {tip.text}
                 </p>
@@ -113,7 +114,7 @@ const RestaurantRejectedPage = () => {
             href="mailto:support@yourapp.com"
             className="py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors text-center"
           >
-            📧 Contact Support
+            <span className="flex items-center justify-center gap-2"><Mail size={16} /> Contact Support</span>
           </a>
           <button
             onClick={logout}

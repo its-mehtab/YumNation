@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useRestaurants } from "../../context/admin/RestaurantsContext";
-import { DeleteIcon } from "../../assets/icon/Icons";
 import AdminRestaurantsItem from "../../components/admin/AdminRestaurantItem";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
 import RejectModal from "../../components/admin/RejectModal";
+import { Store, Clock, Package, DollarSign, Search } from "lucide-react";
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 const AdminRestaurants = () => {
@@ -13,8 +13,6 @@ const AdminRestaurants = () => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [rejectTarget, setRejectTarget] = useState(null);
-
-  console.log(restaurants);
 
   const { serverURL } = useAuth();
 
@@ -46,7 +44,7 @@ const AdminRestaurants = () => {
     .reduce((a, r) => a + r.revenue, 0);
 
   return (
-    <div>
+    <div className="space-y-6">
       {rejectTarget && (
         <RejectModal
           updateStatus={updateStatus}
@@ -56,27 +54,33 @@ const AdminRestaurants = () => {
       )}
 
       {/* ── Page header ── */}
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-bold text-gray-700">Restaurants</h1>
-        <div className="flex items-center gap-2 text-sm text-gray-400">
-          <span>Admin</span>
-          <span className="text-gray-300">›</span>
-          <span className="text-[#fc8019] font-medium">Restaurants</span>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-800 tracking-tight">
+            Restaurants
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Manage and review restaurant applications
+          </p>
         </div>
       </div>
 
       {/* ── Stats ── */}
-      <div className="grid grid-cols-4 gap-4 mb-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           {
             label: "Total Restaurants",
             value: restaurants.length,
-            emoji: "🏪",
+            icon: Store,
+            color: "text-blue-600",
+            bg: "bg-blue-50",
           },
           {
             label: "Pending Review",
             value: pendingCount,
-            emoji: "⏳",
+            icon: Clock,
+            color: "text-yellow-600",
+            bg: "bg-yellow-50",
             highlight: pendingCount > 0,
           },
           {
@@ -84,48 +88,55 @@ const AdminRestaurants = () => {
             value: restaurants
               .reduce((a, r) => a + r.totalOrders, 0)
               .toLocaleString(),
-            emoji: "📦",
+            icon: Package,
+            color: "text-purple-600",
+            bg: "bg-purple-50",
           },
           {
             label: "Active Revenue",
             value: `$${totalRevenue.toLocaleString()}`,
-            emoji: "💰",
+            icon: DollarSign,
+            color: "text-green-600",
+            bg: "bg-green-50",
           },
         ].map((s) => (
           <div
             key={s.label}
-            className={`bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] border-l-4 px-5 py-4 flex items-center justify-between ${s.highlight ? "border-l-yellow-400" : "border-l-[#fc8019]"}`}
+            className={`bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] ${
+              s.highlight ? "ring-2 ring-yellow-400 ring-offset-2" : ""
+            }`}
           >
             <div>
-              <p className="text-xs text-gray-400 font-medium mb-1">
+              <p className="text-sm font-semibold text-gray-500 mb-2">
                 {s.label}
               </p>
               <p
-                className={`text-2xl font-bold ${s.highlight ? "text-yellow-500" : "text-gray-700"}`}
+                className={`text-3xl font-bold ${s.highlight ? "text-yellow-600" : "text-gray-800"}`}
               >
                 {s.value}
               </p>
             </div>
-            <span className="text-3xl">{s.emoji}</span>
+            <div className={`p-4 rounded-xl ${s.bg} ${s.color}`}>
+              <s.icon size={28} strokeWidth={2.5} />
+            </div>
           </div>
         ))}
       </div>
 
       {/* ── Table card ── */}
-      <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
         {/* Card header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-wrap gap-3">
-          <div className="flex items-center gap-2">
-            <h2 className="text-base font-bold text-gray-700">
-              All Restaurants
-            </h2>
-            <span className="text-xs bg-orange-50 text-[#fc8019] font-semibold px-2 py-0.5 rounded-full">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-6 py-5 border-b border-gray-100 gap-4">
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg font-bold text-gray-800">All Restaurants</h2>
+            <span className="text-xs bg-orange-50 text-[#fc8019] font-bold px-2.5 py-1 rounded-lg">
               {filtered.length}
             </span>
           </div>
-          <div className="flex items-center gap-3 flex-wrap">
+
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
             {/* Tabs */}
-            <div className="flex bg-gray-100 rounded-lg p-1 gap-1 text-xs font-semibold">
+            <div className="flex bg-gray-50 rounded-xl p-1 w-full sm:w-auto overflow-x-auto border border-gray-200">
               {tabs.map((t) => {
                 const count =
                   t.key !== "all"
@@ -135,14 +146,14 @@ const AdminRestaurants = () => {
                   <button
                     key={t.key}
                     onClick={() => setFilter(t.key)}
-                    className={`px-3 py-1.5 rounded-md transition-all flex items-center gap-1.5
-                      ${filter === t.key ? "bg-white text-[#fc8019] shadow-sm" : "text-gray-500 hover:text-gray-700"}`}
+                    className={`px-4 py-2 rounded-lg transition-all flex items-center justify-center min-w-[100px] gap-2 text-sm font-semibold whitespace-nowrap
+                      ${filter === t.key ? "bg-white text-[#fc8019] shadow-sm ring-1 ring-gray-200" : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"}`}
                   >
                     {t.label}
                     {count > 0 && (
                       <span
-                        className={`text-xs px-1.5 py-0.5 rounded-full font-bold leading-none
-                        ${t.key === "pending" ? "bg-yellow-100 text-yellow-600" : "bg-gray-200 text-gray-500"}`}
+                        className={`text-[10px] px-2 py-0.5 rounded-full font-bold leading-none
+                        ${t.key === "pending" ? "bg-yellow-100 text-yellow-700" : "bg-gray-200 text-gray-600"}`}
                       >
                         {count}
                       </span>
@@ -151,20 +162,27 @@ const AdminRestaurants = () => {
                 );
               })}
             </div>
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name, owner, city..."
-              className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors w-56"
-            />
+
+            <div className="relative w-full sm:w-64">
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                size={18}
+              />
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search restaurants..."
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all outline-none"
+              />
+            </div>
           </div>
         </div>
 
         {/* Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-100">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-gray-50/50 text-gray-500">
+              <tr>
                 {[
                   "Restaurant",
                   "Owner",
@@ -178,14 +196,14 @@ const AdminRestaurants = () => {
                 ].map((h) => (
                   <th
                     key={h}
-                    className="text-left px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider first:px-6"
+                    className="px-4 py-4 font-semibold uppercase tracking-wider text-xs first:pl-6"
                   >
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-gray-100">
               {filtered.map((r) => (
                 <AdminRestaurantsItem
                   key={r._id}
@@ -199,9 +217,16 @@ const AdminRestaurants = () => {
         </div>
 
         {filtered.length === 0 && (
-          <div className="text-center py-16 text-gray-400">
-            <div className="text-4xl mb-3">🏪</div>
-            <p className="text-sm font-medium">No restaurants found</p>
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+              <Store size={32} className="text-gray-400" />
+            </div>
+            <h3 className="text-lg font-bold text-gray-800 mb-1">
+              No restaurants found
+            </h3>
+            <p className="text-sm text-gray-500">
+              Try adjusting your filters or search
+            </p>
           </div>
         )}
       </div>

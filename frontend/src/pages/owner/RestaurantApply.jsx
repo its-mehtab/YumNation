@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Switch } from "@radix-ui/themes";
+import { Utensils, Camera, Image as ImageIcon, CheckCircle, Rocket } from "lucide-react";
 import Input from "../../components/common/Input";
 import Field from "../../components/common/Field";
 import axios from "axios";
@@ -130,7 +131,7 @@ const RestaurantApply = () => {
       <div className="max-w-2xl mx-auto">
         {/* ── Header ── */}
         <div className="text-center mb-8">
-          <div className="text-4xl mb-3">🍽️</div>
+          <div className="flex justify-center mb-3 text-gray-400"><Utensils size={40} /></div>
           <h1 className="text-2xl font-bold text-gray-700">Partner with Us</h1>
           <p className="text-sm text-gray-400 mt-1">
             Fill in your restaurant details to apply for listing
@@ -198,7 +199,7 @@ const RestaurantApply = () => {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <span className="text-3xl">📷</span>
+                        <Camera size={30} className="text-gray-400" />
                       )}
                     </div>
                     <p className="text-xs text-gray-400 mt-1.5">Logo</p>
@@ -223,7 +224,7 @@ const RestaurantApply = () => {
                         />
                       ) : (
                         <>
-                          <span className="text-2xl">🖼️</span>
+                          <ImageIcon size={24} className="text-gray-400" />
                           <p className="text-xs text-gray-400 mt-1">
                             Upload Cover Image
                           </p>
@@ -459,7 +460,7 @@ const RestaurantApply = () => {
                   <ReviewRow label="Description" value={form.description} />
                   <ReviewRow
                     label="Pure Veg"
-                    value={form.isPureVeg ? "Yes ✅" : "No"}
+                    value={form.isPureVeg ? <span className="flex items-center gap-1 justify-end">Yes <CheckCircle size={14} className="text-green-500" /></span> : "No"}
                   />
                 </div>
 
@@ -536,7 +537,7 @@ const RestaurantApply = () => {
                 disabled={submitting}
                 className="px-6 py-2.5 rounded-xl bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors disabled:opacity-60"
               >
-                {submitting ? "Submitting..." : "Submit Application 🚀"}
+                {submitting ? "Submitting..." : <span className="flex items-center justify-center gap-2">Submit Application <Rocket size={16} /></span>}
               </button>
             )}
           </div>

@@ -9,6 +9,7 @@ import { useCart } from "../../context/user/CartContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { useWishlist } from "../../context/user/WishlistContext";
 import DishDetailsSkeleton from "../../components/skeleton/DishDetailsSkeleton";
+import { Heart } from "lucide-react";
 
 const Dish = () => {
   const [variation, setVariation] = useState("");
@@ -107,7 +108,7 @@ const Dish = () => {
 
       notifySuccess(
         !wishlistActive
-          ? `${mainDish.name} Added to wishlist ❤️`
+          ? <span className="flex items-center gap-1.5">{mainDish.name} Added to wishlist <Heart size={16} className="text-red-500 fill-current inline" /></span>
           : `${mainDish.name} Removed from wishlist`,
       );
     } catch (error) {

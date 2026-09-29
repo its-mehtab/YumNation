@@ -1,4 +1,5 @@
 import React from "react";
+import { Star } from "lucide-react";
 
 const RestaurantHeader = ({ restaurant }) => {
   return (
@@ -8,7 +9,7 @@ const RestaurantHeader = ({ restaurant }) => {
       </h1>
       <div className="border border-gray-200 rounded-2xl p-5">
         <div className="flex items-center gap-2 text-sm font-medium text-gray-800 mb-2">
-          <span className="text-green-600 text-base">★</span>
+          <Star size={16} className="text-green-600 fill-current" />
           <span className="font-semibold">
             {restaurant?.rating} ({restaurant?.totalReviews}+ ratings)
           </span>

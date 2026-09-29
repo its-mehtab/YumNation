@@ -12,6 +12,7 @@ import axios from "axios";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { useWishlist } from "../../context/user/WishlistContext";
 import { StarIcon } from "../../assets/icon/Icons";
+import { Heart } from "lucide-react";
 
 const DishCard = ({ currDish, dishLoading }) => {
   const [wishlistActive, setWishlistActive] = useState(false);
@@ -78,9 +79,13 @@ const DishCard = ({ currDish, dishLoading }) => {
       setWishlist(data);
 
       notifySuccess(
-        !wishlistActive
-          ? `${currDish.name} Added to wishlist ❤️`
-          : `${currDish.name} Removed from wishlist`,
+        !wishlistActive ? (
+          <>
+            {currDish.name} Added to wishlist <Heart size={16} className="inline ml-1 text-red-500 fill-current" />
+          </>
+        ) : (
+          `${currDish.name} Removed from wishlist`
+        )
       );
     } catch (error) {
       console.log("Cart Error:", error?.response?.data || error.message);

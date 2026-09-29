@@ -3,12 +3,13 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
+import { Tag, Banknote, Building2, Gift, ArrowLeft, ArrowRight } from "lucide-react";
 
 const deals = [
-  { icon: "🏷️", label: "Items At ₹99", sub: "ON SELECT ITEMS" },
-  { icon: "💸", label: "Flat ₹200 Off", sub: "USE CELEBRATIONS" },
-  { icon: "🏦", label: "Yes Bank Offer", sub: "10% OFF UPTO ₹75" },
-  { icon: "🎁", label: "Free Delivery", sub: "ON ORDERS ABOVE ₹299" },
+  { icon: <Tag size={20} className="text-orange-500" />, label: "Items At ₹99", sub: "ON SELECT ITEMS" },
+  { icon: <Banknote size={20} className="text-orange-500" />, label: "Flat ₹200 Off", sub: "USE CELEBRATIONS" },
+  { icon: <Building2 size={20} className="text-orange-500" />, label: "Yes Bank Offer", sub: "10% OFF UPTO ₹75" },
+  { icon: <Gift size={20} className="text-orange-500" />, label: "Free Delivery", sub: "ON ORDERS ABOVE ₹299" },
 ];
 
 const DealsSection = () => {
@@ -18,10 +19,10 @@ const DealsSection = () => {
         <h2 className="text-[18px] font-bold text-gray-900">Deals for you</h2>
         <div className="flex gap-2">
           <button className="deals-prev w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-sm text-gray-500 hover:bg-gray-50 transition-colors">
-            ←
+            <ArrowLeft size={16} />
           </button>
           <button className="deals-next w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-sm text-gray-500 hover:bg-gray-50 transition-colors">
-            →
+            <ArrowRight size={16} />
           </button>
         </div>
       </div>

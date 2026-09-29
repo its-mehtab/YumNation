@@ -5,6 +5,7 @@ import { useAuth } from "../../context/user/AuthContext";
 import dayjs from "dayjs";
 import { assets } from "../../assets/assets";
 import { Skeleton } from "@radix-ui/themes";
+import { Frown, Store, Utensils, Phone, Banknote, CreditCard } from "lucide-react";
 import {
   ConfirmedIcon,
   DeliveredIcon,
@@ -117,7 +118,7 @@ const OrderDetails = () => {
   if (error) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <div className="text-5xl mb-4">😕</div>
+        <Frown size={48} className="mx-auto mb-4 text-gray-400" />
         <h2 className="text-xl font-semibold text-gray-700 mb-2">{error}</h2>
         <Link
           to="/orders"
@@ -208,7 +209,7 @@ const OrderDetails = () => {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  "🏪"
+                  <Store size={24} className="text-gray-400" />
                 )}
               </div>
             </Link>
@@ -280,7 +281,7 @@ const OrderDetails = () => {
                     className="w-full h-full object-cover rounded-xl"
                   />
                 ) : (
-                  <span className="text-2xl">🍽️</span>
+                  <Utensils size={24} className="text-gray-400" />
                 )}
               </div>
               <div className="flex-1 min-w-0">
@@ -355,8 +356,8 @@ const OrderDetails = () => {
           {order.deliveryAddress?.pinCode} <br />
         </p>
         {order.deliveryAddress?.phoneNumber && (
-          <p className="text-sm text-gray-500 mt-1">
-            📞 {order.deliveryAddress.phoneNumber}
+          <p className="text-sm text-gray-500 mt-1 flex items-center gap-1.5">
+            <Phone size={14} /> {order.deliveryAddress.phoneNumber}
           </p>
         )}
       </div>
@@ -367,9 +368,9 @@ const OrderDetails = () => {
           <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">
             Payment Method
           </p>
-          <p className="text-sm font-semibold text-gray-700 capitalize">
-            {order.paymentMethod === "cod" ? "💵 Cash on Delivery" : "💳 Card"}
-          </p>
+          <div className="text-sm font-semibold text-gray-700 capitalize flex items-center gap-1.5">
+            {order.paymentMethod === "cod" ? <><Banknote size={16} /> Cash on Delivery</> : <><CreditCard size={16} /> Card</>}
+          </div>
         </div>
         <span
           className={`text-xs font-semibold px-3 py-1.5 rounded-full capitalize ${

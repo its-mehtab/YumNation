@@ -2,11 +2,16 @@ import slugify from "slugify";
 import { nanoid } from "nanoid";
 
 const slugGenerator = async function (next) {
-  if (!this.isModified("name") && !this.isModified("address.city"))
+  if (!this.isModified("name") && !this.isModified("address.city")) {
     return next();
+  }
 
   try {
-    const slug = slugify(`${this.name}-${this.address.city}`, {
+    const city = this.address?.city;
+
+    const slugSource = city ? `${this.name}-${city}` : this.name;
+
+    const slug = slugify(slugSource, {
       lower: true,
       strict: true,
     });

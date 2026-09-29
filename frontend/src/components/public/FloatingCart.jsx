@@ -10,6 +10,7 @@ import { useCart } from "../../context/user/CartContext";
 import { useAuth } from "../../context/user/AuthContext";
 import { notifyError, notifyInfo } from "../../utils/toast";
 import axios from "axios";
+import { Pizza } from "lucide-react";
 
 const CartItem = ({ item }) => {
   const [quantity, setQuantity] = useState(item.quantity);
@@ -83,7 +84,7 @@ const CartItem = ({ item }) => {
             className="w-full h-full object-cover"
           />
         ) : (
-          "🍕"
+          <Pizza size={24} className="text-orange-400" />
         )}
       </div>
 

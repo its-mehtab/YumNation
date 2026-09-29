@@ -8,6 +8,7 @@ import { Skeleton } from "@radix-ui/themes";
 import { useAddress } from "../../context/user/AddressContext";
 import CartSkeleton from "../../components/skeleton/CartSkeleton";
 import PaymentBox from "./PaymentBox";
+import { Store } from "lucide-react";
 
 const Checkout = () => {
   const [error, setError] = useState("");
@@ -67,7 +68,7 @@ const Checkout = () => {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        "🏪"
+                        <Store size={24} className="text-gray-400" />
                       )}
                     </div>
                   </Link>

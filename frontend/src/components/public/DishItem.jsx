@@ -7,6 +7,7 @@ import { WishlistIcon, WishlistIconRed } from "../../assets/icon/Icons";
 import { useWishlist } from "../../context/user/WishlistContext";
 import AddToCartModal from "./AddToCartModal";
 import { useCart } from "../../context/user/CartContext";
+import { Star } from "lucide-react";
 
 const DishItem = ({ dish, restaurant }) => {
   const [isDescTrimmed, setIsDescTrimmed] = useState(true);
@@ -72,7 +73,7 @@ const DishItem = ({ dish, restaurant }) => {
           ${dish.price}
         </p>
         <div className="flex items-center gap-1 text-xs text-gray-500 mb-2">
-          <span className="text-amber-400">★</span>
+          <Star size={14} className="text-amber-400 fill-current" />
           <span>
             {dish.rating} ({dish.totalReviews})
           </span>

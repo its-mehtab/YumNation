@@ -6,6 +6,7 @@ import { useRestaurant } from "../../context/owner/RestaurantContext";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
 import slugify from "slugify";
+import { Utensils, Image as ImageIcon, Save, CheckCircle } from "lucide-react";
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
 const mockSettings = {
@@ -108,7 +109,17 @@ const RestaurantSettings = () => {
           disabled={saving}
           className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors disabled:opacity-60"
         >
-          {saving ? "Saving..." : saved ? "✅ Saved!" : "💾 Save Changes"}
+          {saving ? (
+            "Saving..."
+          ) : saved ? (
+            <>
+              <CheckCircle size={16} /> Saved!
+            </>
+          ) : (
+            <>
+              <Save size={16} /> Save Changes
+            </>
+          )}
         </button>
       </div>
 
@@ -157,7 +168,7 @@ const RestaurantSettings = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <span className="text-3xl">🍽️</span>
+                      <Utensils size={30} className="text-gray-400" />
                     )}
                   </div>
                   <p className="text-xs text-gray-400 mt-2">Logo</p>
@@ -183,7 +194,7 @@ const RestaurantSettings = () => {
                       />
                     ) : (
                       <>
-                        <span className="text-3xl mb-1">🖼️</span>
+                        <ImageIcon size={30} className="text-gray-400 mb-1" />
                         <p className="text-xs text-gray-400 font-medium">
                           Upload Cover Image
                         </p>
@@ -496,7 +507,17 @@ const RestaurantSettings = () => {
               disabled={saving}
               className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition-colors disabled:opacity-60"
             >
-              {saving ? "Saving..." : saved ? "✅ Saved!" : "💾 Save Changes"}
+              {saving ? (
+                "Saving..."
+              ) : saved ? (
+                <>
+                  <CheckCircle size={16} /> Saved!
+                </>
+              ) : (
+                <>
+                  <Save size={16} /> Save Changes
+                </>
+              )}
             </button>
           </div>
         )}

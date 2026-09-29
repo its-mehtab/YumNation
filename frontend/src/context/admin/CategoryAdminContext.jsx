@@ -17,7 +17,7 @@ export const CategoryAdminPovider = ({ children }) => {
         withCredentials: true,
       });
 
-      // console.log(data);
+      setCategories(data);
     } catch (error) {
       console.log(
         "Admin Category Error:",
