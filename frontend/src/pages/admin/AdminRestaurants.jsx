@@ -72,7 +72,7 @@ const AdminRestaurants = () => {
             label: "Total Restaurants",
             value: restaurants.length,
             icon: Store,
-            color: "text-blue-600",
+            color: "text-[#fc8019]",
             bg: "bg-blue-50",
           },
           {
@@ -89,20 +89,20 @@ const AdminRestaurants = () => {
               .reduce((a, r) => a + r.totalOrders, 0)
               .toLocaleString(),
             icon: Package,
-            color: "text-purple-600",
+            color: "text-[#fc8019]",
             bg: "bg-purple-50",
           },
           {
             label: "Active Revenue",
             value: `$${totalRevenue.toLocaleString()}`,
             icon: DollarSign,
-            color: "text-green-600",
+            color: "text-[#fc8019]",
             bg: "bg-green-50",
           },
         ].map((s) => (
           <div
             key={s.label}
-            className={`bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] ${
+            className={`bg-white rounded-md  border border-gray-200 p-6 flex items-center justify-between transition-all hover:shadow-md ${
               s.highlight ? "ring-2 ring-yellow-400 ring-offset-2" : ""
             }`}
           >
@@ -116,27 +116,27 @@ const AdminRestaurants = () => {
                 {s.value}
               </p>
             </div>
-            <div className={`p-4 rounded-xl ${s.bg} ${s.color}`}>
-              <s.icon size={28} strokeWidth={2.5} />
+            <div className={`p-4 rounded-md ${s.bg} ${s.color}`}>
+              <s.icon size={28} strokeWidth={1.5} />
             </div>
           </div>
         ))}
       </div>
 
       {/* ── Table card ── */}
-      <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
         {/* Card header */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-6 py-5 border-b border-gray-100 gap-4">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-6 py-5 border-b border-gray-200 gap-4">
           <div className="flex items-center gap-3">
             <h2 className="text-lg font-bold text-gray-800">All Restaurants</h2>
-            <span className="text-xs bg-orange-50 text-[#fc8019] font-bold px-2.5 py-1 rounded-lg">
+            <span className="text-xs bg-[#fff2e8] text-[#fc8019] font-bold px-2.5 py-1 rounded-md">
               {filtered.length}
             </span>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
             {/* Tabs */}
-            <div className="flex bg-gray-50 rounded-xl p-1 w-full sm:w-auto overflow-x-auto border border-gray-200">
+            <div className="flex bg-gray-50 rounded-md p-1 w-full sm:w-auto overflow-x-auto border border-gray-200">
               {tabs.map((t) => {
                 const count =
                   t.key !== "all"
@@ -146,13 +146,13 @@ const AdminRestaurants = () => {
                   <button
                     key={t.key}
                     onClick={() => setFilter(t.key)}
-                    className={`px-4 py-2 rounded-lg transition-all flex items-center justify-center min-w-[100px] gap-2 text-sm font-semibold whitespace-nowrap
+                    className={`px-4 py-2 rounded-md transition-all flex items-center justify-center min-w-[100px] gap-2 text-sm font-semibold whitespace-nowrap
                       ${filter === t.key ? "bg-white text-[#fc8019] shadow-sm ring-1 ring-gray-200" : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"}`}
                   >
                     {t.label}
                     {count > 0 && (
                       <span
-                        className={`text-[10px] px-2 py-0.5 rounded-full font-bold leading-none
+                        className={`text-[10px] px-2 py-0.5 rounded-md font-bold leading-none
                         ${t.key === "pending" ? "bg-yellow-100 text-yellow-700" : "bg-gray-200 text-gray-600"}`}
                       >
                         {count}
@@ -167,12 +167,12 @@ const AdminRestaurants = () => {
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                 size={18}
-              />
+               strokeWidth={1.5} />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search restaurants..."
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all outline-none"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-md text-sm focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all outline-none"
               />
             </div>
           </div>
@@ -218,8 +218,8 @@ const AdminRestaurants = () => {
 
         {filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-              <Store size={32} className="text-gray-400" />
+            <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
+              <Store size={32} className="text-gray-400"  strokeWidth={1.5} />
             </div>
             <h3 className="text-lg font-bold text-gray-800 mb-1">
               No restaurants found

@@ -21,6 +21,8 @@ import {
   Mail,
   Phone,
 } from "lucide-react";
+import axios from "axios";
+import { useAuth } from "../../context/user/AuthContext";
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
 const mockRestaurant = {
@@ -160,9 +162,9 @@ const statusConfig = {
 const orderStatusConfig = {
   placed: "bg-indigo-50 text-indigo-700 border-indigo-200",
   confirmed: "bg-amber-50 text-amber-700 border-amber-200",
-  preparing: "bg-orange-50 text-orange-700 border-orange-200",
-  "out for delivery": "bg-blue-50 text-blue-700 border-blue-200",
-  delivered: "bg-green-50 text-green-700 border-green-200",
+  preparing: "bg-[#fff2e8] text-orange-700 border-orange-200",
+  "out for delivery": "bg-[#fff2e8] text-blue-700 border-blue-200",
+  delivered: "bg-[#fff2e8] text-green-700 border-green-200",
   cancelled: "bg-red-50 text-red-700 border-red-200",
 };
 
@@ -170,18 +172,18 @@ const Toggle = ({ checked, onChange }) => (
   <button
     type="button"
     onClick={onChange}
-    className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#fc8019]/50 ${checked ? "bg-[#fc8019]" : "bg-gray-200"}`}
+    className={`relative w-11 h-6 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[#fc8019]/50 ${checked ? "bg-[#fc8019]" : "bg-gray-200"}`}
   >
     <span
-      className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${checked ? "translate-x-5" : "translate-x-0"}`}
+      className={`absolute top-1 left-1 w-4 h-4 rounded-md bg-white shadow transition-transform duration-200 ${checked ? "translate-x-5" : "translate-x-0"}`}
     />
   </button>
 );
 
 const Card = ({ title, children, action }) => (
-  <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden h-full">
+  <div className="bg-white rounded-md  border border-gray-200 overflow-hidden h-full">
     {(title || action) && (
-      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50/50">
         {title && <h3 className="text-sm font-bold text-gray-800">{title}</h3>}
         {action}
       </div>
@@ -219,15 +221,15 @@ const StatusActions = ({
       <div className="flex items-center gap-2">
         <button
           onClick={onApprove}
-          className="flex items-center gap-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-md shadow-green-500/20"
+          className="flex items-center gap-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-bold px-4 py-2 rounded-md transition-all shadow-md shadow-green-500/20"
         >
-          <CheckCircle2 size={16} /> Approve
+          <CheckCircle2 size={16} strokeWidth={1.5} /> Approve
         </button>
         <button
           onClick={onReject}
-          className="flex items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-bold px-4 py-2 rounded-xl transition-all"
+          className="flex items-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-bold px-4 py-2 rounded-md transition-all"
         >
-          <XCircle size={16} /> Reject
+          <XCircle size={16} strokeWidth={1.5} /> Reject
         </button>
       </div>
     );
@@ -236,9 +238,9 @@ const StatusActions = ({
     return (
       <button
         onClick={onSuspend}
-        className="flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-bold px-4 py-2 rounded-xl transition-all"
+        className="flex items-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-bold px-4 py-2 rounded-md transition-all"
       >
-        <Ban size={16} /> Suspend
+        <Ban size={16} strokeWidth={1.5} /> Suspend
       </button>
     );
 
@@ -246,9 +248,9 @@ const StatusActions = ({
     return (
       <button
         onClick={onReinstate}
-        className="flex items-center gap-1.5 bg-green-50 hover:bg-green-100 text-green-700 border border-green-200 text-xs font-bold px-4 py-2 rounded-xl transition-all"
+        className="flex items-center gap-1.5 bg-[#fff2e8] hover:bg-green-100 text-green-700 border border-green-200 text-xs font-bold px-4 py-2 rounded-md transition-all"
       >
-        <CheckCircle2 size={16} /> Reinstate
+        <CheckCircle2 size={16} strokeWidth={1.5} /> Reinstate
       </button>
     );
 
@@ -266,11 +268,41 @@ const AdminRestaurantDetails = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
 
+  const { serverURL } = useAuth();
+
+  const fetchRestaurantData = async () => {
+    try {
+      const { data } = await axios.get(`${serverURL}/api/admin/restaurant`, {
+        params: {
+          restaurantId: id,
+        },
+        withCredentials: true,
+      });
+      setRestaurant(data[0]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchRestaurantDishes = async () => {
+    try {
+      const { data } = await axios.get(`${serverURL}/api/admin/dish`, {
+        params: {
+          restaurantId: id,
+        },
+        withCredentials: true,
+      });
+
+      setDishes(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    // Replace with: axios.get(`${serverURL}/api/admin/restaurant/${id}`, { withCredentials: true })
+    fetchRestaurantData();
+    fetchRestaurantDishes();
     setTimeout(() => {
-      setRestaurant(mockRestaurant);
-      setDishes(mockDishes);
       setOrders(mockOrders);
       setLoading(false);
     }, 500);
@@ -287,13 +319,13 @@ const AdminRestaurantDetails = () => {
   if (loading)
     return (
       <div className="space-y-6 animate-pulse p-2">
-        <div className="h-48 bg-gray-100 rounded-3xl" />
+        <div className="h-48 bg-gray-100 rounded-md" />
         <div className="grid grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-32 bg-gray-100 rounded-3xl" />
+            <div key={i} className="h-32 bg-gray-100 rounded-md" />
           ))}
         </div>
-        <div className="h-96 bg-gray-100 rounded-3xl" />
+        <div className="h-96 bg-gray-100 rounded-md" />
       </div>
     );
 
@@ -308,9 +340,9 @@ const AdminRestaurantDetails = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate("/admin/restaurants")}
-            className="p-2 bg-white border border-gray-200 rounded-xl text-gray-500 hover:text-[#fc8019] hover:border-[#fc8019] transition-all"
+            className="p-2 bg-white border border-gray-200 rounded-md text-gray-500 hover:text-[#fc8019] transition-all"
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={20} strokeWidth={1.5} />
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-800 tracking-tight">
@@ -323,7 +355,11 @@ const AdminRestaurantDetails = () => {
               >
                 Restaurants
               </Link>
-              <ChevronRight size={14} className="text-gray-400" />
+              <ChevronRight
+                size={14}
+                className="text-gray-400"
+                strokeWidth={1.5}
+              />
               <span className="text-[#fc8019] font-medium">
                 {restaurant.name}
               </span>
@@ -333,7 +369,7 @@ const AdminRestaurantDetails = () => {
       </div>
 
       {/* ── Hero banner ── */}
-      <div className="bg-white rounded-3xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
         <div className="h-48 bg-gradient-to-r from-orange-100 via-orange-50 to-orange-100 relative">
           {restaurant.coverImage && (
             <img
@@ -343,19 +379,19 @@ const AdminRestaurantDetails = () => {
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-          <Link
+          {/* <Link
             to={`/admin/restaurants/edit/${restaurant._id}`}
-            className="absolute top-4 right-4 flex items-center gap-2 bg-white/90 backdrop-blur-sm text-sm font-bold text-gray-700 px-4 py-2 rounded-xl shadow-sm hover:bg-white transition-all"
+            className="absolute top-4 right-4 flex items-center gap-2 bg-white/90 backdrop-blur-sm text-sm font-bold text-gray-700 px-4 py-2 rounded-md shadow-sm hover:bg-white transition-all"
           >
-            <Edit2 size={16} className="text-[#fc8019]" />
+            <Edit2 size={16} className="text-[#fc8019]" strokeWidth={1.5} />
             Edit Profile
-          </Link>
+          </Link> */}
         </div>
 
         <div className="px-8 pb-6 pt-4 flex flex-col md:flex-row items-start md:items-end justify-between gap-6 relative">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-            <div className="w-24 h-24 rounded-2xl bg-white p-2 shadow-lg -mt-16 relative z-10">
-              <div className="w-full h-full rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-400 overflow-hidden">
+            <div className="w-24 h-24 rounded-md bg-white p-2 shadow-lg -mt-16 relative z-10">
+              <div className="w-full h-full rounded-md bg-[#fff2e8] border border-orange-100 flex items-center justify-center text-orange-400 overflow-hidden">
                 {restaurant.logo ? (
                   <img
                     src={restaurant.logo}
@@ -373,12 +409,12 @@ const AdminRestaurantDetails = () => {
                   {restaurant.name}
                 </h2>
                 {restaurant.isPureVeg && (
-                  <span className="text-xs bg-green-50 text-green-700 border border-green-200 font-bold px-3 py-1 rounded-lg">
+                  <span className="text-xs bg-[#fff2e8] text-green-700 border border-green-200 font-bold px-3 py-1 rounded-md">
                     Pure Veg
                   </span>
                 )}
                 <span
-                  className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-lg border ${statusMeta.bg} ${statusMeta.text} ${statusMeta.border}`}
+                  className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-md border ${statusMeta.bg} ${statusMeta.text} ${statusMeta.border}`}
                 >
                   <StatusIcon size={14} />
                   {statusMeta.label}
@@ -386,20 +422,29 @@ const AdminRestaurantDetails = () => {
               </div>
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 font-medium">
                 <span className="flex items-center gap-1.5">
-                  <MapPin size={16} className="text-gray-400" />
+                  <MapPin
+                    size={16}
+                    className="text-gray-400"
+                    strokeWidth={1.5}
+                  />
                   {restaurant.address.city}, {restaurant.address.state}
                 </span>
-                <span className="w-1 h-1 rounded-full bg-gray-300" />
+                <span className="w-1 h-1 rounded-md bg-gray-300" />
                 <span className="flex items-center gap-1.5">
-                  <Clock size={16} className="text-gray-400" />
+                  <Clock
+                    size={16}
+                    className="text-gray-400"
+                    strokeWidth={1.5}
+                  />
                   {restaurant.deliveryTime} min
                 </span>
-                <span className="w-1 h-1 rounded-full bg-gray-300" />
+                <span className="w-1 h-1 rounded-md bg-gray-300" />
                 <span className="flex items-center gap-1.5">
                   <Star
                     size={16}
                     className="text-[#fc8019]"
                     fill="currentColor"
+                    strokeWidth={1.5}
                   />
                   <span className="text-gray-800 font-bold">
                     {restaurant.rating}
@@ -414,7 +459,7 @@ const AdminRestaurantDetails = () => {
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full md:w-auto">
             {/* Open today toggle — only relevant when active */}
             {restaurant.status === "active" && (
-              <div className="flex items-center gap-3 bg-gray-50 px-4 py-2.5 rounded-xl border border-gray-100">
+              <div className="flex items-center gap-3 bg-gray-50 px-4 py-2.5 rounded-md border border-gray-200">
                 <span className="text-sm text-gray-600 font-bold">
                   Accepting Orders
                 </span>
@@ -443,14 +488,14 @@ const AdminRestaurantDetails = () => {
             label: "Total Orders",
             value: restaurant.totalOrders.toLocaleString(),
             icon: Package,
-            color: "text-blue-600",
+            color: "text-[#fc8019]",
             bg: "bg-blue-50",
           },
           {
             label: "Total Dishes",
             value: dishes.length,
             icon: Utensils,
-            color: "text-orange-600",
+            color: "text-[#fc8019]",
             bg: "bg-orange-50",
           },
           {
@@ -464,17 +509,17 @@ const AdminRestaurantDetails = () => {
             label: "Min Order",
             value: `$${restaurant.minOrderAmount}`,
             icon: DollarSign,
-            color: "text-green-600",
+            color: "text-[#fc8019]",
             bg: "bg-green-50",
           },
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 p-6 flex flex-col justify-between transition-all hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] gap-4"
+            className="bg-white rounded-md  border border-gray-200 p-6 flex flex-col justify-between transition-all hover:shadow-md gap-4"
           >
             <div className="flex items-center justify-between">
-              <div className={`p-3 rounded-xl ${s.bg} ${s.color}`}>
-                <s.icon size={24} strokeWidth={2.5} />
+              <div className={`p-3 rounded-md ${s.bg} ${s.color}`}>
+                <s.icon size={24} strokeWidth={1.5} />
               </div>
             </div>
             <div>
@@ -488,12 +533,12 @@ const AdminRestaurantDetails = () => {
       </div>
 
       {/* ── Tabs ── */}
-      <div className="flex gap-2 bg-white border border-gray-100 p-1.5 rounded-xl w-fit shadow-sm">
+      <div className="flex gap-2 bg-white border border-gray-200 p-1.5 rounded-md w-fit shadow-sm">
         {tabs.map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-6 py-2.5 rounded-lg text-sm font-bold capitalize transition-all
+            className={`px-6 py-2.5 rounded-md text-sm font-bold capitalize transition-all
               ${activeTab === tab ? "bg-[#fc8019] text-white shadow-md shadow-orange-500/20" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}
           >
             {tab}
@@ -529,15 +574,15 @@ const AdminRestaurantDetails = () => {
             <Card title="Operating Hours">
               <div className="flex items-center justify-between py-2">
                 <div className="flex items-center gap-3 text-gray-600 font-medium text-sm">
-                  <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-500">
-                    <Clock size={20} />
+                  <div className="w-10 h-10 rounded-md bg-[#fff2e8] flex items-center justify-center text-[#fc8019]">
+                    <Clock size={20} strokeWidth={1.5} />
                   </div>
                   Monday – Sunday
                 </div>
-                <div className="bg-gray-50 px-4 py-2 rounded-lg border border-gray-100">
+                <div className="bg-gray-50 px-4 py-2 rounded-md border border-gray-200">
                   <p className="text-sm font-bold text-gray-800">
-                    {toTimeString(restaurant.openingHours.open)} –{" "}
-                    {toTimeString(restaurant.openingHours.close)}
+                    {restaurant.openingHours.open} –{" "}
+                    {restaurant.openingHours.close}
                   </p>
                 </div>
               </div>
@@ -546,13 +591,13 @@ const AdminRestaurantDetails = () => {
 
           <div className="lg:col-span-5 space-y-6">
             <Card title="Owner Details">
-              <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
-                <div className="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center text-xl font-bold text-[#fc8019]">
-                  {restaurant.owner.name.charAt(0)}
+              <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-200">
+                <div className="w-14 h-14 rounded-md bg-orange-100 flex items-center justify-center text-xl font-bold text-[#fc8019]">
+                  {restaurant.owner.firstName.charAt(0)}
                 </div>
                 <div>
                   <p className="text-base font-bold text-gray-800">
-                    {restaurant.owner.name}
+                    {restaurant.owner.firstName}
                   </p>
                   <p className="text-sm text-gray-500 font-medium">
                     Owner & Manager
@@ -573,7 +618,7 @@ const AdminRestaurantDetails = () => {
               </div>
               <Link
                 to={`/admin/customers/${restaurant.owner._id}`}
-                className="flex items-center justify-center gap-2 w-full text-sm font-bold text-[#fc8019] bg-orange-50 hover:bg-orange-100 rounded-xl py-3 transition-colors"
+                className="flex items-center justify-center gap-2 w-full text-sm font-bold text-[#fc8019] bg-[#fff2e8] hover:bg-orange-100 rounded-md py-3 transition-colors"
               >
                 <Eye size={16} /> View Full Profile
               </Link>
@@ -604,8 +649,8 @@ const AdminRestaurantDetails = () => {
                   label="Pure Veg Only"
                   value={
                     restaurant.isPureVeg ? (
-                      <span className="flex items-center gap-1.5 text-green-700 bg-green-50 px-2 py-1 rounded-md text-xs font-bold w-fit ml-auto">
-                        <CheckCircle2 size={14} /> Yes
+                      <span className="flex items-center gap-1.5 text-green-700 bg-[#fff2e8] px-2 py-1 rounded-md text-xs font-bold w-fit ml-auto">
+                        <CheckCircle2 size={14} strokeWidth={1.5} /> Yes
                       </span>
                     ) : (
                       "No"
@@ -620,8 +665,8 @@ const AdminRestaurantDetails = () => {
 
       {/* ── Dishes tab ── */}
       {activeTab === "dishes" && (
-        <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
-          <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+        <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
+          <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
             <h3 className="text-lg font-bold text-gray-800">
               Menu Items{" "}
               <span className="text-gray-400 text-sm font-medium ml-2">
@@ -632,8 +677,8 @@ const AdminRestaurantDetails = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
               <thead className="bg-gray-50/50 text-gray-500">
-                <tr className="border-b border-gray-100">
-                  {["Dish", "Price", "Stock", "Type", "Status", "Actions"].map(
+                <tr className="border-b border-gray-200">
+                  {["Dish", "Price", "Type", "Status", "Actions"].map(
                     (h) => (
                       <th
                         key={h}
@@ -653,8 +698,8 @@ const AdminRestaurantDetails = () => {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-500">
-                          <Utensils size={18} />
+                        <div className="w-10 h-10 rounded-md bg-[#fff2e8] border border-orange-100 flex items-center justify-center text-[#fc8019]">
+                          <Utensils size={18} strokeWidth={1.5} />
                         </div>
                         <span className="font-bold text-gray-800 text-sm">
                           {dish.name}
@@ -666,26 +711,19 @@ const AdminRestaurantDetails = () => {
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className={`font-bold ${dish.stock > 0 ? "text-gray-700" : "text-red-500"}`}
-                      >
-                        {dish.stock} {dish.stock === 0 && " (Out)"}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`text-xs font-bold px-3 py-1 rounded-lg border ${dish.foodType === "veg" ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"}`}
+                        className={`text-xs font-bold px-3 py-1 rounded-md border ${dish.foodType === "veg" ? "bg-[#fff2e8] text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"}`}
                       >
                         {dish.foodType === "veg" ? "Veg" : "Non-Veg"}
                       </span>
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className={`flex items-center gap-1.5 w-fit text-xs font-bold px-3 py-1 rounded-lg border ${dish.isAvailable ? "bg-blue-50 text-blue-700 border-blue-200" : "bg-gray-100 text-gray-500 border-gray-200"}`}
+                        className={`flex items-center gap-1.5 w-fit text-xs font-bold px-3 py-1 rounded-md border ${dish.isAvailable ? "bg-[#fff2e8] text-blue-700 border-blue-200" : "bg-gray-100 text-gray-500 border-gray-200"}`}
                       >
                         {dish.isAvailable ? (
-                          <CheckCircle2 size={12} />
+                          <CheckCircle2 size={12} strokeWidth={1.5} />
                         ) : (
-                          <Ban size={12} />
+                          <Ban size={12} strokeWidth={1.5} />
                         )}
                         {dish.isAvailable ? "Available" : "Unavailable"}
                       </span>
@@ -694,7 +732,7 @@ const AdminRestaurantDetails = () => {
                     <td className="px-6 py-4">
                       <Link
                         to={`/admin/dishes/${dish._id}`}
-                        className="p-2 inline-flex items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-400 hover:text-blue-600 hover:border-blue-400 shadow-sm transition-all opacity-0 group-hover:opacity-100"
+                        className="p-2 inline-flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-400 hover:text-[#fc8019] hover:border-blue-400 shadow-sm transition-all opacity-0 group-hover:opacity-100"
                         title="View Dish"
                       >
                         <Eye size={16} />
@@ -707,8 +745,12 @@ const AdminRestaurantDetails = () => {
           </div>
           {dishes.length === 0 && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                <Utensils size={32} className="text-gray-400" />
+              <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
+                <Utensils
+                  size={32}
+                  className="text-gray-400"
+                  strokeWidth={1.5}
+                />
               </div>
               <h3 className="text-lg font-bold text-gray-800 mb-1">
                 No dishes added yet
@@ -723,8 +765,8 @@ const AdminRestaurantDetails = () => {
 
       {/* ── Orders tab ── */}
       {activeTab === "orders" && (
-        <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
-          <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+        <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
+          <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
             <h3 className="text-lg font-bold text-gray-800">
               Recent Orders{" "}
               <span className="text-gray-400 text-sm font-medium ml-2">
@@ -735,7 +777,7 @@ const AdminRestaurantDetails = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
               <thead className="bg-gray-50/50 text-gray-500">
-                <tr className="border-b border-gray-100">
+                <tr className="border-b border-gray-200">
                   {[
                     "Order ID",
                     "Customer",
@@ -772,7 +814,7 @@ const AdminRestaurantDetails = () => {
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className={`text-[11px] font-bold px-3 py-1 rounded-lg border capitalize ${orderStatusConfig[order.orderStatus]}`}
+                        className={`text-[11px] font-bold px-3 py-1 rounded-md border capitalize ${orderStatusConfig[order.orderStatus]}`}
                       >
                         {order.orderStatus}
                       </span>
@@ -786,7 +828,7 @@ const AdminRestaurantDetails = () => {
                     <td className="px-6 py-4">
                       <Link
                         to={`/admin/orders/${order._id}`}
-                        className="p-2 inline-flex items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-400 hover:text-blue-600 hover:border-blue-400 shadow-sm transition-all opacity-0 group-hover:opacity-100"
+                        className="p-2 inline-flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-400 hover:text-[#fc8019] hover:border-blue-400 shadow-sm transition-all opacity-0 group-hover:opacity-100"
                         title="View Order"
                       >
                         <Eye size={16} />
@@ -799,7 +841,7 @@ const AdminRestaurantDetails = () => {
           </div>
           {orders.length === 0 && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+              <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
                 <ArchiveX size={32} className="text-gray-400" />
               </div>
               <h3 className="text-lg font-bold text-gray-800 mb-1">

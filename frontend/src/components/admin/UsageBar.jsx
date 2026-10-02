@@ -7,9 +7,9 @@ const UsageBar = ({ uses, maxUses }) => {
       <span className="text-xs text-gray-600">
         {uses} / {maxUses ?? "∞"}
       </span>
-      <div className="mt-1 h-1 w-20 bg-gray-100 rounded-full overflow-hidden">
+      <div className="mt-1 h-1 w-20 bg-gray-100 rounded-md overflow-hidden">
         <div
-          className="h-full rounded-full bg-[#fc8019] transition-all"
+          className="h-full rounded-md bg-[#fc8019] transition-all"
           style={{ width: `${pct}%` }}
         />
       </div>

@@ -79,7 +79,7 @@ const paymentStatusConfig = {
 // ── Status Badge ─────────────────────────────────────────────────────────────
 const Badge = ({ label, config }) => (
   <span
-    className={`text-xs font-bold px-2.5 py-1 rounded-lg capitalize border ${config.bg} ${config.color} ${config.border}`}
+    className={`text-xs font-bold px-2.5 py-1 rounded-md capitalize border ${config.bg} ${config.color} ${config.border}`}
   >
     {label}
   </span>
@@ -91,7 +91,7 @@ const StatusDropdown = ({ orderId, current, onChange }) => (
     <select
       value={current}
       onChange={(e) => onChange(orderId, e.target.value)}
-      className={`appearance-none text-xs font-bold px-3 py-1.5 pr-8 rounded-lg border outline-none cursor-pointer capitalize transition-colors
+      className={`appearance-none text-xs font-bold px-3 py-1.5 pr-8 rounded-md border outline-none cursor-pointer capitalize transition-colors
         ${statusConfig[current]?.bg} ${statusConfig[current]?.color} ${statusConfig[current]?.border} focus:ring-2 focus:ring-opacity-50 focus:ring-${statusConfig[current]?.color.split("-")[1]}-400`}
     >
       {STATUS_OPTIONS.filter((s) => s !== "all").map((s) => (
@@ -184,8 +184,8 @@ const AdminOrders = () => {
             label: "Total Orders",
             value: stats.total,
             icon: Package,
-            color: "text-blue-500",
-            bg: "bg-blue-50/50",
+            color: "text-[#fc8019]",
+            bg: "bg-[#fff2e8]",
           },
           {
             label: "New Orders",
@@ -198,31 +198,31 @@ const AdminOrders = () => {
             label: "Preparing",
             value: stats.preparing,
             icon: ChefHat,
-            color: "text-orange-500",
-            bg: "bg-orange-50/50",
+            color: "text-[#fc8019]",
+            bg: "bg-[#fff2e8]",
           },
           {
             label: "Delivered",
             value: stats.delivered,
             icon: CheckCircle,
-            color: "text-emerald-500",
-            bg: "bg-emerald-50/50",
+            color: "text-[#fc8019]",
+            bg: "bg-[#fff2e8]",
           },
           {
             label: "Revenue",
             value: `$${stats.revenue?.toFixed(2)}`,
             icon: DollarSign,
-            color: "text-purple-500",
-            bg: "bg-purple-50/50",
+            color: "text-[#fc8019]",
+            bg: "bg-[#fff2e8]",
           },
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-2xl shadow-[0px_2px_8px_0px_rgba(0,0,0,0.02)] border border-gray-100 p-5 flex flex-col justify-between transition-all hover:shadow-[0px_4px_16px_0px_rgba(0,0,0,0.04)] gap-4"
+            className="bg-white rounded-md  border border-gray-200 p-5 flex flex-col justify-between transition-all hover:shadow-md gap-4"
           >
             <div className="flex items-center justify-between">
-              <div className={`p-2.5 rounded-xl ${s.bg} ${s.color}`}>
-                <s.icon size={18} strokeWidth={2} />
+              <div className={`p-2.5 rounded-md ${s.bg} ${s.color}`}>
+                <s.icon size={18} strokeWidth={1.5} />
               </div>
             </div>
             <div>
@@ -236,7 +236,7 @@ const AdminOrders = () => {
       </div>
 
       {/* ── Table card ── */}
-      <div className="bg-white rounded-2xl shadow-[0px_2px_8px_0px_rgba(0,0,0,0.02)] border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
         {/* ── Card header ── */}
         <div className="px-6 py-5 border-b border-gray-50 space-y-4">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
@@ -247,7 +247,7 @@ const AdminOrders = () => {
                 <Search
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                   size={16}
-                />
+                 strokeWidth={1.5} />
                 <input
                   value={filter.orderSearch}
                   onChange={(e) =>
@@ -257,7 +257,7 @@ const AdminOrders = () => {
                     }))
                   }
                   placeholder="Search order ID or name..."
-                  className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all outline-none"
+                  className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-md text-sm focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all outline-none"
                 />
               </div>
               {/* Sort */}
@@ -269,7 +269,7 @@ const AdminOrders = () => {
                     sortBy: e.target.value,
                   }))
                 }
-                className="w-full sm:w-auto bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm text-gray-600 outline-none focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all"
+                className="w-full sm:w-auto bg-gray-50 border border-gray-200 rounded-md px-4 py-2 text-sm text-gray-600 outline-none focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all"
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
@@ -290,7 +290,7 @@ const AdminOrders = () => {
                     orderStatus: s,
                   }))
                 }
-                className={`text-xs font-bold px-4 py-2 rounded-lg capitalize transition-all ${
+                className={`text-xs font-bold px-4 py-2 rounded-md capitalize transition-all ${
                   filter.orderStatus === s
                     ? "bg-[#fc8019] text-white shadow-md shadow-orange-500/20"
                     : "bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200"
@@ -311,7 +311,7 @@ const AdminOrders = () => {
         {/* ── Table ── */}
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="bg-gray-50/50 text-gray-500 border-b border-gray-100">
+            <thead className="bg-gray-50/50 text-gray-500 border-b border-gray-200">
               <tr>
                 <th className="px-6 py-4 font-semibold uppercase tracking-wider text-xs">
                   Order ID
@@ -371,7 +371,7 @@ const AdminOrders = () => {
                       {order.items[0].name}
                     </p>
                     {order.items.length > 1 && (
-                      <p className="text-xs text-[#fc8019] font-bold mt-1 bg-orange-50 px-2 py-0.5 rounded w-fit">
+                      <p className="text-xs text-[#fc8019] font-bold mt-1 bg-[#fff2e8] px-2 py-0.5 rounded w-fit">
                         +{order.items.length - 1} more items
                       </p>
                     )}
@@ -423,7 +423,7 @@ const AdminOrders = () => {
                   <td className="px-4 py-4 text-right">
                     <Link
                       to={`/admin/orders/${order._id}`}
-                      className="p-2 inline-flex items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-400 hover:text-blue-600 hover:border-blue-400 shadow-sm transition-all opacity-0 group-hover:opacity-100"
+                      className="p-2 inline-flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-400 hover:text-[#fc8019] hover:border-blue-400 shadow-sm transition-all opacity-0 group-hover:opacity-100"
                       title="View Order Details"
                     >
                       <Eye size={16} />
@@ -438,7 +438,7 @@ const AdminOrders = () => {
         {/* Empty state */}
         {(!orders.items || orders.items.length === 0) && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+            <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
               <PackageOpen size={32} className="text-gray-400" />
             </div>
             <h3 className="text-lg font-bold text-gray-800 mb-1">

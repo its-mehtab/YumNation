@@ -1,500 +1,364 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import dayjs from "dayjs";
 import {
-  Package,
-  Banknote,
-  Utensils,
-  Star,
+  ArrowUpRight,
+  ArrowDownRight,
   CheckCircle,
   Clock,
-  Circle,
-  Mailbox,
-  Plus,
-  Settings,
+  XCircle,
+  HelpCircle,
+  MoreHorizontal,
+  User,
+  CheckCircle2,
 } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 
-// ── Mock data ─────────────────────────────────────────────────────────────────
-const restaurant = {
-  name: "Pizza Palace",
-  logo: null,
-  isOpen: true,
-  status: "active",
-  rating: 4.5,
-  totalReviews: 128,
-  deliveryTime: 35,
-};
-
-const stats = [
-  {
-    label: "Today's Orders",
-    value: "24",
-    change: "+6 vs yesterday",
-    up: true,
-    icon: <Package size={30} className="text-indigo-400" />,
-  },
-  {
-    label: "Today's Revenue",
-    value: "$348",
-    change: "+$82 vs yesterday",
-    up: true,
-    icon: <Banknote size={30} className="text-green-400" />,
-  },
-  {
-    label: "Active Dishes",
-    value: "18",
-    change: "3 unavailable",
-    up: null,
-    icon: <Utensils size={30} className="text-orange-400" />,
-  },
-  {
-    label: "Avg Rating",
-    value: "4.5",
-    change: "128 reviews",
-    up: true,
-    icon: <Star size={30} className="text-yellow-400" />,
-  },
-];
-
-const recentOrders = [
-  {
-    _id: "o1",
-    items: ["Margherita Pizza", "Garlic Bread"],
-    total: 22.5,
-    status: "placed",
-    time: "2026-03-12T10:05:00Z",
-    customer: "John D.",
-  },
-  {
-    _id: "o2",
-    items: ["Pepperoni Pizza"],
-    total: 15.0,
-    status: "preparing",
-    time: "2026-03-12T09:48:00Z",
-    customer: "Priya S.",
-  },
-  {
-    _id: "o3",
-    items: ["BBQ Chicken Pizza", "Coke"],
-    total: 21.0,
-    status: "out for delivery",
-    time: "2026-03-12T09:30:00Z",
-    customer: "Ravi K.",
-  },
-  {
-    _id: "o4",
-    items: ["Margherita Pizza"],
-    total: 12.0,
-    status: "delivered",
-    time: "2026-03-12T09:10:00Z",
-    customer: "Sara M.",
-  },
-  {
-    _id: "o5",
-    items: ["Garlic Bread", "Pasta"],
-    total: 17.5,
-    status: "delivered",
-    time: "2026-03-12T08:55:00Z",
-    customer: "Ali H.",
-  },
-];
-
-const topDishes = [
-  { name: "Margherita Pizza", orders: 84, revenue: "$1,008", trend: "up" },
-  { name: "Pepperoni Pizza", orders: 61, revenue: "$915", trend: "up" },
-  { name: "Garlic Bread", orders: 55, revenue: "$275", trend: "down" },
-  { name: "BBQ Chicken Pizza", orders: 42, revenue: "$756", trend: "up" },
-  { name: "Pasta Arrabiata", orders: 30, revenue: "$390", trend: "down" },
-];
-
-const weekData = [
-  { day: "Mon", orders: 18 },
-  { day: "Tue", orders: 24 },
-  { day: "Wed", orders: 15 },
-  { day: "Thu", orders: 30 },
-  { day: "Fri", orders: 42 },
-  { day: "Sat", orders: 38 },
-  { day: "Sun", orders: 24 },
-];
-
-// ── Status config ─────────────────────────────────────────────────────────────
-const statusConfig = {
-  placed: { label: "Placed", color: "text-indigo-500", bg: "bg-indigo-50" },
-  confirmed: {
-    label: "Confirmed",
-    color: "text-yellow-500",
-    bg: "bg-yellow-50",
-  },
-  preparing: {
-    label: "Preparing",
-    color: "text-[#fc8019]",
-    bg: "bg-orange-50",
-  },
-  "out for delivery": {
-    label: "Out for Delivery",
-    color: "text-blue-500",
-    bg: "bg-blue-50",
-  },
-  delivered: { label: "Delivered", color: "text-green-600", bg: "bg-green-50" },
-  cancelled: { label: "Cancelled", color: "text-red-400", bg: "bg-red-50" },
-};
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-const Toggle = ({ checked, onChange }) => (
-  <button
-    type="button"
-    onClick={onChange}
-    className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${checked ? "bg-[#fc8019]" : "bg-gray-200"}`}
-  >
-    <span
-      className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${checked ? "translate-x-5" : "translate-x-0"}`}
-    />
-  </button>
-);
-
-const Card = ({ children, className = "" }) => (
-  <div
-    className={`bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] ${className}`}
-  >
-    {children}
-  </div>
-);
-
-const maxOrders = Math.max(...weekData.map((d) => d.orders));
-
-// ── Main ──────────────────────────────────────────────────────────────────────
 const RestaurantDashboard = () => {
-  const [isOpen, setIsOpen] = useState(restaurant.isOpen);
-  const [orderFilter, setOrderFilter] = useState("all");
+  // Chart Data
+  const barData = [
+    { name: "Mon", income: 400, expense: 240 },
+    { name: "Tue", income: 300, expense: 139 },
+    { name: "Wed", income: 200, expense: 980 },
+    { name: "Thu", income: 278, expense: 390 },
+    { name: "Fri", income: 189, expense: 480 },
+    { name: "Sat", income: 239, expense: 380 },
+    { name: "Sun", income: 349, expense: 430 },
+  ];
 
-  const filteredOrders =
-    orderFilter === "all"
-      ? recentOrders
-      : recentOrders.filter((o) => o.status === orderFilter);
+  const areaData = [
+    { name: "Mon", thisWeek: 40, lastWeek: 75 },
+    { name: "Tue", thisWeek: 55, lastWeek: 25 },
+    { name: "Wed", thisWeek: 50, lastWeek: 60 },
+    { name: "Thu", thisWeek: 40, lastWeek: 25 },
+    { name: "Fri", thisWeek: 75, lastWeek: 15 },
+    { name: "Sat", thisWeek: 80, lastWeek: 70 },
+    { name: "Sun", thisWeek: 40, lastWeek: 75 },
+  ];
+
+  const pieData = [
+    { name: "Pizza (27%)", value: 763, color: "#ea6a12" },
+    { name: "Burger (50%)", value: 763, color: "#ef4444" },
+    { name: "Drinks (23%)", value: 69, color: "#10b981" },
+  ];
+
+  const gaugeData = [
+    { name: "Completed", value: 85, color: "#3b82f6" },
+    { name: "Remaining", value: 15, color: "#dbeafe" },
+  ];
 
   return (
-    <div className="space-y-5">
-      {/* ── Welcome header ── */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-2xl">
-            {restaurant.logo ? (
-              <img
-                src={restaurant.logo}
-                alt=""
-                className="w-full h-full object-cover rounded-xl"
-              />
-            ) : (
-              <Utensils size={24} />
-            )}
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-gray-700">
-              {restaurant.name}
-            </h1>
-            <div className="flex items-center gap-3 mt-0.5">
-              <span className="text-xs text-gray-400 flex items-center">
-                <Star size={12} className="inline text-yellow-500 mr-1" />{" "}
-                {restaurant.rating} · {restaurant.totalReviews} reviews ·
-                <Clock
-                  size={12}
-                  className="inline text-gray-400 ml-1 mr-1"
-                />{" "}
-                {restaurant.deliveryTime} min
-              </span>
-              {restaurant.status === "active" ? (
-                <span className="text-xs bg-green-50 text-green-600 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
-                  Approved <CheckCircle size={12} />
-                </span>
-              ) : (
-                <span className="text-xs bg-yellow-50 text-yellow-600 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
-                  Pending Review <Clock size={12} />
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Open / closed toggle */}
-        <div className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)]">
-          <div>
-            <p className="text-xs font-semibold text-gray-700 flex items-center gap-1.5">
-              {isOpen ? (
-                <>
-                  <Circle size={10} className="fill-green-500 text-green-500" />{" "}
-                  Open for Orders
-                </>
-              ) : (
-                <>
-                  <Circle size={10} className="fill-red-500 text-red-500" />{" "}
-                  Closed
-                </>
-              )}
-            </p>
-            <p className="text-xs text-gray-400 mt-0.5">
-              {isOpen ? "Customers can order now" : "No new orders accepted"}
-            </p>
-          </div>
-          <Toggle checked={isOpen} onChange={() => setIsOpen((p) => !p)} />
-        </div>
-      </div>
-
-      {/* ── Stats ── */}
-      <div className="grid grid-cols-4 gap-4">
-        {stats.map((s) => (
-          <Card
-            key={s.label}
-            className="border-l-4 border-l-[#fc8019] px-5 py-4 flex items-center justify-between"
-          >
+    <div className="space-y-6 max-w-[1400px] mx-auto bg-white">
+      {/* Grid Layout matching FoodDesk */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Column (Main Stats & Charts) - 8 cols */}
+        <div className="lg:col-span-8 space-y-6">
+          {/* Top Income Card */}
+          <div className="bg-[#fff9f4] border border-[#f5d0b5] rounded-md p-6 flex flex-wrap items-center justify-between gap-6">
             <div>
-              <p className="text-xs text-gray-400 font-medium mb-1">
-                {s.label}
+              <p className="text-[13px] font-medium text-gray-500 mb-1">
+                Total Income
               </p>
-              <p className="text-2xl font-bold text-gray-700">{s.value}</p>
-              <p
-                className={`text-xs font-medium mt-1.5 ${s.up === true ? "text-green-500" : s.up === false ? "text-red-400" : "text-gray-400"}`}
-              >
-                {s.up === true ? "↑" : s.up === false ? "↓" : ""} {s.change}
-              </p>
+              <h2 className="text-[28px] font-bold text-[#ea6a12] leading-none">
+                $4,890.00
+              </h2>
             </div>
-            <div>{s.icon}</div>
-          </Card>
-        ))}
-      </div>
 
-      {/* ── Middle row ── */}
-      <div className="grid grid-cols-12 gap-5">
-        {/* Bar chart — weekly orders */}
-        <Card className="col-span-7 p-5">
-          <div className="flex items-center justify-between mb-5">
+            <div className="h-10 w-px bg-gray-200 hidden md:block"></div>
+
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-                Weekly Orders
+              <p className="text-[13px] font-medium text-gray-500 mb-1">
+                Income
               </p>
-              <p className="text-2xl font-bold text-gray-700 mt-1">
-                191{" "}
-                <span className="text-sm font-normal text-gray-400">
-                  this week
-                </span>
+              <h3 className="text-[19px] font-bold text-gray-800 leading-none mb-1">
+                $1,345.00
+              </h3>
+              <p className="text-[11px] font-semibold text-green-500 flex items-center gap-0.5">
+                <ArrowUpRight size={12} strokeWidth={2.5} /> +15%
               </p>
             </div>
-            <span className="text-xs bg-green-50 text-green-600 font-semibold px-3 py-1.5 rounded-full">
-              ↑ 12% vs last week
-            </span>
+
+            <div className="h-10 w-px bg-gray-200 hidden md:block"></div>
+
+            <div>
+              <p className="text-[13px] font-medium text-gray-500 mb-1">
+                Expense
+              </p>
+              <h3 className="text-[19px] font-bold text-gray-800 leading-none mb-1">
+                $890.00
+              </h3>
+              <p className="text-[11px] font-semibold text-red-500 flex items-center gap-0.5">
+                <ArrowDownRight size={12} strokeWidth={2.5} /> -10%
+              </p>
+            </div>
+
+            <button className="bg-[#ea6a12] hover:bg-[#d45a0b] text-white text-sm font-medium px-5 py-2.5 rounded-md transition-colors ml-auto shadow-sm">
+              Withdraw $
+            </button>
           </div>
-          <div className="flex items-end gap-3 h-32">
-            {weekData.map((d) => {
-              const height = Math.round((d.orders / maxOrders) * 100);
-              const isToday = d.day === "Thu";
-              return (
-                <div
-                  key={d.day}
-                  className="flex-1 flex flex-col items-center gap-2"
+
+          {/* Charts Row */}
+          <div className="grid grid-cols-1 gap-6">
+            {/* Bar Chart */}
+            <div className="bg-white border border-[#fca5a5] rounded-md p-5 h-56 shadow-sm hover:shadow-md transition-shadow [&_.recharts-surface]:outline-none">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={barData}
+                  margin={{ top: 10, right: 0, left: -20, bottom: 0 }}
+                  barCategoryGap="15%"
+                  barSize={60}
                 >
-                  <span className="text-xs font-semibold text-gray-500">
-                    {d.orders}
-                  </span>
-                  <div
-                    className="w-full rounded-t-lg transition-all duration-500"
-                    style={{
-                      height: `${height}%`,
-                      background: isToday ? "#fc8019" : "#fee2c8",
-                    }}
+                  <Tooltip cursor={{ fill: "#fff2e8" }} contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }} />
+                  <Bar
+                    dataKey="income"
+                    fill="#ea6a12"
+                    radius={[4, 4, 0, 0]}
                   />
-                  <span
-                    className={`text-xs font-medium ${isToday ? "text-[#fc8019]" : "text-gray-400"}`}
-                  >
-                    {d.day}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </Card>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
 
-        {/* Top dishes */}
-        <Card className="col-span-5 p-5">
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-              Top Dishes
-            </p>
-            <Link
-              to="/owner/dishes"
-              className="text-xs text-[#fc8019] font-semibold hover:underline"
-            >
-              View all →
-            </Link>
-          </div>
-          <div className="space-y-3">
-            {topDishes.map((dish, i) => (
-              <div key={dish.name} className="flex items-center gap-3">
-                <span className="text-xs font-bold text-gray-300 w-4">
-                  {i + 1}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-semibold text-gray-700 truncate">
-                    {dish.name}
-                  </p>
-                  <p className="text-xs text-gray-400">{dish.orders} orders</p>
+            </div>
+
+          {/* Order Rate Row */}
+          <div className="bg-white border border-gray-200 rounded-md p-6 shadow-sm transition-colors">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-base font-bold text-gray-800">Order Rate</h3>
+              <div className="flex items-center gap-6">
+                <div className="flex gap-4">
+                  <div>
+                    <p className="text-[11px] font-semibold text-gray-500 flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full border-2 border-[#ea6a12]"></span>{" "}
+                      This Week
+                    </p>
+                    <p className="text-[13px] font-bold text-gray-800 mt-0.5 ml-4">
+                      324
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-semibold text-gray-500 flex items-center gap-1.5">
+                      <span className="w-2.5 h-2.5 rounded-full border-2 border-red-500"></span>{" "}
+                      Last Week
+                    </p>
+                    <p className="text-[13px] font-bold text-gray-800 mt-0.5 ml-4">
+                      310
+                    </p>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs font-bold text-gray-700">
-                    {dish.revenue}
+                <select className="border border-gray-200 rounded-md px-3 py-1.5 text-xs text-gray-600 outline-none">
+                  <option>Week</option>
+                  <option>Month</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-6 mb-6">
+              <div className="flex items-center gap-3 bg-[#ea6a12] text-white py-2 px-3 rounded-md min-w-[140px]">
+                <div className="border border-white/40 p-1 rounded-md">
+                  <User size={18} strokeWidth={1.5} />
+                </div>
+                <div>
+                  <p className="text-[10px] text-white/90 leading-none mb-1">
+                    Order Total
                   </p>
-                  <p
-                    className={`text-xs font-semibold ${dish.trend === "up" ? "text-green-500" : "text-red-400"}`}
-                  >
-                    {dish.trend === "up" ? "↑" : "↓"}
+                  <p className="text-sm font-bold leading-none">1.307</p>
+                </div>
+              </div>
+
+              <div className="border border-gray-200 rounded-md py-2 px-4 flex-1 max-w-[200px]">
+                <div className="flex justify-between text-[11px] text-gray-500 mb-1.5">
+                  <span>Target</span>
+                  <span className="font-bold text-gray-700">1.500</span>
+                </div>
+                <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-[#ea6a12] w-[85%] rounded-full"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Area Chart */}
+            <div className="h-[200px] w-full mt-4 [&_.recharts-surface]:outline-none">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart
+                  data={areaData}
+                  margin={{ top: 10, right: 0, left: -25, bottom: 0 }}
+                >
+                  <Tooltip contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }} />
+                  <defs>
+                    <linearGradient
+                      id="colorThisWeek"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient
+                      id="colorLastWeek"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop offset="5%" stopColor="#ef4444" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis
+                    dataKey="name"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 11, fill: "#9ca3af" }}
+                    dy={10}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 11, fill: "#9ca3af" }}
+                  />
+                  <CartesianGrid vertical={false} stroke="#f3f4f6" />
+                  <Area
+                    type="monotone"
+                    dataKey="thisWeek"
+                    stroke="#10b981"
+                    strokeWidth={2}
+                    fillOpacity={1}
+                    fill="url(#colorThisWeek)"
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="lastWeek"
+                    stroke="#ef4444"
+                    strokeWidth={2}
+                    fillOpacity={1}
+                    fill="url(#colorLastWeek)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column (Sidebar Stats) - 4 cols */}
+        <div className="lg:col-span-4 space-y-6">
+          {/* Status Cards (Individual rounded-md cards with thin borders) */}
+          <div className="grid grid-cols-1 gap-4">
+            {[
+              {
+                label: "Total Order Complete",
+                value: "2.678",
+                icon: CheckCircle2,
+                color: "text-[#ea6a12]",
+                border: "border-gray-200",
+              },
+              {
+                label: "Total Order Delivered",
+                value: "1.234",
+                icon: CheckCircle2,
+                color: "text-[#ea6a12]",
+                border: "border-gray-200",
+              },
+              {
+                label: "Total Order Canceled",
+                value: "123",
+                icon: XCircle,
+                color: "text-[#ea6a12]",
+                border: "border-gray-200",
+              },
+              {
+                label: "Order Pending",
+                value: "432",
+                icon: HelpCircle,
+                color: "text-[#ea6a12]",
+                border: "border-gray-200",
+              },
+            ].map((stat, idx) => (
+              <div
+                key={idx}
+                className={`bg-white border ${stat.border} rounded-md p-4 flex items-center gap-4 shadow-sm transition-colors`}
+              >
+                <div className="p-2 border border-gray-100 rounded-md text-[#ea6a12]">
+                  <stat.icon size={20} strokeWidth={1.5} />
+                </div>
+                <div>
+                  <p className="text-[11px] text-gray-500 mb-0.5">
+                    {stat.label}
+                  </p>
+                  <p className="text-base font-bold text-gray-800 leading-none">
+                    {stat.value}
                   </p>
                 </div>
               </div>
             ))}
           </div>
-        </Card>
-      </div>
 
-      {/* ── Recent orders ── */}
-      <Card>
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 flex-wrap gap-3">
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-            Recent Orders
-          </p>
-          <div className="flex items-center gap-2">
-            {/* Filter tabs */}
-            <div className="flex bg-gray-100 rounded-lg p-1 text-xs font-semibold">
-              {["all", "placed", "preparing", "delivered"].map((f) => (
-                <button
-                  key={f}
-                  onClick={() => setOrderFilter(f)}
-                  className={`px-3 py-1.5 rounded-md capitalize transition-all ${orderFilter === f ? "bg-white text-[#fc8019] shadow-sm" : "text-gray-400"}`}
+          {/* Popular Food Donut Chart */}
+          <div className="bg-white border border-gray-200 rounded-md shadow-sm p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-base font-bold text-gray-800">
+                Popular Food
+              </h3>
+              <MoreHorizontal
+                className="text-gray-400 cursor-pointer"
+                size={20}
+              />
+            </div>
+
+            <div className="h-[200px] relative mb-6 [&_.recharts-surface]:outline-none">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Tooltip contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }} />
+                  <Pie
+                    data={pieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={90}
+                    paddingAngle={0}
+                    dataKey="value"
+                    stroke="none"
+                  >
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="space-y-3">
+              <h4 className="text-[11px] font-bold text-gray-800">Legend</h4>
+              {pieData.map((d, i) => (
+                <div
+                  key={i}
+                  className="flex justify-between items-center text-[11px]"
                 >
-                  {f}
-                </button>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="w-3 h-3 rounded-md"
+                      style={{ backgroundColor: d.color }}
+                    ></span>
+                    <span className="text-gray-500">{d.name}</span>
+                  </div>
+                  <span className="font-bold text-gray-800">{d.value}</span>
+                </div>
               ))}
             </div>
-            <Link
-              to="/restaurant/orders"
-              className="text-xs text-[#fc8019] font-semibold border border-orange-200 px-3 py-1.5 rounded-lg hover:bg-orange-50 transition-colors"
-            >
-              View All →
-            </Link>
           </div>
         </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-50">
-                {[
-                  "Order",
-                  "Customer",
-                  "Items",
-                  "Total",
-                  "Status",
-                  "Time",
-                  "Action",
-                ].map((h) => (
-                  <th
-                    key={h}
-                    className="text-left px-5 py-3 text-xs font-semibold text-gray-400 uppercase tracking-wider"
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {filteredOrders.map((order) => {
-                const cfg = statusConfig[order.status];
-                return (
-                  <tr
-                    key={order._id}
-                    className="hover:bg-gray-50 transition-colors"
-                  >
-                    <td className="px-5 py-3.5 font-mono text-xs text-gray-400">
-                      #{order._id.toUpperCase()}
-                    </td>
-                    <td className="px-5 py-3.5 font-medium text-gray-700">
-                      {order.customer}
-                    </td>
-                    <td className="px-5 py-3.5 text-gray-500 text-xs max-w-36 truncate">
-                      {order.items.join(", ")}
-                    </td>
-                    <td className="px-5 py-3.5 font-bold text-[#fc8019]">
-                      ${order.total.toFixed(2)}
-                    </td>
-                    <td className="px-5 py-3.5">
-                      <span
-                        className={`text-xs font-semibold px-2.5 py-1 rounded-full capitalize ${cfg.bg} ${cfg.color}`}
-                      >
-                        {cfg.label}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3.5 text-xs text-gray-400 whitespace-nowrap">
-                      {dayjs(order.time).format("h:mm A")}
-                    </td>
-                    <td className="px-5 py-3.5">
-                      <Link
-                        to={`/restaurant/orders/${order._id}`}
-                        className="text-xs text-[#fc8019] font-semibold hover:underline"
-                      >
-                        View →
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-
-          {filteredOrders.length === 0 && (
-            <div className="text-center py-12 text-gray-400">
-              <div className="flex justify-center mb-2 text-gray-300">
-                <Mailbox size={40} />
-              </div>
-              <p className="text-sm font-medium">No orders found</p>
-            </div>
-          )}
-        </div>
-      </Card>
-
-      {/* ── Quick actions ── */}
-      <div className="grid grid-cols-3 gap-4">
-        {[
-          {
-            label: "Add New Dish",
-            desc: "Add a dish to your menu",
-            icon: <Plus size={30} className="text-orange-400" />,
-            to: "/restaurant/dish/add",
-            color: "border-orange-200 hover:bg-orange-50",
-          },
-          {
-            label: "Manage Menu",
-            desc: "Edit prices & availability",
-            icon: <Utensils size={30} className="text-blue-400" />,
-            to: "/restaurant/dishes",
-            color: "border-blue-100 hover:bg-blue-50",
-          },
-          {
-            label: "View Profile",
-            desc: "Update restaurant details",
-            icon: <Settings size={30} className="text-green-400" />,
-            to: "/restaurant/settings",
-            color: "border-green-100 hover:bg-green-50",
-          },
-        ].map((action) => (
-          <Link
-            key={action.label}
-            to={action.to}
-            className={`bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] border ${action.color} p-5 flex items-center gap-4 transition-colors`}
-          >
-            <div>{action.icon}</div>
-            <div>
-              <p className="text-sm font-bold text-gray-700">{action.label}</p>
-              <p className="text-xs text-gray-400 mt-0.5">{action.desc}</p>
-            </div>
-          </Link>
-        ))}
       </div>
     </div>
   );

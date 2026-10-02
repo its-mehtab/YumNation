@@ -111,7 +111,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
         <div className="col-span-3 space-y-4">
           <div
             onClick={() => dishImageRef.current.click()}
-            className="aspect-square rounded-2xl border-2 border-dashed border-[#fc8019] bg-orange-50 flex flex-col items-center justify-center cursor-pointer hover:bg-orange-100 transition-colors overflow-hidden"
+            className="aspect-square rounded-md border-2 border-dashed border-[#fc8019] bg-[#fff2e8] flex flex-col items-center justify-center cursor-pointer hover:bg-orange-100 transition-colors overflow-hidden"
           >
             {dishImage ? (
               <img
@@ -135,7 +135,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
           </div>
 
           {/* Toggles */}
-          <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-4 space-y-3">
+          <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all p-4 space-y-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold text-gray-700">Available</p>
@@ -162,7 +162,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
         </div>
 
         <div className="col-span-9 space-y-5">
-          <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-6 space-y-4">
+          <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all p-6 space-y-4">
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
               Basic Info
             </p>
@@ -180,7 +180,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                   name="category"
                   value={form.category._id}
                   onChange={handleChange}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors bg-white"
+                  className="w-full border border-gray-200 rounded-md px-3 py-2.5 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors bg-white"
                 >
                   <option value="">Select category...</option>
                   {categories?.map((cat) => {
@@ -211,12 +211,12 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                 onChange={handleChange}
                 placeholder="Describe ingredients, cooking method, taste..."
                 rows={3}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors resize-none"
+                className="w-full border border-gray-200 rounded-md px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors resize-none"
               />
             </Field>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-6 space-y-4">
+          <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all p-6 space-y-4">
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
               Pricing
             </p>
@@ -247,8 +247,8 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                 {["veg", "non-veg", "vegan"].map((type) => (
                   <label
                     key={type}
-                    className={`flex items-center gap-2 cursor-pointer px-4 py-2 rounded-xl border-2 transition-all text-xs font-semibold
-                      ${form.foodType === type ? "border-[#fc8019] bg-orange-50 text-[#fc8019]" : "border-gray-200 text-gray-400"}`}
+                    className={`flex items-center gap-2 cursor-pointer px-4 py-2 rounded-md border-2 transition-all text-xs font-semibold
+                      ${form.foodType === type ? "border-[#fc8019] bg-[#fff2e8] text-[#fc8019]" : "border-gray-200 text-gray-400"}`}
                   >
                     <input
                       type="radio"
@@ -259,11 +259,11 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                       className="hidden"
                     />
                     {type === "veg" ? (
-                      <Circle size={14} className="text-green-500 fill-current" />
+                      <Circle size={14} className="text-green-500 fill-current"  strokeWidth={1.5} />
                     ) : type === "non-veg" ? (
-                      <Circle size={14} className="text-red-500 fill-current" />
+                      <Circle size={14} className="text-red-500 fill-current"  strokeWidth={1.5} />
                     ) : (
-                      <Leaf size={14} className="text-green-600 fill-current" />
+                      <Leaf size={14} className="text-[#fc8019] fill-current" />
                     )}{" "}
                     {type}
                   </label>
@@ -272,7 +272,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
             </Field>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-6 space-y-4">
+          <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all p-6 space-y-4">
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
                 Variants
@@ -283,8 +283,8 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
             </div>
 
             {form.variants?.length > 0 && (
-              <div className="overflow-hidden rounded-xl border border-gray-100">
-                <div className="grid grid-cols-12 px-4 py-2 bg-gray-50 border-b border-gray-100">
+              <div className="overflow-hidden rounded-md border border-gray-200">
+                <div className="grid grid-cols-12 px-4 py-2 bg-gray-50 border-b border-gray-200">
                   <p className="col-span-5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                     Name
                   </p>
@@ -308,14 +308,14 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                       <button
                         type="button"
                         onClick={() => removeVariant(v.name)}
-                        className="text-red-400 hover:text-red-500 hover:bg-red-50 p-1 rounded-lg transition-colors"
+                        className="text-red-400 hover:text-red-500 hover:bg-red-50 p-1 rounded-md transition-colors"
                       >
                         <DeleteIcon size="13" />
                       </button>
                       <button
                         type="button"
                         onClick={() => editVariant(v.name, v.price)}
-                        className="text-red-400 hover:text-red-500 hover:bg-red-50 p-1 rounded-lg transition-colors"
+                        className="text-red-400 hover:text-red-500 hover:bg-red-50 p-1 rounded-md transition-colors"
                       >
                         <EditIcon size="13" />
                       </button>
@@ -332,7 +332,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                   setVariantInput((p) => ({ ...p, name: e.target.value }))
                 }
                 placeholder="Variant name (e.g. Large)"
-                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
+                className="flex-1 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
               />
               <input
                 value={variantInput.price}
@@ -342,13 +342,13 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                 placeholder="Price ($)"
                 type="number"
                 min="0"
-                className="w-28 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
+                className="w-28 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
               />
               <button
                 type="button"
                 onClick={addVariant}
                 disabled={!variantInput.name.trim() || !variantInput.price}
-                className="flex gap-1 items-center px-4 py-2 rounded-lg bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors whitespace-nowrap disabled:opacity-40"
+                className="flex gap-1 items-center px-4 py-2 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors whitespace-nowrap disabled:opacity-40"
               >
                 <PlusIcon color={"#fff"} />
                 Add
@@ -357,7 +357,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
           </div>
 
           {/* ── Add-ons ── */}
-          <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-6 space-y-4">
+          <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all p-6 space-y-4">
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
                 Add-ons
@@ -374,7 +374,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                 {form.addOns.map((a) => (
                   <div
                     key={a.name}
-                    className="flex items-center gap-2 bg-orange-50 border border-orange-100 rounded-xl px-3 py-2"
+                    className="flex items-center gap-2 bg-[#fff2e8] border border-orange-100 rounded-md px-3 py-2"
                   >
                     <span className="text-xs font-semibold text-gray-700">
                       {a.name}
@@ -408,7 +408,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                   setAddOnInput((p) => ({ ...p, name: e.target.value }))
                 }
                 placeholder="Add-on name (e.g. Extra Cheese)"
-                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
+                className="flex-1 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
               />
               <input
                 value={addOnInput.price}
@@ -418,13 +418,13 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                 placeholder="Price ($)"
                 type="number"
                 min="0"
-                className="w-28 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
+                className="w-28 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
               />
               <button
                 type="button"
                 onClick={addAddOn}
                 disabled={!addOnInput.name.trim() || !addOnInput.price}
-                className="flex gap-1 items-center px-4 py-2 rounded-lg bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors whitespace-nowrap disabled:opacity-40"
+                className="flex gap-1 items-center px-4 py-2 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors whitespace-nowrap disabled:opacity-40"
               >
                 <PlusIcon color={"#fff"} /> Add
               </button>
@@ -435,14 +435,14 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
             <button
               type="button"
               onClick={handleClear}
-              className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors flex items-center gap-1"
+              className="px-5 py-2.5 rounded-md border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors flex items-center gap-1"
             >
               <Trash size={16} /> Clear
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2.5 rounded-xl bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors disabled:opacity-60 flex items-center gap-1"
+              className="px-6 py-2.5 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors disabled:opacity-60 flex items-center gap-1"
             >
               <Save size={16} /> {loading ? "Saving..." : "Save Dish"}
             </button>

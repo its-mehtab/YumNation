@@ -15,16 +15,16 @@ const RestaurantRejectedPage = () => {
 
   const commonReasons = [
     { icon: <FileText size={16} className="text-gray-400" />, text: "Incomplete or inaccurate information provided" },
-    { icon: <MapPin size={16} className="text-gray-400" />, text: "Address could not be verified" },
+    { icon: <MapPin size={16} className="text-gray-400"  strokeWidth={1.5} />, text: "Address could not be verified" },
     { icon: <ImageIcon size={16} className="text-gray-400" />, text: "Missing or low quality images" },
-    { icon: <Phone size={16} className="text-gray-400" />, text: "Contact details could not be verified" },
+    { icon: <Phone size={16} className="text-gray-400"  strokeWidth={1.5} />, text: "Contact details could not be verified" },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12 fade-up">
       <div className="max-w-lg w-full space-y-4">
-        <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.08)] p-8 text-center">
-          <div className="w-20 h-20 rounded-full bg-red-50 border-2 border-red-100 flex items-center justify-center mx-auto mb-5">
+        <div className="bg-white rounded-md shadow-[0_0_2.3125rem_rgba(8,21,66,0.08)] p-8 text-center">
+          <div className="w-20 h-20 rounded-md bg-red-50 border-2 border-red-100 flex items-center justify-center mx-auto mb-5">
             <Frown size={40} className="text-red-400" />
           </div>
 
@@ -41,14 +41,14 @@ const RestaurantRejectedPage = () => {
           </p>
 
           {reason ? (
-            <div className="mt-6 bg-red-50 border border-red-100 rounded-xl px-5 py-4 text-left">
+            <div className="mt-6 bg-red-50 border border-red-100 rounded-md px-5 py-4 text-left">
               <p className="text-xs font-bold uppercase tracking-widest text-red-400 mb-2">
                 Reason from Admin
               </p>
               <p className="text-sm text-gray-600 leading-relaxed">{reason}</p>
             </div>
           ) : (
-            <div className="mt-6 bg-gray-50 border border-gray-100 rounded-xl px-5 py-4 text-left">
+            <div className="mt-6 bg-gray-50 border border-gray-200 rounded-md px-5 py-4 text-left">
               <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
                 Common Rejection Reasons
               </p>
@@ -66,7 +66,7 @@ const RestaurantRejectedPage = () => {
           <div className="mt-6 space-y-3">
             <Link
               to={"/restaurant"}
-              className="block w-full bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold py-3 rounded-xl transition-colors"
+              className="block w-full bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold py-3 rounded-md transition-colors"
             >
               <span className="flex items-center justify-center gap-2"><RefreshCw size={16} /> Reapply Now</span>
             </Link>
@@ -76,7 +76,7 @@ const RestaurantRejectedPage = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-5">
+        <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all p-5">
           <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
             Tips for a successful application
           </p>
@@ -91,11 +91,11 @@ const RestaurantRejectedPage = () => {
                 text: "Upload a high quality logo and cover image",
               },
               {
-                icon: <MapPin size={18} className="text-gray-400" />,
+                icon: <MapPin size={18} className="text-gray-400"  strokeWidth={1.5} />,
                 text: "Make sure your address is complete and accurate",
               },
               {
-                icon: <Phone size={18} className="text-gray-400" />,
+                icon: <Phone size={18} className="text-gray-400"  strokeWidth={1.5} />,
                 text: "Use a valid phone number and email you have access to",
               },
             ].map((tip, i) => (
@@ -112,13 +112,13 @@ const RestaurantRejectedPage = () => {
         <div className="grid grid-cols-2 gap-3">
           <a
             href="mailto:support@yourapp.com"
-            className="py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors text-center"
+            className="py-3 rounded-md border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors text-center"
           >
             <span className="flex items-center justify-center gap-2"><Mail size={16} /> Contact Support</span>
           </a>
           <button
             onClick={logout}
-            className="py-3 rounded-xl border border-red-100 text-sm font-semibold text-red-400 hover:bg-red-50 transition-colors"
+            className="py-3 rounded-md border border-red-100 text-sm font-semibold text-red-400 hover:bg-red-50 transition-colors"
           >
             Sign Out
           </button>

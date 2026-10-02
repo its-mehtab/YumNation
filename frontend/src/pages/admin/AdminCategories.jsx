@@ -82,9 +82,9 @@ const CategoryModal = ({ category, onClose, onSave, miniLoading }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-xl border border-gray-100 w-full max-w-md mx-4 overflow-hidden">
+      <div className="bg-white rounded-md shadow-xl border border-gray-200 w-full max-w-md mx-4 overflow-hidden">
         {/* ── Header ── */}
-        <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+        <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
           <div>
             <p className="text-[11px] font-bold text-[#fc8019] uppercase tracking-wider mb-1">
               {category ? "Edit" : "New"} Category
@@ -95,9 +95,9 @@ const CategoryModal = ({ category, onClose, onSave, miniLoading }) => {
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+            className="w-8 h-8 rounded-md bg-gray-50 hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
           >
-            <X size={16} strokeWidth={2.5} />
+            <X size={16} strokeWidth={1.5} />
           </button>
         </div>
 
@@ -111,8 +111,8 @@ const CategoryModal = ({ category, onClose, onSave, miniLoading }) => {
 
               {iconPreview ? (
                 // Preview state
-                <div className="flex items-center gap-4 p-4 bg-gray-50 border border-gray-200 rounded-xl">
-                  <div className="w-16 h-16 rounded-xl border border-gray-200 bg-white overflow-hidden shrink-0 flex items-center justify-center">
+                <div className="flex items-center gap-4 p-4 bg-gray-50 border border-gray-200 rounded-md">
+                  <div className="w-16 h-16 rounded-md border border-gray-200 bg-white overflow-hidden shrink-0 flex items-center justify-center">
                     <img
                       src={iconPreview}
                       alt="icon preview"
@@ -156,13 +156,13 @@ const CategoryModal = ({ category, onClose, onSave, miniLoading }) => {
                   onDragLeave={() => setIsDragging(false)}
                   onDrop={handleDrop}
                   onClick={() => fileInputRef.current?.click()}
-                  className={`cursor-pointer flex flex-col items-center justify-center gap-3 py-6 rounded-xl border-2 border-dashed transition-colors ${
+                  className={`cursor-pointer flex flex-col items-center justify-center gap-3 py-6 rounded-md border-2 border-dashed transition-colors ${
                     isDragging
                       ? "border-[#fc8019] bg-orange-50"
-                      : "border-gray-200 bg-gray-50 hover:border-[#fc8019] hover:bg-orange-50/40"
+                      : "border-gray-200 bg-gray-50 hover:bg-orange-50/40"
                   }`}
                 >
-                  <div className="w-12 h-12 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-400 shadow-sm">
+                  <div className="w-12 h-12 rounded-md bg-white border border-gray-200 flex items-center justify-center text-gray-400 shadow-sm">
                     <ImageIcon size={20} />
                   </div>
                   <div className="text-center">
@@ -195,13 +195,13 @@ const CategoryModal = ({ category, onClose, onSave, miniLoading }) => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Pizza"
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all"
+                className="w-full border border-gray-200 rounded-md px-4 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all"
                 autoFocus
               />
             </div>
 
             {/* ── Status Toggle ── */}
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-md border border-gray-200">
               <div>
                 <p className="text-sm font-semibold text-gray-700">Status</p>
                 <p className="text-xs text-gray-500 mt-1">
@@ -211,10 +211,10 @@ const CategoryModal = ({ category, onClose, onSave, miniLoading }) => {
               <button
                 type="button"
                 onClick={() => setIsActive((p) => !p)}
-                className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${isActive ? "bg-[#fc8019]" : "bg-gray-300"}`}
+                className={`relative w-12 h-6 rounded-md transition-colors duration-300 ${isActive ? "bg-[#fc8019]" : "bg-gray-300"}`}
               >
                 <span
-                  className={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white shadow-sm transition-transform duration-300 ${isActive ? "translate-x-6" : "translate-x-0"}`}
+                  className={`absolute top-1 left-1 w-4 h-4 rounded-md bg-white shadow-sm transition-transform duration-300 ${isActive ? "translate-x-6" : "translate-x-0"}`}
                 />
               </button>
             </div>
@@ -225,14 +225,14 @@ const CategoryModal = ({ category, onClose, onSave, miniLoading }) => {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors"
+              className="flex-1 py-3 rounded-md border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={!name.trim() || miniLoading}
-              className="flex-1 py-3 rounded-xl bg-[#fc8019] hover:bg-[#e5721f] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-bold shadow-md shadow-orange-500/20 transition-all"
+              className="flex-1 py-3 rounded-md bg-[#fc8019] hover:bg-[#e5721f] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-bold shadow-md shadow-orange-500/20 transition-all"
             >
               {miniLoading
                 ? "Loading..."
@@ -363,27 +363,27 @@ const AdminCategories = () => {
             label: "Total Categories",
             value: categories.length,
             icon: Folder,
-            color: "text-blue-500",
-            bg: "bg-blue-50/50",
+            color: "text-[#fc8019]",
+            bg: "bg-[#fff2e8]",
           },
           {
             label: "Active",
             value: categories.filter((c) => c.isActive).length,
             icon: CheckCircle,
-            color: "text-emerald-500",
-            bg: "bg-emerald-50/50",
+            color: "text-[#fc8019]",
+            bg: "bg-[#fff2e8]",
           },
           {
             label: "Inactive",
             value: categories.filter((c) => !c.isActive).length,
             icon: Ban,
             color: "text-red-500",
-            bg: "bg-red-50/50",
+            bg: "bg-red-50",
           },
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-2xl shadow-[0px_2px_8px_0px_rgba(0,0,0,0.02)] border border-gray-100 p-5 flex items-start justify-between transition-all hover:shadow-[0px_4px_16px_0px_rgba(0,0,0,0.04)]"
+            className="bg-white rounded-md  border border-gray-200 p-5 flex items-start justify-between transition-all hover:shadow-md"
           >
             <div>
               <p className="text-sm font-medium text-gray-500 mb-1">
@@ -391,15 +391,15 @@ const AdminCategories = () => {
               </p>
               <p className="text-2xl font-semibold text-gray-800">{s.value}</p>
             </div>
-            <div className={`p-2.5 rounded-xl ${s.bg} ${s.color}`}>
-              <s.icon size={18} strokeWidth={2} />
+            <div className={`p-2.5 rounded-md ${s.bg} ${s.color}`}>
+              <s.icon size={18} strokeWidth={1.5} />
             </div>
           </div>
         ))}
       </div>
 
       {/* ── Table card ── */}
-      <div className="bg-white rounded-2xl shadow-[0px_2px_8px_0px_rgba(0,0,0,0.02)] border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
         {/* Card header */}
         <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-5 border-b border-gray-50 gap-4">
           <h2 className="text-base font-semibold text-gray-900">All Categories</h2>
@@ -408,19 +408,19 @@ const AdminCategories = () => {
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                 size={16}
-              />
+               strokeWidth={1.5} />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search categories..."
-                className="w-full pl-9 pr-4 py-2 bg-gray-50/50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-[#fc8019] focus:ring-1 focus:ring-[#fc8019]/20 transition-all outline-none"
+                className="w-full pl-9 pr-4 py-2 bg-gray-50/50 border border-gray-200 rounded-md text-sm focus:bg-white focus:border-[#fc8019] focus:ring-1 focus:ring-[#fc8019]/20 transition-all outline-none"
               />
             </div>
             <button
               onClick={() => setModal("add")}
-              className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-4 py-2 rounded-xl transition-all shadow-sm shadow-orange-500/10 whitespace-nowrap"
+              className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-4 py-2 rounded-md transition-all shadow-sm shadow-orange-500/10 whitespace-nowrap"
             >
-              <Plus size={16} strokeWidth={2.5} />
+              <Plus size={16} strokeWidth={1.5} />
               Add Category
             </button>
           </div>
@@ -465,8 +465,8 @@ const AdminCategories = () => {
                   </td>
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-orange-50/50 border border-orange-100 flex items-center justify-center text-[#fc8019]">
-                        <Utensils size={18} strokeWidth={2} />
+                      <div className="w-10 h-10 rounded-md bg-[#fff2e8] border border-orange-100 flex items-center justify-center text-[#fc8019]">
+                        <Utensils size={18} strokeWidth={1.5} />
                       </div>
                       <span className="font-semibold text-gray-800">
                         {cat.name}
@@ -474,7 +474,7 @@ const AdminCategories = () => {
                     </div>
                   </td>
                   <td className="px-4 py-4">
-                    <span className="text-xs font-mono bg-gray-50 text-gray-500 px-2.5 py-1 rounded-lg border border-gray-100">
+                    <span className="text-xs font-mono bg-gray-50 text-gray-500 px-2.5 py-1 rounded-md border border-gray-200">
                       {cat.slug}
                     </span>
                   </td>
@@ -495,16 +495,16 @@ const AdminCategories = () => {
                       className="transition-transform active:scale-95"
                     >
                       <span
-                        className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border ${
+                        className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-md border ${
                           cat.isActive
                             ? "bg-emerald-50 text-emerald-700 border-emerald-200"
                             : "bg-red-50 text-red-600 border-red-200"
                         }`}
                       >
                         {cat.isActive ? (
-                          <CheckCircle size={14} strokeWidth={2} />
+                          <CheckCircle size={14} strokeWidth={1.5} />
                         ) : (
-                          <Ban size={14} strokeWidth={2} />
+                          <Ban size={14} strokeWidth={1.5} />
                         )}
                         {cat.isActive ? "Active" : "Inactive"}
                       </span>
@@ -514,17 +514,17 @@ const AdminCategories = () => {
                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={() => setModal(cat)}
-                        className="p-2 rounded-lg bg-white border border-gray-100 text-gray-400 hover:text-[#fc8019] hover:border-[#fc8019] shadow-sm transition-all"
+                        className="p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-[#fc8019] shadow-sm transition-all"
                         title="Edit"
                       >
-                        <Edit2 size={16} strokeWidth={2} />
+                        <Edit2 size={16} strokeWidth={1.5} />
                       </button>
                       <button
                         onClick={() => handleDelete(cat._id)}
-                        className="p-2 rounded-lg bg-white border border-gray-100 text-gray-400 hover:text-red-500 hover:border-red-500 shadow-sm transition-all"
+                        className="p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-red-500 hover:border-red-500 shadow-sm transition-all"
                         title="Delete"
                       >
-                        <Trash2 size={16} strokeWidth={2} />
+                        <Trash2 size={16} strokeWidth={1.5} />
                       </button>
                     </div>
                   </td>
@@ -537,7 +537,7 @@ const AdminCategories = () => {
         {/* Empty state */}
         {filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+            <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
               <FolderOpen size={32} strokeWidth={1.5} className="text-gray-400" />
             </div>
             <h3 className="text-base font-semibold text-gray-900 mb-1">

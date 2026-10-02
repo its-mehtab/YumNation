@@ -13,6 +13,7 @@ import AdminRestaurantDetails from "./pages/admin/AdminRestaurantDetails";
 import AdminPromoCodes from "./pages/admin/AdminPromoCodes";
 import AdminCustomers from "./pages/admin/AdminCustomers";
 import AdminCustomerDetails from "./pages/admin/AdminCustomerDetails";
+import AdminDishDetails from "./pages/admin/AdminDishDetails";
 
 import RestaurantDashboard from "./pages/owner/RestaurantDashboard";
 import RestaurantOrders from "./pages/owner/RestaurantOrders";
@@ -32,16 +33,14 @@ function App() {
         <Route path="/admin" element={<AdminRoutes />}>
           <Route index element={<AdminDashboard />} />
           <Route path="restaurants" element={<AdminRestaurants />} />
-          <Route
-            path="restaurants/:slug"
-            element={<AdminRestaurantDetails />}
-          />
+          <Route path="restaurants/:id" element={<AdminRestaurantDetails />} />
           <Route path="categories" element={<AdminCategories />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="orders/:id" element={<AdminOrderDetails />} />
           <Route path="promo" element={<AdminPromoCodes />} />
           <Route path="customers" element={<AdminCustomers />} />
           <Route path="customers/:id" element={<AdminCustomerDetails />} />
+          <Route path="dishes/:id" element={<AdminDishDetails />} />
         </Route>
 
         <Route path="/owner" element={<RestaurantRoutes />}>

@@ -37,6 +37,7 @@ export const setRestaurantFromOwner = async (req, res, next) => {
 
 export const setRestaurantFromQuery = async (req, res, next) => {
   const restaurantId = req.query.restaurantId;
+  // console.log(req.query.restaurantId);
 
   try {
     if (!restaurantId) {

@@ -90,14 +90,14 @@ const STATUS_OPTIONS = [
 const statusConfig = {
   placed: { color: "text-indigo-600", bg: "bg-indigo-50" },
   confirmed: { color: "text-amber-600", bg: "bg-amber-50" },
-  preparing: { color: "text-orange-600", bg: "bg-orange-50" },
-  "out for delivery": { color: "text-blue-600", bg: "bg-blue-50" },
-  delivered: { color: "text-green-600", bg: "bg-green-50" },
+  preparing: { color: "text-[#fc8019]", bg: "bg-orange-50" },
+  "out for delivery": { color: "text-[#fc8019]", bg: "bg-blue-50" },
+  delivered: { color: "text-[#fc8019]", bg: "bg-green-50" },
   cancelled: { color: "text-red-500", bg: "bg-red-50" },
 };
 
 const paymentStatusConfig = {
-  paid: { color: "text-green-600", bg: "bg-green-50" },
+  paid: { color: "text-[#fc8019]", bg: "bg-green-50" },
   pending: { color: "text-yellow-600", bg: "bg-yellow-50" },
   failed: { color: "text-red-500", bg: "bg-red-50" },
 };
@@ -105,7 +105,7 @@ const paymentStatusConfig = {
 // ── Status Badge ─────────────────────────────────────────────────────────────
 const Badge = ({ label, config }) => (
   <span
-    className={`text-xs font-semibold px-2.5 py-1 rounded-full capitalize ${config.bg} ${config.color}`}
+    className={`text-xs font-semibold px-2.5 py-1 rounded-md capitalize ${config.bg} ${config.color}`}
   >
     {label}
   </span>
@@ -116,7 +116,7 @@ const StatusDropdown = ({ orderId, current, onChange }) => (
   <select
     value={current}
     onChange={(e) => onChange(orderId, e.target.value)}
-    className={`text-xs font-semibold px-2.5 py-1 rounded-full border-0 outline-none cursor-pointer capitalize
+    className={`text-xs font-semibold px-2.5 py-1 rounded-md border-0 outline-none cursor-pointer capitalize
       ${statusConfig[current]?.bg} ${statusConfig[current]?.color}`}
   >
     {STATUS_OPTIONS.filter((s) => s !== "all").map((s) => (
@@ -191,19 +191,19 @@ const RestaurantOrders = () => {
       {/* ── Stats ── */}
       <div className="grid grid-cols-5 gap-4 mb-5">
         {[
-          { label: "Total Orders", value: stats.total, icon: <Package size={24} className="text-gray-400" /> },
+          { label: "Total Orders", value: stats.total, icon: <Package size={24} className="text-gray-400"  strokeWidth={1.5} /> },
           { label: "New Orders", value: stats.pending, icon: <Sparkles size={24} className="text-blue-400" /> },
           { label: "Preparing", value: stats.preparing, icon: <ChefHat size={24} className="text-orange-400" /> },
-          { label: "Delivered", value: stats.delivered, icon: <CheckCircle size={24} className="text-green-400" /> },
+          { label: "Delivered", value: stats.delivered, icon: <CheckCircle size={24} className="text-green-400"  strokeWidth={1.5} /> },
           {
             label: "Revenue",
             value: `$${stats.revenue.toFixed(2)}`,
-            icon: <Banknote size={24} className="text-emerald-400" />,
+            icon: <Banknote size={24} className="text-emerald-400"  strokeWidth={1.5} />,
           },
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] px-4 py-4 flex items-center justify-between"
+            className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all px-4 py-4 flex items-center justify-between"
           >
             <div>
               <p className="text-xs text-gray-400 font-medium mb-1">
@@ -217,9 +217,9 @@ const RestaurantOrders = () => {
       </div>
 
       {/* ── Table card ── */}
-      <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] overflow-hidden">
+      <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all overflow-hidden">
         {/* ── Card header ── */}
-        <div className="px-6 py-4 border-b border-gray-100 space-y-3">
+        <div className="px-6 py-4 border-b border-gray-200 space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="text-base font-bold text-gray-700">All Orders</h2>
             <div className="flex items-center gap-3">
@@ -228,13 +228,13 @@ const RestaurantOrders = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by name, order ID..."
-                className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors w-56"
+                className="border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors w-56"
               />
               {/* Sort */}
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] bg-white"
+                className="border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] bg-white"
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
@@ -250,7 +250,7 @@ const RestaurantOrders = () => {
               <button
                 key={s}
                 onClick={() => setStatusFilter(s)}
-                className={`text-xs font-semibold px-3 py-1.5 rounded-full capitalize transition-colors ${
+                className={`text-xs font-semibold px-3 py-1.5 rounded-md capitalize transition-colors ${
                   statusFilter === s
                     ? "bg-[#fc8019] text-white"
                     : "bg-gray-100 text-gray-500 hover:bg-gray-200"
@@ -271,7 +271,7 @@ const RestaurantOrders = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100">
+              <tr className="border-b border-gray-200">
                 <th className="text-left px-6 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Order
                 </th>
@@ -381,7 +381,7 @@ const RestaurantOrders = () => {
                   <td className="px-4 py-4">
                     <Link
                       to={`/restaurant/orders/${order._id}`}
-                      className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors inline-flex"
+                      className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors inline-flex"
                       title="View"
                     >
                       <svg
@@ -408,7 +408,7 @@ const RestaurantOrders = () => {
         {/* Empty state */}
         {filtered.length === 0 && (
           <div className="text-center py-16 text-gray-400">
-            <div className="flex justify-center mb-3 text-gray-300"><Package size={40} /></div>
+            <div className="flex justify-center mb-3 text-gray-300"><Package size={40}  strokeWidth={1.5} /></div>
             <p className="text-sm font-medium">No orders found</p>
           </div>
         )}

@@ -21,10 +21,10 @@ import {
 // ───pers ──────────────────────────────────────────────────────────────────
 
 const AVATAR_COLORS = [
-  "bg-orange-50 text-orange-600 border-orange-100",
-  "bg-blue-50 text-blue-600 border-blue-100",
-  "bg-green-50 text-green-600 border-green-100",
-  "bg-purple-50 text-purple-600 border-purple-100",
+  "bg-[#fff2e8] text-[#fc8019] border-orange-100",
+  "bg-[#fff2e8] text-[#fc8019] border-blue-100",
+  "bg-[#fff2e8] text-[#fc8019] border-green-100",
+  "bg-[#fff2e8] text-[#fc8019] border-purple-100",
   "bg-pink-50 text-pink-600 border-pink-100",
   "bg-teal-50 text-teal-600 border-teal-100",
 ];
@@ -35,7 +35,7 @@ const avatarColor = (id) => AVATAR_COLORS[parseInt(id) % AVATAR_COLORS.length];
 
 const StatusBadge = ({ status }) => {
   const styles = {
-    active: "bg-green-50 text-green-700 border-green-200",
+    active: "bg-[#fff2e8] text-green-700 border-green-200",
     inactive: "bg-gray-100 text-gray-500 border-gray-200",
     blocked: "bg-red-50 text-red-700 border-red-200",
   };
@@ -46,7 +46,7 @@ const StatusBadge = ({ status }) => {
   };
   return (
     <span
-      className={`inline-block text-[11px] font-bold px-3 py-1 rounded-lg border ${styles[status] || styles.inactive} transition-colors`}
+      className={`inline-block text-[11px] font-bold px-3 py-1 rounded-md border ${styles[status] || styles.inactive} transition-colors`}
     >
       {labels[status] || status}
     </span>
@@ -156,14 +156,14 @@ const AdminCustomers = () => {
             label: "Total Customers",
             value: totalCustomer,
             icon: Users,
-            color: "text-blue-600",
+            color: "text-[#fc8019]",
             bg: "bg-blue-50",
           },
           {
             label: "Active",
             value: totalActive,
             icon: UserCheck,
-            color: "text-green-600",
+            color: "text-[#fc8019]",
             bg: "bg-green-50",
           },
           {
@@ -177,13 +177,13 @@ const AdminCustomers = () => {
             label: "Total Orders",
             value: totalOrders,
             icon: ShoppingBag,
-            color: "text-orange-600",
+            color: "text-[#fc8019]",
             bg: "bg-orange-50",
           },
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]"
+            className="bg-white rounded-md  border border-gray-200 p-6 flex items-center justify-between transition-all hover:shadow-md"
           >
             <div>
               <p className="text-sm font-semibold text-gray-500 mb-2">
@@ -191,31 +191,31 @@ const AdminCustomers = () => {
               </p>
               <p className="text-3xl font-bold text-gray-800">{s.value || 0}</p>
             </div>
-            <div className={`p-4 rounded-xl ${s.bg} ${s.color}`}>
-              <s.icon size={28} strokeWidth={2.5} />
+            <div className={`p-4 rounded-md ${s.bg} ${s.color}`}>
+              <s.icon size={28} strokeWidth={1.5} />
             </div>
           </div>
         ))}
       </div>
 
       {/* ── Table Card ── */}
-      <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
         {/* Toolbar */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-6 py-5 border-b border-gray-100 gap-4">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-6 py-5 border-b border-gray-200 gap-4">
           <h2 className="text-lg font-bold text-gray-800">All Customers</h2>
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
             <div className="relative w-full sm:w-64">
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                 size={18}
-              />
+               strokeWidth={1.5} />
               <input
                 placeholder="Search name, email..."
                 value={filter.search}
                 onChange={(e) =>
                   setFilter((prev) => ({ ...prev, search: e.target.value }))
                 }
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all outline-none"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-md text-sm focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all outline-none"
               />
             </div>
             <select
@@ -226,7 +226,7 @@ const AdminCustomers = () => {
                   filterStatus: e.target.value,
                 }))
               }
-              className="w-full sm:w-auto bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-600 outline-none focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all"
+              className="w-full sm:w-auto bg-gray-50 border border-gray-200 rounded-md px-4 py-2.5 text-sm font-semibold text-gray-600 outline-none focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all"
             >
               <option value="">All Status</option>
               <option value="active">Active</option>
@@ -237,7 +237,7 @@ const AdminCustomers = () => {
               onChange={(e) =>
                 setFilter((prev) => ({ ...prev, sortBy: e.target.value }))
               }
-              className="w-full sm:w-auto bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-600 outline-none focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all"
+              className="w-full sm:w-auto bg-gray-50 border border-gray-200 rounded-md px-4 py-2.5 text-sm font-semibold text-gray-600 outline-none focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all"
             >
               <option value="latest_asc">Newest First</option>
               <option value="recent_order">Recent Order</option>
@@ -251,7 +251,7 @@ const AdminCustomers = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead className="bg-gray-50/50 text-gray-500">
-              <tr className="border-b border-gray-100">
+              <tr className="border-b border-gray-200">
                 {[
                   "Customer",
                   "Contact",
@@ -279,8 +279,8 @@ const AdminCustomers = () => {
                     className="text-center py-20 text-sm text-gray-500 font-medium"
                   >
                     <div className="flex flex-col items-center justify-center">
-                      <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                        <Users size={32} className="text-gray-400" />
+                      <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
+                        <Users size={32} className="text-gray-400"  strokeWidth={1.5} />
                       </div>
                       <h3 className="text-lg font-bold text-gray-800 mb-1">
                         No customers found
@@ -301,7 +301,7 @@ const AdminCustomers = () => {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div
-                          className={`w-10 h-10 rounded-xl border flex items-center justify-center text-sm font-bold shrink-0 ${avatarColor(c._id)}`}
+                          className={`w-10 h-10 rounded-md border flex items-center justify-center text-sm font-bold shrink-0 ${avatarColor(c._id)}`}
                         >
                           {c.firstName?.slice(0, 1).toUpperCase()}
                           {c.lastName?.slice(0, 1).toUpperCase()}
@@ -329,7 +329,7 @@ const AdminCustomers = () => {
 
                     {/* Orders */}
                     <td className="px-4 py-4">
-                      <span className="font-bold text-gray-800 bg-gray-50 px-3 py-1 rounded-lg border border-gray-200">
+                      <span className="font-bold text-gray-800 bg-gray-50 px-3 py-1 rounded-md border border-gray-200">
                         {c.totalOrders}
                       </span>
                     </td>
@@ -374,7 +374,7 @@ const AdminCustomers = () => {
                       <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
                         <Link
                           to={`${c._id}`}
-                          className="p-2 rounded-lg bg-white border border-gray-200 text-gray-400 hover:text-blue-600 hover:border-blue-400 shadow-sm transition-all"
+                          className="p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-[#fc8019] hover:border-blue-400 shadow-sm transition-all"
                           title="View Details"
                         >
                           <Eye size={16} />
@@ -382,10 +382,10 @@ const AdminCustomers = () => {
                         <ConfirmationModal
                           button={
                             <button
-                              className="p-2 rounded-lg bg-white border border-gray-200 text-gray-400 hover:text-red-600 hover:border-red-400 shadow-sm transition-all"
+                              className="p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-red-600 hover:border-red-400 shadow-sm transition-all"
                               title="Delete Customer"
                             >
-                              <Trash2 size={16} />
+                              <Trash2 size={16}  strokeWidth={1.5} />
                             </button>
                           }
                           heading={`Delete ${c.firstName} from customers?`}

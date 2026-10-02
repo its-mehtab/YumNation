@@ -103,18 +103,18 @@ const Toggle = ({ checked, onChange }) => (
   <button
     type="button"
     onClick={onChange}
-    className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${checked ? "bg-[#fc8019]" : "bg-gray-200"}`}
+    className={`relative w-10 h-5 rounded-md transition-colors duration-200 ${checked ? "bg-[#fc8019]" : "bg-gray-200"}`}
   >
     <span
-      className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${checked ? "translate-x-5" : "translate-x-0"}`}
+      className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-md bg-white shadow transition-transform duration-200 ${checked ? "translate-x-5" : "translate-x-0"}`}
     />
   </button>
 );
 
 const Card = ({ title, children, action }) => (
-  <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] overflow-hidden">
+  <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all overflow-hidden">
     {(title || action) && (
-      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
         {title && (
           <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
             {title}
@@ -139,9 +139,9 @@ const InfoRow = ({ label, value }) => (
 const statusConfig = {
   placed: "bg-indigo-50 text-indigo-500",
   confirmed: "bg-yellow-50 text-yellow-500",
-  preparing: "bg-orange-50 text-[#fc8019]",
-  "out for delivery": "bg-blue-50 text-blue-500",
-  delivered: "bg-green-50 text-green-600",
+  preparing: "bg-[#fff2e8] text-[#fc8019]",
+  "out for delivery": "bg-[#fff2e8] text-[#fc8019]",
+  delivered: "bg-[#fff2e8] text-[#fc8019]",
   cancelled: "bg-red-50 text-red-400",
 };
 
@@ -157,7 +157,6 @@ const RestaurantDetails = () => {
   const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
-    // Replace with real API calls
     setTimeout(() => {
       setRestaurant(mockRestaurant);
       setDishes(mockDishes);
@@ -172,13 +171,13 @@ const RestaurantDetails = () => {
   if (loading)
     return (
       <div className="space-y-4 animate-pulse">
-        <div className="h-48 bg-gray-100 rounded-2xl" />
+        <div className="h-48 bg-gray-100 rounded-md" />
         <div className="grid grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-24 bg-gray-100 rounded-2xl" />
+            <div key={i} className="h-24 bg-gray-100 rounded-md" />
           ))}
         </div>
-        <div className="h-64 bg-gray-100 rounded-2xl" />
+        <div className="h-64 bg-gray-100 rounded-md" />
       </div>
     );
 
@@ -212,7 +211,7 @@ const RestaurantDetails = () => {
       </div>
 
       {/* ── Hero banner ── */}
-      <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] overflow-hidden mb-5">
+      <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all overflow-hidden mb-5">
         {/* Cover */}
         <div className="h-36 bg-gradient-to-r from-orange-100 to-orange-50 relative">
           {restaurant.coverImage && (
@@ -225,7 +224,7 @@ const RestaurantDetails = () => {
           {/* Edit button */}
           <Link
             to={`/admin/restaurants/edit/${restaurant._id}`}
-            className="absolute top-3 right-3 flex items-center gap-1.5 bg-white text-xs font-semibold text-gray-600 px-3 py-1.5 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+            className="absolute top-3 right-3 flex items-center gap-1.5 bg-white text-xs font-semibold text-gray-600 px-3 py-1.5 rounded-md shadow-sm hover:bg-gray-50 transition-colors"
           >
             <svg
               width="12"
@@ -248,12 +247,12 @@ const RestaurantDetails = () => {
         <div className="px-6 pb-5 pt-3 flex items-end justify-between flex-wrap gap-4">
           <div className="flex items-center gap-4">
             {/* Logo */}
-            <div className="w-16 h-16 rounded-xl bg-orange-50 border-2 border-white shadow-md flex items-center justify-center text-3xl -mt-8">
+            <div className="w-16 h-16 rounded-md bg-[#fff2e8] border-2 border-white shadow-md flex items-center justify-center text-3xl -mt-8">
               {restaurant.logo ? (
                 <img
                   src={restaurant.logo}
                   alt=""
-                  className="w-full h-full object-cover rounded-xl"
+                  className="w-full h-full object-cover rounded-full"
                 />
               ) : (
                 "🍽️"
@@ -265,7 +264,7 @@ const RestaurantDetails = () => {
                   {restaurant.name}
                 </h2>
                 {restaurant.isPureVeg && (
-                  <span className="text-xs bg-green-50 text-green-600 font-semibold px-2 py-0.5 rounded-full">
+                  <span className="text-xs bg-[#fff2e8] text-[#fc8019] font-semibold px-2 py-0.5 rounded-md">
                     Pure Veg
                   </span>
                 )}
@@ -320,7 +319,7 @@ const RestaurantDetails = () => {
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] border-l-4 border-l-[#fc8019] px-5 py-4 flex items-center justify-between"
+            className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all border-l-4 border-l-[#fc8019] px-5 py-4 flex items-center justify-between"
           >
             <div>
               <p className="text-xs text-gray-400 font-medium mb-1">
@@ -334,12 +333,12 @@ const RestaurantDetails = () => {
       </div>
 
       {/* ── Tabs ── */}
-      <div className="flex gap-1 bg-gray-100 p-1 rounded-xl w-fit mb-5">
+      <div className="flex gap-1 bg-gray-100 p-1 rounded-md w-fit mb-5">
         {tabs.map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-5 py-2 rounded-lg text-sm font-semibold capitalize transition-all
+            className={`px-5 py-2 rounded-md text-sm font-semibold capitalize transition-all
               ${activeTab === tab ? "bg-white text-[#fc8019] shadow-sm" : "text-gray-400"}`}
           >
             {tab}
@@ -385,7 +384,7 @@ const RestaurantDetails = () => {
             {/* Owner */}
             <Card title="Owner">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-base font-bold text-[#fc8019]">
+                <div className="w-10 h-10 rounded-md bg-orange-100 flex items-center justify-center text-base font-bold text-[#fc8019]">
                   {restaurant.owner.name.charAt(0)}
                 </div>
                 <div>
@@ -400,7 +399,7 @@ const RestaurantDetails = () => {
               <InfoRow label="Phone" value={restaurant.owner.phone} />
               <Link
                 to={`/admin/customers/${restaurant.owner._id}`}
-                className="mt-3 block text-center text-xs font-semibold text-[#fc8019] border border-orange-200 rounded-lg py-2 hover:bg-orange-50 transition-colors"
+                className="mt-3 block text-center text-xs font-semibold text-[#fc8019] border border-orange-200 rounded-md py-2 hover:bg-[#fff2e8] transition-colors"
               >
                 View Profile →
               </Link>
@@ -452,21 +451,21 @@ const RestaurantDetails = () => {
       )}
 
       {activeTab === "dishes" && (
-        <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all overflow-hidden">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
             <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
               Dishes ({dishes.length})
             </p>
             <Link
               to={`/admin/dishes/add?restaurant=${restaurant._id}`}
-              className="flex items-center gap-1.5 bg-[#fc8019] text-white text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-[#e5721f] transition-colors"
+              className="flex items-center gap-1.5 bg-[#fc8019] text-white text-xs font-semibold px-3 py-1.5 rounded-md hover:bg-[#e5721f] transition-colors"
             >
               + Add Dish
             </Link>
           </div>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100">
+              <tr className="border-b border-gray-200">
                 {["Dish", "Price", "Stock", "Type", "Status", "Action"].map(
                   (h) => (
                     <th
@@ -487,7 +486,7 @@ const RestaurantDetails = () => {
                 >
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-orange-50 border border-orange-100 flex items-center justify-center text-base">
+                      <div className="w-9 h-9 rounded-md bg-[#fff2e8] border border-orange-100 flex items-center justify-center text-base">
                         🍽️
                       </div>
                       <span className="font-medium text-gray-700 text-sm">
@@ -501,14 +500,14 @@ const RestaurantDetails = () => {
                   <td className="px-5 py-3.5 text-gray-500">{dish.stock}</td>
                   <td className="px-5 py-3.5">
                     <span
-                      className={`text-xs font-semibold px-2.5 py-1 rounded-full ${dish.foodType === "veg" ? "bg-green-50 text-green-600" : "bg-red-50 text-red-400"}`}
+                      className={`text-xs font-semibold px-2.5 py-1 rounded-md ${dish.foodType === "veg" ? "bg-[#fff2e8] text-[#fc8019]" : "bg-red-50 text-red-400"}`}
                     >
                       {dish.foodType}
                     </span>
                   </td>
                   <td className="px-5 py-3.5">
                     <span
-                      className={`text-xs font-semibold px-2.5 py-1 rounded-full ${dish.isAvailable ? "bg-green-50 text-green-600" : "bg-gray-100 text-gray-400"}`}
+                      className={`text-xs font-semibold px-2.5 py-1 rounded-md ${dish.isAvailable ? "bg-[#fff2e8] text-[#fc8019]" : "bg-gray-100 text-gray-400"}`}
                     >
                       {dish.isAvailable ? "Available" : "Unavailable"}
                     </span>
@@ -529,15 +528,15 @@ const RestaurantDetails = () => {
       )}
 
       {activeTab === "orders" && (
-        <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-100">
+        <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200">
             <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
               Recent Orders ({orders.length})
             </p>
           </div>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100">
+              <tr className="border-b border-gray-200">
                 {["Order ID", "Customer", "Total", "Status", "Date", ""].map(
                   (h) => (
                     <th
@@ -567,7 +566,7 @@ const RestaurantDetails = () => {
                   </td>
                   <td className="px-5 py-3.5">
                     <span
-                      className={`text-xs font-semibold px-2.5 py-1 rounded-full capitalize ${statusConfig[order.orderStatus]}`}
+                      className={`text-xs font-semibold px-2.5 py-1 rounded-md capitalize ${statusConfig[order.orderStatus]}`}
                     >
                       {order.orderStatus}
                     </span>

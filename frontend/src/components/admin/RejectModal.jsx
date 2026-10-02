@@ -32,7 +32,7 @@ const RejectModal = ({ restaurant, setRejectTarget, updateStatus }) => {
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 px-4">
       <div
-        className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6"
+        className="bg-white rounded-md shadow-xl w-full max-w-md p-6"
         style={{ animation: "fadeUp 0.2s ease both" }}
       >
         <style>{`@keyframes fadeUp { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:translateY(0) } }`}</style>
@@ -48,19 +48,19 @@ const RejectModal = ({ restaurant, setRejectTarget, updateStatus }) => {
           onChange={(e) => setReason(e.target.value)}
           placeholder="e.g. Address could not be verified. Please provide a complete and accurate address."
           rows={3}
-          className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-700 outline-none focus:border-red-300 transition-colors resize-none mb-4"
+          className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm text-gray-700 outline-none focus:border-red-300 transition-colors resize-none mb-4"
         />
         <div className="flex gap-3">
           <button
             onClick={() => setRejectTarget(null)}
-            className="w-full py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
+            className="w-full py-2.5 rounded-md border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={() => handleReject(reason)}
             disabled={!reason.trim() || loading}
-            className="w-full flex justify-center items-center gap-2 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-sm font-semibold transition-colors disabled:opacity-40"
+            className="w-full flex justify-center items-center gap-2 py-2.5 rounded-md bg-red-500 hover:bg-red-600 text-white text-sm font-semibold transition-colors disabled:opacity-40"
           >
             Reject
             <Spinner loading={loading} />

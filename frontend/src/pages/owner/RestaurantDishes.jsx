@@ -16,7 +16,7 @@ import { Utensils } from "lucide-react";
 // ── Status Badge ──────────────────────────────────────────────────────────────
 const StatusBadge = ({ isAvailable }) => (
   <span
-    className={`text-xs font-semibold px-3 py-1 rounded-full ${isAvailable ? "bg-green-50 text-green-600" : "bg-pink-50 text-pink-500"}`}
+    className={`text-xs font-semibold px-3 py-1 rounded-md ${isAvailable ? "bg-[#fff2e8] text-[#fc8019]" : "bg-pink-50 text-pink-500"}`}
   >
     {isAvailable ? "Published" : "Draft"}
   </span>
@@ -62,12 +62,12 @@ const RestaurantDishes = () => {
       </div>
 
       {/* ── Table card ── */}
-      <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] overflow-hidden">
+      <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all overflow-hidden">
         {/* Card header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
           <div className="flex items-center gap-2">
             <h2 className="text-base font-bold text-gray-700">All Dishes</h2>
-            <span className="text-xs bg-orange-50 text-[#fc8019] font-semibold px-2 py-0.5 rounded-full">
+            <span className="text-xs bg-[#fff2e8] text-[#fc8019] font-semibold px-2 py-0.5 rounded-md">
               {sorted?.length}
             </span>
           </div>
@@ -77,7 +77,7 @@ const RestaurantDishes = () => {
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
-                className="appearance-none border border-gray-200 rounded-lg px-4 py-2 pr-8 text-sm text-gray-600 font-medium bg-white focus:outline-none cursor-pointer"
+                className="appearance-none border border-gray-200 rounded-md px-4 py-2 pr-8 text-sm text-gray-600 font-medium bg-white focus:outline-none cursor-pointer"
               >
                 <option value="asc">Sort: A → Z</option>
                 <option value="desc">Sort: Z → A</option>
@@ -89,7 +89,7 @@ const RestaurantDishes = () => {
             {/* Add dish */}
             <Link
               to="/owner/dish/add"
-              className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+              className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-4 py-2 rounded-md transition-colors"
             >
               <PlusIcon color={"#fff"} size={12} />
               Add Dish
@@ -101,7 +101,7 @@ const RestaurantDishes = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100">
+              <tr className="border-b border-gray-200">
                 {["Dish Name", "Category", "Price", "Status", "Action"].map(
                   (h) => (
                     <th
@@ -122,7 +122,7 @@ const RestaurantDishes = () => {
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 min-w-10 rounded-lg bg-orange-50 border border-orange-100 flex items-center justify-center overflow-hidden">
+                      <div className="w-10 h-10 min-w-10 rounded-md bg-[#fff2e8] border border-orange-100 flex items-center justify-center overflow-hidden">
                         {dish.image ? (
                           <img
                             src={dish.image}
@@ -130,7 +130,7 @@ const RestaurantDishes = () => {
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <Utensils size={20} className="text-gray-400" />
+                          <Utensils size={20} className="text-gray-400"  strokeWidth={1.5} />
                         )}
                       </div>
                       <span className="font-medium text-gray-700">
@@ -151,14 +151,14 @@ const RestaurantDishes = () => {
                     <div className="flex items-center gap-1.5">
                       <Link
                         to={`/owner/dish/edit/${dish._id}`}
-                        className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
+                        className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
                         title="Edit"
                       >
                         <EditIcon size={15} />
                       </Link>
                       <Link
                         to={`/owner/dish/${dish._id}`}
-                        className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-blue-500 transition-colors"
+                        className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
                         title="View"
                       >
                         <ViewIcon size={15} />
@@ -167,7 +167,7 @@ const RestaurantDishes = () => {
                       <ConfirmationModal
                         button={
                           <button
-                            className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
+                            className="p-1.5 rounded-md hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
                             title="Delete"
                           >
                             <DeleteIcon size={15} />
@@ -190,7 +190,7 @@ const RestaurantDishes = () => {
         {/* Empty state */}
         {sorted?.length === 0 && (
           <div className="text-center py-16 text-gray-400">
-            <div className="flex justify-center mb-3 text-gray-300"><Utensils size={40} /></div>
+            <div className="flex justify-center mb-3 text-gray-300"><Utensils size={40}  strokeWidth={1.5} /></div>
             {loading ? (
               <p className="text-sm font-medium mb-3">Dishes Loading...</p>
             ) : (

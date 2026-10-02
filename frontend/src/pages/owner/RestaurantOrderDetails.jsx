@@ -77,7 +77,7 @@ const statusConfig = {
 };
 
 // ── Timeline ──────────────────────────────────────────────────────────────────
-const ICONS = [<ClipboardList size={18} />, <CheckCircle size={18} />, <ChefHat size={18} />, <Bike size={18} />, <PartyPopper size={18} />];
+const ICONS = [<ClipboardList size={18} />, <CheckCircle size={18}  strokeWidth={1.5} />, <ChefHat size={18} />, <Bike size={18} />, <PartyPopper size={18} />];
 
 const TimelineStep = ({ label, icon, done, active, last }) => (
   <div className="flex flex-col items-center flex-1">
@@ -87,7 +87,7 @@ const TimelineStep = ({ label, icon, done, active, last }) => (
         style={{ visibility: label === STATUSES[0] ? "hidden" : "visible" }}
       />
       <div
-        className={`w-9 h-9 rounded-full flex items-center justify-center z-10 border-2 transition-all duration-300 text-sm
+        className={`w-9 h-9 rounded-md flex items-center justify-center z-10 border-2 transition-all duration-300 text-sm
         ${
           active
             ? "border-[#fc8019] bg-[#fc8019] text-white scale-110 shadow-lg shadow-orange-200"
@@ -114,7 +114,7 @@ const TimelineStep = ({ label, icon, done, active, last }) => (
 
 // ── Section card wrapper ──────────────────────────────────────────────────────
 const Card = ({ title, children }) => (
-  <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-5">
+  <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all p-5">
     {title && (
       <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">
         {title}
@@ -132,7 +132,7 @@ const PriceRow = ({ label, value, highlight, green }) => (
       highlight
         ? "font-bold text-[#fc8019] text-base border-t border-dashed border-gray-200 mt-1 pt-3"
         : green
-          ? "text-green-600 font-medium"
+          ? "text-[#fc8019] font-medium"
           : "text-gray-600"
     }`}
   >
@@ -176,9 +176,9 @@ const RestaurantOrderDetails = () => {
     return (
       <div className="space-y-4 animate-pulse">
         <div className="h-6 bg-gray-200 rounded w-1/4" />
-        <div className="h-32 bg-gray-100 rounded-2xl" />
-        <div className="h-44 bg-gray-100 rounded-2xl" />
-        <div className="h-48 bg-gray-100 rounded-2xl" />
+        <div className="h-32 bg-gray-100 rounded-md" />
+        <div className="h-44 bg-gray-100 rounded-md" />
+        <div className="h-48 bg-gray-100 rounded-md" />
       </div>
     );
 
@@ -246,7 +246,7 @@ const RestaurantOrderDetails = () => {
                 </p>
               </div>
               <span
-                className="text-xs font-semibold px-3 py-1.5 rounded-full capitalize"
+                className="text-xs font-semibold px-3 py-1.5 rounded-md capitalize"
                 style={{ color: cfg.color, background: cfg.bg }}
               >
                 {cfg.label}
@@ -279,7 +279,7 @@ const RestaurantOrderDetails = () => {
                 <div key={item._id} className="flex items-center gap-4">
                   <Link
                     to={`/dish/${item.dish?.slug}`}
-                    className="w-14 h-14 min-w-14 rounded-xl border border-orange-100 bg-orange-50 flex items-center justify-center overflow-hidden"
+                    className="w-14 h-14 min-w-14 rounded-md border border-orange-100 bg-[#fff2e8] flex items-center justify-center overflow-hidden"
                   >
                     {item.image ? (
                       <img
@@ -288,7 +288,7 @@ const RestaurantOrderDetails = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <Utensils size={24} className="text-gray-400" />
+                      <Utensils size={24} className="text-gray-400"  strokeWidth={1.5} />
                     )}
                   </Link>
                   <div className="flex-1 min-w-0">
@@ -350,13 +350,13 @@ const RestaurantOrderDetails = () => {
                   key={s}
                   onClick={() => handleStatusChange(s)}
                   disabled={updating || s === status}
-                  className={`w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium capitalize transition-all border flex items-center
+                  className={`w-full text-left px-4 py-2.5 rounded-md text-sm font-medium capitalize transition-all border flex items-center
                     ${
                       s === status
-                        ? "border-[#fc8019] bg-orange-50 text-[#fc8019] cursor-default"
+                        ? "border-[#fc8019] bg-[#fff2e8] text-[#fc8019] cursor-default"
                         : s === "cancelled"
                           ? "border-red-100 text-red-400 hover:bg-red-50"
-                          : "border-gray-100 text-gray-500 hover:bg-gray-50"
+                          : "border-gray-200 text-gray-500 hover:bg-gray-50"
                     } disabled:opacity-50`}
                 >
                   <span className="mr-2 flex items-center justify-center">
@@ -375,7 +375,7 @@ const RestaurantOrderDetails = () => {
           {/* Customer */}
           <Card title="Customer">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-base font-bold text-[#fc8019]">
+              <div className="w-10 h-10 rounded-md bg-orange-100 flex items-center justify-center text-base font-bold text-[#fc8019]">
                 {order.user.name.charAt(0)}
               </div>
               <div>
@@ -386,11 +386,11 @@ const RestaurantOrderDetails = () => {
               </div>
             </div>
             {order.user.phone && (
-              <p className="text-xs text-gray-500 flex items-center gap-1.5"><Phone size={12} /> {order.user.phone}</p>
+              <p className="text-xs text-gray-500 flex items-center gap-1.5"><Phone size={12}  strokeWidth={1.5} /> {order.user.phone}</p>
             )}
             <Link
               to={`/admin/customers/${order.user._id}`}
-              className="mt-3 block text-center text-xs font-semibold text-[#fc8019] border border-orange-200 rounded-lg py-2 hover:bg-orange-50 transition-colors"
+              className="mt-3 block text-center text-xs font-semibold text-[#fc8019] border border-orange-200 rounded-md py-2 hover:bg-[#fff2e8] transition-colors"
             >
               View Customer →
             </Link>
@@ -411,7 +411,7 @@ const RestaurantOrderDetails = () => {
             </p>
             {order.deliveryAddress?.phoneNumber && (
               <p className="text-sm text-gray-500 mt-1.5 flex items-center gap-1.5">
-                <Phone size={14} /> {order.deliveryAddress.phoneNumber}
+                <Phone size={14}  strokeWidth={1.5} /> {order.deliveryAddress.phoneNumber}
               </p>
             )}
           </Card>
@@ -421,12 +421,12 @@ const RestaurantOrderDetails = () => {
             <div className="flex justify-between items-center">
               <p className="text-sm font-semibold text-gray-700 capitalize flex items-center gap-1.5">
                 {order.paymentMethod === "cod"
-                  ? <><Banknote size={16} /> Cash on Delivery</>
-                  : <><CreditCard size={16} /> Card</>}
+                  ? <><Banknote size={16}  strokeWidth={1.5} /> Cash on Delivery</>
+                  : <><CreditCard size={16}  strokeWidth={1.5} /> Card</>}
               </p>
               <span
-                className={`text-xs font-semibold px-3 py-1.5 rounded-full capitalize
-                ${order.paymentStatus === "paid" ? "bg-green-50 text-green-600" : "bg-yellow-50 text-yellow-600"}`}
+                className={`text-xs font-semibold px-3 py-1.5 rounded-md capitalize
+                ${order.paymentStatus === "paid" ? "bg-[#fff2e8] text-[#fc8019]" : "bg-yellow-50 text-yellow-600"}`}
               >
                 {order.paymentStatus || "pending"}
               </span>

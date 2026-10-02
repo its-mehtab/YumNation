@@ -17,9 +17,9 @@ const RestaurantSuspended = () => {
         <style>{`@keyframes fadeUp { from { opacity:0; transform:translateY(20px) } to { opacity:1; transform:translateY(0) } }`}</style>
 
         {/* ── Main card ── */}
-        <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.08)] p-8 text-center">
-          <div className="w-20 h-20 rounded-full bg-gray-100 border-2 border-gray-200 flex items-center justify-center mx-auto mb-5">
-            <Ban size={40} className="text-gray-400" />
+        <div className="bg-white rounded-md shadow-[0_0_2.3125rem_rgba(8,21,66,0.08)] p-8 text-center">
+          <div className="w-20 h-20 rounded-md bg-gray-100 border-2 border-gray-200 flex items-center justify-center mx-auto mb-5">
+            <Ban size={40} className="text-gray-400"  strokeWidth={1.5} />
           </div>
 
           <h1 className="text-xl font-bold text-gray-700 mb-2">
@@ -34,7 +34,7 @@ const RestaurantSuspended = () => {
           </p>
 
           {/* What this means */}
-          <div className="mt-6 bg-gray-50 border border-gray-100 rounded-xl px-5 py-4 text-left">
+          <div className="mt-6 bg-gray-50 border border-gray-200 rounded-md px-5 py-4 text-left">
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
               What this means
             </p>
@@ -63,7 +63,7 @@ const RestaurantSuspended = () => {
         </div>
 
         {/* ── Contact card ── */}
-        <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-5">
+        <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all p-5">
           <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
             What to do next
           </p>
@@ -96,13 +96,13 @@ const RestaurantSuspended = () => {
         <div className="grid grid-cols-2 gap-3">
           <a
             href="mailto:support@yourapp.com"
-            className="flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors text-center"
+            className="flex items-center justify-center gap-2 py-3 rounded-md border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors text-center"
           >
             <Mail size={16} /> Contact Support
           </a>
           <button
             onClick={logout}
-            className="py-3 rounded-xl border border-red-100 text-sm font-semibold text-red-400 hover:bg-red-50 transition-colors"
+            className="py-3 rounded-md border border-red-100 text-sm font-semibold text-red-400 hover:bg-red-50 transition-colors"
           >
             Sign Out
           </button>

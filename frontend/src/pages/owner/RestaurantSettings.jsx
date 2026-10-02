@@ -34,8 +34,8 @@ const mockSettings = {
 };
 
 const Section = ({ title, desc, children }) => (
-  <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] overflow-hidden">
-    <div className="px-6 py-4 border-b border-gray-100">
+  <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all overflow-hidden">
+    <div className="px-6 py-4 border-b border-gray-200">
       <p className="text-sm font-bold text-gray-700">{title}</p>
       {desc && <p className="text-xs text-gray-400 mt-0.5">{desc}</p>}
     </div>
@@ -107,13 +107,13 @@ const RestaurantSettings = () => {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors disabled:opacity-60"
+          className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-5 py-2.5 rounded-md transition-colors disabled:opacity-60"
         >
           {saving ? (
             "Saving..."
           ) : saved ? (
             <>
-              <CheckCircle size={16} /> Saved!
+              <CheckCircle size={16}  strokeWidth={1.5} /> Saved!
             </>
           ) : (
             <>
@@ -124,12 +124,12 @@ const RestaurantSettings = () => {
       </div>
 
       {/* ── Tabs ── */}
-      <div className="flex gap-1 bg-gray-100 p-1 rounded-xl w-fit mb-6">
+      <div className="flex gap-1 bg-gray-100 p-1 rounded-md w-fit mb-6">
         {tabs.map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all
+            className={`px-5 py-2 rounded-md text-sm font-semibold transition-all
               ${
                 activeTab === tab
                   ? tab === "Danger Zone"
@@ -159,7 +159,7 @@ const RestaurantSettings = () => {
                 <div className="text-center">
                   <div
                     onClick={() => logoRef.current.click()}
-                    className="w-24 h-24 rounded-2xl border-2 border-dashed border-[#fc8019] bg-orange-50 flex items-center justify-center cursor-pointer hover:bg-orange-100 transition-colors overflow-hidden"
+                    className="w-24 h-24 rounded-md border-2 border-dashed border-[#fc8019] bg-[#fff2e8] flex items-center justify-center cursor-pointer hover:bg-orange-100 transition-colors overflow-hidden"
                   >
                     {form.logo ? (
                       <img
@@ -168,7 +168,7 @@ const RestaurantSettings = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <Utensils size={30} className="text-gray-400" />
+                      <Utensils size={30} className="text-gray-400"  strokeWidth={1.5} />
                     )}
                   </div>
                   <p className="text-xs text-gray-400 mt-2">Logo</p>
@@ -184,7 +184,7 @@ const RestaurantSettings = () => {
                 <div className="flex-1">
                   <div
                     onClick={() => coverRef.current.click()}
-                    className="w-full h-32 rounded-2xl border-2 border-dashed border-orange-200 bg-orange-50 flex flex-col items-center justify-center cursor-pointer hover:bg-orange-100 transition-colors overflow-hidden"
+                    className="w-full h-32 rounded-md border-2 border-dashed border-orange-200 bg-[#fff2e8] flex flex-col items-center justify-center cursor-pointer hover:bg-orange-100 transition-colors overflow-hidden"
                   >
                     {form.coverImage ? (
                       <img
@@ -240,7 +240,7 @@ const RestaurantSettings = () => {
                   label="Slug"
                   hint="Auto-generated from name — used in your URL"
                 >
-                  <div className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors bg-white">
+                  <div className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors bg-white">
                     {form.slug || "..."}
                   </div>
                 </Field>
@@ -251,7 +251,7 @@ const RestaurantSettings = () => {
                   onChange={(e) => set("description", e.target.value)}
                   placeholder="Tell customers about your restaurant..."
                   rows={3}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors resize-none"
+                  className="w-full border border-gray-200 rounded-md px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors resize-none"
                 />
               </Field>
               <div className="grid grid-cols-2 gap-4">
@@ -423,7 +423,7 @@ const RestaurantSettings = () => {
 
         {/* ── Danger Zone ── */}
         {activeTab === "Danger Zone" && (
-          <div className="bg-white rounded-2xl border-2 border-red-100 overflow-hidden">
+          <div className="bg-white rounded-md border-2 border-red-100 overflow-hidden">
             <div className="px-6 py-4 border-b border-red-100 bg-red-50">
               <p className="text-sm font-bold text-red-500">Danger Zone</p>
               <p className="text-xs text-red-400 mt-0.5">
@@ -432,7 +432,7 @@ const RestaurantSettings = () => {
             </div>
             <div className="p-6 space-y-5">
               {/* Temporarily close */}
-              <div className="flex items-center justify-between py-4 border-b border-gray-100">
+              <div className="flex items-center justify-between py-4 border-b border-gray-200">
                 <div>
                   <p className="text-sm font-bold text-gray-700">
                     Temporarily Close Restaurant
@@ -445,14 +445,14 @@ const RestaurantSettings = () => {
                 <button
                   type="button"
                   onClick={() => set("isOpen", false)}
-                  className="px-4 py-2 rounded-lg border-2 border-yellow-300 text-yellow-600 text-sm font-semibold hover:bg-yellow-50 transition-colors shrink-0"
+                  className="px-4 py-2 rounded-md border-2 border-yellow-300 text-yellow-600 text-sm font-semibold hover:bg-yellow-50 transition-colors shrink-0"
                 >
                   Close Restaurant
                 </button>
               </div>
 
               {/* Delete all dishes */}
-              <div className="flex items-center justify-between py-4 border-b border-gray-100">
+              <div className="flex items-center justify-between py-4 border-b border-gray-200">
                 <div>
                   <p className="text-sm font-bold text-gray-700">
                     Delete All Dishes
@@ -467,7 +467,7 @@ const RestaurantSettings = () => {
                   onClick={() =>
                     window.confirm("Delete all dishes? This cannot be undone.")
                   }
-                  className="px-4 py-2 rounded-lg border-2 border-red-200 text-red-500 text-sm font-semibold hover:bg-red-50 transition-colors shrink-0"
+                  className="px-4 py-2 rounded-md border-2 border-red-200 text-red-500 text-sm font-semibold hover:bg-red-50 transition-colors shrink-0"
                 >
                   Delete All Dishes
                 </button>
@@ -491,7 +491,7 @@ const RestaurantSettings = () => {
                       "Are you absolutely sure? This will permanently delete your restaurant.",
                     )
                   }
-                  className="px-4 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-semibold transition-colors shrink-0"
+                  className="px-4 py-2 rounded-md bg-red-500 hover:bg-red-600 text-white text-sm font-semibold transition-colors shrink-0"
                 >
                   Delete Account
                 </button>
@@ -505,13 +505,13 @@ const RestaurantSettings = () => {
             <button
               type="submit"
               disabled={saving}
-              className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition-colors disabled:opacity-60"
+              className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-6 py-2.5 rounded-md transition-colors disabled:opacity-60"
             >
               {saving ? (
                 "Saving..."
               ) : saved ? (
                 <>
-                  <CheckCircle size={16} /> Saved!
+                  <CheckCircle size={16}  strokeWidth={1.5} /> Saved!
                 </>
               ) : (
                 <>

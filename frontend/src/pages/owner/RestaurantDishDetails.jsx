@@ -41,18 +41,18 @@ const Toggle = ({ checked, onChange }) => (
   <button
     type="button"
     onClick={onChange}
-    className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${checked ? "bg-[#fc8019]" : "bg-gray-200"}`}
+    className={`relative w-10 h-5 rounded-md transition-colors duration-200 ${checked ? "bg-[#fc8019]" : "bg-gray-200"}`}
   >
     <span
-      className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${checked ? "translate-x-5" : "translate-x-0"}`}
+      className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-md bg-white shadow transition-transform duration-200 ${checked ? "translate-x-5" : "translate-x-0"}`}
     />
   </button>
 );
 
 const Card = ({ title, children, action }) => (
-  <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] overflow-hidden">
+  <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all overflow-hidden">
     {(title || action) && (
-      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
         {title && (
           <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
             {title}
@@ -106,10 +106,10 @@ const RestaurantDishDetails = () => {
       <div className="space-y-4 animate-pulse">
         <div className="h-6 bg-gray-200 rounded w-1/4" />
         <div className="grid grid-cols-12 gap-5">
-          <div className="col-span-4 h-80 bg-gray-100 rounded-2xl" />
+          <div className="col-span-4 h-80 bg-gray-100 rounded-md" />
           <div className="col-span-8 space-y-4">
-            <div className="h-40 bg-gray-100 rounded-2xl" />
-            <div className="h-40 bg-gray-100 rounded-2xl" />
+            <div className="h-40 bg-gray-100 rounded-md" />
+            <div className="h-40 bg-gray-100 rounded-md" />
           </div>
         </div>
       </div>
@@ -148,7 +148,7 @@ const RestaurantDishDetails = () => {
         <div className="col-span-4 space-y-5">
           {/* Image gallery */}
           <Card>
-            <div className="aspect-square rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center overflow-hidden mb-3">
+            <div className="aspect-square rounded-md bg-[#fff2e8] border border-orange-100 flex items-center justify-center overflow-hidden mb-3">
               {dish.images[activeImage] ? (
                 <img
                   src={dish.images[activeImage]}
@@ -165,14 +165,14 @@ const RestaurantDishDetails = () => {
                   <button
                     key={i}
                     onClick={() => setActiveImage(i)}
-                    className={`flex-1 aspect-square rounded-lg border-2 flex items-center justify-center text-xl transition-all
-                      ${activeImage === i ? "border-[#fc8019] bg-orange-50" : "border-gray-100 bg-gray-50 hover:border-orange-200"}`}
+                    className={`flex-1 aspect-square rounded-md border-2 flex items-center justify-center text-xl transition-all
+                      ${activeImage === i ? "border-[#fc8019] bg-orange-50" : "border-gray-200 bg-gray-50 hover:border-orange-200"}`}
                   >
                     {img ? (
                       <img
                         src={img}
                         alt=""
-                        className="w-full h-full object-cover rounded-lg"
+                        className="w-full h-full object-cover rounded-full"
                       />
                     ) : (
                       <Pizza size={24} className="text-gray-400" />
@@ -224,14 +224,14 @@ const RestaurantDishDetails = () => {
             <div className="flex justify-between py-2 text-sm">
               <span className="text-gray-400 font-medium">Profit Margin</span>
               <span
-                className={`font-bold ${marginPct >= 50 ? "text-green-600" : marginPct >= 30 ? "text-yellow-500" : "text-red-400"}`}
+                className={`font-bold ${marginPct >= 50 ? "text-[#fc8019]" : marginPct >= 30 ? "text-yellow-500" : "text-red-400"}`}
               >
                 ${margin.toFixed(2)} ({marginPct}%)
               </span>
             </div>
-            <div className="mt-2 h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div className="mt-2 h-2 bg-gray-100 rounded-md overflow-hidden">
               <div
-                className="h-full rounded-full bg-[#fc8019] transition-all"
+                className="h-full rounded-md bg-[#fc8019] transition-all"
                 style={{ width: `${marginPct}%` }}
               />
             </div>
@@ -241,14 +241,14 @@ const RestaurantDishDetails = () => {
           <div className="flex gap-3">
             <Link
               to={`/restaurant/dishes/edit/${dish._id}`}
-              className="flex-1 py-2.5 rounded-xl bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold text-center transition-colors"
+              className="flex-1 py-2.5 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold text-center transition-colors"
             >
               Edit Dish
             </Link>
             <button
               onClick={handleDelete}
               disabled={deleting}
-              className="flex-1 py-2.5 rounded-xl border-2 border-red-200 text-red-500 text-sm font-semibold hover:bg-red-50 transition-colors disabled:opacity-50"
+              className="flex-1 py-2.5 rounded-md border-2 border-red-200 text-red-500 text-sm font-semibold hover:bg-red-50 transition-colors disabled:opacity-50"
             >
               {deleting ? "Deleting..." : "Delete"}
             </button>
@@ -274,12 +274,12 @@ const RestaurantDishDetails = () => {
                     />
                   </div>
                   {dish.isFeatured && (
-                    <span className="text-xs bg-yellow-50 text-yellow-600 font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
-                      <Star size={12} /> Featured
+                    <span className="text-xs bg-yellow-50 text-yellow-600 font-semibold px-2 py-0.5 rounded-md flex items-center gap-1">
+                      <Star size={12}  strokeWidth={1.5} /> Featured
                     </span>
                   )}
                   {!dish.isAvailable && (
-                    <span className="text-xs bg-gray-100 text-gray-400 font-semibold px-2 py-0.5 rounded-full">
+                    <span className="text-xs bg-gray-100 text-gray-400 font-semibold px-2 py-0.5 rounded-md">
                       Unavailable
                     </span>
                   )}
@@ -333,9 +333,9 @@ const RestaurantDishDetails = () => {
             {dish.variants.length === 0 ? (
               <p className="text-xs text-gray-400">No variants added.</p>
             ) : (
-              <div className="overflow-hidden rounded-xl border border-gray-100">
+              <div className="overflow-hidden rounded-md border border-gray-200">
                 {/* Header */}
-                <div className="grid grid-cols-12 px-4 py-2 bg-gray-50 border-b border-gray-100">
+                <div className="grid grid-cols-12 px-4 py-2 bg-gray-50 border-b border-gray-200">
                   <p className="col-span-6 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                     Name
                   </p>
@@ -375,7 +375,7 @@ const RestaurantDishDetails = () => {
                 {dish.addOns.map((a, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-2 bg-orange-50 border border-orange-100 rounded-xl px-3 py-2"
+                    className="flex items-center gap-2 bg-[#fff2e8] border border-orange-100 rounded-md px-3 py-2"
                   >
                     <span className="text-xs font-semibold text-gray-700">
                       {a.name}

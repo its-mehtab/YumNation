@@ -124,18 +124,18 @@ const statusConfig = {
 
 // ── Timeline ──────────────────────────────────────────────────────────────────
 const ICONS = [
-  <Package size={20} className="text-indigo-600" />,
-  <CheckCircle2 size={20} className="text-amber-600" />,
-  <Clock size={20} className="text-orange-600" />,
-  <Truck size={20} className="text-blue-600" />,
-  <CheckCircle2 size={20} className="text-green-600" />,
+  <Package size={20} className="text-indigo-600"  strokeWidth={1.5} />,
+  <CheckCircle2 size={20} className="text-amber-600"  strokeWidth={1.5} />,
+  <Clock size={20} className="text-[#fc8019]"  strokeWidth={1.5} />,
+  <Truck size={20} className="text-[#fc8019]"  strokeWidth={1.5} />,
+  <CheckCircle2 size={20} className="text-[#fc8019]"  strokeWidth={1.5} />,
 ];
 
 // ── Section card wrapper ──────────────────────────────────────────────────────
 const Card = ({ title, children, icon: Icon }) => (
-  <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden h-full">
+  <div className="bg-white rounded-md  border border-gray-200 overflow-hidden h-full">
     {title && (
-      <div className="flex items-center gap-2 px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+      <div className="flex items-center gap-2 px-6 py-4 border-b border-gray-200 bg-gray-50/50">
         {Icon && <Icon size={18} className="text-gray-400" />}
         <h3 className="text-sm font-bold text-gray-800 tracking-wide">
           {title}
@@ -154,7 +154,7 @@ const PriceRow = ({ label, value, highlight, green }) => (
       highlight
         ? "font-bold text-[#fc8019] text-lg border-t-2 border-dashed border-gray-200 mt-2 pt-4"
         : green
-          ? "text-green-600 font-bold"
+          ? "text-[#fc8019] font-bold"
           : "text-gray-600 font-medium"
     }`}
   >
@@ -214,16 +214,16 @@ const AdminOrderDetails = () => {
   if (loading)
     return (
       <div className="space-y-6 animate-pulse">
-        <div className="h-8 bg-gray-200 rounded-lg w-1/4" />
+        <div className="h-8 bg-gray-200 rounded-md w-1/4" />
         <div className="grid grid-cols-12 gap-6">
           <div className="col-span-8 space-y-6">
-            <div className="h-32 bg-gray-100 rounded-3xl" />
-            <div className="h-44 bg-gray-100 rounded-3xl" />
-            <div className="h-64 bg-gray-100 rounded-3xl" />
+            <div className="h-32 bg-gray-100 rounded-md" />
+            <div className="h-44 bg-gray-100 rounded-md" />
+            <div className="h-64 bg-gray-100 rounded-md" />
           </div>
           <div className="col-span-4 space-y-6">
-            <div className="h-48 bg-gray-100 rounded-3xl" />
-            <div className="h-48 bg-gray-100 rounded-3xl" />
+            <div className="h-48 bg-gray-100 rounded-md" />
+            <div className="h-48 bg-gray-100 rounded-md" />
           </div>
         </div>
       </div>
@@ -231,8 +231,8 @@ const AdminOrderDetails = () => {
 
   if (error || !order)
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
-        <AlertCircle size={48} className="text-gray-300 mb-4" />
+      <div className="flex flex-col items-center justify-center py-20 bg-white rounded-md border border-gray-200 shadow-sm">
+        <AlertCircle size={48} className="text-gray-300 mb-4"  strokeWidth={1.5} />
         <h3 className="text-xl font-bold text-gray-800 mb-2">
           Order Not Found
         </h3>
@@ -241,7 +241,7 @@ const AdminOrderDetails = () => {
         </p>
         <Link
           to="/admin/orders"
-          className="bg-[#fc8019] text-white px-6 py-2.5 rounded-xl font-bold hover:bg-[#e5721f] transition-colors"
+          className="bg-[#fc8019] text-white px-6 py-2.5 rounded-md font-bold hover:bg-[#e5721f] transition-colors"
         >
           Back to Orders
         </Link>
@@ -260,9 +260,9 @@ const AdminOrderDetails = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate("/admin/orders")}
-            className="p-2 bg-white border border-gray-200 rounded-xl text-gray-500 hover:text-[#fc8019] hover:border-[#fc8019] transition-all"
+            className="p-2 bg-white border border-gray-200 rounded-md text-gray-500 hover:text-[#fc8019] transition-all"
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={20}  strokeWidth={1.5} />
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-800 tracking-tight">
@@ -275,7 +275,7 @@ const AdminOrderDetails = () => {
               >
                 Orders
               </Link>
-              <ChevronRight size={14} className="text-gray-400" />
+              <ChevronRight size={14} className="text-gray-400"  strokeWidth={1.5} />
               <span className="text-[#fc8019] font-medium">
                 #{order._id.slice(-8).toUpperCase()}
               </span>
@@ -288,7 +288,7 @@ const AdminOrderDetails = () => {
         {/* ── Left column ── */}
         <div className="lg:col-span-8 space-y-6">
           {/* Order meta */}
-          <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 p-6 flex items-center justify-between flex-wrap gap-4">
+          <div className="bg-white rounded-md  border border-gray-200 p-6 flex items-center justify-between flex-wrap gap-4">
             <div>
               <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">
                 Order ID
@@ -303,7 +303,7 @@ const AdminOrderDetails = () => {
               </div>
             </div>
             <span
-              className={`text-sm font-bold px-4 py-2 rounded-xl capitalize border ${cfg.border}`}
+              className={`text-sm font-bold px-4 py-2 rounded-md capitalize border ${cfg.border}`}
               style={{ color: cfg.color, background: cfg.bg }}
             >
               {cfg.label}
@@ -329,11 +329,11 @@ const AdminOrderDetails = () => {
           )}
 
           {order && loading ? (
-            <Skeleton loading={true} className="h-20 w-full rounded-xl" />
+            <Skeleton loading={true} className="h-20 w-full rounded-md" />
           ) : (
-            <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
-              <div className="flex items-center gap-2 px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-                <Store size={18} className="text-gray-400" />
+            <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
+              <div className="flex items-center gap-2 px-6 py-4 border-b border-gray-200 bg-gray-50/50">
+                <Store size={18} className="text-gray-400"  strokeWidth={1.5} />
                 <h3 className="text-sm font-bold text-gray-800 tracking-wide">
                   Ordering From
                 </h3>
@@ -341,7 +341,7 @@ const AdminOrderDetails = () => {
               <div className="p-6">
                 <div className="flex items-center gap-5">
                   <Link to={`/admin/restaurants/${order?.restaurant?._id}`}>
-                    <div className="w-16 h-16 min-w-[4rem] rounded-2xl border border-orange-100 bg-orange-50 shadow-sm overflow-hidden flex items-center justify-center text-orange-400">
+                    <div className="w-16 h-16 min-w-[4rem] rounded-md border border-orange-100 bg-[#fff2e8] shadow-sm overflow-hidden flex items-center justify-center text-orange-400">
                       {order?.restaurantSnapshot.logo ? (
                         <img
                           src={order?.restaurantSnapshot.logo}
@@ -349,7 +349,7 @@ const AdminOrderDetails = () => {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <Store size={24} />
+                        <Store size={24}  strokeWidth={1.5} />
                       )}
                     </div>
                   </Link>
@@ -363,9 +363,9 @@ const AdminOrderDetails = () => {
                         {order?.restaurantSnapshot?.name}
                       </Link>
                       <span
-                        className={`text-xs font-bold px-2.5 py-1 rounded-lg border ${
+                        className={`text-xs font-bold px-2.5 py-1 rounded-md border ${
                           order?.restaurant?.isOpen
-                            ? "bg-green-50 text-green-700 border-green-200"
+                            ? "bg-[#fff2e8] text-green-700 border-green-200"
                             : "bg-gray-100 text-gray-500 border-gray-200"
                         }`}
                       >
@@ -377,18 +377,18 @@ const AdminOrderDetails = () => {
                     </p>
                     <div className="flex items-center gap-4 mt-2 text-xs font-medium text-gray-500 flex-wrap">
                       <span className="flex items-center gap-1.5">
-                        <MapPin size={14} className="text-gray-400" />
+                        <MapPin size={14} className="text-gray-400"  strokeWidth={1.5} />
                         {order?.restaurant?.address.addressLine1},{" "}
                         {order?.restaurant?.address.city}
                       </span>
-                      <span className="w-1 h-1 rounded-full bg-gray-300" />
+                      <span className="w-1 h-1 rounded-md bg-gray-300" />
                       <span className="flex items-center gap-1.5">
-                        <Clock size={14} className="text-gray-400" />{" "}
+                        <Clock size={14} className="text-gray-400"  strokeWidth={1.5} />{" "}
                         {order?.restaurant?.deliveryTime} min
                       </span>
-                      <span className="w-1 h-1 rounded-full bg-gray-300" />
+                      <span className="w-1 h-1 rounded-md bg-gray-300" />
                       <span className="flex items-center gap-1.5 text-yellow-600">
-                        <Star size={14} fill="currentColor" />{" "}
+                        <Star size={14} fill="currentColor"  strokeWidth={1.5} />{" "}
                         {order?.restaurant?.rating}
                       </span>
                     </div>
@@ -396,9 +396,9 @@ const AdminOrderDetails = () => {
 
                   <Link
                     to={`/admin/restaurants/${order?.restaurant?._id}`}
-                    className="shrink-0 text-sm font-bold text-[#fc8019] bg-orange-50 px-4 py-2 rounded-xl hover:bg-orange-100 transition-colors hidden sm:flex items-center gap-2"
+                    className="shrink-0 text-sm font-bold text-[#fc8019] bg-[#fff2e8] px-4 py-2 rounded-md hover:bg-orange-100 transition-colors hidden sm:flex items-center gap-2"
                   >
-                    View <ChevronRight size={16} />
+                    View <ChevronRight size={16}  strokeWidth={1.5} />
                   </Link>
                 </div>
               </div>
@@ -411,9 +411,9 @@ const AdminOrderDetails = () => {
               {order.items.map((item) => (
                 <div
                   key={item._id}
-                  className="flex items-center gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50/50 hover:bg-gray-50 transition-colors"
+                  className="flex items-center gap-4 p-4 rounded-md border border-gray-200 bg-gray-50/50 hover:bg-gray-50 transition-colors"
                 >
-                  <div className="w-16 h-16 min-w-[4rem] rounded-xl border border-orange-100 bg-white flex items-center justify-center overflow-hidden text-orange-300 shadow-sm">
+                  <div className="w-16 h-16 min-w-[4rem] rounded-md border border-orange-100 bg-white flex items-center justify-center overflow-hidden text-orange-300 shadow-sm">
                     {item.image ? (
                       <img
                         src={item.image}
@@ -421,7 +421,7 @@ const AdminOrderDetails = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <Utensils size={24} />
+                      <Utensils size={24}  strokeWidth={1.5} />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -485,10 +485,10 @@ const AdminOrderDetails = () => {
                   key={s}
                   onClick={() => handleStatusChange(s)}
                   disabled={updating || s === status}
-                  className={`w-full flex items-center justify-between text-left px-4 py-3 rounded-xl text-sm font-bold capitalize transition-all border
+                  className={`w-full flex items-center justify-between text-left px-4 py-3 rounded-md text-sm font-bold capitalize transition-all border
                     ${
                       s === status
-                        ? "border-[#fc8019] bg-orange-50 text-[#fc8019] shadow-sm shadow-orange-500/10 cursor-default"
+                        ? "border-[#fc8019] bg-[#fff2e8] text-[#fc8019] shadow-sm shadow-orange-500/10 cursor-default"
                         : s === "cancelled"
                           ? "border-gray-200 text-gray-500 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
                           : "border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-gray-800"
@@ -499,7 +499,7 @@ const AdminOrderDetails = () => {
                       className={`${s === status ? "text-[#fc8019]" : s === "cancelled" ? "text-red-500" : "text-gray-400"}`}
                     >
                       {s === "cancelled" ? (
-                        <XCircle size={18} />
+                        <XCircle size={18}  strokeWidth={1.5} />
                       ) : (
                         ICONS[STATUSES.indexOf(s)]
                       )}
@@ -515,7 +515,7 @@ const AdminOrderDetails = () => {
               ))}
             </div>
             {error && (
-              <p className="text-sm font-bold text-red-500 mt-4 text-center bg-red-50 py-2 rounded-lg">
+              <p className="text-sm font-bold text-red-500 mt-4 text-center bg-red-50 py-2 rounded-md">
                 {error}
               </p>
             )}
@@ -523,8 +523,8 @@ const AdminOrderDetails = () => {
 
           {/* Customer */}
           <Card title="Customer">
-            <div className="flex items-center gap-4 mb-4 pb-4 border-b border-gray-100">
-              <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center text-xl font-bold text-[#fc8019] capitalize">
+            <div className="flex items-center gap-4 mb-4 pb-4 border-b border-gray-200">
+              <div className="w-12 h-12 rounded-md bg-orange-100 flex items-center justify-center text-xl font-bold text-[#fc8019] capitalize">
                 {order.user.firstName.charAt(0)}
               </div>
               <div>
@@ -536,22 +536,22 @@ const AdminOrderDetails = () => {
             </div>
             {order.user.phone && (
               <div className="flex items-center gap-2 text-sm text-gray-600 font-medium mb-4">
-                <Phone size={16} className="text-gray-400" />
+                <Phone size={16} className="text-gray-400"  strokeWidth={1.5} />
                 {order.user.phone}
               </div>
             )}
             <Link
               to={`/admin/customers/${order.user._id}`}
-              className="flex items-center justify-center gap-2 w-full text-sm font-bold text-[#fc8019] bg-orange-50 hover:bg-orange-100 rounded-xl py-2.5 transition-colors"
+              className="flex items-center justify-center gap-2 w-full text-sm font-bold text-[#fc8019] bg-[#fff2e8] hover:bg-orange-100 rounded-md py-2.5 transition-colors"
             >
-              View Profile <ChevronRight size={16} />
+              View Profile <ChevronRight size={16}  strokeWidth={1.5} />
             </Link>
           </Card>
 
           {/* Delivery address */}
           <Card title="Delivery Address">
             <div className="flex gap-3">
-              <MapPin size={20} className="text-gray-400 shrink-0 mt-0.5" />
+              <MapPin size={20} className="text-gray-400 shrink-0 mt-0.5"  strokeWidth={1.5} />
               <div>
                 <p className="text-sm font-bold text-gray-800 mb-1">
                   {order.deliveryAddress?.fullName}
@@ -565,8 +565,8 @@ const AdminOrderDetails = () => {
                   — {order.deliveryAddress?.pinCode}
                 </p>
                 {order.deliveryAddress?.phoneNumber && (
-                  <div className="flex items-center gap-2 text-sm text-gray-600 font-medium mt-3 bg-gray-50 px-3 py-2 rounded-lg w-fit border border-gray-100">
-                    <Phone size={14} className="text-gray-400" />
+                  <div className="flex items-center gap-2 text-sm text-gray-600 font-medium mt-3 bg-gray-50 px-3 py-2 rounded-md w-fit border border-gray-200">
+                    <Phone size={14} className="text-gray-400"  strokeWidth={1.5} />
                     {order.deliveryAddress.phoneNumber}
                   </div>
                 )}
@@ -577,12 +577,12 @@ const AdminOrderDetails = () => {
           {/* Payment */}
           <Card title="Payment Status">
             <div className="flex flex-col gap-4">
-              <div className="flex justify-between items-center bg-gray-50 p-4 rounded-xl border border-gray-100">
+              <div className="flex justify-between items-center bg-gray-50 p-4 rounded-md border border-gray-200">
                 <div className="flex items-center gap-3">
                   {order.paymentMethod === "cod" ? (
-                    <Banknote size={24} className="text-green-600" />
+                    <Banknote size={24} className="text-[#fc8019]"  strokeWidth={1.5} />
                   ) : (
-                    <CreditCard size={24} className="text-blue-600" />
+                    <CreditCard size={24} className="text-[#fc8019]"  strokeWidth={1.5} />
                   )}
                   <div>
                     <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-0.5">
@@ -601,8 +601,8 @@ const AdminOrderDetails = () => {
                   Status
                 </p>
                 <span
-                  className={`text-xs font-bold px-3 py-1.5 rounded-lg border capitalize
-                  ${order.paymentStatus === "paid" ? "bg-green-50 text-green-700 border-green-200" : "bg-yellow-50 text-yellow-700 border-yellow-200"}`}
+                  className={`text-xs font-bold px-3 py-1.5 rounded-md border capitalize
+                  ${order.paymentStatus === "paid" ? "bg-[#fff2e8] text-green-700 border-green-200" : "bg-yellow-50 text-yellow-700 border-yellow-200"}`}
                 >
                   {order.paymentStatus || "pending"}
                 </span>

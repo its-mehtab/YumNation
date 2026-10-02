@@ -22,13 +22,13 @@ import {
 // ─── Stat Card ────────────────────────────────────────────────────────────────
 
 const StatCard = ({ label, value, icon: Icon, bg, color }) => (
-  <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 p-6 flex items-center justify-between transition-all hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]">
+  <div className="bg-white rounded-md  border border-gray-200 p-6 flex items-center justify-between transition-all hover:shadow-md">
     <div>
       <p className="text-sm font-semibold text-gray-500 mb-2">{label}</p>
       <p className="text-3xl font-bold text-gray-800">{value}</p>
     </div>
-    <div className={`p-4 rounded-xl ${bg} ${color}`}>
-      <Icon size={28} strokeWidth={2.5} />
+    <div className={`p-4 rounded-md ${bg} ${color}`}>
+      <Icon size={28} strokeWidth={1.5} />
     </div>
   </div>
 );
@@ -37,14 +37,14 @@ const StatCard = ({ label, value, icon: Icon, bg, color }) => (
 
 const Badge = ({ children, variant }) => {
   const styles = {
-    active: "bg-green-50 text-green-700 border-green-200",
+    active: "bg-[#fff2e8] text-green-700 border-green-200",
     inactive: "bg-gray-100 text-gray-500 border-gray-200",
-    flat: "bg-blue-50 text-blue-700 border-blue-200",
-    percentage: "bg-orange-50 text-orange-700 border-orange-200",
+    flat: "bg-[#fff2e8] text-blue-700 border-blue-200",
+    percentage: "bg-[#fff2e8] text-orange-700 border-orange-200",
   };
   return (
     <span
-      className={`flex items-center text-[11px] font-bold px-3 py-1 rounded-lg border ${styles[variant] || styles.inactive} transition-colors`}
+      className={`flex items-center text-[11px] font-bold px-3 py-1 rounded-md border ${styles[variant] || styles.inactive} transition-colors`}
     >
       {children}
     </span>
@@ -122,8 +122,8 @@ const AdminPromoCodes = () => {
         </div>
         <PromoModal
           btn={
-            <button className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-bold px-4 py-2.5 rounded-xl shadow-md shadow-orange-500/20 transition-all">
-              <Plus size={18} strokeWidth={2.5} />
+            <button className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-bold px-4 py-2.5 rounded-md shadow-md shadow-orange-500/20 transition-all">
+              <Plus size={18} strokeWidth={1.5} />
               New Promo Code
             </button>
           }
@@ -137,51 +137,51 @@ const AdminPromoCodes = () => {
           value={total}
           icon={Ticket}
           bg="bg-blue-50"
-          color="text-blue-600"
+          color="text-[#fc8019]"
         />
         <StatCard
           label="Active"
           value={active}
           icon={CheckCircle}
           bg="bg-green-50"
-          color="text-green-600"
+          color="text-[#fc8019]"
         />
         <StatCard
           label="Total uses"
           value={totalUses.toLocaleString()}
           icon={TrendingUp}
           bg="bg-orange-50"
-          color="text-orange-600"
+          color="text-[#fc8019]"
         />
         <StatCard
           label="Flat discounts"
           value={flatCount}
           icon={Percent}
           bg="bg-purple-50"
-          color="text-purple-600"
+          color="text-[#fc8019]"
         />
       </div>
 
-      <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-6 py-5 border-b border-gray-100 gap-4">
+      <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-6 py-5 border-b border-gray-200 gap-4">
           <h2 className="text-lg font-bold text-gray-800">All Promo Codes</h2>
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
             <div className="relative w-full sm:w-64">
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                 size={18}
-              />
+               strokeWidth={1.5} />
               <input
                 placeholder="Search code or title..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all outline-none"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-md text-sm focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all outline-none"
               />
             </div>
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="w-full sm:w-auto bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-600 outline-none focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all"
+              className="w-full sm:w-auto bg-gray-50 border border-gray-200 rounded-md px-4 py-2.5 text-sm font-semibold text-gray-600 outline-none focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all"
             >
               <option value="">All Status</option>
               <option value="active">Active</option>
@@ -190,7 +190,7 @@ const AdminPromoCodes = () => {
             <select
               value={filterdiscountType}
               onChange={(e) => setFilterdiscountType(e.target.value)}
-              className="w-full sm:w-auto bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-gray-600 outline-none focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all"
+              className="w-full sm:w-auto bg-gray-50 border border-gray-200 rounded-md px-4 py-2.5 text-sm font-semibold text-gray-600 outline-none focus:bg-white focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all"
             >
               <option value="">All Types</option>
               <option value="flat">Flat</option>
@@ -203,7 +203,7 @@ const AdminPromoCodes = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead className="bg-gray-50/50 text-gray-500">
-              <tr className="border-b border-gray-100">
+              <tr className="border-b border-gray-200">
                 {[
                   "Code",
                   "Title",
@@ -230,8 +230,8 @@ const AdminPromoCodes = () => {
                     className="text-center py-20 text-sm text-gray-500 font-medium"
                   >
                     <div className="flex flex-col items-center justify-center">
-                      <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-                        <Ticket size={32} className="text-gray-400" />
+                      <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
+                        <Ticket size={32} className="text-gray-400"  strokeWidth={1.5} />
                       </div>
                       <h3 className="text-lg font-bold text-gray-800 mb-1">
                         No promo codes found
@@ -249,7 +249,7 @@ const AdminPromoCodes = () => {
                     className="hover:bg-gray-50/80 transition-colors group"
                   >
                     <td className="px-6 py-4">
-                      <span className="font-mono text-xs font-bold bg-orange-50 text-orange-700 border border-orange-200 px-3 py-1.5 rounded-lg tracking-wider">
+                      <span className="font-mono text-xs font-bold bg-[#fff2e8] text-orange-700 border border-orange-200 px-3 py-1.5 rounded-md tracking-wider">
                         {p.code}
                       </span>
                     </td>
@@ -308,20 +308,20 @@ const AdminPromoCodes = () => {
                           initial={p}
                           btn={
                             <button
-                              className="p-2 rounded-lg bg-white border border-gray-200 text-gray-400 hover:text-[#fc8019] hover:border-[#fc8019] shadow-sm transition-all"
+                              className="p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-[#fc8019] shadow-sm transition-all"
                               title="Edit"
                             >
-                              <Edit2 size={16} />
+                              <Edit2 size={16}  strokeWidth={1.5} />
                             </button>
                           }
                         />
                         <ConfirmationModal
                           button={
                             <button
-                              className="p-2 rounded-lg bg-white border border-gray-200 text-gray-400 hover:text-red-600 hover:border-red-400 shadow-sm transition-all"
+                              className="p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-red-600 hover:border-red-400 shadow-sm transition-all"
                               title="Delete"
                             >
-                              <Trash2 size={16} />
+                              <Trash2 size={16}  strokeWidth={1.5} />
                             </button>
                           }
                           heading="Delete this promo code?"

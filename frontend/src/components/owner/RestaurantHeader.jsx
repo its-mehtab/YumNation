@@ -29,7 +29,7 @@ const RestaurantHeader = () => {
         <img src={assets.logoWhite} alt="logo" className="h-8 w-auto" />
       </NavLink>
       <div
-        className={`flex items-center w-full gap-3 px-3.5 py-1.5 [#fc8e32] border rounded-lg border-[#ffa052] max-w-xl relative`}
+        className={`flex items-center w-full gap-3 px-3.5 py-1.5 [#fc8e32] border rounded-md border-[#ffa052] max-w-xl relative`}
       >
         <span className="border-r-2 border-white pr-5 cursor-pointer">
           <SearchIcon />
@@ -126,7 +126,7 @@ const RestaurantHeader = () => {
       </div>
       <div className="ml-auto">
         <div
-          className={`rounded-lg px-3 py-2 flex gap-2 items-center relative cursor-pointer select-none ${isOpen ? "bg-white text-gray-600" : "bg-[#fc8e32] text-white"}`}
+          className={`rounded-md px-3 py-2 flex gap-2 items-center relative cursor-pointer select-none ${isOpen ? "bg-white text-gray-600" : "bg-[#fc8e32] text-white"}`}
           onClick={() => setIsOpen(!isOpen)}
           ref={dropdownRef}
         >
@@ -144,7 +144,7 @@ const RestaurantHeader = () => {
           </div>
 
           <ul
-            className={`rounded-b-lg py-2 text-xs font-medium text-gray-400 absolute top-12.5 right-0 w-full bg-white z-20 transition-all duration-200 origin-top shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] min-w-36 ${!isOpen ? "scale-y-0" : "scale-y-100"}`}
+            className={`rounded-b-lg py-2 text-xs font-medium text-gray-400 absolute top-12.5 right-0 w-full bg-white z-20 transition-all duration-200 origin-top border border-gray-200 hover:shadow-md transition-all min-w-36 ${!isOpen ? "scale-y-0" : "scale-y-100"}`}
             aria-labelledby="dropdownInformationButton"
           >
             {isLoggedIn && (
@@ -165,7 +165,7 @@ const RestaurantHeader = () => {
                     >
                       <path
                         stroke="#fc8019"
-                        strokeWidth={2}
+                        strokeWidth={1.5}
                         d="M7 17v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3Zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                       />
                     </svg>
@@ -189,7 +189,7 @@ const RestaurantHeader = () => {
                       <path
                         stroke="#fc8019"
                         strokeLinecap="round"
-                        strokeWidth={2}
+                        strokeWidth={1.5}
                         d="M20 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6h-2m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4"
                       />
                     </svg>
@@ -214,7 +214,7 @@ const RestaurantHeader = () => {
                         stroke="#fc8019"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
+                        strokeWidth={1.5}
                         d="M12 14v3m-3-6V7a3 3 0 1 1 6 0v4m-8 0h10a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1Z"
                       />
                     </svg>
@@ -238,7 +238,7 @@ const RestaurantHeader = () => {
                       <path
                         stroke="#fc8019"
                         strokeLinecap="round"
-                        strokeWidth={2}
+                        strokeWidth={1.5}
                         d="M20 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6h-2m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4"
                       />
                     </svg>
@@ -263,7 +263,7 @@ const RestaurantHeader = () => {
                         stroke="#fc8019"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
+                        strokeWidth={1.5}
                         d="M12 5.365V3m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175 0 .593 0 1.292-.538 1.292H5.538C5 18 5 17.301 5 16.708c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 12 5.365ZM8.733 18c.094.852.306 1.54.944 2.112a3.48 3.48 0 0 0 4.646 0c.638-.572 1.236-1.26 1.33-2.112h-6.92Z"
                       />
                     </svg>
@@ -288,7 +288,7 @@ const RestaurantHeader = () => {
                         stroke="#fc8019"
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
+                        strokeWidth={1.5}
                         d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"
                       />
                     </svg>

@@ -20,7 +20,7 @@ const steps = [
     done: true,
   },
   {
-    icon: <Search size={20} />,
+    icon: <Search size={20}  strokeWidth={1.5} />,
     label: "Under Review",
     done: false,
     active: true,
@@ -42,10 +42,10 @@ const RestaurantPendingApproval = () => {
         <style>{`@keyframes fadeUp { from { opacity:0; transform:translateY(20px) } to { opacity:1; transform:translateY(0) } }`}</style>
 
         {/* ── Main card ── */}
-        <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.08)] p-8 text-center">
+        <div className="bg-white rounded-md shadow-[0_0_2.3125rem_rgba(8,21,66,0.08)] p-8 text-center">
           {/* Animated hourglass */}
           <div
-            className="w-20 h-20 rounded-full bg-orange-50 border-2 border-orange-100 flex items-center justify-center text-4xl mx-auto mb-5 text-orange-400"
+            className="w-20 h-20 rounded-md bg-[#fff2e8] border-2 border-orange-100 flex items-center justify-center text-4xl mx-auto mb-5 text-orange-400"
             style={{ animation: "pulse 2s ease-in-out infinite" }}
           >
             <Hourglass size={40} />
@@ -70,11 +70,11 @@ const RestaurantPendingApproval = () => {
             {steps.map((s, i) => (
               <div
                 key={i}
-                className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all
-                ${s.active ? "bg-orange-50 border border-orange-100" : s.done ? "bg-green-50" : "bg-gray-50"}`}
+                className={`flex items-center gap-4 px-4 py-3 rounded-md transition-all
+                ${s.active ? "bg-[#fff2e8] border border-orange-100" : s.done ? "bg-green-50" : "bg-gray-50"}`}
               >
                 <div
-                  className={`w-9 h-9 rounded-full flex items-center justify-center text-base shrink-0
+                  className={`w-9 h-9 rounded-md flex items-center justify-center text-base shrink-0
                   ${s.done ? "bg-green-100" : s.active ? "bg-orange-100" : "bg-gray-100"}`}
                 >
                   {s.icon}
@@ -82,7 +82,7 @@ const RestaurantPendingApproval = () => {
                 <div className="flex-1">
                   <p
                     className={`text-sm font-semibold
-                    ${s.done ? "text-green-600" : s.active ? "text-[#fc8019]" : "text-gray-300"}`}
+                    ${s.done ? "text-[#fc8019]" : s.active ? "text-[#fc8019]" : "text-gray-300"}`}
                   >
                     {s.label}
                   </p>
@@ -90,7 +90,7 @@ const RestaurantPendingApproval = () => {
                 <div className="shrink-0">
                   {s.done && <span className="text-green-500 text-sm">✓</span>}
                   {s.active && (
-                    <span className="text-xs bg-[#fc8019] text-white font-semibold px-2.5 py-1 rounded-full">
+                    <span className="text-xs bg-[#fc8019] text-white font-semibold px-2.5 py-1 rounded-md">
                       In Progress
                     </span>
                   )}
@@ -101,7 +101,7 @@ const RestaurantPendingApproval = () => {
         </div>
 
         {/* ── Info card ── */}
-        <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.05)] p-5">
+        <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all p-5">
           <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
             What to expect
           </p>
@@ -112,11 +112,11 @@ const RestaurantPendingApproval = () => {
                 text: "You'll get an email when your application is approved or rejected",
               },
               {
-                icon: <Clock size={16} />,
+                icon: <Clock size={16}  strokeWidth={1.5} />,
                 text: "Review usually takes 2–3 business days",
               },
               {
-                icon: <Phone size={16} />,
+                icon: <Phone size={16}  strokeWidth={1.5} />,
                 text: "Our team may contact you for additional information",
               },
               {
@@ -140,13 +140,13 @@ const RestaurantPendingApproval = () => {
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={() => window.location.reload()}
-            className="py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
+            className="py-3 rounded-md border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
           >
             <RefreshCcw size={16} /> Refresh Status
           </button>
           <button
             onClick={logout}
-            className="py-3 rounded-xl border border-red-100 text-sm font-semibold text-red-400 hover:bg-red-50 transition-colors"
+            className="py-3 rounded-md border border-red-100 text-sm font-semibold text-red-400 hover:bg-red-50 transition-colors"
           >
             Sign Out
           </button>

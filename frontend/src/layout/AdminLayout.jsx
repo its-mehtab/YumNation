@@ -2,11 +2,13 @@ import AdminHeader from "../components/admin/AdminHeader";
 import AdminSidebar from "../components/admin/AdminSidebar";
 
 const AdminLayout = ({ children }) => (
-  <div className="flex h-screen bg-gray-50/50">
+  <div className="flex h-screen bg-white">
     <AdminSidebar />
-    <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+    <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#ea6a12]">
       <AdminHeader />
-      <main className="flex-1 overflow-y-auto p-8">{children}</main>
+      <main className="flex-1 overflow-y-auto p-8 bg-white rounded-tl-[2.5rem] z-10 shadow-[-5px_-5px_20px_rgba(0,0,0,0.02)]">
+        {children}
+      </main>
     </div>
   </div>
 );

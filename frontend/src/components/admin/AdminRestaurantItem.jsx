@@ -47,7 +47,7 @@ const StatusBadge = ({ status }) => {
   const cfg = statusConfig[status] || statusConfig.pending;
   return (
     <span
-      className={`text-xs font-bold px-3 py-1.5 rounded-lg border ${cfg.bg} ${cfg.text} ${cfg.border}`}
+      className={`text-xs font-bold px-3 py-1.5 rounded-md border ${cfg.bg} ${cfg.text} ${cfg.border}`}
     >
       {cfg.label}
     </span>
@@ -56,8 +56,8 @@ const StatusBadge = ({ status }) => {
 
 const StarRating = ({ rating }) =>
   rating > 0 ? (
-    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-yellow-50 text-yellow-700 rounded-lg w-fit border border-yellow-100">
-      <Star size={14} className="fill-yellow-400 stroke-yellow-500" />
+    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-yellow-50 text-yellow-700 rounded-md w-fit border border-yellow-100">
+      <Star size={14} className="fill-yellow-400 stroke-yellow-500"  strokeWidth={1.5} />
       <span className="text-xs font-bold">{rating.toFixed(1)}</span>
     </div>
   ) : (
@@ -143,8 +143,8 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
     <tr key={r._id} className="hover:bg-gray-50/80 transition-colors group">
       <td className="px-6 py-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 min-w-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-[#fc8019]">
-            <Store size={20} />
+          <div className="w-10 h-10 min-w-10 rounded-md bg-[#fff2e8] border border-orange-100 flex items-center justify-center text-[#fc8019]">
+            <Store size={20}  strokeWidth={1.5} />
           </div>
           <p className="font-bold text-gray-800">{r.name}</p>
         </div>
@@ -155,7 +155,7 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
       </td>
       <td className="px-4 py-4 text-gray-600 text-xs">
         <div className="flex items-center gap-1.5">
-          <MapPin size={14} className="text-gray-400" />
+          <MapPin size={14} className="text-gray-400"  strokeWidth={1.5} />
           {r.address.city}
         </div>
       </td>
@@ -181,15 +181,15 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
             <>
               <button
                 onClick={() => handleApprove(r._id)}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-green-50 text-green-700 text-xs font-bold hover:bg-green-100 hover:shadow-sm border border-green-200 transition-all"
+                className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#fff2e8] text-green-700 text-xs font-bold hover:bg-green-100 hover:shadow-sm border border-green-200 transition-all"
               >
-                <Check size={14} strokeWidth={3} /> Approve
+                <Check size={14} strokeWidth={1.5} /> Approve
               </button>
               <button
                 onClick={() => setRejectTarget(r)}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red-700 text-xs font-bold hover:bg-red-100 hover:shadow-sm border border-red-200 transition-all"
+                className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-red-50 text-red-700 text-xs font-bold hover:bg-red-100 hover:shadow-sm border border-red-200 transition-all"
               >
-                <X size={14} strokeWidth={3} /> Reject
+                <X size={14} strokeWidth={1.5} /> Reject
               </button>
             </>
           )}
@@ -208,7 +208,7 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
               }
               button={
                 <button
-                  className="flex items-center justify-center p-2 rounded-lg bg-white border border-gray-200 text-gray-400 hover:text-yellow-600 hover:border-yellow-400 shadow-sm transition-all"
+                  className="flex items-center justify-center p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-yellow-600 hover:border-yellow-400 shadow-sm transition-all"
                   title="Suspend"
                 >
                   <ShieldAlert size={16} />
@@ -219,7 +219,7 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
           {(r.status === "suspended" || r.status === "rejected") && (
             <button
               onClick={() => handleApprove(r._id)}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-green-50 text-green-700 text-xs font-bold hover:bg-green-100 hover:shadow-sm border border-green-200 transition-all"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#fff2e8] text-green-700 text-xs font-bold hover:bg-green-100 hover:shadow-sm border border-green-200 transition-all"
             >
               Reinstate
             </button>
@@ -227,7 +227,7 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
           {/* View */}
           <Link
             to={`/admin/restaurants/${r._id}`}
-            className="flex items-center justify-center p-2 rounded-lg bg-white border border-gray-200 text-gray-400 hover:text-blue-600 hover:border-blue-400 shadow-sm transition-all"
+            className="flex items-center justify-center p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-[#fc8019] hover:border-blue-400 shadow-sm transition-all"
             title="View Details"
           >
             <Eye size={16} />
@@ -249,10 +249,10 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
             }
             button={
               <button
-                className="flex items-center justify-center p-2 rounded-lg bg-white border border-gray-200 text-gray-400 hover:text-red-600 hover:border-red-400 shadow-sm transition-all"
+                className="flex items-center justify-center p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-red-600 hover:border-red-400 shadow-sm transition-all"
                 title="Delete"
               >
-                <Trash2 size={16} />
+                <Trash2 size={16}  strokeWidth={1.5} />
               </button>
             }
           />

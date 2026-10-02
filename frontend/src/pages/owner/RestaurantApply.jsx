@@ -131,7 +131,7 @@ const RestaurantApply = () => {
       <div className="max-w-2xl mx-auto">
         {/* ── Header ── */}
         <div className="text-center mb-8">
-          <div className="flex justify-center mb-3 text-gray-400"><Utensils size={40} /></div>
+          <div className="flex justify-center mb-3 text-gray-400"><Utensils size={40}  strokeWidth={1.5} /></div>
           <h1 className="text-2xl font-bold text-gray-700">Partner with Us</h1>
           <p className="text-sm text-gray-400 mt-1">
             Fill in your restaurant details to apply for listing
@@ -144,7 +144,7 @@ const RestaurantApply = () => {
             <React.Fragment key={s.id}>
               <div className="flex flex-col items-center">
                 <div
-                  className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all
+                  className={`w-9 h-9 rounded-md flex items-center justify-center text-sm font-bold border-2 transition-all
                   ${
                     step > s.id
                       ? "bg-[#fc8019] border-[#fc8019] text-white"
@@ -171,8 +171,8 @@ const RestaurantApply = () => {
         </div>
 
         {/* ── Card ── */}
-        <div className="bg-white rounded-2xl shadow-[0_0_2.3125rem_rgba(8,21,66,0.08)] overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-100 bg-orange-50">
+        <div className="bg-white rounded-md shadow-[0_0_2.3125rem_rgba(8,21,66,0.08)] overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200 bg-orange-50">
             <p className="text-sm font-bold text-gray-700">
               {STEPS[step - 1].title}
             </p>
@@ -190,7 +190,7 @@ const RestaurantApply = () => {
                   {/* <div className="text-center">
                     <div
                       onClick={() => logoRef.current.click()}
-                      className="w-20 h-20 rounded-2xl border-2 border-dashed border-[#fc8019] bg-orange-50 flex items-center justify-center cursor-pointer hover:bg-orange-100 transition-colors overflow-hidden"
+                      className="w-20 h-20 rounded-md border-2 border-dashed border-[#fc8019] bg-[#fff2e8] flex items-center justify-center cursor-pointer hover:bg-orange-100 transition-colors overflow-hidden"
                     >
                       {form.logo ? (
                         <img
@@ -214,7 +214,7 @@ const RestaurantApply = () => {
                   {/* <div className="flex-1">
                     <div
                       onClick={() => coverRef.current.click()}
-                      className="w-full h-24 rounded-2xl border-2 border-dashed border-orange-200 bg-orange-50 flex flex-col items-center justify-center cursor-pointer hover:bg-orange-100 transition-colors overflow-hidden"
+                      className="w-full h-24 rounded-md border-2 border-dashed border-orange-200 bg-[#fff2e8] flex flex-col items-center justify-center cursor-pointer hover:bg-orange-100 transition-colors overflow-hidden"
                     >
                       {form.coverImage ? (
                         <img
@@ -284,7 +284,7 @@ const RestaurantApply = () => {
                     onChange={(e) => set("description", e.target.value)}
                     placeholder="Tell customers about your restaurant, cuisine, and specialties..."
                     rows={3}
-                    className="w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors resize-none"
+                    className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors resize-none"
                   />
                   {errors.description && (
                     <p className="text-xs text-red-400 mt-1">
@@ -293,7 +293,7 @@ const RestaurantApply = () => {
                   )}
                 </Field>
 
-                <div className="flex items-center justify-between py-3 px-4 bg-green-50 rounded-xl border border-green-100">
+                <div className="flex items-center justify-between py-3 px-4 bg-[#fff2e8] rounded-md border border-green-100">
                   <div>
                     <p className="text-sm font-semibold text-gray-700">
                       Pure Veg Restaurant
@@ -440,7 +440,7 @@ const RestaurantApply = () => {
             {/* ── Step 4 — Review ── */}
             {step === 4 && (
               <div className="space-y-5">
-                <div className="bg-orange-50 border border-orange-100 rounded-xl px-4 py-3">
+                <div className="bg-[#fff2e8] border border-orange-100 rounded-md px-4 py-3">
                   <p className="text-xs font-semibold text-[#fc8019]">
                     Please review your details before submitting.
                   </p>
@@ -460,7 +460,7 @@ const RestaurantApply = () => {
                   <ReviewRow label="Description" value={form.description} />
                   <ReviewRow
                     label="Pure Veg"
-                    value={form.isPureVeg ? <span className="flex items-center gap-1 justify-end">Yes <CheckCircle size={14} className="text-green-500" /></span> : "No"}
+                    value={form.isPureVeg ? <span className="flex items-center gap-1 justify-end">Yes <CheckCircle size={14} className="text-green-500"  strokeWidth={1.5} /></span> : "No"}
                   />
                 </div>
 
@@ -503,12 +503,12 @@ const RestaurantApply = () => {
           </div>
 
           {/* ── Navigation ── */}
-          <div className="px-6 py-4 border-t border-gray-100 flex justify-between items-center">
+          <div className="px-6 py-4 border-t border-gray-200 flex justify-between items-center">
             <button
               type="button"
               onClick={handleBack}
               disabled={step === 1}
-              className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors disabled:opacity-30"
+              className="px-5 py-2.5 rounded-md border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors disabled:opacity-30"
             >
               ← Back
             </button>
@@ -526,7 +526,7 @@ const RestaurantApply = () => {
               <button
                 type="button"
                 onClick={handleNext}
-                className="px-5 py-2.5 rounded-xl bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors"
+                className="px-5 py-2.5 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors"
               >
                 Next →
               </button>
@@ -535,7 +535,7 @@ const RestaurantApply = () => {
                 type="button"
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="px-6 py-2.5 rounded-xl bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors disabled:opacity-60"
+                className="px-6 py-2.5 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors disabled:opacity-60"
               >
                 {submitting ? "Submitting..." : <span className="flex items-center justify-center gap-2">Submit Application <Rocket size={16} /></span>}
               </button>

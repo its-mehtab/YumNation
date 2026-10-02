@@ -21,6 +21,8 @@ import {
   CheckCircle2,
   Clock,
   XCircle,
+  ChevronRight,
+  Truck,
 } from "lucide-react";
 
 // ─── Small reusable pieces ────────────────────────────────────────────────────
@@ -28,7 +30,7 @@ import {
 const StatusBadge = ({ status }) => {
   const map = {
     active: {
-      bg: "bg-green-50 text-green-700 border-green-200",
+      bg: "bg-[#fff2e8] text-green-700 border-green-200",
       label: "Active",
       icon: CheckCircle2,
     },
@@ -43,7 +45,7 @@ const StatusBadge = ({ status }) => {
       icon: Ban,
     },
     delivered: {
-      bg: "bg-green-50 text-green-700 border-green-200",
+      bg: "bg-[#fff2e8] text-green-700 border-green-200",
       label: "Delivered",
       icon: CheckCircle2,
     },
@@ -53,7 +55,7 @@ const StatusBadge = ({ status }) => {
       icon: XCircle,
     },
     out_for_delivery: {
-      bg: "bg-blue-50 text-blue-700 border-blue-200",
+      bg: "bg-[#fff2e8] text-blue-700 border-blue-200",
       label: "Out for Delivery",
       icon: Truck,
     },
@@ -74,7 +76,7 @@ const StatusBadge = ({ status }) => {
 
   return (
     <span
-      className={`inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-lg border ${config.bg}`}
+      className={`inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-md border ${config.bg}`}
     >
       <Icon size={14} />
       {config.label}
@@ -95,12 +97,12 @@ const InfoRow = ({ label, value, icon: Icon }) => (
 );
 
 const StatBox = ({ label, value, color, icon: Icon, bgClass }) => (
-  <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] flex flex-col justify-between hover:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] transition-all gap-4">
+  <div className="bg-white rounded-md p-5 border border-gray-200  flex flex-col justify-between hover:shadow-md transition-all gap-4">
     <div className="flex items-center justify-between">
       <div
-        className={`p-3 rounded-xl ${bgClass || "bg-gray-50 text-gray-600"}`}
+        className={`p-3 rounded-md ${bgClass || "bg-gray-50 text-gray-600"}`}
       >
-        {Icon && <Icon size={24} strokeWidth={2.5} />}
+        {Icon && <Icon size={24} strokeWidth={1.5} />}
       </div>
     </div>
     <div>
@@ -115,7 +117,7 @@ const StatBox = ({ label, value, color, icon: Icon, bgClass }) => (
 );
 
 const SectionHeader = ({ title, icon: Icon }) => (
-  <div className="flex items-center gap-2 px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+  <div className="flex items-center gap-2 px-6 py-4 border-b border-gray-200 bg-gray-50/50">
     {Icon && <Icon size={18} className="text-gray-400" />}
     <h3 className="text-sm font-bold text-gray-800 tracking-wide">{title}</h3>
   </div>
@@ -149,7 +151,7 @@ const OrderRow = ({ order }) => (
     </td>
     <td className="px-6 py-4">
       {order.couponCode ? (
-        <span className="font-mono text-[11px] font-bold text-orange-700 bg-orange-50 px-2.5 py-1 rounded-lg border border-orange-200">
+        <span className="font-mono text-[11px] font-bold text-orange-700 bg-[#fff2e8] px-2.5 py-1 rounded-md border border-orange-200">
           {order.couponCode}
         </span>
       ) : (
@@ -217,15 +219,15 @@ const AdminCustomerDetails = () => {
   if (loading)
     return (
       <div className="space-y-6 animate-pulse">
-        <div className="h-24 bg-gray-100 rounded-3xl" />
+        <div className="h-24 bg-gray-100 rounded-md" />
         <div className="grid grid-cols-5 gap-4">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-32 bg-gray-100 rounded-2xl" />
+            <div key={i} className="h-32 bg-gray-100 rounded-md" />
           ))}
         </div>
         <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-4 h-96 bg-gray-100 rounded-3xl" />
-          <div className="col-span-8 h-96 bg-gray-100 rounded-3xl" />
+          <div className="col-span-4 h-96 bg-gray-100 rounded-md" />
+          <div className="col-span-8 h-96 bg-gray-100 rounded-md" />
         </div>
       </div>
     );
@@ -252,9 +254,9 @@ const AdminCustomerDetails = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate("/admin/customers")}
-            className="p-2 bg-white border border-gray-200 rounded-xl text-gray-500 hover:text-[#fc8019] hover:border-[#fc8019] transition-all"
+            className="p-2 bg-white border border-gray-200 rounded-md text-gray-500 hover:text-[#fc8019] transition-all"
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={20} strokeWidth={1.5} />
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-800 tracking-tight">
@@ -267,7 +269,11 @@ const AdminCustomerDetails = () => {
               >
                 Customers
               </button>
-              <ChevronRight size={14} className="text-gray-400" />
+              <ChevronRight
+                size={14}
+                className="text-gray-400"
+                strokeWidth={1.5}
+              />
               <span className="text-[#fc8019] font-medium capitalize">
                 {customer?.firstName} {customer?.lastName}
               </span>
@@ -277,9 +283,9 @@ const AdminCustomerDetails = () => {
       </div>
 
       {/* ── Top Header Card ── */}
-      <div className="bg-white rounded-3xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div className="bg-white rounded-md  border border-gray-200 p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex items-center gap-6">
-          <div className="w-20 h-20 rounded-2xl bg-orange-100 flex items-center justify-center text-[#fc8019] text-3xl font-bold shadow-sm border border-orange-200">
+          <div className="w-20 h-20 rounded-md bg-orange-100 flex items-center justify-center text-[#fc8019] text-3xl font-bold shadow-sm border border-orange-200">
             {customer?.firstName?.slice(0, 1).toUpperCase()}
             {customer?.lastName?.slice(0, 1).toUpperCase()}
           </div>
@@ -294,7 +300,7 @@ const AdminCustomerDetails = () => {
               <span className="flex items-center gap-1.5">
                 <Mail size={16} className="text-gray-400" /> {customer?.email}
               </span>
-              <span className="w-1 h-1 rounded-full bg-gray-300" />
+              <span className="w-1 h-1 rounded-md bg-gray-300" />
               <span className="flex items-center gap-1.5">
                 <Calendar size={16} className="text-gray-400" /> Joined{" "}
                 {dayjs(customer?.joinedAt || customer?.createdAt).format(
@@ -308,13 +314,13 @@ const AdminCustomerDetails = () => {
         <div className="flex items-center gap-3 w-full md:w-auto">
           <button
             onClick={handleToggleStatus}
-            className={`w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold rounded-xl border transition-all ${
+            className={`w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 text-sm font-bold rounded-md border transition-all ${
               status === "blocked"
-                ? "bg-green-50 text-green-700 border-green-200 hover:bg-green-100"
+                ? "bg-[#fff2e8] text-green-700 border-green-200 hover:bg-green-100"
                 : "bg-red-50 text-red-700 border-red-200 hover:bg-red-100"
             }`}
           >
-            <Ban size={18} />
+            <Ban size={18} strokeWidth={1.5} />
             {status === "blocked" ? "Unblock Customer" : "Block Customer"}
           </button>
         </div>
@@ -327,14 +333,14 @@ const AdminCustomerDetails = () => {
           value={customer?.totalOrders || 0}
           color="#2563eb"
           icon={ShoppingBag}
-          bgClass="bg-blue-50 text-blue-600"
+          bgClass="bg-[#fff2e8] text-[#fc8019]"
         />
         <StatBox
           label="Total Spent"
           value={`$${(customer?.totalSpent || 0).toLocaleString()}`}
           color="#16a34a"
           icon={DollarSign}
-          bgClass="bg-green-50 text-green-600"
+          bgClass="bg-[#fff2e8] text-[#fc8019]"
         />
         <StatBox
           label="Avg Order Value"
@@ -368,7 +374,7 @@ const AdminCustomerDetails = () => {
         {/* Left — Profile Info */}
         <div className="lg:col-span-4 space-y-6">
           {/* Account Info */}
-          <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
             <SectionHeader title="Account Details" icon={User} />
             <div className="p-6">
               <InfoRow
@@ -401,13 +407,17 @@ const AdminCustomerDetails = () => {
           </div>
 
           {/* Delivery Addresses */}
-          <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
             <SectionHeader title="Saved Addresses" icon={MapPin} />
             <div className="p-6">
               <div className="flex flex-col gap-4">
                 {!customer?.addresses || customer.addresses.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-6 text-center">
-                    <MapPin size={32} className="text-gray-300 mb-2" />
+                    <MapPin
+                      size={32}
+                      className="text-gray-300 mb-2"
+                      strokeWidth={1.5}
+                    />
                     <p className="text-sm font-bold text-gray-700">
                       No addresses
                     </p>
@@ -419,10 +429,10 @@ const AdminCustomerDetails = () => {
                   customer?.addresses.map((addr) => (
                     <div
                       key={addr._id}
-                      className={`p-4 rounded-xl border ${
+                      className={`p-4 rounded-md border ${
                         addr.isDefault
-                          ? "bg-orange-50/50 border-orange-200"
-                          : "bg-gray-50 border-gray-100"
+                          ? "bg-[#fff2e8] border-orange-200"
+                          : "bg-gray-50 border-gray-200"
                       }`}
                     >
                       <div className="flex items-center justify-between mb-2">
@@ -457,12 +467,16 @@ const AdminCustomerDetails = () => {
           </div>
 
           {/* Coupons Used */}
-          <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
             <SectionHeader title="Coupons Used" icon={Ticket} />
             <div className="p-6">
               {!customer?.couponsUsed || customer.couponsUsed.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-6 text-center">
-                  <Ticket size={32} className="text-gray-300 mb-2" />
+                  <Ticket
+                    size={32}
+                    className="text-gray-300 mb-2"
+                    strokeWidth={1.5}
+                  />
                   <p className="text-sm font-bold text-gray-700">No coupons</p>
                   <p className="text-xs text-gray-500">
                     User hasn't used any coupons.
@@ -473,9 +487,9 @@ const AdminCustomerDetails = () => {
                   {customer.couponsUsed.map((c) => (
                     <span
                       key={c}
-                      className="font-mono text-xs font-bold text-orange-700 bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-lg flex items-center gap-1.5"
+                      className="font-mono text-xs font-bold text-orange-700 bg-[#fff2e8] border border-orange-200 px-3 py-1.5 rounded-md flex items-center gap-1.5"
                     >
-                      <Ticket size={12} /> {c}
+                      <Ticket size={12} strokeWidth={1.5} /> {c}
                     </span>
                   ))}
                 </div>
@@ -484,8 +498,8 @@ const AdminCustomerDetails = () => {
           </div>
 
           {/* ── Danger Zone ── */}
-          <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-red-200 overflow-hidden">
-            <div className="flex items-center gap-2 px-6 py-4 border-b border-red-100 bg-red-50/50">
+          <div className="bg-white rounded-md  border border-red-200 overflow-hidden">
+            <div className="flex items-center gap-2 px-6 py-4 border-b border-red-100 bg-red-50">
               <ShieldAlert size={18} className="text-red-500" />
               <h3 className="text-sm font-bold text-red-700 tracking-wide">
                 Danger Zone
@@ -509,9 +523,9 @@ const AdminCustomerDetails = () => {
                       // navigate("/admin/customers");
                     }
                   }}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-bold text-red-600 bg-white border border-red-200 rounded-xl hover:bg-red-50 transition-colors shrink-0 shadow-sm"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-bold text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50 transition-colors shrink-0 shadow-sm"
                 >
-                  <Trash2 size={16} /> Delete
+                  <Trash2 size={16} strokeWidth={1.5} /> Delete
                 </button>
               </div>
             </div>
@@ -520,12 +534,12 @@ const AdminCustomerDetails = () => {
 
         {/* Right — Order History */}
         <div className="lg:col-span-8">
-          <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
             {/* Table Header */}
-            <div className="px-6 py-5 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="px-6 py-5 border-b border-gray-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-orange-50 text-orange-500 rounded-lg">
-                  <ShoppingBag size={20} />
+                <div className="p-2 bg-[#fff2e8] text-[#fc8019] rounded-md">
+                  <ShoppingBag size={20} strokeWidth={1.5} />
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-gray-800">
@@ -547,7 +561,7 @@ const AdminCustomerDetails = () => {
                       orderSearch: e.target.value,
                     }))
                   }
-                  className="w-full sm:w-48 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all font-medium"
+                  className="w-full sm:w-48 border border-gray-200 rounded-md px-4 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all font-medium"
                 />
                 <select
                   value={filter.orderStatus}
@@ -557,7 +571,7 @@ const AdminCustomerDetails = () => {
                       orderStatus: e.target.value,
                     }))
                   }
-                  className="w-full sm:w-auto border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-bold text-gray-700 outline-none focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all bg-white"
+                  className="w-full sm:w-auto border border-gray-200 rounded-md px-4 py-2.5 text-sm font-bold text-gray-700 outline-none focus:border-[#fc8019] focus:ring-2 focus:ring-[#fc8019]/20 transition-all bg-white"
                 >
                   <option value="">All Statuses</option>
                   <option value="placed">Placed</option>
@@ -573,7 +587,7 @@ const AdminCustomerDetails = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
                 <thead className="bg-gray-50/50 text-gray-500">
-                  <tr className="border-b border-gray-100">
+                  <tr className="border-b border-gray-200">
                     {[
                       "Order ID",
                       "Restaurant",
@@ -601,6 +615,7 @@ const AdminCustomerDetails = () => {
                           <ShoppingBag
                             size={40}
                             className="text-gray-300 mb-3"
+                            strokeWidth={1.5}
                           />
                           <p className="text-base font-bold text-gray-800">
                             No orders found
@@ -621,7 +636,7 @@ const AdminCustomerDetails = () => {
                 {/* Footer summary */}
                 {customer?.orders?.items?.length > 0 && (
                   <tfoot>
-                    <tr className="border-t-2 border-gray-100 bg-gray-50/50">
+                    <tr className="border-t-2 border-gray-200 bg-gray-50/50">
                       <td
                         colSpan={6}
                         className="px-6 py-4 text-sm font-bold text-gray-500"
@@ -646,7 +661,7 @@ const AdminCustomerDetails = () => {
             </div>
 
             {customer?.orders?.pagination?.totalPages > 1 && (
-              <div className="p-6 flex justify-center border-t border-gray-100 bg-white">
+              <div className="p-6 flex justify-center border-t border-gray-200 bg-white">
                 <Pagination
                   count={customer.orders.pagination.totalPages}
                   page={filter.page}
