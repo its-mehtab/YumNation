@@ -14,7 +14,7 @@ dishAdminRouter.get(
   getDishes,
 );
 dishAdminRouter.get(
-  "/:restaurantId",
+  "/:id",
   checkAuth,
   adminOnly,
   setRestaurantFromQuery,

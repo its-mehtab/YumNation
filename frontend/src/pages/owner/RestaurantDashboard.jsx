@@ -102,16 +102,12 @@ const RestaurantDashboard = () => {
                 <ArrowDownRight size={12} strokeWidth={2.5} /> -10%
               </p>
             </div>
-
-            <button className="bg-[#ea6a12] hover:bg-[#d45a0b] text-white text-sm font-medium px-5 py-2.5 rounded-md transition-colors ml-auto shadow-sm">
-              Withdraw $
-            </button>
           </div>
 
           {/* Charts Row */}
           <div className="grid grid-cols-1 gap-6">
             {/* Bar Chart */}
-            <div className="bg-white border border-[#fca5a5] rounded-md p-5 h-56 shadow-sm hover:shadow-md transition-shadow [&_.recharts-surface]:outline-none">
+            <div className="bg-white border border-[#fca5a5] rounded-md p-5 h-56 shadow-sm transition-shadow [&_.recharts-surface]:outline-none">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={barData}
@@ -119,17 +115,19 @@ const RestaurantDashboard = () => {
                   barCategoryGap="15%"
                   barSize={60}
                 >
-                  <Tooltip cursor={{ fill: "#fff2e8" }} contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }} />
-                  <Bar
-                    dataKey="income"
-                    fill="#ea6a12"
-                    radius={[4, 4, 0, 0]}
+                  <Tooltip
+                    cursor={{ fill: "#fff2e8" }}
+                    contentStyle={{
+                      borderRadius: "8px",
+                      border: "none",
+                      boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                    }}
                   />
+                  <Bar dataKey="income" fill="#ea6a12" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
-
-            </div>
+          </div>
 
           {/* Order Rate Row */}
           <div className="bg-white border border-gray-200 rounded-md p-6 shadow-sm transition-colors">
@@ -175,26 +173,22 @@ const RestaurantDashboard = () => {
                   <p className="text-sm font-bold leading-none">1.307</p>
                 </div>
               </div>
-
-              <div className="border border-gray-200 rounded-md py-2 px-4 flex-1 max-w-[200px]">
-                <div className="flex justify-between text-[11px] text-gray-500 mb-1.5">
-                  <span>Target</span>
-                  <span className="font-bold text-gray-700">1.500</span>
-                </div>
-                <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-[#ea6a12] w-[85%] rounded-full"></div>
-                </div>
-              </div>
             </div>
 
             {/* Area Chart */}
-            <div className="h-[200px] w-full mt-4 [&_.recharts-surface]:outline-none">
+            <div className="h-50 w-full mt-4 [&_.recharts-surface]:outline-none">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
                   data={areaData}
                   margin={{ top: 10, right: 0, left: -25, bottom: 0 }}
                 >
-                  <Tooltip contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }} />
+                  <Tooltip
+                    contentStyle={{
+                      borderRadius: "8px",
+                      border: "none",
+                      boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                    }}
+                  />
                   <defs>
                     <linearGradient
                       id="colorThisWeek"
@@ -320,7 +314,13 @@ const RestaurantDashboard = () => {
             <div className="h-[200px] relative mb-6 [&_.recharts-surface]:outline-none">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Tooltip contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }} />
+                  <Tooltip
+                    contentStyle={{
+                      borderRadius: "8px",
+                      border: "none",
+                      boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                    }}
+                  />
                   <Pie
                     data={pieData}
                     cx="50%"

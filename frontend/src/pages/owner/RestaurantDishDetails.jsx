@@ -50,7 +50,7 @@ const Toggle = ({ checked, onChange }) => (
 );
 
 const Card = ({ title, children, action }) => (
-  <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all overflow-hidden">
+  <div className="bg-white rounded-md border border-gray-200 transition-all overflow-hidden">
     {(title || action) && (
       <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
         {title && (
@@ -114,9 +114,6 @@ const RestaurantDishDetails = () => {
         </div>
       </div>
     );
-
-  const margin = dish.price - dish.costPrice;
-  const marginPct = Math.round((margin / dish.price) * 100);
 
   return (
     <div>
@@ -214,26 +211,6 @@ const RestaurantDishDetails = () => {
                   onChange={() => handleToggle("isFeatured")}
                 />
               </div>
-            </div>
-          </Card>
-
-          {/* Profit margin */}
-          <Card title="Pricing Analysis">
-            <InfoRow label="Selling Price" value={`$${dish.price}`} />
-            <InfoRow label="Cost Price" value={`$${dish.costPrice}`} />
-            <div className="flex justify-between py-2 text-sm">
-              <span className="text-gray-400 font-medium">Profit Margin</span>
-              <span
-                className={`font-bold ${marginPct >= 50 ? "text-[#fc8019]" : marginPct >= 30 ? "text-yellow-500" : "text-red-400"}`}
-              >
-                ${margin.toFixed(2)} ({marginPct}%)
-              </span>
-            </div>
-            <div className="mt-2 h-2 bg-gray-100 rounded-md overflow-hidden">
-              <div
-                className="h-full rounded-md bg-[#fc8019] transition-all"
-                style={{ width: `${marginPct}%` }}
-              />
             </div>
           </Card>
 

@@ -102,7 +102,7 @@ const AdminRestaurants = () => {
         ].map((s) => (
           <div
             key={s.label}
-            className={`bg-white rounded-md  border border-gray-200 p-6 flex items-center justify-between transition-all hover:shadow-md ${
+            className={`bg-white rounded-md  border border-gray-200 p-6 flex items-center justify-between transition-all ${
               s.highlight ? "ring-2 ring-yellow-400 ring-offset-2" : ""
             }`}
           >

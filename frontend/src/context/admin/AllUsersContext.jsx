@@ -13,7 +13,7 @@ export const AllUsersProvider = ({ children }) => {
     filterStatus: "",
     sortBy: "recent_order",
     page: 1,
-    limit: 1,
+    limit: 10,
   });
 
   const { serverURL } = useAuth();

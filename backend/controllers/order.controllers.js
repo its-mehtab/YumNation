@@ -54,6 +54,33 @@ export const getAllOrders = async (req, res) => {
   }
 };
 
+export const getRestaurantOrders = async (req, res) => {
+  const { search, sort, orderStatus, page = 1, limit = 12 } = req.query;
+
+  try {
+    const result = await getPaginatedOrders({
+      filter: { restaurant: req.restaurantId },
+      search,
+      sort,
+      orderStatus,
+      page: page,
+      limit: limit,
+      populate: "items.dish",
+    });
+
+    if (result?.orders?.length === 0) {
+      return res.status(404).json({ message: "No orders found" });
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
 export const getOrderById = async (req, res) => {
   const { id } = req.params;
   const userId = req.userId;

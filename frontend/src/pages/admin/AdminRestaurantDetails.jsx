@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import Pagination from "@mui/material/Pagination";
 import {
   CheckCircle2,
   Clock,
@@ -23,110 +24,6 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
-
-// ── Mock data ─────────────────────────────────────────────────────────────────
-const mockRestaurant = {
-  _id: "1",
-  name: "Pizza Palace",
-  slug: "pizza-palace",
-  description:
-    "Authentic Italian pizza made with fresh ingredients and wood-fired ovens. A family favourite since 2018.",
-  owner: {
-    _id: "u1",
-    name: "Marco Rossi",
-    email: "marco@pizza.com",
-    phone: "+91 9876543210",
-  },
-  email: "contact@pizzapalace.com",
-  phone: "+91 9876543210",
-  logo: null,
-  coverImage: null,
-  address: {
-    addressLine1: "42 Park Street",
-    addressLine2: "Ground Floor",
-    city: "Kolkata",
-    state: "West Bengal",
-    pinCode: "700016",
-  },
-  openingHours: { open: 600, close: 1380 },
-  isOpen: true,
-  status: "pending",
-  isPureVeg: false,
-  deliveryTime: 35,
-  minOrderAmount: 10,
-  deliveryFee: 2.5,
-  rating: 4.5,
-  totalReviews: 128,
-  totalOrders: 312,
-  createdAt: "2024-01-10T10:00:00.000Z",
-};
-
-const mockDishes = [
-  {
-    _id: "d1",
-    name: "Margherita Pizza",
-    price: 12,
-    isAvailable: true,
-    foodType: "veg",
-    stock: 20,
-  },
-  {
-    _id: "d2",
-    name: "Pepperoni Pizza",
-    price: 15,
-    isAvailable: true,
-    foodType: "non-veg",
-    stock: 15,
-  },
-  {
-    _id: "d3",
-    name: "BBQ Chicken Pizza",
-    price: 18,
-    isAvailable: false,
-    foodType: "non-veg",
-    stock: 0,
-  },
-  {
-    _id: "d4",
-    name: "Garlic Bread",
-    price: 5,
-    isAvailable: true,
-    foodType: "veg",
-    stock: 50,
-  },
-];
-
-const mockOrders = [
-  {
-    _id: "o1",
-    user: "John Doe",
-    totalAmount: 34.5,
-    orderStatus: "delivered",
-    createdAt: "2026-03-08T10:00:00.000Z",
-  },
-  {
-    _id: "o2",
-    user: "Priya S.",
-    totalAmount: 22.0,
-    orderStatus: "preparing",
-    createdAt: "2026-03-09T14:30:00.000Z",
-  },
-  {
-    _id: "o3",
-    user: "Ravi K.",
-    totalAmount: 47.0,
-    orderStatus: "placed",
-    createdAt: "2026-03-10T09:15:00.000Z",
-  },
-];
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-const toTimeString = (minutes) => {
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  const ampm = h >= 12 ? "PM" : "AM";
-  return `${h % 12 || 12}:${m.toString().padStart(2, "0")} ${ampm}`;
-};
 
 const statusConfig = {
   active: {
@@ -268,6 +165,13 @@ const AdminRestaurantDetails = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
 
+  const [filter, setFilter] = useState({
+    orderSearch: "",
+    orderStatus: "all",
+    sortBy: "newest",
+    page: 1,
+  });
+
   const { serverURL } = useAuth();
 
   const fetchRestaurantData = async () => {
@@ -281,6 +185,8 @@ const AdminRestaurantDetails = () => {
       setRestaurant(data[0]);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -296,17 +202,41 @@ const AdminRestaurantDetails = () => {
       setDishes(data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchRestaurantOrders = async () => {
+    try {
+      const { data } = await axios.get(
+        `${serverURL}/api/admin/order/restaurantorders`,
+        {
+          params: {
+            ...filter,
+            restaurantId: id,
+          },
+          withCredentials: true,
+        },
+      );
+
+      setOrders(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchRestaurantData();
     fetchRestaurantDishes();
-    setTimeout(() => {
-      setOrders(mockOrders);
-      setLoading(false);
-    }, 500);
+    fetchRestaurantOrders();
   }, [id]);
+
+  useEffect(() => {
+    fetchRestaurantOrders();
+  }, [filter]);
 
   const handleToggleOpen = () =>
     setRestaurant((prev) => ({ ...prev, isOpen: !prev.isOpen }));
@@ -370,7 +300,7 @@ const AdminRestaurantDetails = () => {
 
       {/* ── Hero banner ── */}
       <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
-        <div className="h-48 bg-gradient-to-r from-orange-100 via-orange-50 to-orange-100 relative">
+        <div className="h-48 bg-linear-to-r from-orange-100 via-orange-50 to-orange-100 relative">
           {restaurant.coverImage && (
             <img
               src={restaurant.coverImage}
@@ -378,7 +308,7 @@ const AdminRestaurantDetails = () => {
               className="w-full h-full object-cover"
             />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
           {/* <Link
             to={`/admin/restaurants/edit/${restaurant._id}`}
             className="absolute top-4 right-4 flex items-center gap-2 bg-white/90 backdrop-blur-sm text-sm font-bold text-gray-700 px-4 py-2 rounded-md shadow-sm hover:bg-white transition-all"
@@ -515,7 +445,7 @@ const AdminRestaurantDetails = () => {
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-md  border border-gray-200 p-6 flex flex-col justify-between transition-all hover:shadow-md gap-4"
+            className="bg-white rounded-md  border border-gray-200 p-6 flex flex-col justify-between transition-all gap-4"
           >
             <div className="flex items-center justify-between">
               <div className={`p-3 rounded-md ${s.bg} ${s.color}`}>
@@ -678,16 +608,14 @@ const AdminRestaurantDetails = () => {
             <table className="w-full text-sm text-left">
               <thead className="bg-gray-50/50 text-gray-500">
                 <tr className="border-b border-gray-200">
-                  {["Dish", "Price", "Type", "Status", "Actions"].map(
-                    (h) => (
-                      <th
-                        key={h}
-                        className="px-6 py-4 font-semibold uppercase tracking-wider text-xs"
-                      >
-                        {h}
-                      </th>
-                    ),
-                  )}
+                  {["Dish", "Price", "Type", "Status", "Actions"].map((h) => (
+                    <th
+                      key={h}
+                      className="px-6 py-4 font-semibold uppercase tracking-wider text-xs"
+                    >
+                      {h}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
@@ -770,7 +698,7 @@ const AdminRestaurantDetails = () => {
             <h3 className="text-lg font-bold text-gray-800">
               Recent Orders{" "}
               <span className="text-gray-400 text-sm font-medium ml-2">
-                ({orders.length})
+                ({orders.items.length})
               </span>
             </h3>
           </div>
@@ -796,7 +724,7 @@ const AdminRestaurantDetails = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {orders.map((order) => (
+                {orders.items.map((order) => (
                   <tr
                     key={order._id}
                     className="hover:bg-gray-50/80 transition-colors group"
@@ -807,7 +735,7 @@ const AdminRestaurantDetails = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 font-bold text-gray-800">
-                      {order.user}
+                      {order.user.firstName}
                     </td>
                     <td className="px-6 py-4 font-bold text-gray-800">
                       ${order.totalAmount.toFixed(2)}
@@ -839,7 +767,7 @@ const AdminRestaurantDetails = () => {
               </tbody>
             </table>
           </div>
-          {orders.length === 0 && (
+          {orders.items.length === 0 && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
                 <ArchiveX size={32} className="text-gray-400" />
@@ -850,6 +778,34 @@ const AdminRestaurantDetails = () => {
               <p className="text-sm text-gray-500">
                 This restaurant hasn't received any orders.
               </p>
+            </div>
+          )}
+
+          {orders?.items?.length > 0 && (
+            <div className="mt-6 flex justify-center pb-6 border-t border-gray-100 pt-6">
+              <Pagination
+                onChange={(e, value) =>
+                  setFilter((prev) => ({ ...prev, page: value }))
+                }
+                count={orders.pagination.totalPages}
+                page={filter.page}
+                variant="outlined"
+                shape="rounded"
+                sx={{
+                  "& .MuiPaginationItem-root": {
+                    borderColor: "#e5e7eb",
+                    color: "#374151",
+                    "&.Mui-selected": {
+                      backgroundColor: "#fc8019",
+                      color: "white",
+                      borderColor: "#fc8019",
+                      "&:hover": {
+                        backgroundColor: "#e5721f",
+                      },
+                    },
+                  },
+                }}
+              />
             </div>
           )}
         </div>

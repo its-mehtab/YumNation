@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import dayjs from "dayjs";
 import { useAuth } from "../../context/user/AuthContext";
 import { useAllUsers } from "../../context/admin/AllUsersContext";
@@ -132,7 +132,7 @@ const AdminCustomers = () => {
   return (
     <div className="relative space-y-6">
       {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/50 backdrop-blur-sm">
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-white">
           <Spinner size="3" />
         </div>
       )}
@@ -183,7 +183,7 @@ const AdminCustomers = () => {
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-md  border border-gray-200 p-6 flex items-center justify-between transition-all hover:shadow-md"
+            className="bg-white rounded-md  border border-gray-200 p-6 flex items-center justify-between transition-all "
           >
             <div>
               <p className="text-sm font-semibold text-gray-500 mb-2">
@@ -208,7 +208,8 @@ const AdminCustomers = () => {
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                 size={18}
-               strokeWidth={1.5} />
+                strokeWidth={1.5}
+              />
               <input
                 placeholder="Search name, email..."
                 value={filter.search}
@@ -280,7 +281,11 @@ const AdminCustomers = () => {
                   >
                     <div className="flex flex-col items-center justify-center">
                       <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
-                        <Users size={32} className="text-gray-400"  strokeWidth={1.5} />
+                        <Users
+                          size={32}
+                          className="text-gray-400"
+                          strokeWidth={1.5}
+                        />
                       </div>
                       <h3 className="text-lg font-bold text-gray-800 mb-1">
                         No customers found
@@ -385,7 +390,7 @@ const AdminCustomers = () => {
                               className="p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-red-600 hover:border-red-400 shadow-sm transition-all"
                               title="Delete Customer"
                             >
-                              <Trash2 size={16}  strokeWidth={1.5} />
+                              <Trash2 size={16} strokeWidth={1.5} />
                             </button>
                           }
                           heading={`Delete ${c.firstName} from customers?`}

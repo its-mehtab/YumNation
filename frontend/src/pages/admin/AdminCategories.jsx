@@ -383,7 +383,7 @@ const AdminCategories = () => {
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-md  border border-gray-200 p-5 flex items-start justify-between transition-all hover:shadow-md"
+            className="bg-white rounded-md  border border-gray-200 p-5 flex items-start justify-between transition-all "
           >
             <div>
               <p className="text-sm font-medium text-gray-500 mb-1">

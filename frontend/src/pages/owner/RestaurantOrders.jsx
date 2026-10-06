@@ -1,7 +1,17 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
-import { Package, Sparkles, ChefHat, CheckCircle, Banknote } from "lucide-react";
+import Pagination from "@mui/material/Pagination";
+import {
+  Package,
+  Sparkles,
+  ChefHat,
+  CheckCircle,
+  Banknote,
+} from "lucide-react";
+import { useEffect } from "react";
+import axios from "axios";
+import { useAuth } from "../../context/user/AuthContext";
 
 // ── Mock data ────────────────────────────────────────────────────────────────
 const mockOrders = [
@@ -130,29 +140,33 @@ const StatusDropdown = ({ orderId, current, onChange }) => (
 // ── Main Component ───────────────────────────────────────────────────────────
 const RestaurantOrders = () => {
   const [orders, setOrders] = useState(mockOrders);
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState("newest");
+  const [filter, setFilter] = useState({
+    status: "all",
+    search: "",
+    sortBy: "newest",
+  });
+
+  const { serverURL } = useAuth();
 
   // ── Filter + sort ──
   const filtered = orders
     .filter((o) => {
       const matchStatus =
-        statusFilter === "all" || o.orderStatus === statusFilter;
+        filter.status === "all" || o.orderStatus === filter.status;
       const matchSearch =
-        o.user.name.toLowerCase().includes(search.toLowerCase()) ||
-        o._id.slice(-6).toLowerCase().includes(search.toLowerCase()) ||
+        o.user.name.toLowerCase().includes(filter.search.toLowerCase()) ||
+        o._id.slice(-6).toLowerCase().includes(filter.search.toLowerCase()) ||
         o.items.some((i) =>
-          i.name.toLowerCase().includes(search.toLowerCase()),
+          i.name.toLowerCase().includes(filter.search.toLowerCase()),
         );
       return matchStatus && matchSearch;
     })
     .sort((a, b) =>
-      sortBy === "newest"
+      filter.sortBy === "newest"
         ? new Date(b.createdAt) - new Date(a.createdAt)
-        : sortBy === "oldest"
+        : filter.sortBy === "oldest"
           ? new Date(a.createdAt) - new Date(b.createdAt)
-          : sortBy === "highest"
+          : filter.sortBy === "highest"
             ? b.totalAmount - a.totalAmount
             : a.totalAmount - b.totalAmount,
     );
@@ -176,6 +190,22 @@ const RestaurantOrders = () => {
       .reduce((acc, o) => acc + o.totalAmount, 0),
   };
 
+  const fetchRestaurantOrders = async () => {
+    try {
+      const { data } = await axios(`${serverURL}/api/owner/order`, {
+        withCredentials: true,
+      });
+
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRestaurantOrders();
+  }, []);
+
   return (
     <div>
       {/* ── Page header ── */}
@@ -189,35 +219,67 @@ const RestaurantOrders = () => {
       </div>
 
       {/* ── Stats ── */}
-      <div className="grid grid-cols-5 gap-4 mb-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 mb-5">
         {[
-          { label: "Total Orders", value: stats.total, icon: <Package size={24} className="text-gray-400"  strokeWidth={1.5} /> },
-          { label: "New Orders", value: stats.pending, icon: <Sparkles size={24} className="text-blue-400" /> },
-          { label: "Preparing", value: stats.preparing, icon: <ChefHat size={24} className="text-orange-400" /> },
-          { label: "Delivered", value: stats.delivered, icon: <CheckCircle size={24} className="text-green-400"  strokeWidth={1.5} /> },
+          {
+            label: "Total Orders",
+            value: stats.total,
+            icon: Package,
+            color: "text-[#fc8019]",
+            bg: "bg-[#fff2e8]",
+          },
+          {
+            label: "New Orders",
+            value: stats.pending,
+            icon: Sparkles,
+            color: "text-indigo-500",
+            bg: "bg-indigo-50/50",
+          },
+          {
+            label: "Preparing",
+            value: stats.preparing,
+            icon: ChefHat,
+            color: "text-[#fc8019]",
+            bg: "bg-[#fff2e8]",
+          },
+          {
+            label: "Delivered",
+            value: stats.delivered,
+            icon: CheckCircle,
+            color: "text-[#fc8019]",
+            bg: "bg-[#fff2e8]",
+          },
           {
             label: "Revenue",
             value: `$${stats.revenue.toFixed(2)}`,
-            icon: <Banknote size={24} className="text-emerald-400"  strokeWidth={1.5} />,
+            icon: Banknote,
+            color: "text-[#fc8019]",
+            bg: "bg-[#fff2e8]",
           },
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all px-4 py-4 flex items-center justify-between"
+            className="bg-white rounded-md  border border-gray-200 p-5 flex flex-col justify-between transition-all gap-4"
           >
+            <div className="flex items-center justify-between">
+              <div className={`p-2.5 rounded-md ${s.bg} ${s.color}`}>
+                <s.icon size={18} strokeWidth={1.5} />
+              </div>
+            </div>
             <div>
-              <p className="text-xs text-gray-400 font-medium mb-1">
+              <p className="text-xs font-semibold text-gray-400 mb-1 tracking-wide uppercase">
                 {s.label}
               </p>
-              <p className="text-xl font-bold text-gray-700">{s.value}</p>
+              <p className="text-2xl font-semibold text-gray-800 tracking-tight">
+                {s.value}
+              </p>
             </div>
-            <div>{s.icon}</div>
           </div>
         ))}
       </div>
 
       {/* ── Table card ── */}
-      <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all overflow-hidden">
+      <div className="bg-white rounded-md border border-gray-200 transition-all overflow-hidden">
         {/* ── Card header ── */}
         <div className="px-6 py-4 border-b border-gray-200 space-y-3">
           <div className="flex items-center justify-between">
@@ -225,15 +287,19 @@ const RestaurantOrders = () => {
             <div className="flex items-center gap-3">
               {/* Search */}
               <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                value={filter.search}
+                onChange={(e) =>
+                  setFilter((prev) => ({ ...prev, search: e.target.value }))
+                }
                 placeholder="Search by name, order ID..."
                 className="border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors w-56"
               />
               {/* Sort */}
               <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
+                value={filter.sortBy}
+                onChange={(e) =>
+                  setFilter((prev) => ({ ...prev, sortBy: e.target.value }))
+                }
                 className="border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] bg-white"
               >
                 <option value="newest">Newest First</option>
@@ -249,9 +315,9 @@ const RestaurantOrders = () => {
             {STATUS_OPTIONS.map((s) => (
               <button
                 key={s}
-                onClick={() => setStatusFilter(s)}
+                onClick={() => setFilter((prev) => ({ ...prev, status: s }))}
                 className={`text-xs font-semibold px-3 py-1.5 rounded-md capitalize transition-colors ${
-                  statusFilter === s
+                  filter.status === s
                     ? "bg-[#fc8019] text-white"
                     : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                 }`}
@@ -408,8 +474,36 @@ const RestaurantOrders = () => {
         {/* Empty state */}
         {filtered.length === 0 && (
           <div className="text-center py-16 text-gray-400">
-            <div className="flex justify-center mb-3 text-gray-300"><Package size={40}  strokeWidth={1.5} /></div>
+            <div className="flex justify-center mb-3 text-gray-300">
+              <Package size={40} strokeWidth={1.5} />
+            </div>
             <p className="text-sm font-medium">No orders found</p>
+          </div>
+        )}
+
+        {/* Dummy Pagination UI for design */}
+        {filtered.length > 0 && (
+          <div className="mt-6 flex justify-center pb-6 border-t border-gray-100 pt-6">
+            <Pagination
+              count={5}
+              page={1}
+              variant="outlined"
+              shape="rounded"
+              sx={{
+                "& .MuiPaginationItem-root": {
+                  borderColor: "#e5e7eb",
+                  color: "#374151",
+                  "&.Mui-selected": {
+                    backgroundColor: "#fc8019",
+                    color: "white",
+                    borderColor: "#fc8019",
+                    "&:hover": {
+                      backgroundColor: "#e5721f",
+                    },
+                  },
+                },
+              }}
+            />
           </div>
         )}
       </div>

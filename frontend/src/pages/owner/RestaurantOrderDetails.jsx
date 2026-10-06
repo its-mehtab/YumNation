@@ -114,7 +114,7 @@ const TimelineStep = ({ label, icon, done, active, last }) => (
 
 // ── Section card wrapper ──────────────────────────────────────────────────────
 const Card = ({ title, children }) => (
-  <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all p-5">
+  <div className="bg-white rounded-md border border-gray-200 transition-all p-5">
     {title && (
       <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-4">
         {title}

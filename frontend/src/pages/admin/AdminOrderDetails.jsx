@@ -124,11 +124,11 @@ const statusConfig = {
 
 // ── Timeline ──────────────────────────────────────────────────────────────────
 const ICONS = [
-  <Package size={20} className="text-indigo-600"  strokeWidth={1.5} />,
-  <CheckCircle2 size={20} className="text-amber-600"  strokeWidth={1.5} />,
-  <Clock size={20} className="text-[#fc8019]"  strokeWidth={1.5} />,
-  <Truck size={20} className="text-[#fc8019]"  strokeWidth={1.5} />,
-  <CheckCircle2 size={20} className="text-[#fc8019]"  strokeWidth={1.5} />,
+  <Package size={20} strokeWidth={1.5} />,
+  <CheckCircle2 size={20} strokeWidth={1.5} />,
+  <Clock size={20} strokeWidth={1.5} />,
+  <Truck size={20} strokeWidth={1.5} />,
+  <CheckCircle2 size={20} strokeWidth={1.5} />,
 ];
 
 // ── Section card wrapper ──────────────────────────────────────────────────────
@@ -232,7 +232,11 @@ const AdminOrderDetails = () => {
   if (error || !order)
     return (
       <div className="flex flex-col items-center justify-center py-20 bg-white rounded-md border border-gray-200 shadow-sm">
-        <AlertCircle size={48} className="text-gray-300 mb-4"  strokeWidth={1.5} />
+        <AlertCircle
+          size={48}
+          className="text-gray-300 mb-4"
+          strokeWidth={1.5}
+        />
         <h3 className="text-xl font-bold text-gray-800 mb-2">
           Order Not Found
         </h3>
@@ -262,7 +266,7 @@ const AdminOrderDetails = () => {
             onClick={() => navigate("/admin/orders")}
             className="p-2 bg-white border border-gray-200 rounded-md text-gray-500 hover:text-[#fc8019] transition-all"
           >
-            <ChevronLeft size={20}  strokeWidth={1.5} />
+            <ChevronLeft size={20} strokeWidth={1.5} />
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-800 tracking-tight">
@@ -275,7 +279,11 @@ const AdminOrderDetails = () => {
               >
                 Orders
               </Link>
-              <ChevronRight size={14} className="text-gray-400"  strokeWidth={1.5} />
+              <ChevronRight
+                size={14}
+                className="text-gray-400"
+                strokeWidth={1.5}
+              />
               <span className="text-[#fc8019] font-medium">
                 #{order._id.slice(-8).toUpperCase()}
               </span>
@@ -333,7 +341,7 @@ const AdminOrderDetails = () => {
           ) : (
             <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
               <div className="flex items-center gap-2 px-6 py-4 border-b border-gray-200 bg-gray-50/50">
-                <Store size={18} className="text-gray-400"  strokeWidth={1.5} />
+                <Store size={18} className="text-gray-400" strokeWidth={1.5} />
                 <h3 className="text-sm font-bold text-gray-800 tracking-wide">
                   Ordering From
                 </h3>
@@ -349,7 +357,7 @@ const AdminOrderDetails = () => {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <Store size={24}  strokeWidth={1.5} />
+                        <Store size={24} strokeWidth={1.5} />
                       )}
                     </div>
                   </Link>
@@ -377,18 +385,26 @@ const AdminOrderDetails = () => {
                     </p>
                     <div className="flex items-center gap-4 mt-2 text-xs font-medium text-gray-500 flex-wrap">
                       <span className="flex items-center gap-1.5">
-                        <MapPin size={14} className="text-gray-400"  strokeWidth={1.5} />
+                        <MapPin
+                          size={14}
+                          className="text-gray-400"
+                          strokeWidth={1.5}
+                        />
                         {order?.restaurant?.address.addressLine1},{" "}
                         {order?.restaurant?.address.city}
                       </span>
                       <span className="w-1 h-1 rounded-md bg-gray-300" />
                       <span className="flex items-center gap-1.5">
-                        <Clock size={14} className="text-gray-400"  strokeWidth={1.5} />{" "}
+                        <Clock
+                          size={14}
+                          className="text-gray-400"
+                          strokeWidth={1.5}
+                        />{" "}
                         {order?.restaurant?.deliveryTime} min
                       </span>
                       <span className="w-1 h-1 rounded-md bg-gray-300" />
                       <span className="flex items-center gap-1.5 text-yellow-600">
-                        <Star size={14} fill="currentColor"  strokeWidth={1.5} />{" "}
+                        <Star size={14} fill="currentColor" strokeWidth={1.5} />{" "}
                         {order?.restaurant?.rating}
                       </span>
                     </div>
@@ -398,7 +414,7 @@ const AdminOrderDetails = () => {
                     to={`/admin/restaurants/${order?.restaurant?._id}`}
                     className="shrink-0 text-sm font-bold text-[#fc8019] bg-[#fff2e8] px-4 py-2 rounded-md hover:bg-orange-100 transition-colors hidden sm:flex items-center gap-2"
                   >
-                    View <ChevronRight size={16}  strokeWidth={1.5} />
+                    View <ChevronRight size={16} strokeWidth={1.5} />
                   </Link>
                 </div>
               </div>
@@ -421,7 +437,7 @@ const AdminOrderDetails = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <Utensils size={24}  strokeWidth={1.5} />
+                      <Utensils size={24} strokeWidth={1.5} />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -499,7 +515,7 @@ const AdminOrderDetails = () => {
                       className={`${s === status ? "text-[#fc8019]" : s === "cancelled" ? "text-red-500" : "text-gray-400"}`}
                     >
                       {s === "cancelled" ? (
-                        <XCircle size={18}  strokeWidth={1.5} />
+                        <XCircle size={18} strokeWidth={1.5} />
                       ) : (
                         ICONS[STATUSES.indexOf(s)]
                       )}
@@ -536,7 +552,7 @@ const AdminOrderDetails = () => {
             </div>
             {order.user.phone && (
               <div className="flex items-center gap-2 text-sm text-gray-600 font-medium mb-4">
-                <Phone size={16} className="text-gray-400"  strokeWidth={1.5} />
+                <Phone size={16} className="text-gray-400" strokeWidth={1.5} />
                 {order.user.phone}
               </div>
             )}
@@ -544,14 +560,18 @@ const AdminOrderDetails = () => {
               to={`/admin/customers/${order.user._id}`}
               className="flex items-center justify-center gap-2 w-full text-sm font-bold text-[#fc8019] bg-[#fff2e8] hover:bg-orange-100 rounded-md py-2.5 transition-colors"
             >
-              View Profile <ChevronRight size={16}  strokeWidth={1.5} />
+              View Profile <ChevronRight size={16} strokeWidth={1.5} />
             </Link>
           </Card>
 
           {/* Delivery address */}
           <Card title="Delivery Address">
             <div className="flex gap-3">
-              <MapPin size={20} className="text-gray-400 shrink-0 mt-0.5"  strokeWidth={1.5} />
+              <MapPin
+                size={20}
+                className="text-gray-400 shrink-0 mt-0.5"
+                strokeWidth={1.5}
+              />
               <div>
                 <p className="text-sm font-bold text-gray-800 mb-1">
                   {order.deliveryAddress?.fullName}
@@ -566,7 +586,11 @@ const AdminOrderDetails = () => {
                 </p>
                 {order.deliveryAddress?.phoneNumber && (
                   <div className="flex items-center gap-2 text-sm text-gray-600 font-medium mt-3 bg-gray-50 px-3 py-2 rounded-md w-fit border border-gray-200">
-                    <Phone size={14} className="text-gray-400"  strokeWidth={1.5} />
+                    <Phone
+                      size={14}
+                      className="text-gray-400"
+                      strokeWidth={1.5}
+                    />
                     {order.deliveryAddress.phoneNumber}
                   </div>
                 )}
@@ -580,9 +604,17 @@ const AdminOrderDetails = () => {
               <div className="flex justify-between items-center bg-gray-50 p-4 rounded-md border border-gray-200">
                 <div className="flex items-center gap-3">
                   {order.paymentMethod === "cod" ? (
-                    <Banknote size={24} className="text-[#fc8019]"  strokeWidth={1.5} />
+                    <Banknote
+                      size={24}
+                      className="text-[#fc8019]"
+                      strokeWidth={1.5}
+                    />
                   ) : (
-                    <CreditCard size={24} className="text-[#fc8019]"  strokeWidth={1.5} />
+                    <CreditCard
+                      size={24}
+                      className="text-[#fc8019]"
+                      strokeWidth={1.5}
+                    />
                   )}
                   <div>
                     <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-0.5">

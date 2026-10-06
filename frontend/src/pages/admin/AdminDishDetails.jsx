@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { Pizza, Star } from "lucide-react";
+import axios from "axios";
+import { useAuth } from "../../context/user/AuthContext";
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
 const mockDish = {
   _id: "d1",
   name: "Margherita Pizza",
   slug: "margherita-pizza",
-  description: "A classic Neapolitan pizza with fresh tomato sauce and mozzarella.",
+  description:
+    "A classic Neapolitan pizza with fresh tomato sauce and mozzarella.",
   longDescription:
     "Our Margherita is made with hand-stretched dough, slow-cooked San Marzano tomato sauce, fresh buffalo mozzarella, and a drizzle of extra-virgin olive oil. Baked in a wood-fired oven at 485°C for the perfect char and chew.",
   price: 12,
@@ -32,12 +35,12 @@ const mockDish = {
   totalReviews: 84,
   totalOrders: 312,
   createdAt: "2024-01-15T10:00:00.000Z",
-  restaurant: { _id: "r1", name: "Bella Napoli", logo: null }
+  restaurant: { _id: "r1", name: "Bella Napoli", logo: null },
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const Card = ({ title, children, action }) => (
-  <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all overflow-hidden">
+  <div className="bg-white rounded-md border border-gray-200 transition-all overflow-hidden">
     {(title || action) && (
       <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
         {title && (
@@ -68,10 +71,31 @@ const AdminDishDetails = () => {
   const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(0);
 
+  const { serverURL } = useAuth();
+
+  const fetchDishDetails = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(`${serverURL}/api/admin/dish/${id}`, {
+        params: {
+          restaurantId: "klf",
+        },
+        withCredentials: true,
+      });
+
+      console.log(data);
+      setDish(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    // Replace with: axios.get(`${serverURL}/api/admin/dish/${id}`, { withCredentials: true })
+    fetchDishDetails();
     setTimeout(() => {
-      setDish(mockDish);
+      //   setDish(mockDish);
       setLoading(false);
     }, 500);
   }, [id]);
@@ -89,9 +113,6 @@ const AdminDishDetails = () => {
         </div>
       </div>
     );
-
-  const margin = dish.price - dish.costPrice;
-  const marginPct = Math.round((margin / dish.price) * 100);
 
   return (
     <div>
@@ -115,10 +136,10 @@ const AdminDishDetails = () => {
           </Link>
           <span className="text-gray-300">›</span>
           <Link
-            to={`/admin/restaurants/${dish.restaurant._id}`}
+            to={`/admin/restaurants/${dish.restaurant}`}
             className="hover:text-[#ea6a12] transition-colors"
           >
-            {dish.restaurant.name}
+            {dish.restaurant}
           </Link>
           <span className="text-gray-300">›</span>
           <span className="text-[#ea6a12] font-medium">{dish.name}</span>
@@ -131,9 +152,9 @@ const AdminDishDetails = () => {
           {/* Image gallery */}
           <Card>
             <div className="aspect-square rounded-md bg-[#fff2e8] border border-orange-100 flex items-center justify-center overflow-hidden mb-3">
-              {dish.images[activeImage] ? (
+              {dish.image ? (
                 <img
-                  src={dish.images[activeImage]}
+                  src={dish.image}
                   alt={dish.name}
                   className="w-full h-full object-cover"
                 />
@@ -141,7 +162,7 @@ const AdminDishDetails = () => {
                 <Pizza size={40} className="text-gray-400" />
               )}
             </div>
-            {dish.images.length > 1 && (
+            {dish.images && (
               <div className="flex gap-2">
                 {dish.images.map((img, i) => (
                   <button
@@ -177,8 +198,10 @@ const AdminDishDetails = () => {
                     Visible to customers
                   </p>
                 </div>
-                <span className={`px-2 py-1 rounded-md text-xs font-bold ${dish.isAvailable ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                  {dish.isAvailable ? 'Yes' : 'No'}
+                <span
+                  className={`px-2 py-1 rounded-md text-xs font-bold ${dish.isAvailable ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                >
+                  {dish.isAvailable ? "Yes" : "No"}
                 </span>
               </div>
               <div className="flex items-center justify-between">
@@ -190,30 +213,12 @@ const AdminDishDetails = () => {
                     Shown on home page
                   </p>
                 </div>
-                <span className={`px-2 py-1 rounded-md text-xs font-bold ${dish.isFeatured ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}`}>
-                  {dish.isFeatured ? 'Yes' : 'No'}
+                <span
+                  className={`px-2 py-1 rounded-md text-xs font-bold ${dish.isFeatured ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-700"}`}
+                >
+                  {dish.isFeatured ? "Yes" : "No"}
                 </span>
               </div>
-            </div>
-          </Card>
-
-          {/* Profit margin */}
-          <Card title="Pricing Analysis">
-            <InfoRow label="Selling Price" value={`$${dish.price}`} />
-            <InfoRow label="Cost Price" value={`$${dish.costPrice}`} />
-            <div className="flex justify-between py-2 text-sm">
-              <span className="text-gray-400 font-medium">Profit Margin</span>
-              <span
-                className={`font-bold ${marginPct >= 50 ? "text-[#ea6a12]" : marginPct >= 30 ? "text-yellow-500" : "text-red-400"}`}
-              >
-                ${margin.toFixed(2)} ({marginPct}%)
-              </span>
-            </div>
-            <div className="mt-2 h-2 bg-gray-100 rounded-md overflow-hidden">
-              <div
-                className="h-full rounded-md bg-[#ea6a12] transition-all"
-                style={{ width: `${marginPct}%` }}
-              />
             </div>
           </Card>
         </div>
@@ -347,7 +352,9 @@ const AdminDishDetails = () => {
                     <Star
                       key={i}
                       size={14}
-                      fill={i < Math.floor(dish.rating) ? "currentColor" : "none"}
+                      fill={
+                        i < Math.floor(dish.rating) ? "currentColor" : "none"
+                      }
                     />
                   ))}
                 </div>
@@ -385,4 +392,3 @@ const AdminDishDetails = () => {
 };
 
 export default AdminDishDetails;
-

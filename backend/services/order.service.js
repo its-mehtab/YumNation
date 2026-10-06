@@ -9,8 +9,6 @@ export const getPaginatedOrders = async ({
   limit = 10,
   populate = "",
 }) => {
-  console.log(search);
-
   try {
     if (orderStatus !== "all" && orderStatus) {
       filter.orderStatus = orderStatus;

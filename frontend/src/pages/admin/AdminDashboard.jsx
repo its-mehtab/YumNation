@@ -113,7 +113,7 @@ const AdminDashboard = () => {
           {/* Charts Row */}
           <div className="grid grid-cols-1 gap-6">
             {/* Bar Chart */}
-            <div className="bg-white border border-[#fca5a5] rounded-md p-5 h-56 shadow-sm hover:shadow-md transition-shadow [&_.recharts-surface]:outline-none">
+            <div className="bg-white border border-[#fca5a5] rounded-md p-5 h-56 shadow-sm transition-shadow [&_.recharts-surface]:outline-none">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={barData}
@@ -129,16 +129,11 @@ const AdminDashboard = () => {
                       boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                     }}
                   />
-                  <Bar
-                    dataKey="income"
-                    fill="#ea6a12"
-                    radius={[4, 4, 0, 0]}
-                  />
+                  <Bar dataKey="income" fill="#ea6a12" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
-
-            </div>
+          </div>
 
           {/* Order Rate Row */}
           <div className="bg-white border border-gray-200 rounded-md p-6 shadow-sm transition-colors">
@@ -184,20 +179,10 @@ const AdminDashboard = () => {
                   <p className="text-sm font-bold leading-none">25.307</p>
                 </div>
               </div>
-
-              <div className="border border-gray-200 rounded-md py-2 px-4 flex-1 max-w-50">
-                <div className="flex justify-between text-[12px] text-gray-500 mb-1.5 py-1">
-                  <span>Target</span>
-                  <span className="font-bold text-gray-700">3.982</span>
-                </div>
-                <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-[#ea6a12] w-[40%] rounded-full"></div>
-                </div>
-              </div>
             </div>
 
             {/* Area Chart */}
-            <div className="h-[200px] w-full mt-4 [&_.recharts-surface]:outline-none">
+            <div className="h-50 w-full mt-4 [&_.recharts-surface]:outline-none">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart
                   data={areaData}

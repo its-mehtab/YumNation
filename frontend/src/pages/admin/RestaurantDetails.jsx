@@ -112,7 +112,7 @@ const Toggle = ({ checked, onChange }) => (
 );
 
 const Card = ({ title, children, action }) => (
-  <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all overflow-hidden">
+  <div className="bg-white rounded-md border border-gray-200 transition-all overflow-hidden">
     {(title || action) && (
       <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200">
         {title && (
@@ -211,7 +211,7 @@ const RestaurantDetails = () => {
       </div>
 
       {/* ── Hero banner ── */}
-      <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all overflow-hidden mb-5">
+      <div className="bg-white rounded-md border border-gray-200 transition-all overflow-hidden mb-5">
         {/* Cover */}
         <div className="h-36 bg-gradient-to-r from-orange-100 to-orange-50 relative">
           {restaurant.coverImage && (
@@ -319,7 +319,7 @@ const RestaurantDetails = () => {
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all border-l-4 border-l-[#fc8019] px-5 py-4 flex items-center justify-between"
+            className="bg-white rounded-md border border-gray-200 transition-all border-l-4 border-l-[#fc8019] px-5 py-4 flex items-center justify-between"
           >
             <div>
               <p className="text-xs text-gray-400 font-medium mb-1">
@@ -451,7 +451,7 @@ const RestaurantDetails = () => {
       )}
 
       {activeTab === "dishes" && (
-        <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all overflow-hidden">
+        <div className="bg-white rounded-md border border-gray-200 transition-all overflow-hidden">
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
             <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
               Dishes ({dishes.length})
@@ -528,7 +528,7 @@ const RestaurantDetails = () => {
       )}
 
       {activeTab === "orders" && (
-        <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all overflow-hidden">
+        <div className="bg-white rounded-md border border-gray-200 transition-all overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
             <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
               Recent Orders ({orders.length})

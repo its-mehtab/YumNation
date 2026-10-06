@@ -34,7 +34,7 @@ const mockSettings = {
 };
 
 const Section = ({ title, desc, children }) => (
-  <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all overflow-hidden">
+  <div className="bg-white rounded-md border border-gray-200 transition-all overflow-hidden">
     <div className="px-6 py-4 border-b border-gray-200">
       <p className="text-sm font-bold text-gray-700">{title}</p>
       {desc && <p className="text-xs text-gray-400 mt-0.5">{desc}</p>}

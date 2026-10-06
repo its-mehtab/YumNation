@@ -62,7 +62,7 @@ const RestaurantDishes = () => {
       </div>
 
       {/* ── Table card ── */}
-      <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all overflow-hidden">
+      <div className="bg-white rounded-md border border-gray-200 transition-all overflow-hidden">
         {/* Card header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
           <div className="flex items-center gap-2">

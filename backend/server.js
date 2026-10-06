@@ -22,6 +22,7 @@ import couponAdminRouter from "./routes/admin/couponAdmin.routes.js";
 import usersAdminRouter from "./routes/admin/usersAdmin.routes.js";
 import orderAdminRouter from "./routes/admin/orderAdmin.routes.js";
 import categoryAdminRouter from "./routes/admin/categoryAdmin.routes.js";
+import orderOwnerRouter from "./routes/owner/orderOwner.routes.js";
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -52,6 +53,7 @@ app.use("/api/admin/coupon", couponAdminRouter);
 app.use("/api/checkout", checkoutRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/admin/order", orderAdminRouter);
+app.use("/api/owner/order", orderOwnerRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: "Home Page" });

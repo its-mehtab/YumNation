@@ -63,7 +63,7 @@ const RestaurantSuspended = () => {
         </div>
 
         {/* ── Contact card ── */}
-        <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all p-5">
+        <div className="bg-white rounded-md border border-gray-200 transition-all p-5">
           <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
             What to do next
           </p>

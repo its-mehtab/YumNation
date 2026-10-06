@@ -218,7 +218,7 @@ const AdminOrders = () => {
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-md  border border-gray-200 p-5 flex flex-col justify-between transition-all hover:shadow-md gap-4"
+            className="bg-white rounded-md  border border-gray-200 p-5 flex flex-col justify-between transition-all gap-4"
           >
             <div className="flex items-center justify-between">
               <div className={`p-2.5 rounded-md ${s.bg} ${s.color}`}>

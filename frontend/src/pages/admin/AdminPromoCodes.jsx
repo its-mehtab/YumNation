@@ -22,7 +22,7 @@ import {
 // ─── Stat Card ────────────────────────────────────────────────────────────────
 
 const StatCard = ({ label, value, icon: Icon, bg, color }) => (
-  <div className="bg-white rounded-md  border border-gray-200 p-6 flex items-center justify-between transition-all hover:shadow-md">
+  <div className="bg-white rounded-md  border border-gray-200 p-6 flex items-center justify-between transition-all ">
     <div>
       <p className="text-sm font-semibold text-gray-500 mb-2">{label}</p>
       <p className="text-3xl font-bold text-gray-800">{value}</p>

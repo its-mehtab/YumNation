@@ -135,7 +135,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
           </div>
 
           {/* Toggles */}
-          <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all p-4 space-y-3">
+          <div className="bg-white rounded-md border border-gray-200 transition-all p-4 space-y-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold text-gray-700">Available</p>
@@ -162,7 +162,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
         </div>
 
         <div className="col-span-9 space-y-5">
-          <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all p-6 space-y-4">
+          <div className="bg-white rounded-md border border-gray-200 transition-all p-6 space-y-4">
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
               Basic Info
             </p>
@@ -216,7 +216,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
             </Field>
           </div>
 
-          <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all p-6 space-y-4">
+          <div className="bg-white rounded-md border border-gray-200 transition-all p-6 space-y-4">
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
               Pricing
             </p>
@@ -272,7 +272,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
             </Field>
           </div>
 
-          <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all p-6 space-y-4">
+          <div className="bg-white rounded-md border border-gray-200 transition-all p-6 space-y-4">
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
                 Variants
@@ -357,7 +357,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
           </div>
 
           {/* ── Add-ons ── */}
-          <div className="bg-white rounded-md border border-gray-200 hover:shadow-md transition-all p-6 space-y-4">
+          <div className="bg-white rounded-md border border-gray-200 transition-all p-6 space-y-4">
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
                 Add-ons

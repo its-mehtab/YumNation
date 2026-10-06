@@ -97,7 +97,7 @@ const InfoRow = ({ label, value, icon: Icon }) => (
 );
 
 const StatBox = ({ label, value, color, icon: Icon, bgClass }) => (
-  <div className="bg-white rounded-md p-5 border border-gray-200  flex flex-col justify-between hover:shadow-md transition-all gap-4">
+  <div className="bg-white rounded-md p-5 border border-gray-200  flex flex-col justify-between transition-all gap-4">
     <div className="flex items-center justify-between">
       <div
         className={`p-3 rounded-md ${bgClass || "bg-gray-50 text-gray-600"}`}

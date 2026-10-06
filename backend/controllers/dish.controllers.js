@@ -40,11 +40,13 @@ export const getDishById = async (req, res) => {
       "name slug",
     );
 
+    console.log(dish);
+
     if (!dish) return res.status(404).json({ message: "Dish not found" });
 
-    if (dish.restaurant._id.toString() !== req.restaurantId.toString()) {
-      return res.status(403).json({ message: "Not authorized" });
-    }
+    // if (dish.restaurant._id.toString() !== req.restaurantId.toString()) {
+    //   return res.status(403).json({ message: "Not authorized" });
+    // }
 
     return res.status(200).json(dish);
   } catch (error) {

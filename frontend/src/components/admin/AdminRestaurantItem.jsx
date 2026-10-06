@@ -181,13 +181,13 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
             <>
               <button
                 onClick={() => handleApprove(r._id)}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#fff2e8] text-green-700 text-xs font-bold hover:bg-green-100 hover:shadow-sm border border-green-200 transition-all"
+                className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#fff2e8] text-green-700 text-xs font-bold hover:bg-green-100 border border-green-200 transition-all"
               >
                 <Check size={14} strokeWidth={1.5} /> Approve
               </button>
               <button
                 onClick={() => setRejectTarget(r)}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-red-50 text-red-700 text-xs font-bold hover:bg-red-100 hover:shadow-sm border border-red-200 transition-all"
+                className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-red-50 text-red-700 text-xs font-bold hover:bg-red-100 border border-red-200 transition-all"
               >
                 <X size={14} strokeWidth={1.5} /> Reject
               </button>
@@ -219,7 +219,7 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
           {(r.status === "suspended" || r.status === "rejected") && (
             <button
               onClick={() => handleApprove(r._id)}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#fff2e8] text-green-700 text-xs font-bold hover:bg-green-100 hover:shadow-sm border border-green-200 transition-all"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#fff2e8] text-green-700 text-xs font-bold hover:bg-green-100 border border-green-200 transition-all"
             >
               Reinstate
             </button>
