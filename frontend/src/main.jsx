@@ -1,3 +1,4 @@
+import { OwnerOrdersProvider } from "./context/owner/OwnerOrdersContext.jsx";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "@radix-ui/themes/styles.css";
@@ -37,7 +38,8 @@ createRoot(document.getElementById("root")).render(
                       <ValidateProvider>
                         <OrderContextProvider>
                           <AdminOrdersProvider>
-                            <RestaurantProvider>
+                            <OwnerOrdersProvider>
+                              <RestaurantProvider>
                               <AdminRestaurantsProvider>
                                 <AllUsersProvider>
                                   <CouponProvider>
@@ -49,6 +51,7 @@ createRoot(document.getElementById("root")).render(
                                 </AllUsersProvider>
                               </AdminRestaurantsProvider>
                             </RestaurantProvider>
+                            </OwnerOrdersProvider>
                           </AdminOrdersProvider>
                         </OrderContextProvider>
                       </ValidateProvider>

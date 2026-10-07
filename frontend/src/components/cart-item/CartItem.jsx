@@ -1,10 +1,12 @@
 import axios from "axios";
+import { Minus, Plus } from "lucide-react";
+
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/user/AuthContext";
 import { useCart } from "../../context/user/CartContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
-import { MinusIcon, PlusIcon } from "../../assets/icon/Icons";
+
 import { assets } from "../../assets/assets";
 
 const CartItem = ({ cartItem, restaurant }) => {
@@ -139,14 +141,14 @@ const CartItem = ({ cartItem, restaurant }) => {
             className="cursor-pointer px-2.5 py-2.5 flex items-center border-r border-[#fc8019]"
             onClick={handleQuantityMinus}
           >
-            <MinusIcon color={"#666"} />
+            <Minus  color={"#666"} />
           </span>
           <span className="w-8 text-center text-sm">{quantity}</span>
           <span
             className="cursor-pointer px-2.5 py-2.5 flex items-center border-l border-[#fc8019]"
             onClick={handleQuantityPlus}
           >
-            <PlusIcon color={"#666"} />
+            <Plus  color={"#666"} />
           </span>
         </div>
       </div>

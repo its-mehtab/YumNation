@@ -1,14 +1,9 @@
 import React, { useState } from "react";
+import { Trash2, Package, MapPin, Plus, Star, Clock } from "lucide-react";
+
 import { Link } from "react-router-dom";
 import VegBadge from "../../components/public/VegBadge";
-import {
-  DeleteIcon,
-  DelhiveryBoxIcon,
-  LocationIcon,
-  PlusIcon,
-  StarIcon,
-  TimeIcon,
-} from "../../assets/icon/Icons";
+
 import { useWishlist } from "../../context/user/WishlistContext";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
@@ -162,16 +157,16 @@ const Wishlist = () => {
                   </div>
                   <p className="text-xs text-gray-400 flex gap-2 mt-1">
                     <span className="flex gap-1">
-                      <LocationIcon size={17} /> {restaurant.address.city}
+                      <MapPin  size={17} /> {restaurant.address.city}
                     </span>
                     <span className="flex gap-1">
-                      <StarIcon size={14} /> {restaurant.rating}
+                      <Star  size={14} /> {restaurant.rating}
                     </span>
                     <span className="flex gap-1">
-                      <TimeIcon size={14} /> {restaurant.deliveryTime} min
+                      <Clock  size={14} /> {restaurant.deliveryTime} min
                     </span>
                     <span className="flex gap-1">
-                      <DelhiveryBoxIcon size={14} /> ${restaurant.deliveryFee}{" "}
+                      <Package  size={14} /> ${restaurant.deliveryFee}{" "}
                       delivery
                     </span>
                   </p>
@@ -189,7 +184,7 @@ const Wishlist = () => {
                     className="p-1.5 rounded-lg hover:bg-red-50 text-gray-300 hover:text-red-400 transition-colors"
                     title="Remove restaurant from wishlist"
                   >
-                    <DeleteIcon />
+                    <Trash2  />
                   </button>
                 </div>
               </div>
@@ -261,7 +256,7 @@ const Wishlist = () => {
                               {(dish?.dish?.variants?.length > 0 ||
                                 dish?.dish?.addOns?.length > 0) && (
                                 <button className="flex items-center gap-1.5 bg-[#fc8019] hover:bg-[#e5721f] text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors">
-                                  <PlusIcon color={"#fff"} /> Add to Cart
+                                  <Plus  color={"#fff"} /> Add to Cart
                                 </button>
                               )}
                             </AddToCartModal>
@@ -276,7 +271,7 @@ const Wishlist = () => {
                             }}
                             className="p-1.5 rounded-lg hover:bg-red-50 text-gray-300 hover:text-red-400 transition-colors"
                           >
-                            <DeleteIcon />
+                            <Trash2  />
                           </button>
                         </div>
                       </td>

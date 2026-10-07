@@ -46,6 +46,7 @@ export const getPaginatedOrders = async ({
       orders,
       total,
 
+      totalOrders,
       placed,
       confirmed,
       preparing,
@@ -68,6 +69,7 @@ export const getPaginatedOrders = async ({
 
       Order.countDocuments(filter),
 
+      Order.countDocuments(),
       Order.countDocuments({ orderStatus: "placed" }),
       Order.countDocuments({ orderStatus: "confirmed" }),
       Order.countDocuments({ orderStatus: "preparing" }),
@@ -96,6 +98,7 @@ export const getPaginatedOrders = async ({
     return {
       items: orders,
       totalRevenue: revenue[0]?.totalRevenue || 0,
+      totalOrders,
       statusCount: {
         placed,
         confirmed,

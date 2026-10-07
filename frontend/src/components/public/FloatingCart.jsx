@@ -1,11 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
+import { ArrowRight, ShoppingCart, Minus, Plus } from "lucide-react";
+
 import { Link, useNavigate } from "react-router-dom";
-import {
-  ArrowRight,
-  CartIcon,
-  MinusIcon,
-  PlusIcon,
-} from "../../assets/icon/Icons";
+
 import { useCart } from "../../context/user/CartContext";
 import { useAuth } from "../../context/user/AuthContext";
 import { notifyError, notifyInfo } from "../../utils/toast";
@@ -119,7 +116,7 @@ const CartItem = ({ item }) => {
           onClick={handleQuantityMinus}
           className="w-7 h-7 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-600 text-sm font-bold flex items-center justify-center transition-colors"
         >
-          <MinusIcon />
+          <Minus  />
         </button>
         <span className="text-sm font-bold text-gray-700 w-4 text-center">
           {quantity}
@@ -128,7 +125,7 @@ const CartItem = ({ item }) => {
           onClick={handleQuantityPlus}
           className="w-7 h-7 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-bold flex items-center justify-center transition-colors"
         >
-          <PlusIcon color={"#fff"} />
+          <Plus  color={"#fff"} />
         </button>
       </div>
     </div>
@@ -263,7 +260,7 @@ const FloatingCart = () => {
                   {totalItems} items
                 </span>
                 <span className="text-sm font-semibold flex gap-1 items-center">
-                  Checkout <ArrowRight size="14" />
+                  Checkout <ArrowRight  size="14" />
                 </span>
                 <span className="text-xs font-semibold">
                   ${(totalPrice + 2.5).toFixed(2)}
@@ -279,7 +276,7 @@ const FloatingCart = () => {
             className={`flex items-center gap-3 bg-[#fc8019] hover:bg-[#e5721f] text-white pl-4 pr-5 py-3.5 rounded-md shadow-[0_4px_20px_rgba(252,128,25,0.5)] transition-colors ${animateBtn ? "pop-in" : ""}`}
           >
             <div className="relative">
-              <CartIcon />
+              <ShoppingCart  />
               <span className="absolute -top-1 -right-2 w-4 h-4 bg-white text-[#fc8019] text-xs font-medium rounded-full flex items-center justify-center leading-none">
                 {totalItems}
               </span>

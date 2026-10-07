@@ -1,9 +1,11 @@
 import React, { useRef, useState } from "react";
+import { Trash2, Edit, Plus } from "lucide-react";
+
 import { useCategory } from "../../context/public/CategoryContext";
 import { Switch } from "@radix-ui/themes";
 import Field from "../common/Field";
 import Input from "../common/Input";
-import { DeleteIcon, EditIcon, PlusIcon } from "../../assets/icon/Icons";
+
 import { Camera, Circle, Leaf, Trash, Save } from "lucide-react";
 
 const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
@@ -310,14 +312,14 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                         onClick={() => removeVariant(v.name)}
                         className="text-red-400 hover:text-red-500 hover:bg-red-50 p-1 rounded-md transition-colors"
                       >
-                        <DeleteIcon size="13" />
+                        <Trash2  size="13" />
                       </button>
                       <button
                         type="button"
                         onClick={() => editVariant(v.name, v.price)}
                         className="text-red-400 hover:text-red-500 hover:bg-red-50 p-1 rounded-md transition-colors"
                       >
-                        <EditIcon size="13" />
+                        <Edit  size="13" />
                       </button>
                     </div>
                   </div>
@@ -350,7 +352,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                 disabled={!variantInput.name.trim() || !variantInput.price}
                 className="flex gap-1 items-center px-4 py-2 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors whitespace-nowrap disabled:opacity-40"
               >
-                <PlusIcon color={"#fff"} />
+                <Plus  color={"#fff"} />
                 Add
               </button>
             </div>
@@ -387,14 +389,14 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                       onClick={() => removeAddOn(a.name)}
                       className="text-red-400 hover:text-red-500 transition-colors ml-1"
                     >
-                      <DeleteIcon size="13" />
+                      <Trash2  size="13" />
                     </button>
                     <button
                       type="button"
                       onClick={() => editAddOn(a.name, a.price)}
                       className="text-red-400 hover:text-red-500 transition-colors ml-1"
                     >
-                      <EditIcon size="13" />
+                      <Edit  size="13" />
                     </button>
                   </div>
                 ))}
@@ -426,7 +428,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                 disabled={!addOnInput.name.trim() || !addOnInput.price}
                 className="flex gap-1 items-center px-4 py-2 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors whitespace-nowrap disabled:opacity-40"
               >
-                <PlusIcon color={"#fff"} /> Add
+                <Plus  color={"#fff"} /> Add
               </button>
             </div>
           </div>

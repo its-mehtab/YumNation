@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
-import { SearchIcon } from "../../assets/icon/Icons";
+import { Search } from "lucide-react";
+
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -94,7 +96,7 @@ const SearchBox = () => {
         onClick={(e) => handleSearchSubmit(e, query)}
         className="border-r-2 border-white pr-5 cursor-pointer"
       >
-        <SearchIcon />
+        <Search  />
       </span>
       <form onSubmit={(e) => handleSearchSubmit(e, query)} className="w-full">
         <input

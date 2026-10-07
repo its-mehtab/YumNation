@@ -1,8 +1,10 @@
 import { TargetIcon } from "@radix-ui/react-icons";
+import { Eye } from "lucide-react";
+
 import { Dialog } from "@radix-ui/themes";
 import React, { useState } from "react";
 import DialogBox from "../dialog-box/DialogBox";
-import { ViewIcon } from "../../assets/icon/Icons";
+
 
 const PreviewModal = ({ promo }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,7 +17,7 @@ const PreviewModal = ({ promo }) => {
           className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
           onClick={() => setIsModalOpen(true)}
         >
-          <ViewIcon />
+          <Eye  />
         </button>
       }
     >

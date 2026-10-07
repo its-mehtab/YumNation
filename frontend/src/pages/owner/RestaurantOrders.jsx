@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import Pagination from "@mui/material/Pagination";
@@ -9,83 +9,7 @@ import {
   CheckCircle,
   Banknote,
 } from "lucide-react";
-import { useEffect } from "react";
-import axios from "axios";
-import { useAuth } from "../../context/user/AuthContext";
-
-// ── Mock data ────────────────────────────────────────────────────────────────
-const mockOrders = [
-  {
-    _id: "64f3a2b1c9e1234567890001",
-    user: { name: "John Doe", email: "john@example.com" },
-    items: [{ name: "Italian Pizza" }, { name: "Coke" }],
-    totalAmount: 89.5,
-    paymentMethod: "cod",
-    paymentStatus: "pending",
-    orderStatus: "placed",
-    deliveryAddress: { city: "New York", state: "NY" },
-    createdAt: "2026-03-10T10:20:00Z",
-  },
-  {
-    _id: "64f3a2b1c9e1234567890002",
-    user: { name: "Sara Smith", email: "sara@example.com" },
-    items: [{ name: "Veg Burger" }],
-    totalAmount: 24.0,
-    paymentMethod: "card",
-    paymentStatus: "paid",
-    orderStatus: "preparing",
-    deliveryAddress: { city: "Los Angeles", state: "CA" },
-    createdAt: "2026-03-10T11:05:00Z",
-  },
-  {
-    _id: "64f3a2b1c9e1234567890003",
-    user: { name: "Mike Johnson", email: "mike@example.com" },
-    items: [
-      { name: "Spaghetti" },
-      { name: "Garlic Bread" },
-      { name: "Tiramisu" },
-    ],
-    totalAmount: 56.75,
-    paymentMethod: "card",
-    paymentStatus: "paid",
-    orderStatus: "delivered",
-    deliveryAddress: { city: "Chicago", state: "IL" },
-    createdAt: "2026-03-09T18:30:00Z",
-  },
-  {
-    _id: "64f3a2b1c9e1234567890004",
-    user: { name: "Emily Davis", email: "emily@example.com" },
-    items: [{ name: "Red Velvet Cake" }],
-    totalAmount: 15.0,
-    paymentMethod: "cod",
-    paymentStatus: "pending",
-    orderStatus: "confirmed",
-    deliveryAddress: { city: "Houston", state: "TX" },
-    createdAt: "2026-03-10T09:15:00Z",
-  },
-  {
-    _id: "64f3a2b1c9e1234567890005",
-    user: { name: "Chris Brown", email: "chris@example.com" },
-    items: [{ name: "Chicken Wings" }, { name: "Fries" }],
-    totalAmount: 38.0,
-    paymentMethod: "card",
-    paymentStatus: "paid",
-    orderStatus: "out for delivery",
-    deliveryAddress: { city: "Phoenix", state: "AZ" },
-    createdAt: "2026-03-10T12:45:00Z",
-  },
-  {
-    _id: "64f3a2b1c9e1234567890006",
-    user: { name: "Anna Wilson", email: "anna@example.com" },
-    items: [{ name: "Margherita Pizza" }],
-    totalAmount: 22.5,
-    paymentMethod: "cod",
-    paymentStatus: "pending",
-    orderStatus: "cancelled",
-    deliveryAddress: { city: "Philadelphia", state: "PA" },
-    createdAt: "2026-03-08T14:10:00Z",
-  },
-];
+import { useOwnerOrders } from "../../context/owner/OwnerOrdersContext";
 
 const STATUS_OPTIONS = [
   "all",
@@ -139,72 +63,24 @@ const StatusDropdown = ({ orderId, current, onChange }) => (
 
 // ── Main Component ───────────────────────────────────────────────────────────
 const RestaurantOrders = () => {
-  const [orders, setOrders] = useState(mockOrders);
-  const [filter, setFilter] = useState({
-    status: "all",
-    search: "",
-    sortBy: "newest",
-  });
-
-  const { serverURL } = useAuth();
-
-  // ── Filter + sort ──
-  const filtered = orders
-    .filter((o) => {
-      const matchStatus =
-        filter.status === "all" || o.orderStatus === filter.status;
-      const matchSearch =
-        o.user.name.toLowerCase().includes(filter.search.toLowerCase()) ||
-        o._id.slice(-6).toLowerCase().includes(filter.search.toLowerCase()) ||
-        o.items.some((i) =>
-          i.name.toLowerCase().includes(filter.search.toLowerCase()),
-        );
-      return matchStatus && matchSearch;
-    })
-    .sort((a, b) =>
-      filter.sortBy === "newest"
-        ? new Date(b.createdAt) - new Date(a.createdAt)
-        : filter.sortBy === "oldest"
-          ? new Date(a.createdAt) - new Date(b.createdAt)
-          : filter.sortBy === "highest"
-            ? b.totalAmount - a.totalAmount
-            : a.totalAmount - b.totalAmount,
-    );
+  const { orders, setOrders, filter, setFilter } = useOwnerOrders();
 
   const handleStatusChange = (orderId, newStatus) => {
-    setOrders((prev) =>
-      prev.map((o) =>
+    setOrders((prev) => ({
+      ...prev,
+      items: prev.items.map((o) =>
         o._id === orderId ? { ...o, orderStatus: newStatus } : o,
       ),
-    );
+    }));
   };
 
-  // ── Stats ──
   const stats = {
-    total: orders.length,
-    pending: orders.filter((o) => o.orderStatus === "placed").length,
-    preparing: orders.filter((o) => o.orderStatus === "preparing").length,
-    delivered: orders.filter((o) => o.orderStatus === "delivered").length,
-    revenue: orders
-      .filter((o) => o.paymentStatus === "paid")
-      .reduce((acc, o) => acc + o.totalAmount, 0),
+    total: orders?.totalOrders,
+    pending: orders?.statusCount?.placed || 0,
+    preparing: orders?.statusCount?.preparing || 0,
+    delivered: orders?.statusCount?.delivered || 0,
+    revenue: orders?.totalRevenue || 0,
   };
-
-  const fetchRestaurantOrders = async () => {
-    try {
-      const { data } = await axios(`${serverURL}/api/owner/order`, {
-        withCredentials: true,
-      });
-
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchRestaurantOrders();
-  }, []);
 
   return (
     <div>
@@ -325,7 +201,7 @@ const RestaurantOrders = () => {
                 {s}
                 {s !== "all" && (
                   <span className="ml-1 opacity-70">
-                    ({orders.filter((o) => o.orderStatus === s).length})
+                    ({orders?.statusCount?.[s] || 0})
                   </span>
                 )}
               </button>
@@ -366,7 +242,7 @@ const RestaurantOrders = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {filtered.map((order) => (
+              {(orders?.items || []).map((order) => (
                 <tr
                   key={order._id}
                   className="hover:bg-gray-50 transition-colors"
@@ -446,7 +322,7 @@ const RestaurantOrders = () => {
                   {/* View */}
                   <td className="px-4 py-4">
                     <Link
-                      to={`/restaurant/orders/${order._id}`}
+                      to={`/owner/orders/${order._id}`}
                       className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors inline-flex"
                       title="View"
                     >
@@ -472,7 +348,7 @@ const RestaurantOrders = () => {
         </div>
 
         {/* Empty state */}
-        {filtered.length === 0 && (
+        {(orders?.items || []).length === 0 && (
           <div className="text-center py-16 text-gray-400">
             <div className="flex justify-center mb-3 text-gray-300">
               <Package size={40} strokeWidth={1.5} />
@@ -482,11 +358,14 @@ const RestaurantOrders = () => {
         )}
 
         {/* Dummy Pagination UI for design */}
-        {filtered.length > 0 && (
+        {(orders?.items || []).length > 0 && (
           <div className="mt-6 flex justify-center pb-6 border-t border-gray-100 pt-6">
             <Pagination
-              count={5}
-              page={1}
+              count={orders?.pagination?.totalPages || 1}
+              page={filter.page || 1}
+              onChange={(e, value) =>
+                setFilter((prev) => ({ ...prev, page: value }))
+              }
               variant="outlined"
               shape="rounded"
               sx={{

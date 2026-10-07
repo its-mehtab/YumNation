@@ -40,10 +40,6 @@ export const AdminOrdersProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    fetchAdminOrders();
-  }, [filter.page, filter.orderStatus, filter.orderSearch, filter.sortBy]);
-
   return (
     <AdminOrdersContext.Provider
       value={{

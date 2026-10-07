@@ -83,17 +83,15 @@ const TimelineStep = ({ label, icon, done, active, last }) => (
   <div className="flex flex-col items-center flex-1">
     <div className="relative w-full flex items-center">
       <div
-        className={`flex-1 h-0.5 ${done && !active ? "bg-[#fc8019]" : "bg-gray-200"}`}
+        className={`flex-1 h-0.5 ${done ? "bg-[#fc8019]" : "bg-gray-200"}`}
         style={{ visibility: label === STATUSES[0] ? "hidden" : "visible" }}
       />
       <div
         className={`w-9 h-9 rounded-md flex items-center justify-center z-10 border-2 transition-all duration-300 text-sm
         ${
-          active
+          done
             ? "border-[#fc8019] bg-[#fc8019] text-white scale-110 shadow-lg shadow-orange-200"
-            : done
-              ? "border-[#fc8019] bg-white text-[#fc8019]"
-              : "border-gray-200 bg-white text-gray-300"
+            : "border-gray-200 bg-white text-gray-300"
         }`}
       >
         {icon}
@@ -152,7 +150,7 @@ const RestaurantOrderDetails = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Replace with: axios.get(`${serverURL}/api/admin/order/${id}`, { withCredentials: true })
+    // Replace with: axios.get(`${serverURL}/api/owner/order/${id}`, { withCredentials: true })
     setTimeout(() => {
       setOrder(mockOrder);
       setLoading(false);
@@ -162,7 +160,7 @@ const RestaurantOrderDetails = () => {
   const handleStatusChange = async (newStatus) => {
     setUpdating(true);
     try {
-      // await axios.put(`${serverURL}/api/admin/order/${id}/status`, { status: newStatus }, { withCredentials: true });
+      // await axios.put(`${serverURL}/api/owner/order/${id}/status`, { status: newStatus }, { withCredentials: true });
       setOrder((prev) => ({ ...prev, orderStatus: newStatus }));
     } catch (err) {
       setError("Failed to update status");
@@ -188,7 +186,7 @@ const RestaurantOrderDetails = () => {
         <div className="flex justify-center mb-4 text-gray-400"><Frown size={48} /></div>
         <p className="text-gray-500 text-sm">{error}</p>
         <Link
-          to="/admin/orders"
+          to="/owner/orders"
           className="text-[#fc8019] text-sm underline mt-2 block"
         >
           Back to Orders
@@ -207,7 +205,7 @@ const RestaurantOrderDetails = () => {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <button
-            onClick={() => navigate("/admin/orders")}
+            onClick={() => navigate("/owner/orders")}
             className="text-sm text-gray-400 hover:text-[#fc8019] transition-colors font-medium"
           >
             ← Back
@@ -216,7 +214,7 @@ const RestaurantOrderDetails = () => {
         </div>
         <div className="flex items-center gap-2 text-sm text-gray-400">
           <Link
-            to="/admin/orders"
+            to="/owner/orders"
             className="hover:text-[#fc8019] transition-colors"
           >
             Orders
@@ -389,7 +387,7 @@ const RestaurantOrderDetails = () => {
               <p className="text-xs text-gray-500 flex items-center gap-1.5"><Phone size={12}  strokeWidth={1.5} /> {order.user.phone}</p>
             )}
             <Link
-              to={`/admin/customers/${order.user._id}`}
+              to={"#"}
               className="mt-3 block text-center text-xs font-semibold text-[#fc8019] border border-orange-200 rounded-md py-2 hover:bg-[#fff2e8] transition-colors"
             >
               View Customer →

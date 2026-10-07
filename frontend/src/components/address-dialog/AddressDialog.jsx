@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { MapPin } from "lucide-react";
+
 import { Button, Dialog, Flex, Text, TextField } from "@radix-ui/themes";
 import DialogBox from "../dialog-box/DialogBox";
 import { useAddress } from "../../context/user/AddressContext";
-import { LocationIcon } from "../../assets/icon/Icons";
+
 import EditAddress from "./EditAddress";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
@@ -81,7 +83,7 @@ const AddressDialog = () => {
             )}
 
             <div className="flex gap-1.5 mt-1">
-              <LocationIcon color={"#fc8019"} />
+              <MapPin  color={"#fc8019"} />
               <div>
                 <div className="text-sm font-medium text-gray-700">
                   {`${address.city}, ${address.state}`}

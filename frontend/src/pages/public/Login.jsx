@@ -1,7 +1,9 @@
 import { useState } from "react";
+
+
 import { Link } from "react-router-dom";
 import { assets } from "../../assets/assets";
-import { FacebookIcon, GoogleIcon } from "../../assets/icon/Icons";
+
 import { useValidate } from "../../context/public/ValidateContext";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
@@ -124,11 +126,11 @@ const Login = () => {
           </p>
           <div className="flex gap-4">
             <button className="w-1/2 bg-gray-200 text-black font-medium text-sm py-3 rounded-lg flex justify-center items-center gap-2 hover:bg-gray-300 transition cursor-pointer">
-              <GoogleIcon />
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
               Google
             </button>
             <button className="w-1/2 bg-[#1877F2] text-white font-medium text-sm py-3 rounded-lg flex justify-center items-center gap-2 hover:bg-[#0f5ec7] transition cursor-pointer">
-              <FacebookIcon />
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
               Facebook
             </button>
           </div>

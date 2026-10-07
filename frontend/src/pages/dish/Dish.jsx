@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
+
+
 import { Link, useParams } from "react-router-dom";
-import { WishlistIcon, WishlistIconRed } from "../../assets/icon/Icons";
+
 import "./dish.css";
 import DishGallery from "./DishGallery";
 import axios from "axios";
@@ -328,7 +330,7 @@ const Dish = () => {
               onClick={handleWishlist}
               className="bg-lime-100 p-3 rounded-lg text-gray-700 hover:text-[#027a36] cursor-pointer"
             >
-              {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}
+              {!wishlistActive ? <Heart  /> : <Heart  />}
             </span>
           </div>
           <ul className="text-md">

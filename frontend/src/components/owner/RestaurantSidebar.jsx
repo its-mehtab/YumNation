@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import { RestaurantIcon } from "../../assets/icon/Icons";
+import { LayoutDashboard, ShoppingBag, Utensils, Settings } from "lucide-react";
 import { assets } from "../../assets/assets";
 
 const RestaurantSidebar = () => {
@@ -31,7 +31,7 @@ const RestaurantSidebar = () => {
             >
               {({ isActive }) => (
                 <>
-                  <RestaurantIcon size={20} className={isActive ? "text-white" : "text-gray-400"} />
+                  <LayoutDashboard size={20} className={isActive ? "text-white" : "text-gray-400"} />
                   Dashboard
                 </>
               )}
@@ -50,7 +50,7 @@ const RestaurantSidebar = () => {
             >
               {({ isActive }) => (
                 <>
-                  <RestaurantIcon size={20} className={isActive ? "text-white" : "text-gray-400"} />
+                  <ShoppingBag size={20} className={isActive ? "text-white" : "text-gray-400"} />
                   Orders
                 </>
               )}
@@ -69,7 +69,7 @@ const RestaurantSidebar = () => {
             >
               {({ isActive }) => (
                 <>
-                  <RestaurantIcon size={20} className={isActive ? "text-white" : "text-gray-400"} />
+                  <Utensils size={20} className={isActive ? "text-white" : "text-gray-400"} />
                   My Menu
                 </>
               )}
@@ -88,7 +88,7 @@ const RestaurantSidebar = () => {
             >
               {({ isActive }) => (
                 <>
-                  <RestaurantIcon size={20} className={isActive ? "text-white" : "text-gray-400"} />
+                  <Settings size={20} className={isActive ? "text-white" : "text-gray-400"} />
                   Settings
                 </>
               )}

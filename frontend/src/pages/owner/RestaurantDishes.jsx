@@ -1,11 +1,8 @@
 import React, { useState } from "react";
+import { Trash2, Edit, Plus, Eye } from "lucide-react";
+
 import { Link } from "react-router-dom";
-import {
-  DeleteIcon,
-  EditIcon,
-  PlusIcon,
-  ViewIcon,
-} from "../../assets/icon/Icons";
+
 import { useDish } from "../../context/owner/DishContext";
 import ConfirmationModal from "../../components/common/ConfirmationModal";
 import axios from "axios";
@@ -91,7 +88,7 @@ const RestaurantDishes = () => {
               to="/owner/dish/add"
               className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-4 py-2 rounded-md transition-colors"
             >
-              <PlusIcon color={"#fff"} size={12} />
+              <Plus  color={"#fff"} size={12} />
               Add Dish
             </Link>
           </div>
@@ -154,14 +151,14 @@ const RestaurantDishes = () => {
                         className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
                         title="Edit"
                       >
-                        <EditIcon size={15} />
+                        <Edit  size={15} />
                       </Link>
                       <Link
                         to={`/owner/dish/${dish._id}`}
                         className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
                         title="View"
                       >
-                        <ViewIcon size={15} />
+                        <Eye  size={15} />
                       </Link>
 
                       <ConfirmationModal
@@ -170,7 +167,7 @@ const RestaurantDishes = () => {
                             className="p-1.5 rounded-md hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
                             title="Delete"
                           >
-                            <DeleteIcon size={15} />
+                            <Trash2  size={15} />
                           </button>
                         }
                         heading="Delete This Dish"

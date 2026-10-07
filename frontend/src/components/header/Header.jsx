@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
+import { ChevronRight, Heart } from "lucide-react";
+
 import { assets } from "../../assets/assets";
 import { Link, NavLink } from "react-router-dom";
-import { ChevronRightIcon, WishlistIcon } from "../../assets/icon/Icons";
+
 import SearchBox from "../search-box/SearchBox";
 import { useAuth } from "../../context/user/AuthContext";
 
@@ -78,7 +80,7 @@ const Header = () => {
                 />
                 <div className="text-sm font-medium text-heading capitalize flex gap-2 items-center">
                   {user?.firstName}
-                  <ChevronRightIcon
+                  <ChevronRight 
                     size={12}
                     addClass={`${isOpen ? "rotate-90" : ""}`}
                   />

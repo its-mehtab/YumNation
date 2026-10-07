@@ -9,6 +9,7 @@ import { useRestaurants } from "./admin/RestaurantsContext";
 import { useDish } from "./owner/DishContext";
 import { useCoupon } from "./admin/CouponContext";
 import { useAdminOrders } from "./admin/AdminOrdersContext";
+import { useCategories } from "./admin/CategoryAdminContext";
 
 const AppInit = () => {
   const { user } = useAuth();
@@ -21,8 +22,9 @@ const AppInit = () => {
   const { getRestaurantDishes } = useDish();
 
   const { fetchRestaurants } = useRestaurants();
-  // const { fetchAdminOrders } = useAdminOrders();
+  const { fetchAdminOrders, filter } = useAdminOrders();
   const { fetchCoupon } = useCoupon();
+  const { fetchCategories } = useCategories();
 
   useEffect(() => {
     if (!user) return;
@@ -42,9 +44,23 @@ const AppInit = () => {
     if (user.role === "admin") {
       fetchRestaurants();
       fetchCoupon();
-      // fetchAdminOrders();
+      fetchCategories();
     }
   }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    if (user.role === "admin") {
+      fetchAdminOrders();
+    }
+  }, [
+    filter.page,
+    filter.orderStatus,
+    filter.orderSearch,
+    filter.sortBy,
+    user,
+  ]);
 
   return null;
 };

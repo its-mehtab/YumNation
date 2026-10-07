@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { assets, Icon } from "../../assets/assets";
+import { Plus, Heart, Star } from "lucide-react";
+
+import { assets } from "../../assets/assets";
 import { Link } from "react-router-dom";
-import {
-  PlusIcon,
-  WishlistIcon,
-  WishlistIconRed,
-} from "../../assets/icon/Icons";
+
 import { useAuth } from "../../context/user/AuthContext";
 import { useCart } from "../../context/user/CartContext";
 import axios from "axios";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { useWishlist } from "../../context/user/WishlistContext";
-import { StarIcon } from "../../assets/icon/Icons";
-import { Heart } from "lucide-react";
+
+
 
 const DishCard = ({ currDish, dishLoading }) => {
   const [wishlistActive, setWishlistActive] = useState(false);
@@ -111,7 +109,7 @@ const DishCard = ({ currDish, dishLoading }) => {
         onClick={handleWishlist}
         className="text-[#B7B7B7] hover:text-[#027a36] cursor-pointer absolute top-4 right-4 z-10"
       >
-        {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}
+        {!wishlistActive ? <Heart  /> : <Heart  />}
       </span>
       <Link className="relative" to={`/dish/${currDish.slug}`}>
         {!currDish.isAvailable && (
@@ -122,11 +120,11 @@ const DishCard = ({ currDish, dishLoading }) => {
         <img src={assets.dish2} alt="" className="h-31.5 mx-auto mb-3" />
       </Link>
       <div className="flex gap-1 items-center mb-2">
-        <StarIcon size={18} color={"text-[#FC8019]"} />
-        <StarIcon size={18} color={"text-[#FC8019]"} />
-        <StarIcon size={18} color={"text-[#FC8019]"} />
-        <StarIcon size={18} color={"text-gray-300"} />
-        <StarIcon size={18} color={"text-gray-300"} />
+        <Star  size={18} color={"text-[#FC8019]"} />
+        <Star  size={18} color={"text-[#FC8019]"} />
+        <Star  size={18} color={"text-[#FC8019]"} />
+        <Star  size={18} color={"text-gray-300"} />
+        <Star  size={18} color={"text-gray-300"} />
       </div>
       <div className="flex items-end gap-2 justify-between">
         <div>
@@ -143,7 +141,7 @@ const DishCard = ({ currDish, dishLoading }) => {
           onClick={handleAddCart}
           className="w-9 min-w-9 h-9 flex items-center  justify-center bg-[#fc8019] rounded-md hover:bg-[#fc8019] cursor-pointer transition-all"
         >
-          {<PlusIcon size={15} color={"#fff"} />}
+          {<Plus  size={15} color={"#fff"} />}
         </span>
       </div>
     </div>

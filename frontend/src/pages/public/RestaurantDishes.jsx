@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { Search } from "lucide-react";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
@@ -6,7 +8,7 @@ import "swiper/css/navigation";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../context/user/AuthContext";
-import { SearchIcon } from "../../assets/icon/Icons";
+
 import DealsSection from "../../components/public/DealsSection";
 import RestaurantHeader from "../../components/public/RestaurantHeader";
 import DishItem from "../../components/public/DishItem";
@@ -49,7 +51,7 @@ function MenuSearch({ dishes, restaurant }) {
           className="w-full bg-gray-100 rounded-xl px-5 py-3.5 text-sm text-gray-500 outline-none placeholder-gray-400"
         />
         <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-          <SearchIcon color="#999" />
+          <Search  color="#999" />
         </span>
       </div>
 

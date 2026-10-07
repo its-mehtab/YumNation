@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { Heart } from "lucide-react";
+
 import VegBadge from "../../components/public/VegBadge";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
-import { WishlistIcon, WishlistIconRed } from "../../assets/icon/Icons";
+
 import { useWishlist } from "../../context/user/WishlistContext";
 import AddToCartModal from "./AddToCartModal";
 import { useCart } from "../../context/user/CartContext";
@@ -101,7 +103,7 @@ const DishItem = ({ dish, restaurant }) => {
           onClick={handleWishlist}
           className="text-white hover:text-[#cccccc] cursor-pointer absolute top-2 right-2 z-10 drop-shadow-[0_0_4px_rgba(0,0,0)]"
         >
-          {!wishlistActive ? <WishlistIcon /> : <WishlistIconRed />}
+          {!wishlistActive ? <Heart  /> : <Heart  />}
         </span>
         <img
           src={

@@ -1,5 +1,7 @@
 import React from "react";
-import { LocationIcon } from "../../assets/icon/Icons";
+import { MapPin } from "lucide-react";
+
+
 import AddressDialog from "../address-dialog/AddressDialog";
 import EditAddress from "../address-dialog/EditAddress";
 import { useAddress } from "../../context/user/AddressContext";
@@ -21,7 +23,7 @@ const AddressBox = () => {
       {addresses?.length === 0 ? (
         <div className="mt-3 p-4 border border-dashed border-gray-300 rounded-lg">
           <div className="flex items-center gap-1.5">
-            <LocationIcon color="#fc8019" />
+            <MapPin  color="#fc8019" />
             <p className="text-sm font-medium text-gray-700">
               No address added
             </p>
@@ -38,7 +40,7 @@ const AddressBox = () => {
       ) : !defaultAddress ? (
         <div className="mt-3 p-4 border border-orange-300 bg-orange-50 rounded-lg">
           <div className="flex gap-1.5">
-            <LocationIcon color="#fc8019" />
+            <MapPin  color="#fc8019" />
             <p className="text-sm font-medium text-gray-700">
               Select a default delivery address
             </p>
@@ -55,7 +57,7 @@ const AddressBox = () => {
       ) : (
         <>
           <div className="flex items-center gap-1.5 mt-2">
-            <LocationIcon color="#fc8019" />
+            <MapPin  color="#fc8019" />
             <div className="text-sm font-medium text-gray-700">
               {`${defaultAddress.city}, ${defaultAddress.state}`}
             </div>

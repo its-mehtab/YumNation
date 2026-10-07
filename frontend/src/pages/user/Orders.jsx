@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { ChevronRight, MapPin } from "lucide-react";
+
 import { Skeleton, Table } from "@radix-ui/themes";
 import { assets } from "../../assets/assets";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useOrders } from "../../context/user/OrderContext";
 import dayjs from "dayjs";
-import { ChevronRightIcon, LocationIcon } from "../../assets/icon/Icons";
+
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import axios from "axios";
@@ -150,7 +152,7 @@ const Orders = () => {
                     </Table.Cell>
                     <Table.Cell>
                       <div className="flex gap-2 items-center">
-                        <LocationIcon color={"#fc8019"} />
+                        <MapPin  color={"#fc8019"} />
                         {`${order.deliveryAddress.city}, ${order.deliveryAddress.state}, ${order.deliveryAddress.pinCode}`}
                       </div>
                     </Table.Cell>
@@ -163,7 +165,7 @@ const Orders = () => {
                       </div>
                     </Table.Cell>
                     <Table.Cell px="3">
-                      <ChevronRightIcon
+                      <ChevronRight 
                         size={18}
                         addClass="text-gray-400 hover:text-gray-700"
                       />

@@ -1,7 +1,9 @@
 import React from "react";
+import { XCircle } from "lucide-react";
+
 import Lottie from "lottie-react";
 import successAnimation from "../../assets/icon/Check Mark.json";
-import { FailedIcon } from "../../assets/icon/Icons";
+
 import { useLocation, useNavigate } from "react-router-dom";
 import { PartyPopper, Bike } from "lucide-react";
 
@@ -60,7 +62,7 @@ const ThankYou = () => {
           </div>
         ) : (
           <div style={{ animation: "shake 0.6s ease 0.2s both" }}>
-            <FailedIcon />
+            <XCircle  />
           </div>
         )}
 

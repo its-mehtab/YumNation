@@ -1,12 +1,10 @@
 import React, { useState } from "react";
+import { Clock, Heart } from "lucide-react";
+
 import { Link } from "react-router-dom";
-import {
-  TimeIcon,
-  WishlistIcon,
-  WishlistIconRed,
-} from "../../assets/icon/Icons";
-import { assets, Icon } from "../../assets/assets";
-import { StarIcon } from "../../assets/icon/Icons";
+
+import { assets } from "../../assets/assets";
+
 
 const RestaurantCard = ({ restaurant = {} }) => {
   const isUnavailable = false;
@@ -69,7 +67,7 @@ const RestaurantCard = ({ restaurant = {} }) => {
           </span>
           <span className="text-gray-200">|</span>
           <span className="flex items-center gap-1">
-            <TimeIcon size={12} />
+            <Clock  size={12} />
             {restaurant.deliveryTime} min
           </span>
           <span className="text-gray-200">|</span>

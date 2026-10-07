@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { CheckCircle, PartyPopper, Bike, MapPin, ClipboardList, ChefHat, Clock } from "lucide-react";
+
 import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
@@ -6,15 +8,7 @@ import dayjs from "dayjs";
 import { assets } from "../../assets/assets";
 import { Skeleton } from "@radix-ui/themes";
 import { Frown, Store, Utensils, Phone, Banknote, CreditCard } from "lucide-react";
-import {
-  ConfirmedIcon,
-  DeliveredIcon,
-  DeliveryIcon,
-  LocationIcon,
-  PlacedIcon,
-  PreparingIcon,
-  TimeIcon,
-} from "../../assets/icon/Icons";
+
 import { StarIcon } from "@radix-ui/react-icons";
 import TimelineStep from "../../context/public/TimelineStep";
 
@@ -28,11 +22,11 @@ const STATUSES = [
 ];
 
 const ICONS = [
-  <PlacedIcon size={"20px"} color="currentColor" />,
-  <ConfirmedIcon size={"20px"} color="currentColor" />,
-  <PreparingIcon size={"20px"} color="currentColor" />,
-  <DeliveryIcon size={"20px"} color="currentColor" />,
-  <DeliveredIcon size={"20px"} color="currentColor" />,
+  <ClipboardList  size={"20px"} color="currentColor" />,
+  <CheckCircle  size={"20px"} color="currentColor" />,
+  <ChefHat  size={"20px"} color="currentColor" />,
+  <Bike  size={"20px"} color="currentColor" />,
+  <PartyPopper  size={"20px"} color="currentColor" />,
 ];
 
 const statusConfig = {
@@ -237,13 +231,13 @@ const OrderDetails = () => {
               </p>
               <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-500 flex-wrap">
                 <span className="flex items-center gap-1">
-                  <LocationIcon size={16} />
+                  <MapPin  size={16} />
                   {order?.restaurant?.address.addressLine1},{" "}
                   {order?.restaurant?.address.city}
                 </span>
                 <span className="text-gray-300">•</span>
                 <span className="flex items-center gap-1">
-                  <TimeIcon /> {order?.restaurant?.deliveryTime} min
+                  <Clock  /> {order?.restaurant?.deliveryTime} min
                 </span>
                 <span className="text-gray-300">•</span>
                 <span className="flex items-center gap-1">

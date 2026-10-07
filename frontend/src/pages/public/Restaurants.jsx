@@ -1,9 +1,11 @@
 import React from "react";
+import { Filter } from "lucide-react";
+
 import { Skeleton } from "@radix-ui/themes";
 import Chip from "../../components/public/Chip";
 import FilterBox from "../shop/FilterBox";
 import RestaurantCard from "../../components/public/RestaurantCard";
-import { FilterIcon } from "../../assets/icon/Icons";
+
 import { useRestaurats } from "../../context/public/RestaurantsContext";
 import DishCardSkeleton from "../../components/skeleton/DishCardSkeleton";
 
@@ -15,7 +17,7 @@ const Restaurants = () => {
       <div className="flex justify-between gap-3 mb-4">
         {/* <Skeleton> */}
         <p className="text-sm text-gray-600 flex gap-1 items-center">
-          FIlter <FilterIcon size="16" />
+          FIlter <Filter  size="16" />
         </p>
         {/* </Skeleton> */}
 

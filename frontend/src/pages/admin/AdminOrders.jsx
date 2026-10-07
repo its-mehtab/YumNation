@@ -156,7 +156,7 @@ const AdminOrders = () => {
 
   // ── Stats ──
   const stats = {
-    total: orders?.pagination?.total || 0,
+    total: orders?.totalOrders,
     pending: orders?.statusCount?.placed || 0,
     preparing: orders?.statusCount?.preparing || 0,
     delivered: orders?.statusCount?.delivered || 0,
@@ -229,7 +229,9 @@ const AdminOrders = () => {
               <p className="text-xs font-semibold text-gray-400 mb-1 tracking-wide uppercase">
                 {s.label}
               </p>
-              <p className="text-2xl font-semibold text-gray-800 tracking-tight">{s.value}</p>
+              <p className="text-2xl font-semibold text-gray-800 tracking-tight">
+                {s.value}
+              </p>
             </div>
           </div>
         ))}
@@ -240,14 +242,17 @@ const AdminOrders = () => {
         {/* ── Card header ── */}
         <div className="px-6 py-5 border-b border-gray-50 space-y-4">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-            <h2 className="text-base font-semibold text-gray-900">All Orders</h2>
+            <h2 className="text-base font-semibold text-gray-900">
+              All Orders
+            </h2>
             <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
               {/* Search */}
               <div className="relative w-full sm:w-64">
                 <Search
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                   size={16}
-                 strokeWidth={1.5} />
+                  strokeWidth={1.5}
+                />
                 <input
                   value={filter.orderSearch}
                   onChange={(e) =>

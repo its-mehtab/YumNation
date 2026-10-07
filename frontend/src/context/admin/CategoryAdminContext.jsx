@@ -28,10 +28,6 @@ export const CategoryAdminPovider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
   return (
     <CategoryAdminContext.Provider
       value={{

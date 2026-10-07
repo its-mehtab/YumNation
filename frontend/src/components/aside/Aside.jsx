@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { HomeIcon, RestaurantIcon } from "../../assets/icon/Icons.jsx";
+import { Home, Store } from "lucide-react";
 
 const Aside = () => {
   return (
@@ -9,13 +9,13 @@ const Aside = () => {
         <ul>
           <li>
             <Link className="flex gap-4 items-center text-[15px] font-medium text-gray-500">
-              <HomeIcon color="#888" size={22} />
+              <Home color="#888" size={22} />
               Home
             </Link>
           </li>
           <li>
             <Link className="flex gap-4 items-center text-[15px] font-medium text-gray-500 mt-8">
-              <RestaurantIcon color="#888" size={22} />
+              <Store color="#888" size={22} />
               Restaurant
             </Link>
           </li>

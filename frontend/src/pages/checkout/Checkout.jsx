@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { LocationIcon, StarIcon, TimeIcon } from "../../assets/icon/Icons";
+import { MapPin, Star, Clock } from "lucide-react";
+
+
 import { assets } from "../../assets/assets";
 import AddressBox from "../../components/address-box/AddressBox";
 import { useCart } from "../../context/user/CartContext";
@@ -96,17 +98,17 @@ const Checkout = () => {
                     </p>
                     <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-500 flex-wrap">
                       <span className="flex items-center gap-1">
-                        <LocationIcon size={16} />
+                        <MapPin  size={16} />
                         {restaurant?.address.addressLine1},{" "}
                         {restaurant?.address.city}
                       </span>
                       <span className="text-gray-300">•</span>
                       <span className="flex items-center gap-1">
-                        <TimeIcon /> {restaurant?.deliveryTime} min
+                        <Clock  /> {restaurant?.deliveryTime} min
                       </span>
                       <span className="text-gray-300">•</span>
                       <span className="flex items-center gap-1">
-                        <StarIcon /> {restaurant?.rating}
+                        <Star  /> {restaurant?.rating}
                       </span>
                       <span className="text-gray-300">•</span>
                       <span className="flex items-center gap-1 text-[#fc8019] font-medium">

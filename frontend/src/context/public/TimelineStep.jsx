@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  ConfirmedIcon,
-  DeliveredIcon,
-  DeliveryIcon,
-  PlacedIcon,
-  PreparingIcon,
-} from "../../assets/icon/Icons";
+import { ClipboardList, CheckCircle, ChefHat, Bike, PartyPopper } from "lucide-react";
 
 // ── Status config ────────────────────────────────────────────────────────────
 const STATUSES = [
@@ -17,11 +11,11 @@ const STATUSES = [
 ];
 
 const ICONS = [
-  <PlacedIcon size={"20px"} color="currentColor" />,
-  <ConfirmedIcon size={"20px"} color="currentColor" />,
-  <PreparingIcon size={"20px"} color="currentColor" />,
-  <DeliveryIcon size={"20px"} color="currentColor" />,
-  <DeliveredIcon size={"20px"} color="currentColor" />,
+  <ClipboardList size={18} />,
+  <CheckCircle size={18} strokeWidth={1.5} />,
+  <ChefHat size={18} />,
+  <Bike size={18} />,
+  <PartyPopper size={18} />,
 ];
 
 const TimelineStep = ({ label, icon, done, active, last }) => (
@@ -33,7 +27,7 @@ const TimelineStep = ({ label, icon, done, active, last }) => (
         style={{ visibility: label === STATUSES[0] ? "hidden" : "visible" }}
       />
       <div
-        className={`w-9 h-9 rounded-full flex items-center justify-center z-10 border-2 transition-all duration-300 text-sm
+        className={`w-9 h-9 rounded-md flex items-center justify-center z-10 border-2 transition-all duration-300 text-sm
         ${
           done
             ? "border-[#fc8019] bg-[#fc8019] text-white scale-110 shadow-lg shadow-orange-200"
