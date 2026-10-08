@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Clock, Heart } from "lucide-react";
+import { Clock, Heart, Star } from "lucide-react";
 
 import { Link } from "react-router-dom";
 
@@ -41,7 +41,7 @@ const RestaurantCard = ({ restaurant = {} }) => {
 
       <div className="pt-3 pb-4 px-4">
         {/* <div className="flex gap-2 items-center mb-1">
-          <StarIcon size={18} />
+          <Star size={18} />
           <div className="w-full flex font-medium items-center gap-3 after:content-[''] after:block rounded-2xl text-gray-800 text-sm">
             4.5 • 35-40 mins
           </div>
@@ -62,7 +62,7 @@ const RestaurantCard = ({ restaurant = {} }) => {
         </p>
         <div className="flex items-center gap-3 mt-2 text-[11px] text-gray-500">
           <span className="flex items-center gap-1">
-            <StarIcon size={12} />
+            <Star size={12} />
             {restaurant.rating} ({restaurant.totalReviews})
           </span>
           <span className="text-gray-200">|</span>

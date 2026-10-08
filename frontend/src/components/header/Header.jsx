@@ -82,7 +82,7 @@ const Header = () => {
                   {user?.firstName}
                   <ChevronRight 
                     size={12}
-                    addClass={`${isOpen ? "rotate-90" : ""}`}
+                    className={`${isOpen ? "rotate-90" : ""}`}
                   />
                 </div>
 

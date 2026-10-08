@@ -105,6 +105,30 @@ export const getOrderById = async (req, res) => {
   }
 };
 
+export const getRestaurantOrderById = async (req, res) => {
+  const { id } = req.params;
+  const restaurantId = req.restaurantId;
+
+  try {
+    const order = await Order.findOne({
+      restaurant: restaurantId,
+      _id: id,
+    })
+      .populate("user", "firstName lastName email phone")
+      .populate("items.dish");
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    return res.status(200).json(order);
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error:", error: error.message });
+  }
+};
+
 export const getAdminOrderById = async (req, res) => {
   const { id } = req.params;
   const userId = req.userId;
@@ -137,8 +161,11 @@ const validStatuses = [
 ];
 
 export const updateOrderStatus = async (req, res) => {
+  const userId = req.userId;
   const { id } = req.params;
   const { status } = req.body;
+
+  const user = await User.findById(userId);
 
   if (!status)
     return res.status(400).json({
@@ -152,6 +179,13 @@ export const updateOrderStatus = async (req, res) => {
 
   try {
     const order = await Order.findById(id);
+
+    console.log(user.role !== "admin", order.restaurant === userId);
+
+    if (user.role !== "admin" || order.restaurant == userId)
+      return res.status(400).json({
+        message: "No Permission",
+      });
 
     if (!order)
       return res.status(404).json({

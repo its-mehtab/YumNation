@@ -167,7 +167,7 @@ const Orders = () => {
                     <Table.Cell px="3">
                       <ChevronRight 
                         size={18}
-                        addClass="text-gray-400 hover:text-gray-700"
+                        className="text-gray-400 hover:text-gray-700"
                       />
                     </Table.Cell>
                   </Table.Row>

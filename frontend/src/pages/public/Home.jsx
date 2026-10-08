@@ -20,9 +20,7 @@ import {
   ShushiIcon,
 } from "../../assets/icon/CategoryIcons";
 
-
 import { useCategory } from "../../context/public/CategoryContext";
-import { useDish } from "../../context/owner/DishContext";
 import { Link } from "react-router-dom";
 import CartBox from "../../components/cart-box/CartBox";
 import AddressBox from "../../components/address-box/AddressBox";
@@ -80,10 +78,10 @@ const Home = () => {
             </h3>
             <div className="flex items-center gap-3">
               <button className="custom-prev rounded-sm p-0.5 bg-[#fc8019] text-white cursor-pointer transition-all">
-                <ArrowLeft  />
+                <ArrowLeft />
               </button>
               <button className="custom-next rounded-sm p-0.5 bg-[#fc8019] text-white cursor-pointer transition-all">
-                <ArrowRight  />
+                <ArrowRight />
               </button>
             </div>
           </div>
@@ -137,7 +135,7 @@ const Home = () => {
               className="flex items-center gap-2 text-sm text-[#fc8019]"
             >
               view all
-              <ChevronRight  size={9} />
+              <ChevronRight size={9} />
             </Link>
           </div>
           <Swiper
@@ -219,7 +217,7 @@ const Home = () => {
               className="flex items-center gap-2 text-sm text-[#fc8019]"
             >
               view all
-              <ChevronRight  size={9} />
+              <ChevronRight size={9} />
             </Link>
           </div>
           <Swiper

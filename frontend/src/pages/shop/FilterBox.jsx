@@ -57,8 +57,7 @@ const FilterBox = ({ filters, setFilters }) => {
             {filters.category?.length > 0 && (
               <Chip
                 chipName={
-                  categories?.find((cat) => cat._id === filters.category[0])
-                    .name
+                  categories?.find((cat) => cat._id === filters.category[0])?.name || "Category"
                 }
               />
             )}

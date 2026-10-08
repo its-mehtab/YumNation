@@ -1,0 +1,122 @@
+[
+  {
+    "f": "frontend\\src\\pages\\admin\\AdminCategories.jsx",
+    "line": 22,
+    "text": "// ── Mock data ────────────────────────────────────────────────────────────────"
+  },
+  {
+    "f": "frontend\\src\\pages\\admin\\AdminCategories.jsx",
+    "line": 23,
+    "text": "const mockCategories = ["
+  },
+  {
+    "f": "frontend\\src\\pages\\admin\\AdminDishDetails.jsx",
+    "line": 8,
+    "text": "// ── Mock data ─────────────────────────────────────────────────────────────────"
+  },
+  {
+    "f": "frontend\\src\\pages\\admin\\AdminDishDetails.jsx",
+    "line": 9,
+    "text": "const mockDish = {"
+  },
+  {
+    "f": "frontend\\src\\pages\\admin\\AdminDishDetails.jsx",
+    "line": 98,
+    "text": "//   setDish(mockDish);"
+  },
+  {
+    "f": "frontend\\src\\pages\\admin\\AdminOrderDetails.jsx",
+    "line": 27,
+    "text": "// ── Mock order (replace with real API call) ──────────────────────────────────"
+  },
+  {
+    "f": "frontend\\src\\pages\\admin\\AdminOrderDetails.jsx",
+    "line": 28,
+    "text": "const mockOrder = {"
+  },
+  {
+    "f": "frontend\\src\\pages\\admin\\AdminOrderDetails.jsx",
+    "line": 196,
+    "text": "// setOrder(mockOrder);"
+  },
+  {
+    "f": "frontend\\src\\pages\\admin\\AdminOrders.jsx",
+    "line": 20,
+    "text": "// ── Mock data ────────────────────────────────────────────────────────────────"
+  },
+  {
+    "f": "frontend\\src\\pages\\admin\\RestaurantDetails.jsx",
+    "line": 5,
+    "text": "// ── Mock data ─────────────────────────────────────────────────────────────────"
+  },
+  {
+    "f": "frontend\\src\\pages\\admin\\RestaurantDetails.jsx",
+    "line": 6,
+    "text": "const mockRestaurant = {"
+  },
+  {
+    "f": "frontend\\src\\pages\\admin\\RestaurantDetails.jsx",
+    "line": 42,
+    "text": "const mockDishes = ["
+  },
+  {
+    "f": "frontend\\src\\pages\\admin\\RestaurantDetails.jsx",
+    "line": 77,
+    "text": "const mockOrders = ["
+  },
+  {
+    "f": "frontend\\src\\pages\\admin\\RestaurantDetails.jsx",
+    "line": 161,
+    "text": "setRestaurant(mockRestaurant);"
+  },
+  {
+    "f": "frontend\\src\\pages\\admin\\RestaurantDetails.jsx",
+    "line": 162,
+    "text": "setDishes(mockDishes);"
+  },
+  {
+    "f": "frontend\\src\\pages\\admin\\RestaurantDetails.jsx",
+    "line": 163,
+    "text": "setOrders(mockOrders);"
+  },
+  {
+    "f": "frontend\\src\\pages\\owner\\RestaurantDishDetails.jsx",
+    "line": 6,
+    "text": "// ── Mock data ─────────────────────────────────────────────────────────────────"
+  },
+  {
+    "f": "frontend\\src\\pages\\owner\\RestaurantDishDetails.jsx",
+    "line": 7,
+    "text": "const mockDish = {"
+  },
+  {
+    "f": "frontend\\src\\pages\\owner\\RestaurantDishDetails.jsx",
+    "line": 88,
+    "text": "setDish(mockDish);"
+  },
+  {
+    "f": "frontend\\src\\pages\\owner\\RestaurantOrderDetails.jsx",
+    "line": 7,
+    "text": "// ── Mock order (replace with real API call) ──────────────────────────────────"
+  },
+  {
+    "f": "frontend\\src\\pages\\owner\\RestaurantOrderDetails.jsx",
+    "line": 8,
+    "text": "const mockOrder = {"
+  },
+  {
+    "f": "frontend\\src\\pages\\owner\\RestaurantOrderDetails.jsx",
+    "line": 155,
+    "text": "setOrder(mockOrder);"
+  },
+  {
+    "f": "frontend\\src\\pages\\owner\\RestaurantSettings.jsx",
+    "line": 11,
+    "text": "// ── Mock data ─────────────────────────────────────────────────────────────────"
+  },
+  {
+    "f": "frontend\\src\\pages\\owner\\RestaurantSettings.jsx",
+    "line": 12,
+    "text": "const mockSettings = {"
+  }
+]

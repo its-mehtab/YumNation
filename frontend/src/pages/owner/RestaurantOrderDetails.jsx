@@ -2,7 +2,21 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import dayjs from "dayjs";
-import { ClipboardList, CheckCircle, ChefHat, Bike, PartyPopper, Frown, Utensils, X, Phone, Banknote, CreditCard } from "lucide-react";
+import {
+  ClipboardList,
+  CheckCircle,
+  ChefHat,
+  Bike,
+  PartyPopper,
+  Frown,
+  Utensils,
+  X,
+  Phone,
+  Banknote,
+  CreditCard,
+} from "lucide-react";
+import { useAuth } from "../../context/user/AuthContext";
+import { notifyError } from "../../utils/toast";
 
 // ── Mock order (replace with real API call) ──────────────────────────────────
 const mockOrder = {
@@ -77,7 +91,13 @@ const statusConfig = {
 };
 
 // ── Timeline ──────────────────────────────────────────────────────────────────
-const ICONS = [<ClipboardList size={18} />, <CheckCircle size={18}  strokeWidth={1.5} />, <ChefHat size={18} />, <Bike size={18} />, <PartyPopper size={18} />];
+const ICONS = [
+  <ClipboardList size={18} />,
+  <CheckCircle size={18} strokeWidth={1.5} />,
+  <ChefHat size={18} />,
+  <Bike size={18} />,
+  <PartyPopper size={18} />,
+];
 
 const TimelineStep = ({ label, icon, done, active, last }) => (
   <div className="flex flex-col items-center flex-1">
@@ -149,21 +169,41 @@ const RestaurantOrderDetails = () => {
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    // Replace with: axios.get(`${serverURL}/api/owner/order/${id}`, { withCredentials: true })
-    setTimeout(() => {
-      setOrder(mockOrder);
+  const { serverURL } = useAuth();
+
+  const fetchOrder = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(`${serverURL}/api/owner/order/${id}`, {
+        withCredentials: true,
+      });
+
+      setOrder(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
       setLoading(false);
-    }, 600);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrder();
   }, [id]);
 
   const handleStatusChange = async (newStatus) => {
     setUpdating(true);
+    setOrder((prev) => ({ ...prev, orderStatus: newStatus }));
+
     try {
-      // await axios.put(`${serverURL}/api/owner/order/${id}/status`, { status: newStatus }, { withCredentials: true });
-      setOrder((prev) => ({ ...prev, orderStatus: newStatus }));
+      await axios.patch(
+        `${serverURL}/api/owner/order/${id}`,
+        { status: newStatus },
+        { withCredentials: true },
+      );
     } catch (err) {
-      setError("Failed to update status");
+      notifyError("Failed to update status");
+      setOrder(order);
+      console.log(err);
     } finally {
       setUpdating(false);
     }
@@ -183,7 +223,9 @@ const RestaurantOrderDetails = () => {
   if (error && !order)
     return (
       <div className="text-center py-20">
-        <div className="flex justify-center mb-4 text-gray-400"><Frown size={48} /></div>
+        <div className="flex justify-center mb-4 text-gray-400">
+          <Frown size={48} />
+        </div>
         <p className="text-gray-500 text-sm">{error}</p>
         <Link
           to="/owner/orders"
@@ -194,7 +236,7 @@ const RestaurantOrderDetails = () => {
       </div>
     );
 
-  const status = order.orderStatus;
+  const status = order?.orderStatus;
   const isCancelled = status === "cancelled";
   const currentIdx = STATUSES.indexOf(status);
   const cfg = statusConfig[status] || statusConfig.placed;
@@ -221,7 +263,7 @@ const RestaurantOrderDetails = () => {
           </Link>
           <span className="text-gray-300">›</span>
           <span className="text-[#fc8019] font-medium">
-            #{order._id.slice(-8).toUpperCase()}
+            #{order?._id.slice(-8).toUpperCase()}
           </span>
         </div>
       </div>
@@ -237,10 +279,10 @@ const RestaurantOrderDetails = () => {
                   Order ID
                 </p>
                 <p className="text-sm font-bold text-gray-700 font-mono">
-                  #{order._id.slice(-10).toUpperCase()}
+                  #{order?._id.slice(-10).toUpperCase()}
                 </p>
                 <p className="text-xs text-gray-400 mt-1">
-                  {dayjs(order.createdAt).format("MMM D, YYYY h:mm A")}
+                  {dayjs(order?.createdAt).format("MMM D, YYYY h:mm A")}
                 </p>
               </div>
               <span
@@ -286,7 +328,11 @@ const RestaurantOrderDetails = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <Utensils size={24} className="text-gray-400"  strokeWidth={1.5} />
+                      <Utensils
+                        size={24}
+                        className="text-gray-400"
+                        strokeWidth={1.5}
+                      />
                     )}
                   </Link>
                   <div className="flex-1 min-w-0">
@@ -295,7 +341,7 @@ const RestaurantOrderDetails = () => {
                     </p>
                     {item.variant && (
                       <p className="text-xs text-gray-400 mt-0.5">
-                        {item.variant}
+                        {item.variant.name}
                       </p>
                     )}
                   </div>
@@ -361,9 +407,6 @@ const RestaurantOrderDetails = () => {
                     {ICONS[STATUSES.indexOf(s)] || <X size={18} />}
                   </span>
                   {s}
-                  {s === status && (
-                    <span className="float-right text-xs">● current</span>
-                  )}
                 </button>
               ))}
             </div>
@@ -374,42 +417,39 @@ const RestaurantOrderDetails = () => {
           <Card title="Customer">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-md bg-orange-100 flex items-center justify-center text-base font-bold text-[#fc8019]">
-                {order.user.name.charAt(0)}
+                {order?.user.firstName.charAt(0)}
               </div>
               <div>
                 <p className="text-sm font-semibold text-gray-700">
-                  {order.user.name}
+                  {order?.user.firstName}
                 </p>
-                <p className="text-xs text-gray-400">{order.user.email}</p>
+                <p className="text-xs text-gray-400">{order?.user.email}</p>
               </div>
             </div>
-            {order.user.phone && (
-              <p className="text-xs text-gray-500 flex items-center gap-1.5"><Phone size={12}  strokeWidth={1.5} /> {order.user.phone}</p>
+            {order?.user.phone && (
+              <p className="text-xs text-gray-500 flex items-center gap-1.5">
+                <Phone size={12} strokeWidth={1.5} /> {order?.user.phone}
+              </p>
             )}
-            <Link
-              to={"#"}
-              className="mt-3 block text-center text-xs font-semibold text-[#fc8019] border border-orange-200 rounded-md py-2 hover:bg-[#fff2e8] transition-colors"
-            >
-              View Customer →
-            </Link>
           </Card>
 
           {/* Delivery address */}
           <Card title="Delivery Address">
             <p className="text-sm font-semibold text-gray-700">
-              {order.deliveryAddress?.fullName}
+              {order?.deliveryAddress?.fullName}
             </p>
             <p className="text-sm text-gray-500 mt-1 leading-relaxed">
-              {order.deliveryAddress?.addressLine1}
-              {order.deliveryAddress?.addressLine2 &&
-                `, ${order.deliveryAddress.addressLine2}`}
+              {order?.deliveryAddress?.addressLine1}
+              {order?.deliveryAddress?.addressLine2 &&
+                `, ${order?.deliveryAddress.addressLine2}`}
               <br />
-              {order.deliveryAddress?.city}, {order.deliveryAddress?.state} —{" "}
-              {order.deliveryAddress?.pinCode}
+              {order?.deliveryAddress?.city}, {order?.deliveryAddress?.state} —{" "}
+              {order?.deliveryAddress?.pinCode}
             </p>
-            {order.deliveryAddress?.phoneNumber && (
+            {order?.deliveryAddress?.phoneNumber && (
               <p className="text-sm text-gray-500 mt-1.5 flex items-center gap-1.5">
-                <Phone size={14}  strokeWidth={1.5} /> {order.deliveryAddress.phoneNumber}
+                <Phone size={14} strokeWidth={1.5} />{" "}
+                {order?.deliveryAddress.phoneNumber}
               </p>
             )}
           </Card>
@@ -418,15 +458,21 @@ const RestaurantOrderDetails = () => {
           <Card title="Payment">
             <div className="flex justify-between items-center">
               <p className="text-sm font-semibold text-gray-700 capitalize flex items-center gap-1.5">
-                {order.paymentMethod === "cod"
-                  ? <><Banknote size={16}  strokeWidth={1.5} /> Cash on Delivery</>
-                  : <><CreditCard size={16}  strokeWidth={1.5} /> Card</>}
+                {order?.paymentMethod === "cod" ? (
+                  <>
+                    <Banknote size={16} strokeWidth={1.5} /> Cash on Delivery
+                  </>
+                ) : (
+                  <>
+                    <CreditCard size={16} strokeWidth={1.5} /> Card
+                  </>
+                )}
               </p>
               <span
                 className={`text-xs font-semibold px-3 py-1.5 rounded-md capitalize
-                ${order.paymentStatus === "paid" ? "bg-[#fff2e8] text-[#fc8019]" : "bg-yellow-50 text-yellow-600"}`}
+                ${order?.paymentStatus === "paid" ? "bg-[#fff2e8] text-[#fc8019]" : "bg-yellow-50 text-yellow-600"}`}
               >
-                {order.paymentStatus || "pending"}
+                {order?.paymentStatus || "pending"}
               </span>
             </div>
           </Card>

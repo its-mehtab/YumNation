@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import DishCard from "../../components/dish-card/DishCard";
-import { useDish } from "../../context/public/DishContext";
+
 import FilterBox from "./FilterBox";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
@@ -12,10 +12,11 @@ import { Skeleton } from "@radix-ui/themes";
 
 const Shop = () => {
   const [page, setPage] = useState(1);
+  const [dishes, setDishes] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const { serverURL } = useAuth();
-  const { dishes, setDishs, loading } = useDish();
 
   const [filters, setFilters] = useState({
     category: searchParams.get("category")?.split(",") || [],
@@ -36,6 +37,7 @@ const Shop = () => {
 
   const fetchDishs = async () => {
     try {
+      setLoading(true);
       const params = {
         ...filters,
         category: filters.category.join(","),
@@ -46,9 +48,11 @@ const Shop = () => {
         params,
       });
 
-      setDishs(data);
+      setDishes(data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
