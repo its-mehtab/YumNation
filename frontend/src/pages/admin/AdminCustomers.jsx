@@ -156,43 +156,49 @@ const AdminCustomers = () => {
             label: "Total Customers",
             value: totalCustomer,
             icon: Users,
-            color: "text-[#fc8019]",
-            bg: "bg-blue-50",
+            color: "text-blue-600",
+            bg: "bg-blue-100",
           },
           {
             label: "Active",
             value: totalActive,
             icon: UserCheck,
-            color: "text-[#fc8019]",
-            bg: "bg-green-50",
+            color: "text-green-600",
+            bg: "bg-green-100",
           },
           {
             label: "Blocked",
             value: totalBlocked,
             icon: UserX,
             color: "text-red-600",
-            bg: "bg-red-50",
+            bg: "bg-red-100",
           },
           {
             label: "Total Orders",
             value: totalOrders,
             icon: ShoppingBag,
-            color: "text-[#fc8019]",
-            bg: "bg-orange-50",
+            color: "text-orange-500",
+            bg: "bg-orange-100",
           },
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-md  border border-gray-200 p-6 flex items-center justify-between transition-all "
+            className="bg-white p-5 rounded-md border border-gray-200"
           >
-            <div>
-              <p className="text-sm font-semibold text-gray-500 mb-2">
-                {s.label}
-              </p>
-              <p className="text-3xl font-bold text-gray-800">{s.value || 0}</p>
-            </div>
-            <div className={`p-4 rounded-md ${s.bg} ${s.color}`}>
-              <s.icon size={28} strokeWidth={1.5} />
+            <div className="flex items-center gap-4">
+              <div
+                className={`w-12 h-12 rounded-lg ${s.bg} ${s.color} flex items-center justify-center shrink-0`}
+              >
+                <s.icon size={24} strokeWidth={1.5} />
+              </div>
+              <div>
+                <p className="text-gray-500 text-xs font-medium mb-1">
+                  {s.label}
+                </p>
+                <h3 className="text-2xl font-bold text-gray-800">
+                  {s.value || 0}
+                </h3>
+              </div>
             </div>
           </div>
         ))}
@@ -376,18 +382,18 @@ const AdminCustomers = () => {
 
                     {/* Actions */}
                     <td className="px-4 py-4">
-                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
+                      <div className="flex items-center gap-1.5 justify-end">
                         <Link
                           to={`${c._id}`}
-                          className="p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-[#fc8019] hover:border-blue-400 shadow-sm transition-all"
+                          className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors inline-flex items-center justify-center"
                           title="View Details"
                         >
-                          <Eye size={16} />
+                          <Eye size={16} strokeWidth={1.5} />
                         </Link>
                         <ConfirmationModal
                           button={
                             <button
-                              className="p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-red-600 hover:border-red-400 shadow-sm transition-all"
+                              className="p-1.5 rounded-md hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors inline-flex items-center justify-center"
                               title="Delete Customer"
                             >
                               <Trash2 size={16} strokeWidth={1.5} />

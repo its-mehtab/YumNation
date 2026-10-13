@@ -1,6 +1,7 @@
 import Cart from "../models/cart.modal.js";
 import Coupon from "../models/coupon.modal.js";
 import Order from "../models/order.modal.js";
+import Restaurant from "../models/restaurant.modal.js";
 import User from "../models/user.modal.js";
 import { validateCoupon } from "../services/coupon.service.js";
 import { getPaginatedOrders } from "../services/order.service.js";
@@ -179,11 +180,12 @@ export const updateOrderStatus = async (req, res) => {
 
   try {
     const order = await Order.findById(id);
+    const restaurant = await Restaurant.findById(order.restaurant).select(
+      "owner",
+    );
 
-    console.log(user.role !== "admin", order.restaurant === userId);
-
-    if (user.role !== "admin" || order.restaurant == userId)
-      return res.status(400).json({
+    if (user.role !== "admin" && restaurant.owner.toString() !== userId)
+      return res.status(403).json({
         message: "No Permission",
       });
 
@@ -191,8 +193,6 @@ export const updateOrderStatus = async (req, res) => {
       return res.status(404).json({
         message: "Order not found",
       });
-
-    order.orderStatus = status;
 
     if (order.paymentMethod === "cod") {
       if (status === "delivered") {
@@ -202,17 +202,17 @@ export const updateOrderStatus = async (req, res) => {
       }
     }
 
-    // if (order.orderStatus === "delivered" && status !== "delivered") {
-    //   return res.status(400).json({
-    //     message: "Cannot revert delivered order",
-    //   });
-    // }
+    if (order.orderStatus === "delivered" && status !== "delivered") {
+      return res.status(400).json({
+        message: "Cannot revert delivered order",
+      });
+    }
 
-    // order.orderStatus = status;
+    order.orderStatus = status;
 
-    // if (order.paymentMethod === "cod" && status === "delivered") {
-    //   order.paymentStatus = "paid";
-    // }
+    if (order.paymentMethod === "cod" && status === "delivered") {
+      order.paymentStatus = "paid";
+    }
 
     await order.save();
 

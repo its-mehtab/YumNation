@@ -160,7 +160,7 @@ const AdminOrders = () => {
     pending: orders?.statusCount?.placed || 0,
     preparing: orders?.statusCount?.preparing || 0,
     delivered: orders?.statusCount?.delivered || 0,
-    revenue: orders?.totalRevenue || 0,
+    revenue: Math.round(orders?.totalRevenue) || 0,
   };
 
   return (
@@ -184,54 +184,56 @@ const AdminOrders = () => {
             label: "Total Orders",
             value: stats.total,
             icon: Package,
-            color: "text-[#fc8019]",
-            bg: "bg-[#fff2e8]",
+            color: "text-orange-500",
+            bg: "bg-orange-100",
           },
           {
             label: "New Orders",
             value: stats.pending,
             icon: ShoppingBag,
-            color: "text-indigo-500",
-            bg: "bg-indigo-50/50",
+            color: "text-indigo-600",
+            bg: "bg-indigo-100",
           },
           {
             label: "Preparing",
             value: stats.preparing,
             icon: ChefHat,
-            color: "text-[#fc8019]",
-            bg: "bg-[#fff2e8]",
+            color: "text-yellow-600",
+            bg: "bg-yellow-100",
           },
           {
             label: "Delivered",
             value: stats.delivered,
             icon: CheckCircle,
-            color: "text-[#fc8019]",
-            bg: "bg-[#fff2e8]",
+            color: "text-green-600",
+            bg: "bg-green-100",
           },
           {
             label: "Revenue",
-            value: `$${stats.revenue?.toFixed(2)}`,
+            value: `$${stats.revenue}`,
             icon: DollarSign,
-            color: "text-[#fc8019]",
-            bg: "bg-[#fff2e8]",
+            color: "text-emerald-600",
+            bg: "bg-emerald-100",
           },
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-md  border border-gray-200 p-5 flex flex-col justify-between transition-all gap-4"
+            className="bg-white p-5 rounded-md border border-gray-200"
           >
-            <div className="flex items-center justify-between">
-              <div className={`p-2.5 rounded-md ${s.bg} ${s.color}`}>
-                <s.icon size={18} strokeWidth={1.5} />
+            <div className="flex items-center gap-4">
+              <div
+                className={`w-12 h-12 rounded-lg ${s.bg} ${s.color} flex items-center justify-center shrink-0`}
+              >
+                <s.icon size={24} strokeWidth={1.5} />
               </div>
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-gray-400 mb-1 tracking-wide uppercase">
-                {s.label}
-              </p>
-              <p className="text-2xl font-semibold text-gray-800 tracking-tight">
-                {s.value}
-              </p>
+              <div>
+                <p className="text-gray-500 text-xs font-medium mb-1">
+                  {s.label}
+                </p>
+                <h3 className="text-2xl font-bold text-gray-800 tracking-tight">
+                  {s.value}
+                </h3>
+              </div>
             </div>
           </div>
         ))}
@@ -428,7 +430,7 @@ const AdminOrders = () => {
                   <td className="px-4 py-4 text-right">
                     <Link
                       to={`/admin/orders/${order._id}`}
-                      className="p-2 inline-flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-400 hover:text-[#fc8019] hover:border-blue-400 shadow-sm transition-all opacity-0 group-hover:opacity-100"
+                      className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors inline-flex"
                       title="View Order Details"
                     >
                       <Eye size={16} />

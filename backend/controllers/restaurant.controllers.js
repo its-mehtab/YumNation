@@ -50,6 +50,8 @@ export const getRestaurants = async (req, res) => {
 };
 
 export const getRestaurant = async (req, res) => {
+  console.log("called");
+
   try {
     const restaurant = await Restaurant.findById(req.restaurantId).select(
       req.hideFields,

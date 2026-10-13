@@ -1,40 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import { Pizza, Star } from "lucide-react";
-
-// ── Mock data ─────────────────────────────────────────────────────────────────
-const mockDish = {
-  _id: "d1",
-  name: "Margherita Pizza",
-  slug: "margherita-pizza",
-  description:
-    "A classic Neapolitan pizza with fresh tomato sauce and mozzarella.",
-  longDescription:
-    "Our Margherita is made with hand-stretched dough, slow-cooked San Marzano tomato sauce, fresh buffalo mozzarella, and a drizzle of extra-virgin olive oil. Baked in a wood-fired oven at 485°C for the perfect char and chew.",
-  price: 12,
-  costPrice: 4.5,
-  category: { _id: "c1", name: "Pizza" },
-  foodType: "veg",
-  variants: [
-    { name: 'Small (8")', price: 9, stock: 15 },
-    { name: 'Medium (10")', price: 12, stock: 20 },
-    { name: 'Large (12")', price: 15, stock: 10 },
-  ],
-  addOns: [
-    { name: "Extra Cheese", price: 1.5 },
-    { name: "Olives", price: 1 },
-    { name: "Jalapeños", price: 0.75 },
-  ],
-  images: [null, null, null],
-  stock: 20,
-  isAvailable: true,
-  isFeatured: true,
-  rating: 4.6,
-  totalReviews: 84,
-  totalOrders: 312,
-  createdAt: "2024-01-15T10:00:00.000Z",
-};
+import { Frown, Pizza, Star } from "lucide-react";
+import axios from "axios";
+import { useAuth } from "../../context/user/AuthContext";
+import { notifyError, notifySuccess } from "../../utils/toast";
+import ConfirmationModal from "../../components/common/ConfirmationModal";
+import { useDish } from "../../context/owner/DishContext";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const Toggle = ({ checked, onChange }) => (
@@ -79,26 +51,65 @@ const RestaurantDishDetails = () => {
 
   const [dish, setDish] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeImage, setActiveImage] = useState(0);
   const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState(null);
+
+  const { serverURL } = useAuth();
+  const { dishes, setDishes } = useDish();
+
+  const fetchDishDetails = async () => {
+    try {
+      const { data } = await axios.get(`${serverURL}/api/owner/dish/${id}`, {
+        withCredentials: true,
+      });
+
+      setDish(data);
+    } catch (error) {
+      setError(error.response.data.message);
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Replace with: axios.get(`${serverURL}/api/restaurant/dish/${id}`, { withCredentials: true })
-    setTimeout(() => {
-      setDish(mockDish);
-      setLoading(false);
-    }, 500);
+    fetchDishDetails();
   }, [id]);
 
-  const handleToggle = (key) =>
+  const handleToggle = async (key) => {
     setDish((prev) => ({ ...prev, [key]: !prev[key] }));
-  // Replace with: axios.patch(`${serverURL}/api/restaurant/dish/${id}`, { [key]: !dish[key] }, { withCredentials: true })
+
+    try {
+      await axios.patch(
+        `${serverURL}/api/owner/dish/${id}`,
+        { [key]: !dish[key] },
+        {
+          withCredentials: true,
+        },
+      );
+    } catch (error) {
+      setDish(dish);
+      console.log(error);
+      notifyError("Failed to Update");
+    }
+  };
 
   const handleDelete = async () => {
-    if (!window.confirm("Delete this dish permanently?")) return;
+    setDishes((prev) => prev.filter((dish) => dish._id !== id));
     setDeleting(true);
-    // await axios.delete(`${serverURL}/api/restaurant/dish/${id}`, { withCredentials: true })
-    setTimeout(() => navigate("/restaurant/dishes"), 800);
+
+    try {
+      await axios.delete(`${serverURL}/api/owner/dish/${id}`, {
+        withCredentials: true,
+      });
+      notifySuccess("Dish deleted");
+    } catch (error) {
+      setDishes(dishes);
+      notifyError("Failed to delete");
+      console.log(error);
+    } finally {
+      navigate("/owner/dishes");
+    }
   };
 
   if (loading)
@@ -112,6 +123,22 @@ const RestaurantDishDetails = () => {
             <div className="h-40 bg-gray-100 rounded-md" />
           </div>
         </div>
+      </div>
+    );
+
+  if (!dish)
+    return (
+      <div className="text-center py-20">
+        <div className="flex justify-center mb-4 text-gray-400">
+          <Frown size={48} />
+        </div>
+        <p className="text-gray-500 text-sm">{error}</p>
+        <Link
+          to="/owner/dishes"
+          className="text-[#fc8019] text-sm underline mt-2 block"
+        >
+          Back to Orders
+        </Link>
       </div>
     );
 
@@ -146,9 +173,9 @@ const RestaurantDishDetails = () => {
           {/* Image gallery */}
           <Card>
             <div className="aspect-square rounded-md bg-[#fff2e8] border border-orange-100 flex items-center justify-center overflow-hidden mb-3">
-              {dish.images[activeImage] ? (
+              {dish?.images ? (
                 <img
-                  src={dish.images[activeImage]}
+                  src={dish.image}
                   alt={dish.name}
                   className="w-full h-full object-cover"
                 />
@@ -156,28 +183,6 @@ const RestaurantDishDetails = () => {
                 <Pizza size={40} className="text-gray-400" />
               )}
             </div>
-            {dish.images.length > 1 && (
-              <div className="flex gap-2">
-                {dish.images.map((img, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveImage(i)}
-                    className={`flex-1 aspect-square rounded-md border-2 flex items-center justify-center text-xl transition-all
-                      ${activeImage === i ? "border-[#fc8019] bg-orange-50" : "border-gray-200 bg-gray-50 hover:border-orange-200"}`}
-                  >
-                    {img ? (
-                      <img
-                        src={img}
-                        alt=""
-                        className="w-full h-full object-cover rounded-full"
-                      />
-                    ) : (
-                      <Pizza size={24} className="text-gray-400" />
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
           </Card>
 
           {/* Quick toggles */}
@@ -217,18 +222,24 @@ const RestaurantDishDetails = () => {
           {/* Actions */}
           <div className="flex gap-3">
             <Link
-              to={`/restaurant/dishes/edit/${dish._id}`}
+              to={`/owner/dish/edit/${dish._id}`}
               className="flex-1 py-2.5 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold text-center transition-colors"
             >
               Edit Dish
             </Link>
-            <button
-              onClick={handleDelete}
-              disabled={deleting}
-              className="flex-1 py-2.5 rounded-md border-2 border-red-200 text-red-500 text-sm font-semibold hover:bg-red-50 transition-colors disabled:opacity-50"
-            >
-              {deleting ? "Deleting..." : "Delete"}
-            </button>
+            <ConfirmationModal
+              button={
+                <button
+                  disabled={deleting}
+                  className="flex-1 py-2.5 rounded-md border-2 border-red-200 text-red-500 text-sm font-semibold hover:bg-red-50 transition-colors disabled:opacity-50"
+                >
+                  {deleting ? "Deleting..." : "Delete"}
+                </button>
+              }
+              heading="Delete This Dish"
+              description="Are you sure you want to delete this dish? This action cannot be undone and the dish will be removed from the menu."
+              onClick={async () => await handleDelete()}
+            />
           </div>
         </div>
 
@@ -252,7 +263,7 @@ const RestaurantDishDetails = () => {
                   </div>
                   {dish.isFeatured && (
                     <span className="text-xs bg-yellow-50 text-yellow-600 font-semibold px-2 py-0.5 rounded-md flex items-center gap-1">
-                      <Star size={12}  strokeWidth={1.5} /> Featured
+                      <Star size={12} strokeWidth={1.5} /> Featured
                     </span>
                   )}
                   {!dish.isAvailable && (
@@ -280,13 +291,6 @@ const RestaurantDishDetails = () => {
                 { label: "Total Orders", value: dish.totalOrders },
                 { label: "Rating", value: dish.rating },
                 { label: "Reviews", value: dish.totalReviews },
-                {
-                  label: "In Stock",
-                  value:
-                    dish.variants.length > 0
-                      ? dish.variants.reduce((a, v) => a + Number(v.stock), 0)
-                      : dish.stock,
-                },
               ].map((s) => (
                 <div key={s.label} className="text-center">
                   <p className="text-lg font-bold text-gray-700">{s.value}</p>
@@ -306,36 +310,30 @@ const RestaurantDishDetails = () => {
           )}
 
           {/* Variants */}
-          <Card title={`Variants (${dish.variants.length})`}>
-            {dish.variants.length === 0 ? (
+          <Card title={`Variants (${dish?.variants?.length})`}>
+            {dish?.variants?.length === 0 ? (
               <p className="text-xs text-gray-400">No variants added.</p>
             ) : (
               <div className="overflow-hidden rounded-md border border-gray-200">
                 {/* Header */}
                 <div className="grid grid-cols-12 px-4 py-2 bg-gray-50 border-b border-gray-200">
-                  <p className="col-span-6 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  <p className="col-span-8 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                     Name
                   </p>
-                  <p className="col-span-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  <p className="col-span-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                     Price
                   </p>
-                  <p className="col-span-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                    Stock
-                  </p>
                 </div>
-                {dish.variants.map((v, i) => (
+                {dish?.variants?.map((v, i) => (
                   <div
                     key={i}
                     className={`grid grid-cols-12 items-center px-4 py-3 ${i !== dish.variants.length - 1 ? "border-b border-gray-50" : ""}`}
                   >
-                    <p className="col-span-6 text-sm font-semibold text-gray-700">
+                    <p className="col-span-8 text-sm font-semibold text-gray-700">
                       {v.name}
                     </p>
-                    <p className="col-span-3 text-sm font-bold text-[#fc8019]">
+                    <p className="col-span-4 text-sm font-bold text-[#fc8019]">
                       ${v.price}
-                    </p>
-                    <p className="col-span-3 text-sm text-gray-500">
-                      {v.stock} units
                     </p>
                   </div>
                 ))}
@@ -344,12 +342,12 @@ const RestaurantDishDetails = () => {
           </Card>
 
           {/* Add-ons */}
-          <Card title={`Add-ons (${dish.addOns.length})`}>
-            {dish.addOns.length === 0 ? (
+          <Card title={`Add-ons (${dish?.addOns?.length})`}>
+            {dish?.addOns?.length === 0 ? (
               <p className="text-xs text-gray-400">No add-ons added.</p>
             ) : (
               <div className="flex flex-wrap gap-2">
-                {dish.addOns.map((a, i) => (
+                {dish?.addOns?.map((a, i) => (
                   <div
                     key={i}
                     className="flex items-center gap-2 bg-[#fff2e8] border border-orange-100 rounded-md px-3 py-2"

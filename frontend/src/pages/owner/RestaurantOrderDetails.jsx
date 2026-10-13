@@ -18,56 +18,6 @@ import {
 import { useAuth } from "../../context/user/AuthContext";
 import { notifyError } from "../../utils/toast";
 
-// ── Mock order (replace with real API call) ──────────────────────────────────
-const mockOrder = {
-  _id: "64f3a2b1c9e1234567890abc",
-  createdAt: "2026-03-08T20:18:48.990Z",
-  orderStatus: "preparing",
-  paymentMethod: "cod",
-  paymentStatus: "pending",
-  subtotal: 120,
-  deliveryFee: 2.5,
-  tax: 6,
-  discount: 10,
-  totalAmount: 118.5,
-  couponCode: "SAVE10",
-  user: {
-    _id: "u1",
-    name: "John Doe",
-    email: "john@example.com",
-    phone: "+91 9876543210",
-  },
-  deliveryAddress: {
-    fullName: "John Doe",
-    addressLine1: "42 Baker Street",
-    addressLine2: "Apt 3B",
-    city: "Kolkata",
-    state: "West Bengal",
-    pinCode: "700001",
-    phoneNumber: "+91 9876543210",
-  },
-  items: [
-    {
-      _id: "i1",
-      name: "Italian Pizza",
-      variant: "Medium",
-      quantity: 2,
-      price: 45,
-      image: null,
-      dish: { slug: "italian-pizza" },
-    },
-    {
-      _id: "i2",
-      name: "Veg Burger",
-      variant: "Regular",
-      quantity: 1,
-      price: 30,
-      image: null,
-      dish: { slug: "veg-burger" },
-    },
-  ],
-};
-
 // ── Status config ─────────────────────────────────────────────────────────────
 const STATUSES = [
   "placed",
@@ -78,16 +28,42 @@ const STATUSES = [
 ];
 
 const statusConfig = {
-  placed: { color: "#6366f1", bg: "#eef2ff", label: "Placed" },
-  confirmed: { color: "#f59e0b", bg: "#fffbeb", label: "Confirmed" },
-  preparing: { color: "#fc8019", bg: "#fff7ed", label: "Preparing" },
+  placed: {
+    color: "#4f46e5",
+    bg: "#eef2ff",
+    label: "Placed",
+    border: "border-indigo-200",
+  },
+  confirmed: {
+    color: "#d97706",
+    bg: "#fffbeb",
+    label: "Confirmed",
+    border: "border-amber-200",
+  },
+  preparing: {
+    color: "#c2410c",
+    bg: "#fff7ed",
+    label: "Preparing",
+    border: "border-orange-200",
+  },
   "out for delivery": {
-    color: "#3b82f6",
+    color: "#1d4ed8",
     bg: "#eff6ff",
     label: "Out for Delivery",
+    border: "border-blue-200",
   },
-  delivered: { color: "#22c55e", bg: "#f0fdf4", label: "Delivered" },
-  cancelled: { color: "#ef4444", bg: "#fef2f2", label: "Cancelled" },
+  delivered: {
+    color: "#15803d",
+    bg: "#f0fdf4",
+    label: "Delivered",
+    border: "border-green-200",
+  },
+  cancelled: {
+    color: "#b91c1c",
+    bg: "#fef2f2",
+    label: "Cancelled",
+    border: "border-red-200",
+  },
 };
 
 // ── Timeline ──────────────────────────────────────────────────────────────────
@@ -180,6 +156,7 @@ const RestaurantOrderDetails = () => {
 
       setOrder(data);
     } catch (error) {
+      setError(error.response.data.message);
       console.log(error);
     } finally {
       setLoading(false);
@@ -192,7 +169,14 @@ const RestaurantOrderDetails = () => {
 
   const handleStatusChange = async (newStatus) => {
     setUpdating(true);
-    setOrder((prev) => ({ ...prev, orderStatus: newStatus }));
+    setOrder((prev) => ({
+      ...prev,
+      orderStatus: newStatus,
+      paymentStatus:
+        prev.paymentMethod === "cod" && newStatus === "delivered"
+          ? "paid"
+          : prev.paymentMethod,
+    }));
 
     try {
       await axios.patch(
@@ -201,7 +185,7 @@ const RestaurantOrderDetails = () => {
         { withCredentials: true },
       );
     } catch (err) {
-      notifyError("Failed to update status");
+      notifyError(err.response.data.message || "Failed to update status");
       setOrder(order);
       console.log(err);
     } finally {
@@ -286,7 +270,7 @@ const RestaurantOrderDetails = () => {
                 </p>
               </div>
               <span
-                className="text-xs font-semibold px-3 py-1.5 rounded-md capitalize"
+                className={`text-sm font-bold px-4 py-2 rounded-md capitalize border ${cfg.border || "border-gray-200"}`}
                 style={{ color: cfg.color, background: cfg.bg }}
               >
                 {cfg.label}
@@ -318,7 +302,7 @@ const RestaurantOrderDetails = () => {
               {order.items.map((item) => (
                 <div key={item._id} className="flex items-center gap-4">
                   <Link
-                    to={`/dish/${item.dish?.slug}`}
+                    to={`/owner/dish/${item.dish?._id}`}
                     className="w-14 h-14 min-w-14 rounded-md border border-orange-100 bg-[#fff2e8] flex items-center justify-center overflow-hidden"
                   >
                     {item.image ? (
@@ -336,9 +320,12 @@ const RestaurantOrderDetails = () => {
                     )}
                   </Link>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-gray-700 truncate">
+                    <Link
+                      to={`/owner/dish/${item.dish?._id}`}
+                      className="text-sm font-semibold text-gray-700 truncate"
+                    >
                       {item.name}
-                    </p>
+                    </Link>
                     {item.variant && (
                       <p className="text-xs text-gray-400 mt-0.5">
                         {item.variant.name}
@@ -455,25 +442,46 @@ const RestaurantOrderDetails = () => {
           </Card>
 
           {/* Payment */}
-          <Card title="Payment">
-            <div className="flex justify-between items-center">
-              <p className="text-sm font-semibold text-gray-700 capitalize flex items-center gap-1.5">
-                {order?.paymentMethod === "cod" ? (
-                  <>
-                    <Banknote size={16} strokeWidth={1.5} /> Cash on Delivery
-                  </>
-                ) : (
-                  <>
-                    <CreditCard size={16} strokeWidth={1.5} /> Card
-                  </>
-                )}
-              </p>
-              <span
-                className={`text-xs font-semibold px-3 py-1.5 rounded-md capitalize
-                ${order?.paymentStatus === "paid" ? "bg-[#fff2e8] text-[#fc8019]" : "bg-yellow-50 text-yellow-600"}`}
-              >
-                {order?.paymentStatus || "pending"}
-              </span>
+          <Card title="Payment Status">
+            <div className="flex flex-col gap-4">
+              <div className="flex justify-between items-center bg-gray-50 p-4 rounded-md border border-gray-200">
+                <div className="flex items-center gap-3">
+                  {order?.paymentMethod === "cod" ? (
+                    <Banknote
+                      size={24}
+                      className="text-[#fc8019]"
+                      strokeWidth={1.5}
+                    />
+                  ) : (
+                    <CreditCard
+                      size={24}
+                      className="text-[#fc8019]"
+                      strokeWidth={1.5}
+                    />
+                  )}
+                  <div>
+                    <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-0.5">
+                      Method
+                    </p>
+                    <p className="text-sm font-bold text-gray-800 capitalize">
+                      {order?.paymentMethod === "cod"
+                        ? "Cash on Delivery"
+                        : "Card Payment"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center px-2">
+                <p className="text-sm font-bold text-gray-600 uppercase tracking-wider">
+                  Status
+                </p>
+                <span
+                  className={`text-xs font-bold px-3 py-1.5 rounded-md border capitalize
+                  ${order?.paymentStatus === "paid" ? "bg-green-50 text-green-700 border-green-200" : "bg-yellow-50 text-yellow-700 border-yellow-200"}`}
+                >
+                  {order?.paymentStatus || "pending"}
+                </span>
+              </div>
             </div>
           </Card>
         </div>

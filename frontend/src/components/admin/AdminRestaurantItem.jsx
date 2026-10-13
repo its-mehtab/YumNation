@@ -175,7 +175,7 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
         <StatusBadge status={r.status} />
       </td>
       <td className="px-4 py-4">
-        <div className="flex items-center gap-1.5 flex-wrap justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-1.5 flex-wrap justify-end">
           {/* Pending actions */}
           {r.status === "pending" && (
             <>
@@ -208,10 +208,10 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
               }
               button={
                 <button
-                  className="flex items-center justify-center p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-yellow-600 hover:border-yellow-400 shadow-sm transition-all"
+                  className="p-1.5 rounded-md hover:bg-yellow-50 text-gray-400 hover:text-yellow-600 transition-colors inline-flex items-center justify-center"
                   title="Suspend"
                 >
-                  <ShieldAlert size={16} />
+                  <ShieldAlert size={16} strokeWidth={1.5} />
                 </button>
               }
             />
@@ -227,10 +227,10 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
           {/* View */}
           <Link
             to={`/admin/restaurants/${r._id}`}
-            className="flex items-center justify-center p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-[#fc8019] hover:border-blue-400 shadow-sm transition-all"
+            className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors inline-flex items-center justify-center"
             title="View Details"
           >
-            <Eye size={16} />
+            <Eye size={16} strokeWidth={1.5} />
           </Link>
           {/* Delete */}
           <ConfirmationModal
@@ -249,10 +249,10 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
             }
             button={
               <button
-                className="flex items-center justify-center p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-red-600 hover:border-red-400 shadow-sm transition-all"
+                className="p-1.5 rounded-md hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors inline-flex items-center justify-center"
                 title="Delete"
               >
-                <Trash2 size={16}  strokeWidth={1.5} />
+                <Trash2 size={16} strokeWidth={1.5} />
               </button>
             }
           />

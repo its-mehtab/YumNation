@@ -34,7 +34,6 @@ export const OwnerOrdersProvider = ({ children }) => {
       });
 
       setOrders(data);
-      console.log(data);
     } catch (error) {
       console.log(error);
     } finally {

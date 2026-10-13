@@ -14,10 +14,10 @@ const PreviewModal = ({ promo }) => {
       isModalOpen={isModalOpen}
       btn={
         <button
-          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
+          className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors inline-flex items-center justify-center" title="Preview"
           onClick={() => setIsModalOpen(true)}
         >
-          <Eye  />
+          <Eye size={16} strokeWidth={1.5} />
         </button>
       }
     >

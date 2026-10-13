@@ -10,6 +10,9 @@ import {
   Banknote,
 } from "lucide-react";
 import { useOwnerOrders } from "../../context/owner/OwnerOrdersContext";
+import axios from "axios";
+import { useAuth } from "../../context/user/AuthContext";
+import { notifyError } from "../../utils/toast";
 
 const STATUS_OPTIONS = [
   "all",
@@ -22,24 +25,56 @@ const STATUS_OPTIONS = [
 ];
 
 const statusConfig = {
-  placed: { color: "text-indigo-600", bg: "bg-indigo-50" },
-  confirmed: { color: "text-amber-600", bg: "bg-amber-50" },
-  preparing: { color: "text-[#fc8019]", bg: "bg-orange-50" },
-  "out for delivery": { color: "text-[#fc8019]", bg: "bg-blue-50" },
-  delivered: { color: "text-[#fc8019]", bg: "bg-green-50" },
-  cancelled: { color: "text-red-500", bg: "bg-red-50" },
+  placed: {
+    color: "text-indigo-700",
+    bg: "bg-indigo-50",
+    border: "border-indigo-200",
+  },
+  confirmed: {
+    color: "text-amber-700",
+    bg: "bg-amber-50",
+    border: "border-amber-200",
+  },
+  preparing: {
+    color: "text-orange-700",
+    bg: "bg-orange-50",
+    border: "border-orange-200",
+  },
+  "out for delivery": {
+    color: "text-blue-700",
+    bg: "bg-blue-50",
+    border: "border-blue-200",
+  },
+  delivered: {
+    color: "text-green-700",
+    bg: "bg-green-50",
+    border: "border-green-200",
+  },
+  cancelled: {
+    color: "text-red-700",
+    bg: "bg-red-50",
+    border: "border-red-200",
+  },
 };
 
 const paymentStatusConfig = {
-  paid: { color: "text-[#fc8019]", bg: "bg-green-50" },
-  pending: { color: "text-yellow-600", bg: "bg-yellow-50" },
-  failed: { color: "text-red-500", bg: "bg-red-50" },
+  paid: {
+    color: "text-green-700",
+    bg: "bg-green-50",
+    border: "border-green-200",
+  },
+  pending: {
+    color: "text-yellow-700",
+    bg: "bg-yellow-50",
+    border: "border-yellow-200",
+  },
+  failed: { color: "text-red-700", bg: "bg-red-50", border: "border-red-200" },
 };
 
 // ── Status Badge ─────────────────────────────────────────────────────────────
 const Badge = ({ label, config }) => (
   <span
-    className={`text-xs font-semibold px-2.5 py-1 rounded-md capitalize ${config.bg} ${config.color}`}
+    className={`text-xs font-bold px-2.5 py-1 rounded-md capitalize border ${config.bg} ${config.color} ${config.border}`}
   >
     {label}
   </span>
@@ -47,31 +82,68 @@ const Badge = ({ label, config }) => (
 
 // ── Status Update Dropdown ───────────────────────────────────────────────────
 const StatusDropdown = ({ orderId, current, onChange }) => (
-  <select
-    value={current}
-    onChange={(e) => onChange(orderId, e.target.value)}
-    className={`text-xs font-semibold px-2.5 py-1 rounded-md border-0 outline-none cursor-pointer capitalize
-      ${statusConfig[current]?.bg} ${statusConfig[current]?.color}`}
-  >
-    {STATUS_OPTIONS.filter((s) => s !== "all").map((s) => (
-      <option key={s} value={s} className="bg-white text-gray-700">
-        {s}
-      </option>
-    ))}
-  </select>
+  <div className="relative">
+    <select
+      value={current}
+      onChange={(e) => onChange(orderId, e.target.value)}
+      className={`appearance-none text-xs font-bold px-3 py-1.5 pr-8 rounded-md border outline-none cursor-pointer capitalize transition-colors
+        ${statusConfig[current]?.bg} ${statusConfig[current]?.color} ${statusConfig[current]?.border} focus:ring-2 focus:ring-opacity-50 focus:ring-${statusConfig[current]?.color.split("-")[1]}-400`}
+    >
+      {STATUS_OPTIONS.filter((s) => s !== "all").map((s) => (
+        <option
+          key={s}
+          value={s}
+          className="bg-white text-gray-700 font-medium"
+        >
+          {s}
+        </option>
+      ))}
+    </select>
+    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-current opacity-70">
+      <svg
+        className="fill-current h-4 w-4"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+      >
+        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+      </svg>
+    </div>
+  </div>
 );
 
 // ── Main Component ───────────────────────────────────────────────────────────
 const RestaurantOrders = () => {
   const { orders, setOrders, filter, setFilter } = useOwnerOrders();
+  const { serverURL } = useAuth();
 
-  const handleStatusChange = (orderId, newStatus) => {
+  const handleStatusChange = async (orderId, newStatus) => {
     setOrders((prev) => ({
       ...prev,
       items: prev.items.map((o) =>
-        o._id === orderId ? { ...o, orderStatus: newStatus } : o,
+        o._id === orderId
+          ? {
+              ...o,
+              orderStatus: newStatus,
+              paymentStatus:
+                o.paymentMethod === "cod" && newStatus === "delivered"
+                  ? "paid"
+                  : o.paymentMethod,
+            }
+          : o,
       ),
     }));
+
+    try {
+      await axios.patch(
+        `${serverURL}/api/owner/order/${orderId}`,
+        { status: newStatus },
+        { withCredentials: true },
+      );
+    } catch (error) {
+      notifyError(error.response.data.message || "Failed to update status");
+      setOrders(orders);
+      console.log(error);
+    }
   };
 
   const stats = {
@@ -101,54 +173,56 @@ const RestaurantOrders = () => {
             label: "Total Orders",
             value: stats.total,
             icon: Package,
-            color: "text-[#fc8019]",
-            bg: "bg-[#fff2e8]",
+            color: "text-orange-500",
+            bg: "bg-orange-100",
           },
           {
             label: "New Orders",
             value: stats.pending,
             icon: Sparkles,
-            color: "text-indigo-500",
-            bg: "bg-indigo-50/50",
+            color: "text-indigo-600",
+            bg: "bg-indigo-100",
           },
           {
             label: "Preparing",
             value: stats.preparing,
             icon: ChefHat,
-            color: "text-[#fc8019]",
-            bg: "bg-[#fff2e8]",
+            color: "text-yellow-600",
+            bg: "bg-yellow-100",
           },
           {
             label: "Delivered",
             value: stats.delivered,
             icon: CheckCircle,
-            color: "text-[#fc8019]",
-            bg: "bg-[#fff2e8]",
+            color: "text-green-600",
+            bg: "bg-green-100",
           },
           {
             label: "Revenue",
             value: `$${stats.revenue.toFixed(2)}`,
             icon: Banknote,
-            color: "text-[#fc8019]",
-            bg: "bg-[#fff2e8]",
+            color: "text-emerald-600",
+            bg: "bg-emerald-100",
           },
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-md  border border-gray-200 p-5 flex flex-col justify-between transition-all gap-4"
+            className="bg-white p-5 rounded-md border border-gray-200"
           >
-            <div className="flex items-center justify-between">
-              <div className={`p-2.5 rounded-md ${s.bg} ${s.color}`}>
-                <s.icon size={18} strokeWidth={1.5} />
+            <div className="flex items-center gap-4">
+              <div
+                className={`w-12 h-12 rounded-lg ${s.bg} ${s.color} flex items-center justify-center shrink-0`}
+              >
+                <s.icon size={24} strokeWidth={1.5} />
               </div>
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-gray-400 mb-1 tracking-wide uppercase">
-                {s.label}
-              </p>
-              <p className="text-2xl font-semibold text-gray-800 tracking-tight">
-                {s.value}
-              </p>
+              <div>
+                <p className="text-gray-500 text-xs font-medium mb-1">
+                  {s.label}
+                </p>
+                <h3 className="text-2xl font-bold text-gray-800 tracking-tight">
+                  {s.value}
+                </h3>
+              </div>
             </div>
           </div>
         ))}

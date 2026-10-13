@@ -72,15 +72,15 @@ const AdminRestaurants = () => {
             label: "Total Restaurants",
             value: restaurants.length,
             icon: Store,
-            color: "text-[#fc8019]",
-            bg: "bg-blue-50",
+            color: "text-orange-500",
+            bg: "bg-orange-100",
           },
           {
             label: "Pending Review",
             value: pendingCount,
             icon: Clock,
             color: "text-yellow-600",
-            bg: "bg-yellow-50",
+            bg: "bg-yellow-100",
             highlight: pendingCount > 0,
           },
           {
@@ -89,35 +89,39 @@ const AdminRestaurants = () => {
               .reduce((a, r) => a + r.totalOrders, 0)
               .toLocaleString(),
             icon: Package,
-            color: "text-[#fc8019]",
-            bg: "bg-purple-50",
+            color: "text-purple-600",
+            bg: "bg-purple-100",
           },
           {
             label: "Active Revenue",
             value: `$${totalRevenue.toLocaleString()}`,
             icon: DollarSign,
-            color: "text-[#fc8019]",
-            bg: "bg-green-50",
+            color: "text-green-600",
+            bg: "bg-green-100",
           },
         ].map((s) => (
           <div
             key={s.label}
-            className={`bg-white rounded-md  border border-gray-200 p-6 flex items-center justify-between transition-all ${
+            className={`bg-white p-5 rounded-md border border-gray-200 ${
               s.highlight ? "ring-2 ring-yellow-400 ring-offset-2" : ""
             }`}
           >
-            <div>
-              <p className="text-sm font-semibold text-gray-500 mb-2">
-                {s.label}
-              </p>
-              <p
-                className={`text-3xl font-bold ${s.highlight ? "text-yellow-600" : "text-gray-800"}`}
+            <div className="flex items-center gap-4">
+              <div
+                className={`w-12 h-12 rounded-lg ${s.bg} ${s.color} flex items-center justify-center shrink-0`}
               >
-                {s.value}
-              </p>
-            </div>
-            <div className={`p-4 rounded-md ${s.bg} ${s.color}`}>
-              <s.icon size={28} strokeWidth={1.5} />
+                <s.icon size={24} strokeWidth={1.5} />
+              </div>
+              <div>
+                <p className="text-gray-500 text-xs font-medium mb-1">
+                  {s.label}
+                </p>
+                <h3
+                  className={`text-2xl font-bold ${s.highlight ? "text-yellow-600" : "text-gray-800"}`}
+                >
+                  {s.value}
+                </h3>
+              </div>
             </div>
           </div>
         ))}

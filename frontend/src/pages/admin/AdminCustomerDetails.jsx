@@ -96,22 +96,18 @@ const InfoRow = ({ label, value, icon: Icon }) => (
   </div>
 );
 
-const StatBox = ({ label, value, color, icon: Icon, bgClass }) => (
-  <div className="bg-white rounded-md p-5 border border-gray-200  flex flex-col justify-between transition-all gap-4">
-    <div className="flex items-center justify-between">
+const StatBox = ({ label, value, icon: Icon, bgClass }) => (
+  <div className="bg-white p-5 rounded-md border border-gray-200">
+    <div className="flex items-center gap-4">
       <div
-        className={`p-3 rounded-md ${bgClass || "bg-gray-50 text-gray-600"}`}
+        className={`w-12 h-12 rounded-lg ${bgClass || "bg-gray-100 text-gray-600"} flex items-center justify-center shrink-0`}
       >
         {Icon && <Icon size={24} strokeWidth={1.5} />}
       </div>
-    </div>
-    <div>
-      <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">
-        {label}
-      </p>
-      <p className="font-bold text-2xl" style={{ color: color || "#1f2937" }}>
-        {value}
-      </p>
+      <div>
+        <p className="text-gray-500 text-xs font-medium mb-1">{label}</p>
+        <h3 className="text-2xl font-bold text-gray-800">{value}</h3>
+      </div>
     </div>
   </div>
 );
@@ -331,40 +327,35 @@ const AdminCustomerDetails = () => {
         <StatBox
           label="Total Orders"
           value={customer?.totalOrders || 0}
-          color="#2563eb"
           icon={ShoppingBag}
-          bgClass="bg-[#fff2e8] text-[#fc8019]"
+          bgClass="bg-blue-100 text-blue-600"
         />
         <StatBox
           label="Total Spent"
           value={`$${(customer?.totalSpent || 0).toLocaleString()}`}
-          color="#16a34a"
           icon={DollarSign}
-          bgClass="bg-[#fff2e8] text-[#fc8019]"
+          bgClass="bg-green-100 text-green-600"
         />
         <StatBox
           label="Avg Order Value"
           value={`$${customer?.totalOrders ? (customer.totalSpent / customer.totalOrders).toFixed(2) : "0.00"}`}
-          color="#d97706"
           icon={CheckCircle2}
-          bgClass="bg-amber-50 text-amber-600"
+          bgClass="bg-amber-100 text-amber-600"
         />
         <StatBox
           label="Cancelled Orders"
           value={cancelledOrders.length}
-          color="#dc2626"
           icon={XCircle}
-          bgClass="bg-red-50 text-red-600"
+          bgClass="bg-red-100 text-red-600"
         />
         <StatBox
           label="Cancellation Rate"
           value={`${cancelRate}%`}
-          color={cancelRate > 20 ? "#dc2626" : "#4f46e5"}
           icon={AlertCircle}
           bgClass={
             cancelRate > 20
-              ? "bg-red-50 text-red-600"
-              : "bg-indigo-50 text-indigo-600"
+              ? "bg-red-100 text-red-600"
+              : "bg-indigo-100 text-indigo-600"
           }
         />
       </div>

@@ -21,6 +21,7 @@ import {
   TrendingUp,
   Mail,
   Phone,
+  RotateCw,
 } from "lucide-react";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
@@ -163,6 +164,7 @@ const AdminRestaurantDetails = () => {
   const [dishes, setDishes] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
 
   const [filter, setFilter] = useState({
@@ -176,15 +178,28 @@ const AdminRestaurantDetails = () => {
 
   const fetchRestaurantData = async () => {
     try {
-      const { data } = await axios.get(`${serverURL}/api/admin/restaurant`, {
-        params: {
-          restaurantId: id,
+      const { data } = await axios.get(
+        `${serverURL}/api/admin/restaurant/${id}`,
+        {
+          withCredentials: true,
         },
-        withCredentials: true,
-      });
+      );
+      console.log(data);
+
       setRestaurant(data[0]);
-    } catch (error) {
-      console.log(error);
+      // if (data && data.length > 0 && data[0]) {
+      // } else {
+      //   setRestaurant(null);
+      //   setError(
+      //     "Restaurant not found. It may have been deleted or the ID is invalid.",
+      //   );
+      // }
+    } catch (err) {
+      console.log(err);
+      setError(
+        err?.response?.data?.message ||
+          "Failed to load restaurant details. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -199,11 +214,9 @@ const AdminRestaurantDetails = () => {
         withCredentials: true,
       });
 
-      setDishes(data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
+      setDishes(data || []);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -220,12 +233,18 @@ const AdminRestaurantDetails = () => {
         },
       );
 
-      setOrders(data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
+      setOrders(data || []);
+    } catch (err) {
+      console.log(err);
     }
+  };
+
+  const handleRetry = () => {
+    setLoading(true);
+    setError(null);
+    fetchRestaurantData();
+    fetchRestaurantDishes();
+    fetchRestaurantOrders();
   };
 
   useEffect(() => {
@@ -256,6 +275,72 @@ const AdminRestaurantDetails = () => {
           ))}
         </div>
         <div className="h-96 bg-gray-100 rounded-md" />
+      </div>
+    );
+
+  if (!restaurant)
+    return (
+      <div className="space-y-6">
+        {/* ── Page header ── */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate("/admin/restaurants")}
+              className="p-2 bg-white border border-gray-200 rounded-md text-gray-500 hover:text-[#fc8019] transition-all"
+              title="Back to Restaurants"
+            >
+              <ChevronLeft size={20} strokeWidth={1.5} />
+            </button>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800 tracking-tight">
+                Restaurant Details
+              </h1>
+              <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
+                <button
+                  onClick={() => navigate("/admin/restaurants")}
+                  className="hover:text-[#fc8019] transition-colors"
+                >
+                  Restaurants
+                </button>
+                <ChevronRight
+                  size={14}
+                  className="text-gray-400"
+                  strokeWidth={1.5}
+                />
+                <span className="text-gray-400 font-medium">Not Found</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Not Found / Error Card ── */}
+        <div className="bg-white rounded-md border border-gray-200 p-12 text-center flex flex-col items-center justify-center max-w-2xl mx-auto my-8">
+          <div className="w-20 h-20 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center mb-5 text-[#fc8019]">
+            <Store size={38} strokeWidth={1.5} />
+          </div>
+          <h2 className="text-xl font-bold text-gray-800 mb-2">
+            Restaurant Not Found
+          </h2>
+          <p className="text-sm text-gray-500 max-w-md leading-relaxed mb-6">
+            {error ||
+              "The restaurant you are looking for does not exist, has been removed, or could not be loaded."}
+          </p>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleRetry}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-md border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              <RotateCw size={16} strokeWidth={1.5} />
+              Try Again
+            </button>
+            <Link
+              to="/admin/restaurants"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-bold shadow-md shadow-orange-500/20 transition-all"
+            >
+              View All Restaurants
+            </Link>
+          </div>
+        </div>
       </div>
     );
 
@@ -418,45 +503,47 @@ const AdminRestaurantDetails = () => {
             label: "Total Orders",
             value: restaurant.totalOrders.toLocaleString(),
             icon: Package,
-            color: "text-[#fc8019]",
-            bg: "bg-blue-50",
+            color: "text-blue-600",
+            bg: "bg-blue-100",
           },
           {
             label: "Total Dishes",
             value: dishes.length,
             icon: Utensils,
-            color: "text-[#fc8019]",
-            bg: "bg-orange-50",
+            color: "text-orange-500",
+            bg: "bg-orange-100",
           },
           {
             label: "Rating",
             value: `${restaurant.rating} / 5`,
             icon: Star,
             color: "text-yellow-600",
-            bg: "bg-yellow-50",
+            bg: "bg-yellow-100",
           },
           {
             label: "Min Order",
             value: `$${restaurant.minOrderAmount}`,
             icon: DollarSign,
-            color: "text-[#fc8019]",
-            bg: "bg-green-50",
+            color: "text-green-600",
+            bg: "bg-green-100",
           },
         ].map((s) => (
           <div
             key={s.label}
-            className="bg-white rounded-md  border border-gray-200 p-6 flex flex-col justify-between transition-all gap-4"
+            className="bg-white p-5 rounded-md border border-gray-200"
           >
-            <div className="flex items-center justify-between">
-              <div className={`p-3 rounded-md ${s.bg} ${s.color}`}>
+            <div className="flex items-center gap-4">
+              <div
+                className={`w-12 h-12 rounded-lg ${s.bg} ${s.color} flex items-center justify-center shrink-0`}
+              >
                 <s.icon size={24} strokeWidth={1.5} />
               </div>
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-gray-500 mb-1 tracking-wide uppercase">
-                {s.label}
-              </p>
-              <p className="text-2xl font-bold text-gray-800">{s.value}</p>
+              <div>
+                <p className="text-gray-500 text-xs font-medium mb-1">
+                  {s.label}
+                </p>
+                <h3 className="text-2xl font-bold text-gray-800">{s.value}</h3>
+              </div>
             </div>
           </div>
         ))}
@@ -657,14 +744,16 @@ const AdminRestaurantDetails = () => {
                       </span>
                     </td>
                     {/* View only — admin does not edit dishes */}
-                    <td className="px-6 py-4">
-                      <Link
-                        to={`/admin/dishes/${dish._id}`}
-                        className="p-2 inline-flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-400 hover:text-[#fc8019] hover:border-blue-400 shadow-sm transition-all opacity-0 group-hover:opacity-100"
-                        title="View Dish"
-                      >
-                        <Eye size={16} />
-                      </Link>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Link
+                          to={`/admin/dishes/${dish._id}`}
+                          className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors inline-flex items-center justify-center"
+                          title="View Dish"
+                        >
+                          <Eye size={16} strokeWidth={1.5} />
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -753,14 +842,16 @@ const AdminRestaurantDetails = () => {
                         {dayjs(order.createdAt).format("h:mm A")}
                       </p>
                     </td>
-                    <td className="px-6 py-4">
-                      <Link
-                        to={`/admin/orders/${order._id}`}
-                        className="p-2 inline-flex items-center justify-center rounded-md bg-white border border-gray-200 text-gray-400 hover:text-[#fc8019] hover:border-blue-400 shadow-sm transition-all opacity-0 group-hover:opacity-100"
-                        title="View Order"
-                      >
-                        <Eye size={16} />
-                      </Link>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Link
+                          to={`/admin/orders/${order._id}`}
+                          className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors inline-flex items-center justify-center"
+                          title="View Order"
+                        >
+                          <Eye size={16} strokeWidth={1.5} />
+                        </Link>
+                      </div>
                     </td>
                   </tr>
                 ))}

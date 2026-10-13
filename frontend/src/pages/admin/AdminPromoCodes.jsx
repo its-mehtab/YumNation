@@ -22,13 +22,17 @@ import {
 // ─── Stat Card ────────────────────────────────────────────────────────────────
 
 const StatCard = ({ label, value, icon: Icon, bg, color }) => (
-  <div className="bg-white rounded-md  border border-gray-200 p-6 flex items-center justify-between transition-all ">
-    <div>
-      <p className="text-sm font-semibold text-gray-500 mb-2">{label}</p>
-      <p className="text-3xl font-bold text-gray-800">{value}</p>
-    </div>
-    <div className={`p-4 rounded-md ${bg} ${color}`}>
-      <Icon size={28} strokeWidth={1.5} />
+  <div className="bg-white p-5 rounded-md border border-gray-200">
+    <div className="flex items-center gap-4">
+      <div
+        className={`w-12 h-12 rounded-lg ${bg} ${color} flex items-center justify-center shrink-0`}
+      >
+        <Icon size={24} strokeWidth={1.5} />
+      </div>
+      <div>
+        <p className="text-gray-500 text-xs font-medium mb-1">{label}</p>
+        <h3 className="text-2xl font-bold text-gray-800">{value}</h3>
+      </div>
     </div>
   </div>
 );
@@ -136,29 +140,29 @@ const AdminPromoCodes = () => {
           label="Total codes"
           value={total}
           icon={Ticket}
-          bg="bg-blue-50"
-          color="text-[#fc8019]"
+          bg="bg-blue-100"
+          color="text-blue-600"
         />
         <StatCard
           label="Active"
           value={active}
           icon={CheckCircle}
-          bg="bg-green-50"
-          color="text-[#fc8019]"
+          bg="bg-green-100"
+          color="text-green-600"
         />
         <StatCard
           label="Total uses"
           value={totalUses.toLocaleString()}
           icon={TrendingUp}
-          bg="bg-orange-50"
-          color="text-[#fc8019]"
+          bg="bg-orange-100"
+          color="text-orange-500"
         />
         <StatCard
           label="Flat discounts"
           value={flatCount}
           icon={Percent}
-          bg="bg-purple-50"
-          color="text-[#fc8019]"
+          bg="bg-purple-100"
+          color="text-purple-600"
         />
       </div>
 
@@ -170,7 +174,8 @@ const AdminPromoCodes = () => {
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                 size={18}
-               strokeWidth={1.5} />
+                strokeWidth={1.5}
+              />
               <input
                 placeholder="Search code or title..."
                 value={search}
@@ -215,7 +220,7 @@ const AdminPromoCodes = () => {
                 ].map((h) => (
                   <th
                     key={h}
-                    className="px-4 py-4 font-semibold uppercase tracking-wider text-xs first:pl-6"
+                    className={`px-4 py-4 font-semibold uppercase tracking-wider text-xs first:pl-6 ${h === "Actions" ? "text-right pr-6" : ""}`}
                   >
                     {h}
                   </th>
@@ -231,7 +236,11 @@ const AdminPromoCodes = () => {
                   >
                     <div className="flex flex-col items-center justify-center">
                       <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
-                        <Ticket size={32} className="text-gray-400"  strokeWidth={1.5} />
+                        <Ticket
+                          size={32}
+                          className="text-gray-400"
+                          strokeWidth={1.5}
+                        />
                       </div>
                       <h3 className="text-lg font-bold text-gray-800 mb-1">
                         No promo codes found
@@ -301,27 +310,27 @@ const AdminPromoCodes = () => {
                       </button>
                     </td>
 
-                    <td className="px-4 py-4">
-                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity justify-end">
+                    <td className="px-4 py-4 pr-6 text-right">
+                      <div className="flex items-center justify-end gap-1.5">
                         <PreviewModal promo={p} />
                         <PromoModal
                           initial={p}
                           btn={
                             <button
-                              className="p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-[#fc8019] shadow-sm transition-all"
+                              className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors inline-flex items-center justify-center"
                               title="Edit"
                             >
-                              <Edit2 size={16}  strokeWidth={1.5} />
+                              <Edit2 size={16} strokeWidth={1.5} />
                             </button>
                           }
                         />
                         <ConfirmationModal
                           button={
                             <button
-                              className="p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-red-600 hover:border-red-400 shadow-sm transition-all"
+                              className="p-1.5 rounded-md hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors inline-flex items-center justify-center"
                               title="Delete"
                             >
-                              <Trash2 size={16}  strokeWidth={1.5} />
+                              <Trash2 size={16} strokeWidth={1.5} />
                             </button>
                           }
                           heading="Delete this promo code?"

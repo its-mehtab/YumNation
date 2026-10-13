@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Trash2, Edit, Plus, Eye } from "lucide-react";
+import { Trash2, Edit, Plus, Eye, ChevronDown } from "lucide-react";
 
 import { Link } from "react-router-dom";
 
@@ -13,7 +13,11 @@ import { Utensils } from "lucide-react";
 // ── Status Badge ──────────────────────────────────────────────────────────────
 const StatusBadge = ({ isAvailable }) => (
   <span
-    className={`text-xs font-semibold px-3 py-1 rounded-md ${isAvailable ? "bg-[#fff2e8] text-[#fc8019]" : "bg-pink-50 text-pink-500"}`}
+    className={`inline-flex items-center text-xs font-bold px-3 py-1 rounded-md border ${
+      isAvailable
+        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+        : "bg-gray-100 text-gray-500 border-gray-200"
+    }`}
   >
     {isAvailable ? "Published" : "Draft"}
   </span>
@@ -79,16 +83,14 @@ const RestaurantDishes = () => {
                 <option value="asc">Sort: A → Z</option>
                 <option value="desc">Sort: Z → A</option>
               </select>
-              <span className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs">
-                ▼
-              </span>
+              <ChevronDown size={14} className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
             </div>
             {/* Add dish */}
             <Link
               to="/owner/dish/add"
-              className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-4 py-2 rounded-md transition-colors"
+              className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-bold px-4 py-2.5 rounded-md shadow-md shadow-orange-500/20 transition-all"
             >
-              <Plus  color={"#fff"} size={12} />
+              <Plus size={16} strokeWidth={1.5} />
               Add Dish
             </Link>
           </div>

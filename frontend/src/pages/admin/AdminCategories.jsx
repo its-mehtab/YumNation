@@ -356,59 +356,20 @@ const AdminCategories = () => {
         </div>
       </div>
 
-      {/* ── Stats row ── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {[
-          {
-            label: "Total Categories",
-            value: categories.length,
-            icon: Folder,
-            color: "text-[#fc8019]",
-            bg: "bg-[#fff2e8]",
-          },
-          {
-            label: "Active",
-            value: categories.filter((c) => c.isActive).length,
-            icon: CheckCircle,
-            color: "text-[#fc8019]",
-            bg: "bg-[#fff2e8]",
-          },
-          {
-            label: "Inactive",
-            value: categories.filter((c) => !c.isActive).length,
-            icon: Ban,
-            color: "text-red-500",
-            bg: "bg-red-50",
-          },
-        ].map((s) => (
-          <div
-            key={s.label}
-            className="bg-white rounded-md  border border-gray-200 p-5 flex items-start justify-between transition-all "
-          >
-            <div>
-              <p className="text-sm font-medium text-gray-500 mb-1">
-                {s.label}
-              </p>
-              <p className="text-2xl font-semibold text-gray-800">{s.value}</p>
-            </div>
-            <div className={`p-2.5 rounded-md ${s.bg} ${s.color}`}>
-              <s.icon size={18} strokeWidth={1.5} />
-            </div>
-          </div>
-        ))}
-      </div>
-
       {/* ── Table card ── */}
       <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
         {/* Card header */}
         <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-5 border-b border-gray-50 gap-4">
-          <h2 className="text-base font-semibold text-gray-900">All Categories</h2>
+          <h2 className="text-base font-semibold text-gray-900">
+            All Categories
+          </h2>
           <div className="flex items-center gap-4 w-full sm:w-auto">
             <div className="relative w-full sm:w-64">
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                 size={16}
-               strokeWidth={1.5} />
+                strokeWidth={1.5}
+              />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -511,17 +472,17 @@ const AdminCategories = () => {
                     </button>
                   </td>
                   <td className="px-4 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center justify-end gap-1.5">
                       <button
                         onClick={() => setModal(cat)}
-                        className="p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-[#fc8019] shadow-sm transition-all"
+                        className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors inline-flex items-center justify-center"
                         title="Edit"
                       >
                         <Edit2 size={16} strokeWidth={1.5} />
                       </button>
                       <button
                         onClick={() => handleDelete(cat._id)}
-                        className="p-2 rounded-md bg-white border border-gray-200 text-gray-400 hover:text-red-500 hover:border-red-500 shadow-sm transition-all"
+                        className="p-1.5 rounded-md hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors inline-flex items-center justify-center"
                         title="Delete"
                       >
                         <Trash2 size={16} strokeWidth={1.5} />
@@ -538,7 +499,11 @@ const AdminCategories = () => {
         {filtered.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
-              <FolderOpen size={32} strokeWidth={1.5} className="text-gray-400" />
+              <FolderOpen
+                size={32}
+                strokeWidth={1.5}
+                className="text-gray-400"
+              />
             </div>
             <h3 className="text-base font-semibold text-gray-900 mb-1">
               No categories found
