@@ -1,3 +1,4 @@
+import { Skeleton } from "@radix-ui/themes";
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
@@ -161,10 +162,14 @@ const AdminRestaurantDetails = () => {
   const navigate = useNavigate();
 
   const [restaurant, setRestaurant] = useState(null);
-  const [dishes, setDishes] = useState([]);
-  const [orders, setOrders] = useState([]);
+  const [dishes, setDishes] = useState(null);
+  const [orders, setOrders] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState({
+    restaurantError: null,
+    dishError: null,
+    orderError: null,
+  });
   const [activeTab, setActiveTab] = useState("overview");
 
   const [filter, setFilter] = useState({
@@ -184,22 +189,16 @@ const AdminRestaurantDetails = () => {
           withCredentials: true,
         },
       );
-      console.log(data);
 
-      setRestaurant(data[0]);
-      // if (data && data.length > 0 && data[0]) {
-      // } else {
-      //   setRestaurant(null);
-      //   setError(
-      //     "Restaurant not found. It may have been deleted or the ID is invalid.",
-      //   );
-      // }
+      setRestaurant(data);
     } catch (err) {
       console.log(err);
-      setError(
-        err?.response?.data?.message ||
+      setError((prev) => ({
+        ...prev,
+        restaurantError:
+          err?.response?.data?.message ||
           "Failed to load restaurant details. Please try again.",
-      );
+      }));
     } finally {
       setLoading(false);
     }
@@ -214,7 +213,7 @@ const AdminRestaurantDetails = () => {
         withCredentials: true,
       });
 
-      setDishes(data || []);
+      setDishes(data);
     } catch (err) {
       console.log(err);
     }
@@ -241,7 +240,11 @@ const AdminRestaurantDetails = () => {
 
   const handleRetry = () => {
     setLoading(true);
-    setError(null);
+    setError({
+      restaurantError: null,
+      dishError: null,
+      orderError: null,
+    });
     fetchRestaurantData();
     fetchRestaurantDishes();
     fetchRestaurantOrders();
@@ -267,18 +270,18 @@ const AdminRestaurantDetails = () => {
 
   if (loading)
     return (
-      <div className="space-y-6 animate-pulse p-2">
-        <div className="h-48 bg-gray-100 rounded-md" />
-        <div className="grid grid-cols-4 gap-4">
+      <div className="space-y-6 p-2">
+        <Skeleton height="192px" className="w-full rounded-md" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-32 bg-gray-100 rounded-md" />
+            <Skeleton key={i} height="100px" className="rounded-md" />
           ))}
         </div>
-        <div className="h-96 bg-gray-100 rounded-md" />
+        <Skeleton height="384px" className="w-full rounded-md" />
       </div>
     );
 
-  if (!restaurant)
+  if (!restaurant || error.restaurantError)
     return (
       <div className="space-y-6">
         {/* ── Page header ── */}
@@ -322,7 +325,7 @@ const AdminRestaurantDetails = () => {
             Restaurant Not Found
           </h2>
           <p className="text-sm text-gray-500 max-w-md leading-relaxed mb-6">
-            {error ||
+            {error.restaurantError ||
               "The restaurant you are looking for does not exist, has been removed, or could not be loaded."}
           </p>
           <div className="flex items-center gap-3">
@@ -394,13 +397,6 @@ const AdminRestaurantDetails = () => {
             />
           )}
           <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
-          {/* <Link
-            to={`/admin/restaurants/edit/${restaurant._id}`}
-            className="absolute top-4 right-4 flex items-center gap-2 bg-white/90 backdrop-blur-sm text-sm font-bold text-gray-700 px-4 py-2 rounded-md shadow-sm hover:bg-white transition-all"
-          >
-            <Edit2 size={16} className="text-[#fc8019]" strokeWidth={1.5} />
-            Edit Profile
-          </Link> */}
         </div>
 
         <div className="px-8 pb-6 pt-4 flex flex-col md:flex-row items-start md:items-end justify-between gap-6 relative">
@@ -760,6 +756,21 @@ const AdminRestaurantDetails = () => {
               </tbody>
             </table>
           </div>
+          {error.dishError && (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
+                <Utensils
+                  size={32}
+                  className="text-gray-400"
+                  strokeWidth={1.5}
+                />
+              </div>
+              <h3 className="text-lg font-bold text-gray-800 mb-1">
+                Dishes Not Found
+              </h3>
+              <p className="text-sm text-gray-500">{error.dishError}</p>
+            </div>
+          )}
           {dishes.length === 0 && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
@@ -858,6 +869,17 @@ const AdminRestaurantDetails = () => {
               </tbody>
             </table>
           </div>
+          {error.orderError === 0 && (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
+                <ArchiveX size={32} className="text-gray-400" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-800 mb-1">
+                Orders Not Found
+              </h3>
+              <p className="text-sm text-gray-500">{error.orderError}</p>
+            </div>
+          )}
           {orders.items.length === 0 && (
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">

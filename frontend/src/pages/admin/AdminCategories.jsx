@@ -18,26 +18,8 @@ import {
   Search,
   X,
 } from "lucide-react";
-
-// ── Mock data ────────────────────────────────────────────────────────────────
-const mockCategories = [
-  {
-    _id: "1",
-    name: "Pizza",
-    slug: "pizza",
-    dishCount: 12,
-    isActive: true,
-    createdAt: "2024-01-10",
-  },
-  {
-    _id: "2",
-    name: "Burger",
-    slug: "burger",
-    dishCount: 8,
-    isActive: true,
-    createdAt: "2024-01-12",
-  },
-];
+import AdminCategoriesSkeleton from "../../components/skeleton/admin/AdminCategoriesSkeleton";
+import { ErrorState } from "../../components/common";
 
 // ── Add/Edit Modal ───────────────────────────────────────────────────────────
 const CategoryModal = ({ category, onClose, onSave, miniLoading }) => {
@@ -250,12 +232,18 @@ const CategoryModal = ({ category, onClose, onSave, miniLoading }) => {
 // ── Main Component ───────────────────────────────────────────────────────────
 const AdminCategories = () => {
   const [search, setSearch] = useState("");
-  const [modal, setModal] = useState(null); // null | "add" | { ...category }
+  const [modal, setModal] = useState(null);
 
   const [miniLoading, setMiniLoading] = useState(false);
 
-  const { categories, setCategories } = useCategories();
+  const { categories, setCategories, loading, error, fetchCategories } =
+    useCategories();
   const { serverURL } = useAuth();
+
+  if (loading) return <AdminCategoriesSkeleton />;
+
+  if (!categories || error)
+    return <ErrorState error={error} onRetry={fetchCategories} />;
 
   const filtered = categories.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase()),
@@ -440,12 +428,9 @@ const AdminCategories = () => {
                     </span>
                   </td>
                   <td className="px-4 py-4">
-                    <Link
-                      to={`/admin/dishes?category=${cat.slug}`}
-                      className="inline-flex items-center gap-1.5 text-[#fc8019] font-semibold hover:underline"
-                    >
+                    <div className="inline-flex items-center gap-1.5 text-[#fc8019] font-semibold">
                       {cat.dishCount} dishes
-                    </Link>
+                    </div>
                   </td>
                   <td className="px-4 py-4 text-gray-500 font-medium text-sm">
                     {dayjs(cat.createdAt).format("MMM DD, YYYY")}

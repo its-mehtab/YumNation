@@ -6,8 +6,9 @@ import { useEffect } from "react";
 const CategoryAdminContext = createContext();
 
 export const CategoryAdminPovider = ({ children }) => {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const { serverURL } = useAuth();
 
@@ -19,6 +20,7 @@ export const CategoryAdminPovider = ({ children }) => {
 
       setCategories(data);
     } catch (error) {
+      setError(error?.response?.data || error.message);
       console.log(
         "Admin Category Error:",
         error?.response?.data || error.message,
@@ -36,6 +38,8 @@ export const CategoryAdminPovider = ({ children }) => {
         fetchCategories,
         loading,
         setLoading,
+        error,
+        setError,
       }}
     >
       {children}

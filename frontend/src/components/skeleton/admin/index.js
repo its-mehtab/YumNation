@@ -1,0 +1,11 @@
+export { default as AdminDashboardSkeleton } from "./AdminDashboardSkeleton";
+export { default as AdminRestaurantsSkeleton } from "./AdminRestaurantsSkeleton";
+export { default as AdminRestaurantDetailsSkeleton } from "./AdminRestaurantDetailsSkeleton";
+export { default as AdminCategoriesSkeleton } from "./AdminCategoriesSkeleton";
+export { default as AdminOrdersSkeleton } from "./AdminOrdersSkeleton";
+export { default as AdminOrderDetailsSkeleton } from "./AdminOrderDetailsSkeleton";
+export { default as AdminPromoCodesSkeleton } from "./AdminPromoCodesSkeleton";
+export { default as AdminCustomersSkeleton } from "./AdminCustomersSkeleton";
+export { default as AdminCustomerDetailsSkeleton } from "./AdminCustomerDetailsSkeleton";
+export { default as AdminDishDetailsSkeleton } from "./AdminDishDetailsSkeleton";
+export { default as RestaurantsSkeleton } from "./AdminRestaurantsSkeleton";

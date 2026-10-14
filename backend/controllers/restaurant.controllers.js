@@ -34,14 +34,45 @@ export const getAllRestaurant = async (req, res) => {
 };
 
 export const getRestaurants = async (req, res) => {
+  const { statusFilter, search, page = 1, limit = 12 } = req.query;
+  console.log(statusFilter, search, page, limit);
+
+  const filter = {};
+  if (statusFilter) filter.status = statusFilter;
+
   try {
-    const restaurant = await Restaurant.find().populate("owner");
+    const restaurant = await Restaurant.find(filter).populate("owner");
 
     if (!restaurant) {
       return res.status(404).json({ message: "Restaurant not found" });
     }
 
-    return res.status(200).json(restaurant);
+    const [
+      totalRestaurants,
+      pendingRestaurants,
+      allRestaurantOrders,
+      totalRevenue,
+    ] = await Promise.all([
+      Restaurant.countDocuments(),
+      Restaurant.countDocuments({ status: "pending" }),
+      Restaurant.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalOrders: { $sum: "$totalOrders" },
+          },
+        },
+      ]),
+    ]);
+
+    return res.status(200).json({
+      items: restaurant,
+      restaurantAnalatics: {
+        totalRestaurants,
+        pendingRestaurants,
+        allRestaurantOrders: allRestaurantOrders[0].totalOrders,
+      },
+    });
   } catch (error) {
     return res
       .status(500)
@@ -50,12 +81,15 @@ export const getRestaurants = async (req, res) => {
 };
 
 export const getRestaurant = async (req, res) => {
-  console.log("called");
+  const { restaurantId } = req.params;
+
+  if (!restaurantId) {
+    return res.status(400).json({ message: "Restaurant ID required" });
+  }
 
   try {
-    const restaurant = await Restaurant.findById(req.restaurantId).select(
-      req.hideFields,
-    );
+    const restaurant =
+      await Restaurant.findById(restaurantId).populate("owner");
 
     if (!restaurant) {
       return res.status(404).json({ message: "Restaurant not found" });

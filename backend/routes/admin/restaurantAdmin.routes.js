@@ -16,7 +16,6 @@ restaurantAdminRouter.get(
   "/:restaurantId",
   checkAuth,
   adminOnly,
-  setRestaurantFromQuery,
   getRestaurant,
 );
 restaurantAdminRouter.patch(

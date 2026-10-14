@@ -1,0 +1,14 @@
+export { default as OwnerDashboardSkeleton } from "./OwnerDashboardSkeleton";
+export { default as RestaurantDashboardSkeleton } from "./OwnerDashboardSkeleton";
+export { default as OwnerOrdersSkeleton } from "./OwnerOrdersSkeleton";
+export { default as RestaurantOrdersSkeleton } from "./OwnerOrdersSkeleton";
+export { default as OwnerOrderDetailsSkeleton } from "./OwnerOrderDetailsSkeleton";
+export { default as RestaurantOrderDetailsSkeleton } from "./OwnerOrderDetailsSkeleton";
+export { default as OwnerDishesSkeleton } from "./OwnerDishesSkeleton";
+export { default as RestaurantDishesSkeleton } from "./OwnerDishesSkeleton";
+export { default as OwnerDishDetailsSkeleton } from "./OwnerDishDetailsSkeleton";
+export { default as RestaurantDishDetailsSkeleton } from "./OwnerDishDetailsSkeleton";
+export { default as OwnerDishFormSkeleton } from "./OwnerDishFormSkeleton";
+export { default as RestaurantDishFormSkeleton } from "./OwnerDishFormSkeleton";
+export { default as OwnerSettingsSkeleton } from "./OwnerSettingsSkeleton";
+export { default as RestaurantSettingsSkeleton } from "./OwnerSettingsSkeleton";

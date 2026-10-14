@@ -1,3 +1,4 @@
+import { Skeleton } from "@radix-ui/themes";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useRestaurants } from "../../context/admin/RestaurantsContext";
@@ -6,15 +7,25 @@ import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
 import RejectModal from "../../components/admin/RejectModal";
 import { Store, Clock, Package, DollarSign, Search } from "lucide-react";
+import AdminRestaurantsSkeleton from "../../components/skeleton/admin/AdminRestaurantsSkeleton";
+import { ErrorState } from "../../components/common";
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 const AdminRestaurants = () => {
-  const { restaurants, setRestaurants } = useRestaurants();
+  const { restaurants, setRestaurants, loading, error, fetchRestaurants } =
+    useRestaurants();
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [rejectTarget, setRejectTarget] = useState(null);
 
+  // console.log(restaurants);
+
   const { serverURL } = useAuth();
+
+  if (loading) return <AdminRestaurantsSkeleton />;
+
+  if (!restaurants || error)
+    return <ErrorState error={error} onRetry={fetchRestaurants} />;
 
   const tabs = [
     { key: "all", label: "All" },
@@ -24,14 +35,40 @@ const AdminRestaurants = () => {
     { key: "suspended", label: "Suspended" },
   ];
 
-  const filtered = restaurants.filter((r) => {
-    const matchSearch =
-      r.name.toLowerCase().includes(search.toLowerCase()) ||
-      r.owner.toLowerCase().includes(search.toLowerCase()) ||
-      r.city.toLowerCase().includes(search.toLowerCase());
-    const matchFilter = filter === "all" || r.status === filter;
-    return matchSearch && matchFilter;
-  });
+  const handleFilter = async (t) => {
+    setFilter(t.key);
+
+    try {
+      const { data } = await axios.get(
+        `${serverURL}/api/admin/restaurant`,
+
+        {
+          params: {
+            statusFilter: t.key === "all" ? "" : t.key,
+            search,
+            page: 1,
+            limit: 12,
+          },
+          withCredentials: true,
+        },
+      );
+
+      console.log(restaurants);
+
+      setRestaurants(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // const filtered = restaurants.filter((r) => {
+  //   const matchSearch =
+  //     r.name.toLowerCase().includes(search.toLowerCase()) ||
+  //     r.owner.toLowerCase().includes(search.toLowerCase()) ||
+  //     r.city.toLowerCase().includes(search.toLowerCase());
+  //   const matchFilter = filter === "all" || r.status === filter;
+  //   return matchSearch && matchFilter;
+  // });
 
   const updateStatus = (id, status, extra = {}) =>
     setRestaurants((prev) =>
@@ -40,7 +77,7 @@ const AdminRestaurants = () => {
 
   const pendingCount = restaurants.filter((r) => r.status === "pending").length;
   const totalRevenue = restaurants
-    .filter((r) => r.status === "active")
+    ?.filter((r) => r.status === "active")
     .reduce((a, r) => a + r.revenue, 0);
 
   return (
@@ -134,7 +171,7 @@ const AdminRestaurants = () => {
           <div className="flex items-center gap-3">
             <h2 className="text-lg font-bold text-gray-800">All Restaurants</h2>
             <span className="text-xs bg-[#fff2e8] text-[#fc8019] font-bold px-2.5 py-1 rounded-md">
-              {filtered.length}
+              {restaurants.length}
             </span>
           </div>
 
@@ -149,7 +186,7 @@ const AdminRestaurants = () => {
                 return (
                   <button
                     key={t.key}
-                    onClick={() => setFilter(t.key)}
+                    onClick={() => handleFilter(t)}
                     className={`px-4 py-2 rounded-md transition-all flex items-center justify-center min-w-[100px] gap-2 text-sm font-semibold whitespace-nowrap
                       ${filter === t.key ? "bg-white text-[#fc8019] shadow-sm ring-1 ring-gray-200" : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"}`}
                   >
@@ -171,7 +208,8 @@ const AdminRestaurants = () => {
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
                 size={18}
-               strokeWidth={1.5} />
+                strokeWidth={1.5}
+              />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -208,7 +246,7 @@ const AdminRestaurants = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {filtered.map((r) => (
+              {restaurants.map((r) => (
                 <AdminRestaurantsItem
                   key={r._id}
                   r={r}
@@ -220,10 +258,10 @@ const AdminRestaurants = () => {
           </table>
         </div>
 
-        {filtered.length === 0 && (
+        {restaurants.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
-              <Store size={32} className="text-gray-400"  strokeWidth={1.5} />
+              <Store size={32} className="text-gray-400" strokeWidth={1.5} />
             </div>
             <h3 className="text-lg font-bold text-gray-800 mb-1">
               No restaurants found
