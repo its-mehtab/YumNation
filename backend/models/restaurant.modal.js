@@ -76,11 +76,13 @@ const restaurantSchema = new Schema(
 
     deliveryFee: { type: Number, default: 2.5 },
 
-    rating: { type: Number, default: 0 },
+    rating: { type: Number, default: 0, min: 0, max: 5 },
 
     totalReviews: { type: Number, default: 0 },
 
     totalOrders: { type: Number, default: 0 },
+
+    revenue: { type: Number, default: 0 },
 
     status: {
       type: String,

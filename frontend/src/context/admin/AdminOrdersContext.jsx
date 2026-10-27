@@ -5,8 +5,9 @@ import { useAuth } from "../user/AuthContext";
 const AdminOrdersContext = createContext();
 
 export const AdminOrdersProvider = ({ children }) => {
-  const [orders, setOrders] = useState({});
+  const [orders, setOrders] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const [filter, setFilter] = useState({
     orderSearch: "",
@@ -34,6 +35,7 @@ export const AdminOrdersProvider = ({ children }) => {
 
       setOrders(data);
     } catch (error) {
+      setError(error?.response?.data || error.message);
       console.log("Order Error:", error?.response?.data || error.message);
     } finally {
       setLoading(false);
@@ -50,6 +52,8 @@ export const AdminOrdersProvider = ({ children }) => {
         fetchAdminOrders,
         filter,
         setFilter,
+        error,
+        setError,
       }}
     >
       {children}

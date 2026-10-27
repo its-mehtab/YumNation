@@ -54,15 +54,16 @@ const StatusBadge = ({ status }) => {
   );
 };
 
-const StarRating = ({ rating }) =>
-  rating > 0 ? (
-    <div className="flex items-center gap-1.5 px-2.5 py-1 bg-yellow-50 text-yellow-700 rounded-md w-fit border border-yellow-100">
-      <Star size={14} className="fill-yellow-400 stroke-yellow-500"  strokeWidth={1.5} />
-      <span className="text-xs font-bold">{rating.toFixed(1)}</span>
-    </div>
-  ) : (
-    <span className="text-xs font-medium text-gray-400">—</span>
-  );
+const StarRating = ({ rating }) => (
+  <div className="flex items-center gap-1.5 px-2.5 py-1 bg-yellow-50 text-yellow-700 rounded-md w-fit border border-yellow-100">
+    <Star
+      size={14}
+      className="fill-yellow-400 stroke-yellow-500"
+      strokeWidth={1.5}
+    />
+    <span className="text-xs font-bold">{rating.toFixed(1)}</span>
+  </div>
+);
 
 const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
   const [restaurantDishes, setRestaurantDishes] = useState(null);
@@ -144,7 +145,7 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
       <td className="px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 min-w-10 rounded-md bg-[#fff2e8] border border-orange-100 flex items-center justify-center text-[#fc8019]">
-            <Store size={20}  strokeWidth={1.5} />
+            <Store size={20} strokeWidth={1.5} />
           </div>
           <p className="font-bold text-gray-800">{r.name}</p>
         </div>
@@ -155,7 +156,7 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
       </td>
       <td className="px-4 py-4 text-gray-600 text-xs">
         <div className="flex items-center gap-1.5">
-          <MapPin size={14} className="text-gray-400"  strokeWidth={1.5} />
+          <MapPin size={14} className="text-gray-400" strokeWidth={1.5} />
           {r.address.city}
         </div>
       </td>
@@ -163,10 +164,10 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
         {restaurantDishes?.length || "—"}
       </td>
       <td className="px-4 py-4 text-gray-600 font-medium">
-        {r.totalOrders > 0 ? r.totalOrders.toLocaleString() : "—"}
+        {r.totalOrders.toLocaleString()}
       </td>
       <td className="px-4 py-4 font-bold text-[#fc8019]">
-        {r.revenue > 0 ? `$${r.revenue.toLocaleString()}` : "—"}
+        ${r.revenue.toLocaleString()}
       </td>
       <td className="px-4 py-4">
         <StarRating rating={r.rating} />

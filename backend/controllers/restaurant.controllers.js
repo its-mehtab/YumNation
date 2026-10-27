@@ -1,3 +1,4 @@
+import Order from "../models/order.modal.js";
 import Restaurant from "../models/restaurant.modal.js";
 
 export const getAllRestaurant = async (req, res) => {
@@ -47,29 +48,28 @@ export const getRestaurants = async (req, res) => {
       return res.status(404).json({ message: "Restaurant not found" });
     }
 
-    const [
-      totalRestaurants,
-      pendingRestaurants,
-      allRestaurantOrders,
-      totalRevenue,
-    ] = await Promise.all([
-      Restaurant.countDocuments(),
-      Restaurant.countDocuments({ status: "pending" }),
-      Restaurant.aggregate([
-        {
-          $group: {
-            _id: null,
-            totalOrders: { $sum: "$totalOrders" },
+    const [totalRestaurants, pendingRestaurants, allRestaurantOrders] =
+      await Promise.all([
+        Restaurant.countDocuments(),
+        Restaurant.countDocuments({ status: "pending" }),
+        Order.aggregate([
+          {
+            $group: {
+              _id: "$restaurant",
+              totalAmount: { $sum: "$totalAmount" },
+              totalOrders: { $sum: 1 },
+            },
           },
-        },
-      ]),
-    ]);
+        ]),
+      ]);
+    console.log(allRestaurantOrders);
 
     return res.status(200).json({
       items: restaurant,
       restaurantAnalatics: {
         totalRestaurants,
         pendingRestaurants,
+        totalRevenue: allRestaurantOrders[0].totalAmount,
         allRestaurantOrders: allRestaurantOrders[0].totalOrders,
       },
     });

@@ -4,6 +4,7 @@ import {
   deleteRestaurant,
   getRestaurants,
   getRestaurant,
+  updateRestaurant,
 } from "../../controllers/restaurant.controllers.js";
 import { adminOnly } from "../../middleware/adminOnly.js";
 import { checkAuth } from "../../middleware/checkAuth.js";
@@ -23,6 +24,13 @@ restaurantAdminRouter.patch(
   checkAuth,
   adminOnly,
   updateRestaurantStatus,
+);
+restaurantAdminRouter.put(
+  "/:id",
+  checkAuth,
+  adminOnly,
+  setRestaurantFromQuery,
+  updateRestaurant,
 );
 restaurantAdminRouter.delete("/:id", checkAuth, adminOnly, deleteRestaurant);
 

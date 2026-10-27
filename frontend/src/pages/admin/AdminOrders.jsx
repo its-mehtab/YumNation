@@ -16,8 +16,8 @@ import {
   Eye,
   PackageOpen,
 } from "lucide-react";
-
-// ── Mock data ────────────────────────────────────────────────────────────────
+import { AdminOrderDetailsSkeleton } from "../../components/skeleton/admin";
+import { ErrorState } from "../../components/common";
 
 const STATUS_OPTIONS = [
   "all",
@@ -119,8 +119,20 @@ const StatusDropdown = ({ orderId, current, onChange }) => (
 // ── Main Component ───────────────────────────────────────────────────────────
 const AdminOrders = () => {
   const { serverURL } = useAuth();
-  const { orders, setOrders, loading, fetchAdminOrders, filter, setFilter } =
-    useAdminOrders();
+  const {
+    orders,
+    setOrders,
+    loading,
+    error,
+    fetchAdminOrders,
+    filter,
+    setFilter,
+  } = useAdminOrders();
+
+  if (loading && !orders) return <AdminOrderDetailsSkeleton />;
+
+  if (!orders || error)
+    return <ErrorState error={error} onRetry={fetchAdminOrders} />;
 
   const handleStatusChange = async (orderId, newStatus) => {
     setOrders((prev) => ({

@@ -1,6 +1,7 @@
 import Dish from "../models/dish.modal.js";
 import Restaurant from "../models/restaurant.modal.js";
 import Category from "../models/category.modal.js";
+import User from "../models/user.modal.js";
 
 export const getDishes = async (req, res) => {
   try {
@@ -39,11 +40,15 @@ export const getDishById = async (req, res) => {
       "category",
       "name slug",
     );
+    console.log(req.params.id);
 
     if (!dish) return res.status(404).json({ message: "Dish not found" });
+    console.log(dish.restaurant._id.toString(), req.restaurantId.toString());
+
+    const user = await User.findById(req.userId).select("role");
 
     if (
-      req.useId !== "admin" &&
+      user.role !== "admin" &&
       dish.restaurant._id.toString() !== req.restaurantId.toString()
     ) {
       return res.status(403).json({ message: "Not authorized" });

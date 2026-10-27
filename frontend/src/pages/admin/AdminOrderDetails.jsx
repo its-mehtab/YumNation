@@ -23,56 +23,9 @@ import {
 import { useAuth } from "../../context/user/AuthContext";
 import TimelineStep from "../../context/public/TimelineStep";
 import { Skeleton } from "@radix-ui/themes";
-
-// ── Mock order (replace with real API call) ──────────────────────────────────
-const mockOrder = {
-  _id: "64f3a2b1c9e1234567890abc",
-  createdAt: "2026-03-08T20:18:48.990Z",
-  orderStatus: "preparing",
-  paymentMethod: "cod",
-  paymentStatus: "pending",
-  subtotal: 120,
-  deliveryFee: 2.5,
-  tax: 6,
-  discount: 10,
-  totalAmount: 118.5,
-  couponCode: "SAVE10",
-  user: {
-    _id: "u1",
-    name: "John Doe",
-    email: "john@example.com",
-    phone: "+91 9876543210",
-  },
-  deliveryAddress: {
-    fullName: "John Doe",
-    addressLine1: "42 Baker Street",
-    addressLine2: "Apt 3B",
-    city: "Kolkata",
-    state: "West Bengal",
-    pinCode: "700001",
-    phoneNumber: "+91 9876543210",
-  },
-  items: [
-    {
-      _id: "i1",
-      name: "Italian Pizza",
-      variant: "Medium",
-      quantity: 2,
-      price: 45,
-      image: null,
-      dish: { slug: "italian-pizza" },
-    },
-    {
-      _id: "i2",
-      name: "Veg Burger",
-      variant: "Regular",
-      quantity: 1,
-      price: 30,
-      image: null,
-      dish: { slug: "veg-burger" },
-    },
-  ],
-};
+import { notifyError } from "../../utils/toast";
+import { AdminOrderDetailsSkeleton } from "../../components/skeleton/admin";
+import { ErrorState } from "../../components/common";
 
 // ── Status config ─────────────────────────────────────────────────────────────
 const STATUSES = [
@@ -170,20 +123,24 @@ const AdminOrderDetails = () => {
   const navigate = useNavigate();
 
   const [order, setOrder] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [updating, setUpdating] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
 
   const fetchOrder = async () => {
+    setError(null);
+    setLoading(true);
     try {
       const { data } = await axios.get(`${serverURL}/api/admin/order/${id}`, {
         withCredentials: true,
       });
 
-      console.log(data);
-
       setOrder(data);
     } catch (error) {
+      setError(
+        error.response?.data?.message ||
+          "Failed to load order. Please try again.",
+      );
       console.log(error);
     } finally {
       setLoading(false);
@@ -192,65 +149,29 @@ const AdminOrderDetails = () => {
 
   useEffect(() => {
     fetchOrder();
-    setTimeout(() => {
-      // setOrder(mockOrder);
-      setLoading(false);
-    }, 600);
   }, [id]);
 
   const handleStatusChange = async (newStatus) => {
     setUpdating(true);
     try {
-      // await axios.put(`${serverURL}/api/admin/order/${id}/status`, { status: newStatus }, { withCredentials: true });
+      await axios.patch(
+        `${serverURL}/api/admin/order/${id}/status`,
+        { status: newStatus },
+        { withCredentials: true },
+      );
       setOrder((prev) => ({ ...prev, orderStatus: newStatus }));
     } catch (err) {
-      setError("Failed to update status");
+      console.log(err);
+      notifyError(err?.response?.data.message || "Failed to update status");
     } finally {
       setUpdating(false);
     }
   };
 
   // ── Loading ──
-  if (loading)
-    return (
-      <div className="space-y-6 animate-pulse">
-        <div className="h-8 bg-gray-200 rounded-md w-1/4" />
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-8 space-y-6">
-            <div className="h-32 bg-gray-100 rounded-md" />
-            <div className="h-44 bg-gray-100 rounded-md" />
-            <div className="h-64 bg-gray-100 rounded-md" />
-          </div>
-          <div className="col-span-4 space-y-6">
-            <div className="h-48 bg-gray-100 rounded-md" />
-            <div className="h-48 bg-gray-100 rounded-md" />
-          </div>
-        </div>
-      </div>
-    );
+  if (loading) return <AdminOrderDetailsSkeleton />;
 
-  if (error || !order)
-    return (
-      <div className="flex flex-col items-center justify-center py-20 bg-white rounded-md border border-gray-200 shadow-sm">
-        <AlertCircle
-          size={48}
-          className="text-gray-300 mb-4"
-          strokeWidth={1.5}
-        />
-        <h3 className="text-xl font-bold text-gray-800 mb-2">
-          Order Not Found
-        </h3>
-        <p className="text-gray-500 text-sm mb-6">
-          {error || "The requested order could not be loaded."}
-        </p>
-        <Link
-          to="/admin/orders"
-          className="bg-[#fc8019] text-white px-6 py-2.5 rounded-md font-bold hover:bg-[#e5721f] transition-colors"
-        >
-          Back to Orders
-        </Link>
-      </div>
-    );
+  if (error || !order) return <ErrorState error={error} onRetry={fetchOrder} />;
 
   const status = order?.orderStatus;
   const isCancelled = status === "cancelled";

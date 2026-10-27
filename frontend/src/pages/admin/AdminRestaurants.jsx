@@ -18,7 +18,7 @@ const AdminRestaurants = () => {
   const [filter, setFilter] = useState("all");
   const [rejectTarget, setRejectTarget] = useState(null);
 
-  // console.log(restaurants);
+  console.log(restaurants);
 
   const { serverURL } = useAuth();
 
@@ -61,24 +61,15 @@ const AdminRestaurants = () => {
     }
   };
 
-  // const filtered = restaurants.filter((r) => {
-  //   const matchSearch =
-  //     r.name.toLowerCase().includes(search.toLowerCase()) ||
-  //     r.owner.toLowerCase().includes(search.toLowerCase()) ||
-  //     r.city.toLowerCase().includes(search.toLowerCase());
-  //   const matchFilter = filter === "all" || r.status === filter;
-  //   return matchSearch && matchFilter;
-  // });
-
   const updateStatus = (id, status, extra = {}) =>
-    setRestaurants((prev) =>
-      prev.map((r) => (r._id === id ? { ...r, status, ...extra } : r)),
-    );
-
-  const pendingCount = restaurants.filter((r) => r.status === "pending").length;
-  const totalRevenue = restaurants
-    ?.filter((r) => r.status === "active")
-    .reduce((a, r) => a + r.revenue, 0);
+    setRestaurants((prev) => ({
+      ...prev,
+      items: prev.items.map((r) =>
+        r._id === id ? { ...r, status, ...extra } : r,
+      ),
+    }));
+  const pendingCount = restaurants.restaurantAnalatics.pendingRestaurants;
+  const totalRevenue = restaurants.restaurantAnalatics.totalRevenue;
 
   return (
     <div className="space-y-6">
@@ -107,7 +98,7 @@ const AdminRestaurants = () => {
         {[
           {
             label: "Total Restaurants",
-            value: restaurants.length,
+            value: restaurants.restaurantAnalatics.totalRestaurants,
             icon: Store,
             color: "text-orange-500",
             bg: "bg-orange-100",
@@ -122,9 +113,7 @@ const AdminRestaurants = () => {
           },
           {
             label: "Total Orders",
-            value: restaurants
-              .reduce((a, r) => a + r.totalOrders, 0)
-              .toLocaleString(),
+            value: restaurants.restaurantAnalatics.allRestaurantOrders,
             icon: Package,
             color: "text-purple-600",
             bg: "bg-purple-100",
@@ -171,7 +160,7 @@ const AdminRestaurants = () => {
           <div className="flex items-center gap-3">
             <h2 className="text-lg font-bold text-gray-800">All Restaurants</h2>
             <span className="text-xs bg-[#fff2e8] text-[#fc8019] font-bold px-2.5 py-1 rounded-md">
-              {restaurants.length}
+              {restaurants.items.length}
             </span>
           </div>
 
@@ -181,7 +170,7 @@ const AdminRestaurants = () => {
               {tabs.map((t) => {
                 const count =
                   t.key !== "all"
-                    ? restaurants.filter((r) => r.status === t.key).length
+                    ? restaurants.items.filter((r) => r.status === t.key).length
                     : null;
                 return (
                   <button
@@ -246,7 +235,7 @@ const AdminRestaurants = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {restaurants.map((r) => (
+              {restaurants.items.map((r) => (
                 <AdminRestaurantsItem
                   key={r._id}
                   r={r}
@@ -258,7 +247,7 @@ const AdminRestaurants = () => {
           </table>
         </div>
 
-        {restaurants.length === 0 && (
+        {restaurants.items.length === 0 && (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
               <Store size={32} className="text-gray-400" strokeWidth={1.5} />

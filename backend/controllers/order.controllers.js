@@ -184,6 +184,18 @@ export const updateOrderStatus = async (req, res) => {
       "owner",
     );
 
+    if (order.orderStatus === "delivered" && status !== "delivered") {
+      return res.status(400).json({
+        message: "Cannot revert delivered order",
+      });
+    }
+
+    if (order.orderStatus === "cancelled") {
+      return res.status(400).json({
+        message: "Order is already cancelled",
+      });
+    }
+
     if (user.role !== "admin" && restaurant.owner.toString() !== userId)
       return res.status(403).json({
         message: "No Permission",
@@ -202,16 +214,26 @@ export const updateOrderStatus = async (req, res) => {
       }
     }
 
-    if (order.orderStatus === "delivered" && status !== "delivered") {
-      return res.status(400).json({
-        message: "Cannot revert delivered order",
-      });
-    }
-
     order.orderStatus = status;
 
     if (order.paymentMethod === "cod" && status === "delivered") {
       order.paymentStatus = "paid";
+    }
+
+    if (status === "cancelled") {
+      await Restaurant.findByIdAndUpdate(order.restaurant, {
+        $inc: {
+          totalOrders: -1,
+          revenue: -order.totalAmount,
+        },
+      });
+
+      await User.findByIdAndUpdate(order.user, {
+        $inc: {
+          totalOrders: -1,
+          totalSpent: -order.totalAmount,
+        },
+      });
     }
 
     await order.save();
@@ -271,6 +293,10 @@ export const createOrder = async (req, res) => {
       paymentMethod,
       paymentStatus,
       couponCode: coupon?.code || null,
+    });
+
+    await Restaurant.findByIdAndUpdate(cart.restaurant._id, {
+      $inc: { totalOrders: 1, revenue: total },
     });
 
     await User.findByIdAndUpdate(userId, {

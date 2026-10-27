@@ -18,9 +18,7 @@ export const RestaurantsProvider = ({ children }) => {
         withCredentials: true,
       });
 
-      console.log(data);
-
-      setRestaurants(data.items);
+      setRestaurants(data);
     } catch (error) {
       setError(error?.response?.data || error.message);
       console.log("Restaurants Error:", error?.response?.data || error.message);

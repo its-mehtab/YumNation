@@ -23,9 +23,13 @@ import {
   Mail,
   Phone,
   RotateCw,
+  LoaderCircle,
 } from "lucide-react";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
+import { notifyError, notifySuccess } from "../../utils/toast";
+import AdminRestaurantsSkeleton from "../../components/skeleton/admin/AdminRestaurantsSkeleton";
+import { ErrorState } from "../../components/common";
 
 const statusConfig = {
   active: {
@@ -164,7 +168,9 @@ const AdminRestaurantDetails = () => {
   const [restaurant, setRestaurant] = useState(null);
   const [dishes, setDishes] = useState(null);
   const [orders, setOrders] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [dishLoading, setDishLoading] = useState(false);
+  const [orderLoading, setOrderLoading] = useState(false);
   const [error, setError] = useState({
     restaurantError: null,
     dishError: null,
@@ -182,6 +188,7 @@ const AdminRestaurantDetails = () => {
   const { serverURL } = useAuth();
 
   const fetchRestaurantData = async () => {
+    setLoading(true);
     try {
       const { data } = await axios.get(
         `${serverURL}/api/admin/restaurant/${id}`,
@@ -205,6 +212,8 @@ const AdminRestaurantDetails = () => {
   };
 
   const fetchRestaurantDishes = async () => {
+    setDishLoading(true);
+    setError((prev) => ({ ...prev, dishError: null }));
     try {
       const { data } = await axios.get(`${serverURL}/api/admin/dish`, {
         params: {
@@ -215,11 +224,21 @@ const AdminRestaurantDetails = () => {
 
       setDishes(data);
     } catch (err) {
+      setError((prev) => ({
+        ...prev,
+        dishError:
+          err?.response?.data?.message ||
+          "Failed to load dishes. Please try again.",
+      }));
       console.log(err);
+    } finally {
+      setDishLoading(false);
     }
   };
 
   const fetchRestaurantOrders = async () => {
+    setOrderLoading(true);
+    setError((prev) => ({ ...prev, orderError: null }));
     try {
       const { data } = await axios.get(
         `${serverURL}/api/admin/order/restaurantorders`,
@@ -234,12 +253,19 @@ const AdminRestaurantDetails = () => {
 
       setOrders(data || []);
     } catch (err) {
+      setError((prev) => ({
+        ...prev,
+        orderError:
+          err?.response?.data?.message ||
+          "Failed to load orders. Please try again.",
+      }));
       console.log(err);
+    } finally {
+      setOrderLoading(false);
     }
   };
 
   const handleRetry = () => {
-    setLoading(true);
     setError({
       restaurantError: null,
       dishError: null,
@@ -260,92 +286,50 @@ const AdminRestaurantDetails = () => {
     fetchRestaurantOrders();
   }, [filter]);
 
-  const handleToggleOpen = () =>
+  const handleToggleOpen = async () => {
     setRestaurant((prev) => ({ ...prev, isOpen: !prev.isOpen }));
-  // Replace with: axios.patch(`${serverURL}/api/admin/restaurant/${id}`, { isOpen: !restaurant.isOpen }, { withCredentials: true })
 
-  const handleStatusUpdate = (status) =>
-    setRestaurant((prev) => ({ ...prev, status }));
-  // Replace with: axios.patch(`${serverURL}/api/admin/restaurant/${id}/status`, { status }, { withCredentials: true })
+    try {
+      const { data } = await axios.put(
+        `${serverURL}/api/admin/restaurant/${id}`,
+        { isOpen: !restaurant.isOpen },
+        {
+          params: {
+            restaurantId: id,
+          },
+          withCredentials: true,
+        },
+      );
 
-  if (loading)
-    return (
-      <div className="space-y-6 p-2">
-        <Skeleton height="192px" className="w-full rounded-md" />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[...Array(4)].map((_, i) => (
-            <Skeleton key={i} height="100px" className="rounded-md" />
-          ))}
-        </div>
-        <Skeleton height="384px" className="w-full rounded-md" />
-      </div>
-    );
+      notifySuccess(`Restaurant is ${data.isOpen ? "Online" : "Offline"}`);
+    } catch (error) {
+      setRestaurant(restaurant);
+      console.log(error);
+      notifyError(error?.response?.data.message);
+    }
+  };
+
+  const handleStatusUpdate = async (status) => {
+    try {
+      setRestaurant((prev) => ({ ...prev, status }));
+      await axios.patch(
+        `${serverURL}/api/admin/restaurant/${id}`,
+        { status },
+        { withCredentials: true },
+      );
+
+      notifySuccess(`Restaurant is ${status}`);
+    } catch (error) {
+      setRestaurant(restaurant);
+      notifyError(error?.response?.data.message);
+      console.log(error);
+    }
+  };
+
+  if (loading) return <AdminRestaurantsSkeleton />;
 
   if (!restaurant || error.restaurantError)
-    return (
-      <div className="space-y-6">
-        {/* ── Page header ── */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => navigate("/admin/restaurants")}
-              className="p-2 bg-white border border-gray-200 rounded-md text-gray-500 hover:text-[#fc8019] transition-all"
-              title="Back to Restaurants"
-            >
-              <ChevronLeft size={20} strokeWidth={1.5} />
-            </button>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-800 tracking-tight">
-                Restaurant Details
-              </h1>
-              <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
-                <button
-                  onClick={() => navigate("/admin/restaurants")}
-                  className="hover:text-[#fc8019] transition-colors"
-                >
-                  Restaurants
-                </button>
-                <ChevronRight
-                  size={14}
-                  className="text-gray-400"
-                  strokeWidth={1.5}
-                />
-                <span className="text-gray-400 font-medium">Not Found</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Not Found / Error Card ── */}
-        <div className="bg-white rounded-md border border-gray-200 p-12 text-center flex flex-col items-center justify-center max-w-2xl mx-auto my-8">
-          <div className="w-20 h-20 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center mb-5 text-[#fc8019]">
-            <Store size={38} strokeWidth={1.5} />
-          </div>
-          <h2 className="text-xl font-bold text-gray-800 mb-2">
-            Restaurant Not Found
-          </h2>
-          <p className="text-sm text-gray-500 max-w-md leading-relaxed mb-6">
-            {error.restaurantError ||
-              "The restaurant you are looking for does not exist, has been removed, or could not be loaded."}
-          </p>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleRetry}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-md border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              <RotateCw size={16} strokeWidth={1.5} />
-              Try Again
-            </button>
-            <Link
-              to="/admin/restaurants"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-bold shadow-md shadow-orange-500/20 transition-all"
-            >
-              View All Restaurants
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
+    return <ErrorState error={error.restaurantError} onRetry={handleRetry} />;
 
   const tabs = ["overview", "dishes", "orders"];
   const statusMeta = statusConfig[restaurant.status] || statusConfig.pending;
@@ -504,7 +488,7 @@ const AdminRestaurantDetails = () => {
           },
           {
             label: "Total Dishes",
-            value: dishes.length,
+            value: dishes?.length,
             icon: Utensils,
             color: "text-orange-500",
             bg: "bg-orange-100",
@@ -677,252 +661,280 @@ const AdminRestaurantDetails = () => {
       )}
 
       {/* ── Dishes tab ── */}
-      {activeTab === "dishes" && (
-        <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
-          <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
-            <h3 className="text-lg font-bold text-gray-800">
-              Menu Items{" "}
-              <span className="text-gray-400 text-sm font-medium ml-2">
-                ({dishes.length})
-              </span>
-            </h3>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-gray-50/50 text-gray-500">
-                <tr className="border-b border-gray-200">
-                  {["Dish", "Price", "Type", "Status", "Actions"].map((h) => (
-                    <th
-                      key={h}
-                      className="px-6 py-4 font-semibold uppercase tracking-wider text-xs"
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {dishes.map((dish) => (
-                  <tr
-                    key={dish._id}
-                    className="hover:bg-gray-50/80 transition-colors group"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-md bg-[#fff2e8] border border-orange-100 flex items-center justify-center text-[#fc8019]">
-                          <Utensils size={18} strokeWidth={1.5} />
-                        </div>
-                        <span className="font-bold text-gray-800 text-sm">
-                          {dish.name}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 font-bold text-gray-800">
-                      ${dish.price.toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`text-xs font-bold px-3 py-1 rounded-md border ${dish.foodType === "veg" ? "bg-[#fff2e8] text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"}`}
+      {activeTab === "dishes" &&
+        (dishLoading ? (
+          <LoaderCircle
+            size={24}
+            className={"animate-spin"}
+            aria-label="Loading"
+            role="status"
+          />
+        ) : !dishes || error.dishError ? (
+          <ErrorState
+            variant="card"
+            error={error.dishError}
+            onRetry={fetchRestaurantDishes}
+          />
+        ) : (
+          <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
+            <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="text-lg font-bold text-gray-800">
+                Menu Items{" "}
+                <span className="text-gray-400 text-sm font-medium ml-2">
+                  ({dishes.length})
+                </span>
+              </h3>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-gray-50/50 text-gray-500">
+                  <tr className="border-b border-gray-200">
+                    {["Dish", "Price", "Type", "Status", "Actions"].map((h) => (
+                      <th
+                        key={h}
+                        className="px-6 py-4 font-semibold uppercase tracking-wider text-xs"
                       >
-                        {dish.foodType === "veg" ? "Veg" : "Non-Veg"}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`flex items-center gap-1.5 w-fit text-xs font-bold px-3 py-1 rounded-md border ${dish.isAvailable ? "bg-[#fff2e8] text-blue-700 border-blue-200" : "bg-gray-100 text-gray-500 border-gray-200"}`}
-                      >
-                        {dish.isAvailable ? (
-                          <CheckCircle2 size={12} strokeWidth={1.5} />
-                        ) : (
-                          <Ban size={12} strokeWidth={1.5} />
-                        )}
-                        {dish.isAvailable ? "Available" : "Unavailable"}
-                      </span>
-                    </td>
-                    {/* View only — admin does not edit dishes */}
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <Link
-                          to={`/admin/dishes/${dish._id}`}
-                          className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors inline-flex items-center justify-center"
-                          title="View Dish"
-                        >
-                          <Eye size={16} strokeWidth={1.5} />
-                        </Link>
-                      </div>
-                    </td>
+                        {h}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {dishes.map((dish) => (
+                    <tr
+                      key={dish._id}
+                      className="hover:bg-gray-50/80 transition-colors group"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-md bg-[#fff2e8] border border-orange-100 flex items-center justify-center text-[#fc8019]">
+                            <Utensils size={18} strokeWidth={1.5} />
+                          </div>
+                          <span className="font-bold text-gray-800 text-sm">
+                            {dish.name}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 font-bold text-gray-800">
+                        ${dish.price.toFixed(2)}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`text-xs font-bold px-3 py-1 rounded-md border ${dish.foodType === "veg" ? "bg-[#fff2e8] text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"}`}
+                        >
+                          {dish.foodType === "veg" ? "Veg" : "Non-Veg"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`flex items-center gap-1.5 w-fit text-xs font-bold px-3 py-1 rounded-md border ${dish.isAvailable ? "bg-[#fff2e8] text-blue-700 border-blue-200" : "bg-gray-100 text-gray-500 border-gray-200"}`}
+                        >
+                          {dish.isAvailable ? (
+                            <CheckCircle2 size={12} strokeWidth={1.5} />
+                          ) : (
+                            <Ban size={12} strokeWidth={1.5} />
+                          )}
+                          {dish.isAvailable ? "Available" : "Unavailable"}
+                        </span>
+                      </td>
+                      {/* View only — admin does not edit dishes */}
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <Link
+                            to={`/admin/dishes/${dish._id}`}
+                            className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors inline-flex items-center justify-center"
+                            title="View Dish"
+                          >
+                            <Eye size={16} strokeWidth={1.5} />
+                          </Link>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {error.dishError && (
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
+                  <Utensils
+                    size={32}
+                    className="text-gray-400"
+                    strokeWidth={1.5}
+                  />
+                </div>
+                <h3 className="text-lg font-bold text-gray-800 mb-1">
+                  Dishes Not Found
+                </h3>
+                <p className="text-sm text-gray-500">{error.dishError}</p>
+              </div>
+            )}
+            {dishes.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
+                  <Utensils
+                    size={32}
+                    className="text-gray-400"
+                    strokeWidth={1.5}
+                  />
+                </div>
+                <h3 className="text-lg font-bold text-gray-800 mb-1">
+                  No dishes added yet
+                </h3>
+                <p className="text-sm text-gray-500">
+                  This restaurant hasn't added any menu items.
+                </p>
+              </div>
+            )}
           </div>
-          {error.dishError && (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
-                <Utensils
-                  size={32}
-                  className="text-gray-400"
-                  strokeWidth={1.5}
-                />
-              </div>
-              <h3 className="text-lg font-bold text-gray-800 mb-1">
-                Dishes Not Found
-              </h3>
-              <p className="text-sm text-gray-500">{error.dishError}</p>
-            </div>
-          )}
-          {dishes.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
-                <Utensils
-                  size={32}
-                  className="text-gray-400"
-                  strokeWidth={1.5}
-                />
-              </div>
-              <h3 className="text-lg font-bold text-gray-800 mb-1">
-                No dishes added yet
-              </h3>
-              <p className="text-sm text-gray-500">
-                This restaurant hasn't added any menu items.
-              </p>
-            </div>
-          )}
-        </div>
-      )}
+        ))}
 
       {/* ── Orders tab ── */}
-      {activeTab === "orders" && (
-        <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
-          <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
-            <h3 className="text-lg font-bold text-gray-800">
-              Recent Orders{" "}
-              <span className="text-gray-400 text-sm font-medium ml-2">
-                ({orders.items.length})
-              </span>
-            </h3>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="bg-gray-50/50 text-gray-500">
-                <tr className="border-b border-gray-200">
-                  {[
-                    "Order ID",
-                    "Customer",
-                    "Total",
-                    "Status",
-                    "Date",
-                    "Actions",
-                  ].map((h) => (
-                    <th
-                      key={h}
-                      className="px-6 py-4 font-semibold uppercase tracking-wider text-xs"
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {orders.items.map((order) => (
-                  <tr
-                    key={order._id}
-                    className="hover:bg-gray-50/80 transition-colors group"
-                  >
-                    <td className="px-6 py-4">
-                      <span className="font-mono text-xs font-bold text-gray-600 bg-gray-100 border border-gray-200 px-2 py-1 rounded-md">
-                        #{order._id.toUpperCase()}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 font-bold text-gray-800">
-                      {order.user.firstName}
-                    </td>
-                    <td className="px-6 py-4 font-bold text-gray-800">
-                      ${order.totalAmount.toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`text-[11px] font-bold px-3 py-1 rounded-md border capitalize ${orderStatusConfig[order.orderStatus]}`}
+      {activeTab === "orders" &&
+        (orderLoading ? (
+          <LoaderCircle
+            size={24}
+            className={"animate-spin"}
+            aria-label="Loading"
+            role="status"
+          />
+        ) : !orders || error.orderError ? (
+          <ErrorState
+            variant="card"
+            error={error.orderError}
+            onRetry={fetchRestaurantOrders}
+          />
+        ) : (
+          <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
+            <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="text-lg font-bold text-gray-800">
+                Recent Orders{" "}
+                <span className="text-gray-400 text-sm font-medium ml-2">
+                  ({orders.items.length})
+                </span>
+              </h3>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-gray-50/50 text-gray-500">
+                  <tr className="border-b border-gray-200">
+                    {[
+                      "Order ID",
+                      "Customer",
+                      "Total",
+                      "Status",
+                      "Date",
+                      "Actions",
+                    ].map((h) => (
+                      <th
+                        key={h}
+                        className="px-6 py-4 font-semibold uppercase tracking-wider text-xs"
                       >
-                        {order.orderStatus}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-xs font-medium text-gray-500">
-                      {dayjs(order.createdAt).format("MMM D, YYYY")}
-                      <p className="text-gray-400 mt-0.5">
-                        {dayjs(order.createdAt).format("h:mm A")}
-                      </p>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <Link
-                          to={`/admin/orders/${order._id}`}
-                          className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors inline-flex items-center justify-center"
-                          title="View Order"
-                        >
-                          <Eye size={16} strokeWidth={1.5} />
-                        </Link>
-                      </div>
-                    </td>
+                        {h}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {error.orderError === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
-                <ArchiveX size={32} className="text-gray-400" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-800 mb-1">
-                Orders Not Found
-              </h3>
-              <p className="text-sm text-gray-500">{error.orderError}</p>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {orders.items.map((order) => (
+                    <tr
+                      key={order._id}
+                      className="hover:bg-gray-50/80 transition-colors group"
+                    >
+                      <td className="px-6 py-4">
+                        <span className="font-mono text-xs font-bold text-gray-600 bg-gray-100 border border-gray-200 px-2 py-1 rounded-md">
+                          #{order._id.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 font-bold text-gray-800">
+                        {order.user.firstName}
+                      </td>
+                      <td className="px-6 py-4 font-bold text-gray-800">
+                        ${order.totalAmount.toFixed(2)}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`text-[11px] font-bold px-3 py-1 rounded-md border capitalize ${orderStatusConfig[order.orderStatus]}`}
+                        >
+                          {order.orderStatus}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-xs font-medium text-gray-500">
+                        {dayjs(order.createdAt).format("MMM D, YYYY")}
+                        <p className="text-gray-400 mt-0.5">
+                          {dayjs(order.createdAt).format("h:mm A")}
+                        </p>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <Link
+                            to={`/admin/orders/${order._id}`}
+                            className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors inline-flex items-center justify-center"
+                            title="View Order"
+                          >
+                            <Eye size={16} strokeWidth={1.5} />
+                          </Link>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          )}
-          {orders.items.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
-                <ArchiveX size={32} className="text-gray-400" />
+            {error.orderError === 0 && (
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
+                  <ArchiveX size={32} className="text-gray-400" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-800 mb-1">
+                  Orders Not Found
+                </h3>
+                <p className="text-sm text-gray-500">{error.orderError}</p>
               </div>
-              <h3 className="text-lg font-bold text-gray-800 mb-1">
-                No orders yet
-              </h3>
-              <p className="text-sm text-gray-500">
-                This restaurant hasn't received any orders.
-              </p>
-            </div>
-          )}
+            )}
+            {orders.items.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="w-16 h-16 bg-gray-50 rounded-md flex items-center justify-center mb-4">
+                  <ArchiveX size={32} className="text-gray-400" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-800 mb-1">
+                  No orders yet
+                </h3>
+                <p className="text-sm text-gray-500">
+                  This restaurant hasn't received any orders.
+                </p>
+              </div>
+            )}
 
-          {orders?.items?.length > 0 && (
-            <div className="mt-6 flex justify-center pb-6 border-t border-gray-100 pt-6">
-              <Pagination
-                onChange={(e, value) =>
-                  setFilter((prev) => ({ ...prev, page: value }))
-                }
-                count={orders.pagination.totalPages}
-                page={filter.page}
-                variant="outlined"
-                shape="rounded"
-                sx={{
-                  "& .MuiPaginationItem-root": {
-                    borderColor: "#e5e7eb",
-                    color: "#374151",
-                    "&.Mui-selected": {
-                      backgroundColor: "#fc8019",
-                      color: "white",
-                      borderColor: "#fc8019",
-                      "&:hover": {
-                        backgroundColor: "#e5721f",
+            {orders?.items?.length > 0 && (
+              <div className="mt-6 flex justify-center pb-6 border-t border-gray-100 pt-6">
+                <Pagination
+                  onChange={(e, value) =>
+                    setFilter((prev) => ({ ...prev, page: value }))
+                  }
+                  count={orders.pagination.totalPages}
+                  page={filter.page}
+                  variant="outlined"
+                  shape="rounded"
+                  sx={{
+                    "& .MuiPaginationItem-root": {
+                      borderColor: "#e5e7eb",
+                      color: "#374151",
+                      "&.Mui-selected": {
+                        backgroundColor: "#fc8019",
+                        color: "white",
+                        borderColor: "#fc8019",
+                        "&:hover": {
+                          backgroundColor: "#e5721f",
+                        },
                       },
                     },
-                  },
-                }}
-              />
-            </div>
-          )}
-        </div>
-      )}
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        ))}
     </div>
   );
 };

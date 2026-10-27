@@ -4,39 +4,8 @@ import dayjs from "dayjs";
 import { Pizza, Star } from "lucide-react";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
-
-// ── Mock data ─────────────────────────────────────────────────────────────────
-const mockDish = {
-  _id: "d1",
-  name: "Margherita Pizza",
-  slug: "margherita-pizza",
-  description:
-    "A classic Neapolitan pizza with fresh tomato sauce and mozzarella.",
-  longDescription:
-    "Our Margherita is made with hand-stretched dough, slow-cooked San Marzano tomato sauce, fresh buffalo mozzarella, and a drizzle of extra-virgin olive oil. Baked in a wood-fired oven at 485°C for the perfect char and chew.",
-  price: 12,
-  costPrice: 4.5,
-  category: { _id: "c1", name: "Pizza" },
-  foodType: "veg",
-  variants: [
-    { name: 'Small (8")', price: 9 },
-    { name: 'Medium (10")', price: 12 },
-    { name: 'Large (12")', price: 15 },
-  ],
-  addOns: [
-    { name: "Extra Cheese", price: 1.5 },
-    { name: "Olives", price: 1 },
-    { name: "Jalapeños", price: 0.75 },
-  ],
-  images: [null, null, null],
-  isAvailable: true,
-  isFeatured: true,
-  rating: 4.6,
-  totalReviews: 84,
-  totalOrders: 312,
-  createdAt: "2024-01-15T10:00:00.000Z",
-  restaurant: { _id: "r1", name: "Bella Napoli", logo: null },
-};
+import { ErrorState } from "../../components/common";
+import AdminDishDetailsSkeleton from "../../components/skeleton/admin/AdminDishDetailsSkeleton";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const Card = ({ title, children, action }) => (
@@ -69,23 +38,25 @@ const AdminDishDetails = () => {
 
   const [dish, setDish] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [activeImage, setActiveImage] = useState(0);
 
   const { serverURL } = useAuth();
 
   const fetchDishDetails = async () => {
     setLoading(true);
+    setError(null);
     try {
       const { data } = await axios.get(`${serverURL}/api/admin/dish/${id}`, {
         params: {
-          restaurantId: "klf",
+          restaurantId: id,
         },
         withCredentials: true,
       });
 
-      console.log(data);
       setDish(data);
     } catch (error) {
+      setError(error?.response?.data || error.message);
       console.log(error);
     } finally {
       setLoading(false);
@@ -94,25 +65,12 @@ const AdminDishDetails = () => {
 
   useEffect(() => {
     fetchDishDetails();
-    setTimeout(() => {
-      //   setDish(mockDish);
-      setLoading(false);
-    }, 500);
   }, [id]);
 
-  if (loading)
-    return (
-      <div className="space-y-4 animate-pulse">
-        <div className="h-6 bg-gray-200 rounded-md w-1/4" />
-        <div className="grid grid-cols-12 gap-5">
-          <div className="col-span-4 h-80 bg-gray-100 rounded-md" />
-          <div className="col-span-8 space-y-4">
-            <div className="h-40 bg-gray-100 rounded-md" />
-            <div className="h-40 bg-gray-100 rounded-md" />
-          </div>
-        </div>
-      </div>
-    );
+  if (loading) return <AdminDishDetailsSkeleton />;
+
+  if (!dish || error)
+    return <ErrorState error={error} onRetry={fetchDishDetails} />;
 
   return (
     <div>
