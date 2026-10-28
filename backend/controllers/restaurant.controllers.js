@@ -36,7 +36,6 @@ export const getAllRestaurant = async (req, res) => {
 
 export const getRestaurants = async (req, res) => {
   const { statusFilter, search, page = 1, limit = 12 } = req.query;
-  console.log(statusFilter, search, page, limit);
 
   const filter = {};
   if (statusFilter) filter.status = statusFilter;
@@ -62,7 +61,6 @@ export const getRestaurants = async (req, res) => {
           },
         ]),
       ]);
-    console.log(allRestaurantOrders);
 
     return res.status(200).json({
       items: restaurant,

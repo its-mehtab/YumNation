@@ -107,21 +107,6 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
     }
   };
 
-  const handleSuspend = async (id) => {
-    try {
-      await axios.patch(
-        `${serverURL}/api/admin/restaurant/${id}`,
-        { status: "suspended" },
-        { withCredentials: true },
-      );
-      updateStatus(id, "suspended");
-      notifySuccess(`${r.name} is suspended`);
-    } catch (error) {
-      notifyError(error?.response?.data || `${r.name} cannot be suspended`);
-      console.log("Suspend Error:", error?.response?.data || error.message);
-    }
-  };
-
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${serverURL}/api/admin/restaurant/${id}`, {
@@ -195,36 +180,6 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
             </>
           )}
           {/* Active actions */}
-          {r.status === "active" && (
-            <ConfirmationModal
-              onClick={async () => await handleSuspend(r._id)}
-              heading={"Suspend Restaurant"}
-              description={
-                <>
-                  Are you sure you want to suspend{" "}
-                  <span className="text-gray-800 font-bold">{r.name}</span> ?
-                  They will lose access to their dashboard and customers won't
-                  be able to order from them.
-                </>
-              }
-              button={
-                <button
-                  className="p-1.5 rounded-md hover:bg-yellow-50 text-gray-400 hover:text-yellow-600 transition-colors inline-flex items-center justify-center"
-                  title="Suspend"
-                >
-                  <ShieldAlert size={16} strokeWidth={1.5} />
-                </button>
-              }
-            />
-          )}
-          {(r.status === "suspended" || r.status === "rejected") && (
-            <button
-              onClick={() => handleApprove(r._id)}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-[#fff2e8] text-green-700 text-xs font-bold hover:bg-green-100 border border-green-200 transition-all"
-            >
-              Reinstate
-            </button>
-          )}
           {/* View */}
           <Link
             to={`/admin/restaurants/${r._id}`}

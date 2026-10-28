@@ -121,7 +121,7 @@ export const getUserData = async (req, res) => {
 
 export const getUserDetails = async (req, res) => {
   const { userId } = req.params;
-  const { search, statusFilter, page = 1, limit = 12 } = req.query;
+  const { search, orderStatus, page = 1, limit = 12 } = req.query;
 
   try {
     const [user, orders, addresses, couponsUsed] = await Promise.all([
@@ -130,9 +130,9 @@ export const getUserDetails = async (req, res) => {
       await getPaginatedOrders({
         filter: { user: userId },
         search,
-        statusFilter,
-        page: page,
-        limit: limit,
+        orderStatus,
+        page,
+        limit,
         populate: "user",
         populate: "items.dish",
       }),

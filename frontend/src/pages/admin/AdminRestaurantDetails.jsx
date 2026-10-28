@@ -168,9 +168,9 @@ const AdminRestaurantDetails = () => {
   const [restaurant, setRestaurant] = useState(null);
   const [dishes, setDishes] = useState(null);
   const [orders, setOrders] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [dishLoading, setDishLoading] = useState(false);
-  const [orderLoading, setOrderLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [dishLoading, setDishLoading] = useState(true);
+  const [orderLoading, setOrderLoading] = useState(true);
   const [error, setError] = useState({
     restaurantError: null,
     dishError: null,

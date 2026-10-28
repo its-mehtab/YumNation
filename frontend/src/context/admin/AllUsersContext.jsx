@@ -5,20 +5,22 @@ import { useAuth } from "../user/AuthContext";
 const AllUsersContext = createContext();
 
 export const AllUsersProvider = ({ children }) => {
-  const [allUsers, setAllUsers] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [allUsers, setAllUsers] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [filter, setFilter] = useState({
     search: "",
     filterStatus: "",
     sortBy: "recent_order",
     page: 1,
-    limit: 10,
+    limit: 1,
   });
 
   const { serverURL } = useAuth();
 
   const fetchAllUsers = async () => {
+    setError(null);
     setLoading(true);
     try {
       const { data } = await axios.get(`${serverURL}/api/admin/users`, {
@@ -34,6 +36,7 @@ export const AllUsersProvider = ({ children }) => {
 
       setAllUsers(data);
     } catch (error) {
+      setError(error?.response?.data.message || error.message);
       console.log("Coupon Error:", error?.response?.data || error.message);
     } finally {
       setLoading(false);
@@ -50,6 +53,8 @@ export const AllUsersProvider = ({ children }) => {
         fetchAllUsers,
         filter,
         setFilter,
+        error,
+        setError,
       }}
     >
       {children}

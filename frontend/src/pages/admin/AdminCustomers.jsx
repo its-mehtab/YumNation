@@ -17,6 +17,8 @@ import {
   Eye,
   Trash2,
 } from "lucide-react";
+import { AdminCustomersSkeleton } from "../../components/skeleton/admin";
+import { ErrorState } from "../../components/common";
 
 // ───pers ──────────────────────────────────────────────────────────────────
 
@@ -56,20 +58,36 @@ const StatusBadge = ({ status }) => {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 const AdminCustomers = () => {
-  const { allUsers, setAllUsers, fetchAllUsers, loading, filter, setFilter } =
-    useAllUsers();
+  const {
+    allUsers,
+    setAllUsers,
+    fetchAllUsers,
+    loading,
+    error,
+    filter,
+    setFilter,
+  } = useAllUsers();
   const { serverURL } = useAuth();
+
+  if (loading && !allUsers) return <AdminCustomersSkeleton />;
+
+  if (!allUsers || error)
+    return <ErrorState error={error.restaurantError} onRetry={fetchAllUsers} />;
 
   const totalCustomer = allUsers.totalCustomer;
   const totalActive = allUsers.totalActive;
   const totalBlocked = allUsers.totalBlocked;
-  const totalOrders = allUsers.totalActive; // Might be a typo in original context, but left as is
+  const totalOrders = allUsers.totalOrders;
 
   const handleToggleStatus = async (customer) => {
     const next = customer.status === "blocked" ? "active" : "blocked";
 
     setAllUsers((prev) => ({
       ...prev,
+      totalActive:
+        next === "active" ? prev.totalActive + 1 : prev.totalActive - 1,
+      totalBlocked:
+        next === "blocked" ? prev.totalBlocked + 1 : prev.totalBlocked - 1,
       items: prev.items.map((c) =>
         c._id === customer._id ? { ...c, status: next } : c,
       ),
@@ -97,16 +115,21 @@ const AdminCustomers = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, status) => {
     setAllUsers((prev) => ({
       ...prev,
+      totalCustomer: prev.totalCustomer - 1,
+      totalActive:
+        status === "active" ? prev.totalActive - 1 : prev.totalActive,
+      totalBlocked:
+        status === "blocked" ? prev.totalBlocked - 1 : prev.totalBlocked,
       items: prev.items.filter((c) => c._id !== id),
     }));
 
     try {
-      await axios.delete(`${serverURL}/api/admin/user/${id}`, {
-        withCredentials: true,
-      });
+      // await axios.delete(`${serverURL}/api/admin/user/${id}`, {
+      //   withCredentials: true,
+      // });
 
       notifySuccess(`Successfully deleted`);
     } catch (error) {
@@ -120,23 +143,8 @@ const AdminCustomers = () => {
     setFilter((prev) => ({ ...prev, page: value }));
   };
 
-  useEffect(() => {
-    fetchAllUsers();
-  }, [filter.page, filter.limit, filter.sortBy, filter.filterStatus]);
-
-  useEffect(() => {
-    const delay = setTimeout(fetchAllUsers, 400);
-    return () => clearTimeout(delay);
-  }, [filter.search]);
-
   return (
     <div className="relative space-y-6">
-      {loading && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-white">
-          <Spinner size="3" />
-        </div>
-      )}
-
       {/* ── Page Header ── */}
       <div className="flex items-center justify-between">
         <div>
@@ -401,7 +409,9 @@ const AdminCustomers = () => {
                           }
                           heading={`Delete ${c.firstName} from customers?`}
                           description="Are you sure you want to delete this customer? This action cannot be undone and the customer will be removed from the list."
-                          onClick={async () => await handleDelete(c._id)}
+                          onClick={async () =>
+                            await handleDelete(c._id, c.status)
+                          }
                         />
                       </div>
                     </td>

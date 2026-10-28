@@ -172,7 +172,6 @@ const AdminOrders = () => {
     pending: orders?.statusCount?.placed || 0,
     preparing: orders?.statusCount?.preparing || 0,
     delivered: orders?.statusCount?.delivered || 0,
-    revenue: Math.round(orders?.totalRevenue) || 0,
   };
 
   return (
@@ -190,7 +189,7 @@ const AdminOrders = () => {
       </div>
 
       {/* ── Stats ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {[
           {
             label: "Total Orders",
@@ -219,13 +218,6 @@ const AdminOrders = () => {
             icon: CheckCircle,
             color: "text-green-600",
             bg: "bg-green-100",
-          },
-          {
-            label: "Revenue",
-            value: `$${stats.revenue}`,
-            icon: DollarSign,
-            color: "text-emerald-600",
-            bg: "bg-emerald-100",
           },
         ].map((s) => (
           <div

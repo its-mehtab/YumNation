@@ -40,10 +40,8 @@ export const getDishById = async (req, res) => {
       "category",
       "name slug",
     );
-    console.log(req.params.id);
 
     if (!dish) return res.status(404).json({ message: "Dish not found" });
-    console.log(dish.restaurant._id.toString(), req.restaurantId.toString());
 
     const user = await User.findById(req.userId).select("role");
 

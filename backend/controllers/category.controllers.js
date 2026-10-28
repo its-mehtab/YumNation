@@ -104,8 +104,6 @@ export const updateCategory = async (req, res) => {
   const id = req.params.id;
   const { name, description, isActive } = req.body;
 
-  console.log(req.body);
-
   if (!id) {
     return res.status(400).json({ message: "ID is required" });
   }
@@ -120,12 +118,12 @@ export const updateCategory = async (req, res) => {
     if (name && category.name !== name) category.name = name;
     if (description && category.description !== description)
       category.description = description;
-    
+
     if (req.file) {
       const imageUrl = await uploadToCloudinary(req.file.buffer);
       category.image = imageUrl;
     }
-    
+
     if (isActive !== undefined) category.isActive = isActive;
 
     await category.save();
@@ -148,19 +146,17 @@ export const updateCategory = async (req, res) => {
 export const updateCategoryStatus = async (req, res) => {
   const id = req.params.id;
 
-  console.log(req.body);
-
   if (!id) {
     return res.status(400).json({ message: "ID is required" });
   }
 
   try {
     const category = await Category.findById(id);
-    
+
     if (!category) {
       return res.status(404).json({ message: "Category Not Found" });
     }
-    
+
     category.isActive = !category.isActive;
     await category.save();
 

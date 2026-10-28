@@ -10,6 +10,7 @@ import { useDish } from "./owner/DishContext";
 import { useCoupon } from "./admin/CouponContext";
 import { useAdminOrders } from "./admin/AdminOrdersContext";
 import { useCategories } from "./admin/CategoryAdminContext";
+import { useAllUsers } from "./admin/AllUsersContext";
 
 const AppInit = () => {
   const { user } = useAuth();
@@ -25,6 +26,7 @@ const AppInit = () => {
   const { fetchAdminOrders, filter } = useAdminOrders();
   const { fetchCoupon } = useCoupon();
   const { fetchCategories } = useCategories();
+  const { fetchAllUsers, filter: userFilter } = useAllUsers();
 
   useEffect(() => {
     if (!user) return;
@@ -61,6 +63,20 @@ const AppInit = () => {
     filter.sortBy,
     user,
   ]);
+
+  useEffect(() => {
+    fetchAllUsers();
+  }, [
+    userFilter.page,
+    userFilter.limit,
+    userFilter.sortBy,
+    userFilter.filterStatus,
+  ]);
+
+  useEffect(() => {
+    const delay = setTimeout(fetchAllUsers, 400);
+    return () => clearTimeout(delay);
+  }, [userFilter.search]);
 
   return null;
 };

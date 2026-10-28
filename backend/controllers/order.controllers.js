@@ -184,17 +184,21 @@ export const updateOrderStatus = async (req, res) => {
       "owner",
     );
 
-    if (order.orderStatus === "delivered" && status !== "delivered") {
+    if (
+      order.orderStatus === "delivered" &&
+      status !== "delivered" &&
+      status !== "cancelled"
+    ) {
       return res.status(400).json({
         message: "Cannot revert delivered order",
       });
     }
 
-    if (order.orderStatus === "cancelled") {
-      return res.status(400).json({
-        message: "Order is already cancelled",
-      });
-    }
+    // if (order.orderStatus === "cancelled") {
+    //   return res.status(400).json({
+    //     message: "Order is already cancelled",
+    //   });
+    // }
 
     if (user.role !== "admin" && restaurant.owner.toString() !== userId)
       return res.status(403).json({

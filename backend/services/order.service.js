@@ -70,16 +70,20 @@ export const getPaginatedOrders = async ({
       Order.countDocuments(filter),
 
       Order.countDocuments(),
-      Order.countDocuments({ orderStatus: "placed" }),
-      Order.countDocuments({ orderStatus: "confirmed" }),
-      Order.countDocuments({ orderStatus: "preparing" }),
-      Order.countDocuments({ orderStatus: "out for delivery" }),
-      Order.countDocuments({ orderStatus: "delivered" }),
-      Order.countDocuments({ orderStatus: "cancelled" }),
+      Order.countDocuments({ ...filter, orderStatus: "placed" }),
+      Order.countDocuments({ ...filter, orderStatus: "confirmed" }),
+      Order.countDocuments({ ...filter, orderStatus: "preparing" }),
+      Order.countDocuments({
+        ...filter,
+        orderStatus: "out for delivery",
+      }),
+      Order.countDocuments({ ...filter, orderStatus: "delivered" }),
+      Order.countDocuments({ ...filter, orderStatus: "cancelled" }),
 
-      await Order.aggregate([
+      Order.aggregate([
         {
           $match: {
+            ...filter,
             paymentStatus: "paid",
             orderStatus: "delivered",
           },

@@ -123,13 +123,13 @@ const AdminOrderDetails = () => {
   const navigate = useNavigate();
 
   const [order, setOrder] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState(null);
 
   const fetchOrder = async () => {
-    setError(null);
     setLoading(true);
+    setError(null);
     try {
       const { data } = await axios.get(`${serverURL}/api/admin/order/${id}`, {
         withCredentials: true,

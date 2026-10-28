@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
 import Pagination from "@mui/material/Pagination";
@@ -23,7 +23,12 @@ import {
   XCircle,
   ChevronRight,
   Truck,
+  Eye,
 } from "lucide-react";
+import { AdminCustomerDetailsSkeleton } from "../../components/skeleton/admin";
+import { ConfirmationModal, ErrorState } from "../../components/common";
+import { notifyError, notifySuccess } from "../../utils/toast";
+import { useAllUsers } from "../../context/admin/AllUsersContext";
 
 // ─── Small reusable pieces ────────────────────────────────────────────────────
 
@@ -54,7 +59,7 @@ const StatusBadge = ({ status }) => {
       label: "Cancelled",
       icon: XCircle,
     },
-    out_for_delivery: {
+    "out for delivery": {
       bg: "bg-[#fff2e8] text-blue-700 border-blue-200",
       label: "Out for Delivery",
       icon: Truck,
@@ -145,19 +150,19 @@ const OrderRow = ({ order }) => (
     <td className="px-6 py-4 text-xs font-bold text-gray-600 uppercase">
       {order.paymentMethod}
     </td>
-    <td className="px-6 py-4">
-      {order.couponCode ? (
-        <span className="font-mono text-[11px] font-bold text-orange-700 bg-[#fff2e8] px-2.5 py-1 rounded-md border border-orange-200">
-          {order.couponCode}
-        </span>
-      ) : (
-        <span className="text-[11px] text-gray-300">—</span>
-      )}
-    </td>
     <td className="px-6 py-4 text-right">
       <span className="text-sm font-bold text-gray-800">
         ${order.totalAmount.toFixed(2)}
       </span>
+    </td>
+    <td className="px-6 py-4 text-right">
+      <Link
+        to={`/admin/orders/${order._id}`}
+        className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors inline-flex items-center justify-center"
+        title="View Details"
+      >
+        <Eye size={16} strokeWidth={1.5} />
+      </Link>
     </td>
   </tr>
 );
@@ -166,36 +171,39 @@ const OrderRow = ({ order }) => (
 
 const AdminCustomerDetails = () => {
   const [customer, setCustomer] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  console.log(customer);
 
   const [filter, setFilter] = useState({
     orderSearch: "",
-    statusFilter: "",
+    orderStatus: "",
     page: 1,
-    limit: 1,
+    limit: 15,
   });
 
   const { id } = useParams();
   const { serverURL } = useAuth();
+  const { allUsers, setAllUsers } = useAllUsers();
   const navigate = useNavigate();
 
   const fetchUserData = async () => {
+    setError(null);
     setLoading(true);
     try {
       const { data } = await axios.get(`${serverURL}/api/admin/user/${id}`, {
         params: {
           search: filter.orderSearch,
-          statusFilter: filter.statusFilter,
+          orderStatus: filter.orderStatus,
           page: filter.page,
           limit: filter.limit,
         },
         withCredentials: true,
       });
 
-      console.log(data);
-
       setCustomer(data);
     } catch (error) {
+      setError(error?.response?.data.message || error.message);
       console.log("Order Error:", error?.response?.data || error.message);
     } finally {
       setLoading(false);
@@ -204,7 +212,14 @@ const AdminCustomerDetails = () => {
 
   useEffect(() => {
     fetchUserData();
-  }, [id, filter.page, filter.orderStatus, filter.orderSearch]);
+  }, [id, filter.page, filter.orderStatus]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchUserData();
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [id, filter.orderSearch]);
 
   const [status, setStatus] = useState(customer?.status);
 
@@ -212,37 +227,67 @@ const AdminCustomerDetails = () => {
     if (customer) setStatus(customer.status);
   }, [customer]);
 
-  if (loading)
-    return (
-      <div className="space-y-6 animate-pulse">
-        <div className="h-24 bg-gray-100 rounded-md" />
-        <div className="grid grid-cols-5 gap-4">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-32 bg-gray-100 rounded-md" />
-          ))}
-        </div>
-        <div className="grid grid-cols-12 gap-6">
-          <div className="col-span-4 h-96 bg-gray-100 rounded-md" />
-          <div className="col-span-8 h-96 bg-gray-100 rounded-md" />
-        </div>
-      </div>
-    );
+  if (loading && !customer) return <AdminCustomerDetailsSkeleton />;
 
-  const deliveredOrders =
-    customer?.orders?.items?.filter((o) => o.status === "delivered") || [];
-  const cancelledOrders =
-    customer?.orders?.items?.filter((o) => o.status === "cancelled") || [];
-  const totalItems = customer?.orders?.items?.length || 0;
-  const cancelRate = totalItems
-    ? Math.round((cancelledOrders.length / totalItems) * 100)
-    : 0;
+  if (error) return <ErrorState error={error} onRetry={fetchUserData} />;
 
-  const handleToggleStatus = () => {
+  const deliveredOrders = customer?.orders?.statusCount.delivered;
+  const cancelledOrders = customer?.orders?.statusCount.cancelled;
+
+  const handleToggleStatus = async () => {
     const next = status === "blocked" ? "active" : "blocked";
     setStatus(next);
-    // await axios.patch(`/api/customers/${customer?._id}`, { status: next });
+
+    try {
+      await axios.patch(
+        `${serverURL}/api/admin/user/${id}`,
+        { status: next },
+        { withCredentials: true },
+      );
+
+      notifySuccess(`${customer.firstName} is ${next}`);
+
+      setAllUsers((prev) => ({
+        ...prev,
+        totalActive:
+          next === "active" ? prev.totalActive + 1 : prev.totalActive - 1,
+        totalBlocked:
+          next === "blocked" ? prev.totalBlocked + 1 : prev.totalBlocked - 1,
+        items: prev.items.map((user) =>
+          user._id === id ? { ...user, status: next } : user,
+        ),
+      }));
+    } catch (error) {
+      notifyError(error?.response?.data.message || error.message);
+      setStatus(status);
+      console.log(error);
+    }
   };
 
+  const handleDelete = async (id) => {
+    setAllUsers((prev) => ({
+      ...prev,
+      totalCustomer: prev.totalCustomer - 1,
+      totalActive:
+        status === "active" ? prev.totalActive - 1 : prev.totalActive,
+      totalBlocked:
+        status === "blocked" ? prev.totalBlocked - 1 : prev.totalBlocked,
+      items: prev.items.filter((c) => c._id !== id),
+    }));
+
+    try {
+      // await axios.delete(`${serverURL}/api/admin/usser/${id}`, {
+      //   withCredentials: true,
+      // });
+
+      notifySuccess(`Successfully deleted`);
+      navigate("/admin/customers");
+    } catch (error) {
+      setAllUsers(allUsers);
+      console.log("User delete:", error?.response?.data || error.message);
+      notifyError(`Failed to delete customer`);
+    }
+  };
   return (
     <div className="space-y-6">
       {/* ── Page Header ── */}
@@ -323,7 +368,7 @@ const AdminCustomerDetails = () => {
       </div>
 
       {/* ── Stats Row ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatBox
           label="Total Orders"
           value={customer?.totalOrders || 0}
@@ -344,19 +389,9 @@ const AdminCustomerDetails = () => {
         />
         <StatBox
           label="Cancelled Orders"
-          value={cancelledOrders.length}
+          value={cancelledOrders}
           icon={XCircle}
           bgClass="bg-red-100 text-red-600"
-        />
-        <StatBox
-          label="Cancellation Rate"
-          value={`${cancelRate}%`}
-          icon={AlertCircle}
-          bgClass={
-            cancelRate > 20
-              ? "bg-red-100 text-red-600"
-              : "bg-indigo-100 text-indigo-600"
-          }
         />
       </div>
 
@@ -507,17 +542,16 @@ const AdminCustomerDetails = () => {
                     This action cannot be undone.
                   </p>
                 </div>
-                <button
-                  onClick={() => {
-                    if (confirm("Permanently delete this customer?")) {
-                      // await axios.delete(`/api/customers/${customer?._id}`);
-                      // navigate("/admin/customers");
-                    }
-                  }}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-bold text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50 transition-colors shrink-0 shadow-sm"
-                >
-                  <Trash2 size={16} strokeWidth={1.5} /> Delete
-                </button>
+                <ConfirmationModal
+                  button={
+                    <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-bold text-red-600 bg-white border border-red-200 rounded-md hover:bg-red-50 transition-colors shrink-0 shadow-sm">
+                      <Trash2 size={16} strokeWidth={1.5} /> Delete
+                    </button>
+                  }
+                  heading={`Delete ${customer.firstName} from customers?`}
+                  description="Are you sure you want to delete this customer? This action cannot be undone and the customer will be removed from the list."
+                  onClick={async () => await handleDelete(customer._id)}
+                />
               </div>
             </div>
           </div>
@@ -537,11 +571,12 @@ const AdminCustomerDetails = () => {
                     Order History
                   </h3>
                   <p className="text-sm font-medium text-gray-500 mt-0.5">
-                    {customer?.totalOrders || 0} total orders ·{" "}
-                    {deliveredOrders?.length || 0} delivered
+                    {customer?.orders?.totalOrders || 0} total orders ·{" "}
+                    {deliveredOrders} delivered
                   </p>
                 </div>
               </div>
+
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <input
                   placeholder="Search orders..."
@@ -568,7 +603,7 @@ const AdminCustomerDetails = () => {
                   <option value="placed">Placed</option>
                   <option value="confirmed">Confirmed</option>
                   <option value="preparing">Preparing</option>
-                  <option value="out_for_delivery">Out For Delivery</option>
+                  <option value="out for delivery">Out For Delivery</option>
                   <option value="delivered">Delivered</option>
                   <option value="cancelled">Cancelled</option>
                 </select>
@@ -585,8 +620,8 @@ const AdminCustomerDetails = () => {
                       "Date",
                       "Status",
                       "Method",
-                      "Coupon",
                       "Total",
+                      "action",
                     ].map((h) => (
                       <th
                         key={h}
@@ -612,7 +647,7 @@ const AdminCustomerDetails = () => {
                             No orders found
                           </p>
                           <p className="text-sm text-gray-500 mt-1">
-                            This customer hasn't placed any orders yet.
+                            Try adjusting the filters
                           </p>
                         </div>
                       </td>
@@ -659,13 +694,19 @@ const AdminCustomerDetails = () => {
                   onChange={(e, value) =>
                     setFilter((prev) => ({ ...prev, page: value }))
                   }
-                  color="primary"
+                  variant="outlined"
+                  shape="rounded"
                   sx={{
-                    "& .MuiPaginationItem-root.Mui-selected": {
-                      backgroundColor: "#fc8019",
-                      color: "white",
-                      "&:hover": {
-                        backgroundColor: "#e67316",
+                    "& .MuiPaginationItem-root": {
+                      borderColor: "#e5e7eb",
+                      color: "#374151",
+                      "&.Mui-selected": {
+                        backgroundColor: "#fc8019",
+                        color: "white",
+                        borderColor: "#fc8019",
+                        "&:hover": {
+                          backgroundColor: "#e5721f",
+                        },
                       },
                     },
                   }}
