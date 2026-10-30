@@ -13,6 +13,7 @@ import DealsSection from "../../components/public/DealsSection";
 import RestaurantHeader from "../../components/public/RestaurantHeader";
 import DishItem from "../../components/public/DishItem";
 import TopPicksSection from "../../components/public/TopPicksSection";
+import RestaurantDishesSkeleton from "../../components/skeleton/RestaurantDishesSkeleton";
 
 // ─── COMPONENTS ───────────────────────────────────────────────────────────────
 
@@ -51,7 +52,7 @@ function MenuSearch({ dishes, restaurant }) {
           className="w-full bg-gray-100 rounded-xl px-5 py-3.5 text-sm text-gray-500 outline-none placeholder-gray-400"
         />
         <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-          <Search  color="#999" />
+          <Search color="#999" />
         </span>
       </div>
 
@@ -123,35 +124,42 @@ function DishesSection({ restaurant, catDishes }) {
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 
 const RestaurantDishes = () => {
-  const [restaurant, setRestaurant] = useState({});
-  const [dishes, setDishes] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [restaurant, setRestaurant] = useState(null);
+  const [dishes, setDishes] = useState(null);
+  const [resLoading, setResLoading] = useState(true);
+  const [dishLoading, setDishLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const { serverURL } = useAuth();
   const { slug } = useParams();
 
   const fetchRestaurant = async () => {
+    setResLoading(true);
     try {
       const { data } = await axios.get(`${serverURL}/api/restaurant/${slug}`);
 
+      // console.log(data);
       setRestaurant(data);
     } catch (error) {
+      setError(error?.response?.data.message || error.message);
       console.log("Restaurant Error:", error?.response?.data || error.message);
+    } finally {
+      setResLoading(false);
     }
   };
 
   useEffect(() => {
     fetchRestaurant();
-  }, []);
+  }, [slug]);
 
   const groupDishes = (dishes) => {
     const menu = {};
 
     const featured = dishes?.filter((currDish) => currDish.isFeatured);
 
-    if (featured.length > 0) menu["recommended"] = featured;
+    if (featured?.length > 0) menu["recommended"] = featured;
 
-    dishes.forEach((dish) => {
+    dishes?.forEach((dish) => {
       const cat = dish.category.name;
 
       if (!menu[cat]) menu[cat] = [];
@@ -165,7 +173,7 @@ const RestaurantDishes = () => {
   const catDishes = groupDishes(dishes);
 
   const fetchRestaurantDishes = async () => {
-    setLoading(true);
+    setDishLoading(true);
     try {
       const { data } = await axios.get(`${serverURL}/api/dish/${slug}`, {
         withCredentials: true,
@@ -173,12 +181,13 @@ const RestaurantDishes = () => {
 
       setDishes(data);
     } catch (error) {
+      setError(error?.response?.data.message || error.message);
       console.log(
         "Restaurant Dishes Error:",
         error?.response?.data || error.message,
       );
     } finally {
-      setLoading(false);
+      setDishLoading(false);
     }
   };
 
@@ -186,6 +195,8 @@ const RestaurantDishes = () => {
     fetchRestaurantDishes();
   }, []);
 
+  if (resLoading || dishLoading) return <RestaurantDishesSkeleton />;
+  if (error) return "Error!";
   return (
     <div className="max-w-3xl mx-auto px-4 pb-20 bg-white">
       <nav className="flex items-center gap-1.5 text-sm text-gray-400 pb-4">

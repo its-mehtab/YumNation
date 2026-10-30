@@ -17,7 +17,7 @@ export const OrderContextProvider = ({ children }) => {
         withCredentials: true,
       });
 
-      console.log(data);
+      // console.log(data);
 
       setOrders(data);
     } catch (error) {

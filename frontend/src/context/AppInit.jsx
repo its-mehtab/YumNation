@@ -65,6 +65,8 @@ const AppInit = () => {
   ]);
 
   useEffect(() => {
+    if (!user || user.role !== "admin") return;
+
     fetchAllUsers();
   }, [
     userFilter.page,
@@ -74,6 +76,7 @@ const AppInit = () => {
   ]);
 
   useEffect(() => {
+    if (!user || user.role !== "admin") return;
     const delay = setTimeout(fetchAllUsers, 400);
     return () => clearTimeout(delay);
   }, [userFilter.search]);

@@ -8,10 +8,6 @@ export const validateCoupon = async (userId, code) => {
     "name logo slug cuisine address isOpen rating deliveryFee deliveryTime",
   );
 
-  if (!cart) {
-    throw new Error("Cart not found");
-  }
-
   const cartTotal = cart.items.reduce((acc, item) => {
     return item.price * item.quantity + acc;
   }, 0);

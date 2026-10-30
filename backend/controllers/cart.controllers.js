@@ -41,6 +41,13 @@ export const addCart = async (req, res) => {
     }
 
     const restaurantDoc = await Restaurant.findById(restaurant);
+    // console.log(
+    //   !restaurantDoc,
+    //   !restaurantDoc.isOpen,
+    //   !restaurantDoc.isActive,
+    //   restaurantDoc.status != "active",
+    // );
+    console.log(restaurant);
 
     if (
       !restaurantDoc ||
@@ -145,6 +152,8 @@ export const addCart = async (req, res) => {
 
     return res.status(201).json(updatedCart);
   } catch (error) {
+    console.log(error);
+
     return res
       .status(500)
       .json({ message: "Error adding to cart", error: error.message });

@@ -18,7 +18,7 @@ const AdminRestaurants = () => {
   const [filter, setFilter] = useState("all");
   const [rejectTarget, setRejectTarget] = useState(null);
 
-  console.log(restaurants);
+  // console.log(restaurants);
 
   const { serverURL } = useAuth();
 

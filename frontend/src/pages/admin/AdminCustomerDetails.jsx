@@ -173,7 +173,6 @@ const AdminCustomerDetails = () => {
   const [customer, setCustomer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  console.log(customer);
 
   const [filter, setFilter] = useState({
     orderSearch: "",

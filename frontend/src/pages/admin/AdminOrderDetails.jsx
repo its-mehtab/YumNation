@@ -26,6 +26,7 @@ import { Skeleton } from "@radix-ui/themes";
 import { notifyError } from "../../utils/toast";
 import { AdminOrderDetailsSkeleton } from "../../components/skeleton/admin";
 import { ErrorState } from "../../components/common";
+import { useAdminOrders } from "../../context/admin/AdminOrdersContext";
 
 // ── Status config ─────────────────────────────────────────────────────────────
 const STATUSES = [
@@ -127,6 +128,8 @@ const AdminOrderDetails = () => {
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState(null);
 
+  const { orders, setOrders } = useAdminOrders();
+
   const fetchOrder = async () => {
     setLoading(true);
     setError(null);
@@ -150,6 +153,7 @@ const AdminOrderDetails = () => {
   useEffect(() => {
     fetchOrder();
   }, [id]);
+  // console.log(orders);
 
   const handleStatusChange = async (newStatus) => {
     setUpdating(true);
@@ -160,6 +164,12 @@ const AdminOrderDetails = () => {
         { withCredentials: true },
       );
       setOrder((prev) => ({ ...prev, orderStatus: newStatus }));
+      setOrders((prev) =>
+        prev.items.map((order) => ({
+          ...order,
+          orderStatus: order._id === id ? newStatus : order.orderStatus,
+        })),
+      );
     } catch (err) {
       console.log(err);
       notifyError(err?.response?.data.message || "Failed to update status");

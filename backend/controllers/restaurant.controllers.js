@@ -79,9 +79,15 @@ export const getRestaurants = async (req, res) => {
 };
 
 export const getRestaurant = async (req, res) => {
-  const { restaurantId } = req.params;
+  let restaurantId = req.restaurantId;
 
-  if (!restaurantId) {
+  const isrestaurentSend = req.params.restaurantId;
+
+  if (isrestaurentSend) {
+    restaurantId = isrestaurentSend;
+  }
+
+  if (!restaurantId && !isrestaurentSend) {
     return res.status(400).json({ message: "Restaurant ID required" });
   }
 

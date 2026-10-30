@@ -112,7 +112,7 @@ input:-webkit-autofill:focus {
   height: 2.5rem;
   background: #fff;
   position: fixed;
-  top: 84px;
+  top: 78px;
   left: 0;
   z-index: 0;
   border-top-left-radius: 30px;
@@ -131,7 +131,7 @@ input:-webkit-autofill:focus {
   height: 2.5rem;
   background: #fff;
   position: fixed;
-  top: 84px;
+  top: 78px;
   right: 0;
   z-index: -4;
   border-top-right-radius: 30px;
@@ -162,4 +162,7 @@ input:-webkit-autofill:focus {
     transform: translateY(0);
   }
 }
-.recharts-wrapper:focus, .recharts-wrapper *:focus { outline: none !important; } 
+.recharts-wrapper:focus,
+.recharts-wrapper *:focus {
+  outline: none !important;
+}

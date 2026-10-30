@@ -69,7 +69,7 @@ export const getPaginatedOrders = async ({
 
       Order.countDocuments(filter),
 
-      Order.countDocuments(),
+      Order.countDocuments(filter),
       Order.countDocuments({ ...filter, orderStatus: "placed" }),
       Order.countDocuments({ ...filter, orderStatus: "confirmed" }),
       Order.countDocuments({ ...filter, orderStatus: "preparing" }),

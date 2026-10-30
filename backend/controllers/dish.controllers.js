@@ -9,6 +9,8 @@ export const getDishes = async (req, res) => {
       .populate("category", "name slug")
       .select(req.hideFields || "");
 
+    // console.log(dishes);
+
     res.status(200).json(dishes);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch dishes" });

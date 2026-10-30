@@ -103,7 +103,7 @@ const DishItem = ({ dish, restaurant }) => {
           onClick={handleWishlist}
           className="text-white hover:text-[#cccccc] cursor-pointer absolute top-2 right-2 z-10 drop-shadow-[0_0_4px_rgba(0,0,0)]"
         >
-          {!wishlistActive ? <Heart  /> : <Heart  />}
+          {!wishlistActive ? <Heart /> : <Heart />}
         </span>
         <img
           src={

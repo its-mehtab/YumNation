@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { SearchIcon } from "../../assets/icon/Icons";
 
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -90,7 +89,7 @@ const SearchBox = () => {
   return (
     <div
       ref={boxRef}
-      className={`flex items-center w-full gap-3 px-3.5 py-1.5 bg-[#fc8e32] border rounded-t-lg border-[#ffa052] ml-28 max-w-2xl relative ${!isSearchActive ? "rounded-b-lg" : ""}`}
+      className={`flex items-center w-full gap-3 px-3.5 py-1.5 mr-4 bg-[#fc8e32] border rounded-t-lg border-[#ffa052] ml-28 max-w-2xl relative ${!isSearchActive ? "rounded-b-lg" : ""}`}
     >
       <span
         onClick={(e) => handleSearchSubmit(e, query)}
