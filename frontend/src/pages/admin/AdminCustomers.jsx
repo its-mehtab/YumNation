@@ -69,10 +69,10 @@ const AdminCustomers = () => {
   } = useAllUsers();
   const { serverURL } = useAuth();
 
-  if (loading && !allUsers) return <AdminCustomersSkeleton />;
-
-  if (!allUsers || error)
+  if (error)
     return <ErrorState error={error.restaurantError} onRetry={fetchAllUsers} />;
+
+  if (loading && !allUsers) return <AdminCustomersSkeleton />;
 
   const totalCustomer = allUsers.totalCustomer;
   const totalActive = allUsers.totalActive;

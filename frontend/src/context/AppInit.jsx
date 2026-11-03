@@ -66,9 +66,9 @@ const AppInit = () => {
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
-
     fetchAllUsers();
   }, [
+    user,
     userFilter.page,
     userFilter.limit,
     userFilter.sortBy,
@@ -77,9 +77,10 @@ const AppInit = () => {
 
   useEffect(() => {
     if (!user || user.role !== "admin") return;
+
     const delay = setTimeout(fetchAllUsers, 400);
     return () => clearTimeout(delay);
-  }, [userFilter.search]);
+  }, [user, userFilter.search]);
 
   return null;
 };

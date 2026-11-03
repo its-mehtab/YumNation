@@ -18,8 +18,6 @@ const AdminRestaurants = () => {
   const [filter, setFilter] = useState("all");
   const [rejectTarget, setRejectTarget] = useState(null);
 
-  // console.log(restaurants);
-
   const { serverURL } = useAuth();
 
   if (loading) return <AdminRestaurantsSkeleton />;
@@ -53,8 +51,6 @@ const AdminRestaurants = () => {
         },
       );
 
-      console.log(restaurants);
-
       setRestaurants(data);
     } catch (error) {
       console.log(error);
@@ -68,7 +64,7 @@ const AdminRestaurants = () => {
         r._id === id ? { ...r, status, ...extra } : r,
       ),
     }));
-  const pendingCount = restaurants.restaurantAnalatics.pendingRestaurants;
+  const pendingCount = restaurants.statusCount.pending;
   const totalRevenue = restaurants.restaurantAnalatics.totalRevenue;
 
   return (
@@ -160,7 +156,7 @@ const AdminRestaurants = () => {
           <div className="flex items-center gap-3">
             <h2 className="text-lg font-bold text-gray-800">All Restaurants</h2>
             <span className="text-xs bg-[#fff2e8] text-[#fc8019] font-bold px-2.5 py-1 rounded-md">
-              {restaurants.items.length}
+              {restaurants.restaurantAnalatics.totalRestaurants}
             </span>
           </div>
 
@@ -169,9 +165,7 @@ const AdminRestaurants = () => {
             <div className="flex bg-gray-50 rounded-md p-1 w-full sm:w-auto overflow-x-auto border border-gray-200">
               {tabs.map((t) => {
                 const count =
-                  t.key !== "all"
-                    ? restaurants.items.filter((r) => r.status === t.key).length
-                    : null;
+                  t.key !== "all" ? restaurants.statusCount[t.key] : null;
                 return (
                   <button
                     key={t.key}

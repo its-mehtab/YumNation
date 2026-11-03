@@ -6,12 +6,14 @@ import { useAuth } from "../user/AuthContext";
 const RestaurantContext = createContext();
 
 export const RestaurantProvider = ({ children }) => {
-  const [restaurant, setRestaurant] = useState({});
+  const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const { serverURL } = useAuth();
 
   const fetchRestaurant = async () => {
+    setError(null);
     setLoading(true);
 
     try {
@@ -21,6 +23,7 @@ export const RestaurantProvider = ({ children }) => {
 
       setRestaurant(data);
     } catch (error) {
+      setError(error?.response?.data.message || error.message);
       console.log("Restaurant Error:", error?.response?.data || error.message);
       setRestaurant(null);
       console.log(error.message);
@@ -37,6 +40,8 @@ export const RestaurantProvider = ({ children }) => {
         loading,
         setLoading,
         fetchRestaurant,
+        error,
+        setError,
       }}
     >
       {children}

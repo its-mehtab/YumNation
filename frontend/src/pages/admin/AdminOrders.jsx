@@ -135,23 +135,38 @@ const AdminOrders = () => {
     return <ErrorState error={error} onRetry={fetchAdminOrders} />;
 
   const handleStatusChange = async (orderId, newStatus) => {
-    setOrders((prev) => ({
-      ...prev,
-      items: prev.items.map((o) => {
-        if (o._id !== orderId) return o;
+    setOrders((prev) => {
+      const oldStatus = prev.items.find(
+        (order) => order._id === orderId,
+      )?.orderStatus;
 
-        let paymentStatus = o.paymentStatus;
-        if (o.paymentMethod === "cod") {
-          paymentStatus = newStatus === "delivered" ? "paid" : "pending";
-        }
+      if (!oldStatus || oldStatus === newStatus) return prev;
 
-        return {
-          ...o,
-          orderStatus: newStatus,
-          paymentStatus,
-        };
-      }),
-    }));
+      return {
+        ...prev,
+
+        statusCount: {
+          ...prev.statusCount,
+          [oldStatus]: Math.max(0, prev.statusCount[oldStatus] - 1),
+          [newStatus]: (prev.statusCount[newStatus] || 0) + 1,
+        },
+
+        items: prev.items.map((o) => {
+          if (o._id !== orderId) return o;
+
+          let paymentStatus = o.paymentStatus;
+          if (o.paymentMethod === "cod") {
+            paymentStatus = newStatus === "delivered" ? "paid" : "pending";
+          }
+
+          return {
+            ...o,
+            orderStatus: newStatus,
+            paymentStatus,
+          };
+        }),
+      };
+    });
 
     try {
       await axios.patch(

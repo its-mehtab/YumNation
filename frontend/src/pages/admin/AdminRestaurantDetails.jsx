@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
+import { useRestaurants } from "../../context/admin/RestaurantsContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import AdminRestaurantsSkeleton from "../../components/skeleton/admin/AdminRestaurantsSkeleton";
 import { ErrorState } from "../../components/common";
@@ -186,6 +187,7 @@ const AdminRestaurantDetails = () => {
   });
 
   const { serverURL } = useAuth();
+  const { setRestaurants } = useRestaurants();
 
   const fetchRestaurantData = async () => {
     setLoading(true);
@@ -310,8 +312,8 @@ const AdminRestaurantDetails = () => {
   };
 
   const handleStatusUpdate = async (status) => {
+    setRestaurant((prev) => ({ ...prev, status }));
     try {
-      setRestaurant((prev) => ({ ...prev, status }));
       await axios.patch(
         `${serverURL}/api/admin/restaurant/${id}`,
         { status },
@@ -319,6 +321,12 @@ const AdminRestaurantDetails = () => {
       );
 
       notifySuccess(`Restaurant is ${status}`);
+      setRestaurants((prev) => ({
+        ...prev,
+        items: prev.items.map((resItem) =>
+          resItem._id === id ? { ...resItem, status } : resItem,
+        ),
+      }));
     } catch (error) {
       setRestaurant(restaurant);
       notifyError(error?.response?.data.message);

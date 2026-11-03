@@ -20,7 +20,7 @@ export const RestaurantsProvider = ({ children }) => {
 
       setRestaurants(data);
     } catch (error) {
-      setError(error?.response?.data || error.message);
+      setError(error?.response?.data.message || error.message);
       console.log("Restaurants Error:", error?.response?.data || error.message);
     } finally {
       setLoading(false);

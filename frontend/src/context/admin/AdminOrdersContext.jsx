@@ -14,7 +14,7 @@ export const AdminOrdersProvider = ({ children }) => {
     orderStatus: "all",
     sortBy: "newest",
     page: 1,
-    limit: 2,
+    limit: 10,
   });
 
   const { serverURL } = useAuth();

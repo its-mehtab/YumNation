@@ -302,7 +302,7 @@ export const createOrder = async (req, res) => {
       const tax = Math.round(subtotal * 5) / 100;
       const total = subtotal + deliveryFee + tax - discount;
 
-      const order = await Order.create(
+      const [order] = await Order.create(
         [
           {
             user: userId,

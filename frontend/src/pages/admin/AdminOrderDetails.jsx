@@ -164,12 +164,29 @@ const AdminOrderDetails = () => {
         { withCredentials: true },
       );
       setOrder((prev) => ({ ...prev, orderStatus: newStatus }));
-      setOrders((prev) =>
-        prev.items.map((order) => ({
-          ...order,
-          orderStatus: order._id === id ? newStatus : order.orderStatus,
-        })),
-      );
+      console.log(orders);
+
+      setOrders((prev) => {
+        const oldStatus = prev.items.find(
+          (order) => order._id === id,
+        )?.orderStatus;
+
+        if (!oldStatus || oldStatus === newStatus) return prev;
+
+        return {
+          ...prev,
+
+          statusCount: {
+            ...prev.statusCount,
+            [oldStatus]: Math.max(0, prev.statusCount[oldStatus] - 1),
+            [newStatus]: (prev.statusCount[newStatus] || 0) + 1,
+          },
+
+          items: prev.items.map((order) =>
+            order._id === id ? { ...order, orderStatus: newStatus } : order,
+          ),
+        };
+      });
     } catch (err) {
       console.log(err);
       notifyError(err?.response?.data.message || "Failed to update status");
