@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import UsageBar from "../../components/admin/UsageBar";
 import PromoModal from "../../components/admin/PromoModal";
 import PreviewModal from "../../components/common/PreviewModal";
-import { useCoupon } from "../../context/admin/CouponContext";
+import { useCoupon } from "../../context/admin";
 import ConfirmationModal from "../../components/common/ConfirmationModal";
 import axios from "axios";
 import {

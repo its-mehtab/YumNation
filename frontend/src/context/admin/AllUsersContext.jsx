@@ -62,4 +62,4 @@ export const AllUsersProvider = ({ children }) => {
   );
 };
 
-export const useAllUsers = () => useContext(AllUsersContext);
+export default AllUsersContext;

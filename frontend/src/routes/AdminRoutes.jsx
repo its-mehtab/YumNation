@@ -4,18 +4,11 @@ import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import Loader from "../components/public/Loader";
 
 const AdminRoutes = () => {
-  const { user, loading } = useAuth();
+  const { user, error } = useAuth();
 
-  if (loading)
-    return (
-      <div>
-        <Loader />
-      </div>
-    );
+  if (error) return <Navigate to="/login" />;
 
-  if (!user) return <Navigate to="/login" />;
-
-  if (user.role !== "admin") return <Navigate to="/" />;
+  if (user && user.role !== "admin") return <Navigate to="/" />;
 
   return (
     <AdminLayout>

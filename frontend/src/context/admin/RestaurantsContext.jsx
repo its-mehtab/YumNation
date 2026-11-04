@@ -44,4 +44,4 @@ export const RestaurantsProvider = ({ children }) => {
   );
 };
 
-export const useRestaurants = () => useContext(RestaurantsContext);
+export default RestaurantsContext;

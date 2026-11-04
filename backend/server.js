@@ -37,7 +37,7 @@ app.use(
   }),
 );
 app.use("/api", authRouter);
-app.use("/api/admin", dashboardAdminRouter);
+app.use("/api/admin/dashboard", dashboardAdminRouter);
 app.use("/api/admin", usersAdminRouter);
 app.use("/api/categories", categoryRouter);
 app.use("/api/admin/categories", categoryAdminRouter);

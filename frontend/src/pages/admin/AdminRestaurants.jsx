@@ -1,7 +1,7 @@
 import { Skeleton } from "@radix-ui/themes";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { useRestaurants } from "../../context/admin/RestaurantsContext";
+import { useRestaurants } from "../../context/admin";
 import AdminRestaurantsItem from "../../components/admin/AdminRestaurantItem";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";

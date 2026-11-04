@@ -5,12 +5,15 @@ import { useCart } from "./user/CartContext";
 import { useOrders } from "./user/OrderContext";
 import { useWishlist } from "./user/WishlistContext";
 import { useRestaurant } from "./owner/RestaurantContext";
-import { useRestaurants } from "./admin/RestaurantsContext";
+import {
+  useRestaurants,
+  useCoupon,
+  useAdminOrders,
+  useCategories,
+  useAllUsers,
+  useAdminDashboard,
+} from "./admin";
 import { useDish } from "./owner/DishContext";
-import { useCoupon } from "./admin/CouponContext";
-import { useAdminOrders } from "./admin/AdminOrdersContext";
-import { useCategories } from "./admin/CategoryAdminContext";
-import { useAllUsers } from "./admin/AllUsersContext";
 
 const AppInit = () => {
   const { user } = useAuth();
@@ -27,6 +30,7 @@ const AppInit = () => {
   const { fetchCoupon } = useCoupon();
   const { fetchCategories } = useCategories();
   const { fetchAllUsers, filter: userFilter } = useAllUsers();
+  const { fetchDashboardStats, searchParams } = useAdminDashboard();
 
   useEffect(() => {
     if (!user) return;
@@ -49,6 +53,12 @@ const AppInit = () => {
       fetchCategories();
     }
   }, [user]);
+
+  useEffect(() => {
+    if (!user || user.role !== "admin") return;
+
+    fetchDashboardStats();
+  }, [user, searchParams]);
 
   useEffect(() => {
     if (!user) return;

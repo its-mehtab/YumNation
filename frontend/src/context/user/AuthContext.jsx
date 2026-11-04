@@ -6,18 +6,19 @@ const authContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  // const navigate = useNavigate();
-  // const location = useLocation();
+  const [error, setError] = useState(null);
   const serverURL = import.meta.env.VITE_API_KEY;
   const isLoggedIn = !!user;
 
   const getUserData = async () => {
+    setLoading(true);
     try {
       const res = await axios.get(serverURL + "/api/getuserdata", {
         withCredentials: true,
       });
       setUser(res.data);
     } catch (error) {
+      setError(error?.response?.data.message || error.message);
       console.log("Auth Error:", error?.response?.data || error.message);
       setUser(null);
     } finally {
@@ -53,6 +54,8 @@ export const AuthProvider = ({ children }) => {
         setUser,
         getUserData,
         loading,
+        error,
+        setError,
         isLoggedIn,
         logout,
       }}

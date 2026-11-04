@@ -47,4 +47,4 @@ export const CategoryAdminPovider = ({ children }) => {
   );
 };
 
-export const useCategories = () => useContext(CategoryAdminContext);
+export default CategoryAdminContext;

@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/user/AuthContext";
-import { useRestaurants } from "../../context/admin/RestaurantsContext";
+import { useRestaurants } from "../../context/admin";
 import { Link } from "react-router-dom";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import ConfirmationModal from "../common/ConfirmationModal";

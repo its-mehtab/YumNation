@@ -33,4 +33,4 @@ export const CouponProvider = ({ children }) => {
   );
 };
 
-export const useCoupon = () => useContext(CouponContext);
+export default CouponContext;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Calendar,
   ChevronDown,
@@ -24,11 +24,17 @@ import {
   ResponsiveContainer,
   PieChart,
   Pie,
+  Cell,
 } from "recharts";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
-import { useRestaurants } from "../../context/admin/RestaurantsContext";
-import { useAdminOrders } from "../../context/admin/AdminOrdersContext";
+import {
+  useAdminDashboard,
+  useRestaurants,
+  useAdminOrders,
+} from "../../context/admin";
+import AdminDashboardSkeleton from "../../components/skeleton/admin/AdminDashboardSkeleton";
+import { ErrorState } from "../../components/common";
 
 const orderStatusConfig = {
   placed: "bg-indigo-50 text-indigo-700 border-indigo-200",
@@ -43,41 +49,58 @@ const today = dayjs();
 const format = "MMM DD YYYY";
 const dateDropdown = [
   {
-    name: "today",
+    name: "Today",
     dayDetails: `Today (${today.format(format)})`,
     startDate: today.startOf("day").toISOString(),
     endDate: today.endOf("day").toISOString(),
   },
   {
-    name: "yesterday",
-    dayDetails: `Yesterday (${today.subtract(1, "day").format(format)})`,
-    startDate: today.subtract(1, "day").startOf("day").toISOString(),
-    endDate: today.subtract(1, "day").endOf("day").toISOString(),
-  },
-  {
-    name: "last 7 days",
+    name: "Last 7 days",
     dayDetails: `Last 7 days (${today.subtract(6, "day").format(format)} - ${today.format(format)})`,
     startDate: today.subtract(6, "day").startOf("day").toISOString(),
     endDate: today.endOf("day").toISOString(),
   },
   {
-    name: "this month",
+    name: "This month",
     dayDetails: `This month (${today.startOf("month").format(format)} - ${today.format(format)})`,
     startDate: today.startOf("month").toISOString(),
     endDate: today.endOf("day").toISOString(),
   },
+  {
+    name: "Last month",
+    dayDetails: `Last month (${today.subtract(1, "month").startOf("month").format(format)} - ${today.subtract(1, "month").endOf("month").format(format)})`,
+    startDate: today.subtract(1, "month").startOf("month").toISOString(),
+    endDate: today.subtract(1, "month").endOf("month").toISOString(),
+  },
+  {
+    name: "This year",
+    dayDetails: `This year (${today.startOf("year").format(format)} - ${today.format(format)})`,
+    startDate: today.startOf("year").toISOString(),
+    endDate: today.endOf("day").toISOString(),
+  },
+  {
+    name: "Last year",
+    dayDetails: `Last year (${today.subtract(1, "year").startOf("year").format(format)} - ${today.subtract(1, "year").endOf("year").format(format)})`,
+    startDate: today.subtract(1, "year").startOf("year").toISOString(),
+    endDate: today.subtract(1, "year").endOf("year").toISOString(),
+  },
 ];
-// console.log(dateDropdown[0].dayDetails);
 
 const AdminDashboard = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isOverviewDropdownOpen, setIsOverviewDropdownOpen] = useState(false);
-  const [analaticsDropdown, setAnalaticsDropdown] = useState(
-    dateDropdown[0].dayDetails,
-  );
+  const [analaticsDropdown, setAnalaticsDropdown] = useState(dateDropdown[0]);
 
-  const { orders, loading: ordersLoading } = useAdminOrders();
-  const { restaurants, loading } = useRestaurants();
+  const {
+    dashboardStats,
+    fetchDashboardStats,
+    // searchParams,
+    setSearchParams,
+    loading,
+    error,
+  } = useAdminDashboard();
+  const { orders, fetchAdminOrders, error: ordersError } = useAdminOrders();
+  const { restaurants, fetchRestaurants, error: resError } = useRestaurants();
 
   const lineChartData = [
     { name: "Nov 20", value: 116 },
@@ -90,13 +113,38 @@ const AdminDashboard = () => {
   ];
 
   const pieData = [
-    { name: "Pending", value: 0, color: "#f97316" },
-    { name: "Confirmed", value: 0, color: "#eab308" },
-    { name: "Preparing", value: 0, color: "#3b82f6" },
-    { name: "Out for Delivery", value: 0, color: "#22c55e" },
-    { name: "Delivered", value: 0, color: "#4ade80" },
-    { name: "Cancelled", value: 0, color: "#ef4444" },
+    {
+      name: "Pending",
+      value: dashboardStats?.orderStats.pending || 0,
+      color: "#f97316",
+    },
+    {
+      name: "Confirmed",
+      value: dashboardStats?.orderStats.confirmed || 0,
+      color: "#eab308",
+    },
+    {
+      name: "Preparing",
+      value: dashboardStats?.orderStats.preparing || 0,
+      color: "#3b82f6",
+    },
+    {
+      name: "Out for Delivery",
+      value: dashboardStats?.orderStats.outForDelivery || 0,
+      color: "#22c55e",
+    },
+    {
+      name: "Delivered",
+      value: dashboardStats?.orderStats.delivered || 0,
+      color: "#4ade80",
+    },
+    {
+      name: "Cancelled",
+      value: dashboardStats?.orderStats.cancelled || 0,
+      color: "#ef4444",
+    },
   ];
+  const hasPieOrders = pieData.some((item) => item.value > 0);
 
   const miniChartData = [
     { value: 10 },
@@ -106,6 +154,16 @@ const AdminDashboard = () => {
     { value: 20 },
     { value: 30 },
   ];
+
+  useEffect(() => {
+    const params = {};
+    params.startDate = analaticsDropdown.startDate;
+    params.endDate = analaticsDropdown.endDate;
+    setSearchParams(params);
+  }, [analaticsDropdown]);
+
+  if (error) return <ErrorState error={error} onRetry={fetchDashboardStats} />;
+  if ((loading, !dashboardStats)) return <AdminDashboardSkeleton />;
 
   return (
     <div className="space-y-6 max-w-400 mx-auto">
@@ -125,7 +183,7 @@ const AdminDashboard = () => {
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
             <Calendar size={16} className="text-gray-500" />
-            {analaticsDropdown}
+            {analaticsDropdown.dayDetails}
             <ChevronDown size={16} className="text-gray-500 ml-1" />
           </div>
 
@@ -143,7 +201,7 @@ const AdminDashboard = () => {
                     key={item.name}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={() => {
-                      setAnalaticsDropdown(item.dayDetails);
+                      setAnalaticsDropdown(item);
                       setIsDropdownOpen(false);
                     }}
                   >
@@ -169,7 +227,9 @@ const AdminDashboard = () => {
                 <p className="text-gray-500 text-xs font-medium mb-1">
                   Total Restaurants
                 </p>
-                <h3 className="text-2xl font-bold text-gray-800">1</h3>
+                <h3 className="text-2xl font-bold text-gray-800">
+                  {dashboardStats.totalRestaurants}
+                </h3>
               </div>
             </div>
           </div>
@@ -207,7 +267,9 @@ const AdminDashboard = () => {
                 <p className="text-gray-500 text-xs font-medium mb-1">
                   Total Orders
                 </p>
-                <h3 className="text-2xl font-bold text-gray-800">0</h3>
+                <h3 className="text-2xl font-bold text-gray-800">
+                  {dashboardStats.totalOrders}
+                </h3>
               </div>
             </div>
           </div>
@@ -245,7 +307,9 @@ const AdminDashboard = () => {
                 <p className="text-gray-500 text-xs font-medium mb-1">
                   Total Customers
                 </p>
-                <h3 className="text-2xl font-bold text-gray-800">0</h3>
+                <h3 className="text-2xl font-bold text-gray-800">
+                  {dashboardStats.totalCustomers}
+                </h3>
               </div>
             </div>
           </div>
@@ -283,7 +347,9 @@ const AdminDashboard = () => {
                 <p className="text-gray-500 text-xs font-medium mb-1">
                   Total Revenue
                 </p>
-                <h3 className="text-2xl font-bold text-gray-800">$0</h3>
+                <h3 className="text-2xl font-bold text-gray-800">
+                  ${dashboardStats.totalRevenue}
+                </h3>
               </div>
             </div>
           </div>
@@ -439,19 +505,35 @@ const AdminDashboard = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={[{ value: 1 }]}
+                    data={
+                      hasPieOrders
+                        ? pieData.filter((item) => item.value > 0)
+                        : [{ name: "No Orders", value: 1, color: "#f3f4f6" }]
+                    }
                     cx="50%"
                     cy="50%"
                     innerRadius={50}
                     outerRadius={65}
-                    fill="#f3f4f6"
                     dataKey="value"
+                    nameKey="name"
                     stroke="none"
-                  />
+                    paddingAngle={hasPieOrders ? 2 : 0}
+                  >
+                    {(hasPieOrders
+                      ? pieData.filter((item) => item.value > 0)
+                      : [{ name: "No Orders", value: 1, color: "#f3f4f6" }]
+                    ).map((entry) => (
+                      <Cell key={entry.name} fill={entry.color} />
+                    ))}
+                  </Pie>
+
+                  {hasPieOrders && <Tooltip />}
                 </PieChart>
               </ResponsiveContainer>
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-2xl font-bold text-gray-800">0</span>
+                <span className="text-2xl font-bold text-gray-800">
+                  {dashboardStats.totalOrders}
+                </span>
                 <span className="text-[10px] text-gray-400">Total Orders</span>
               </div>
             </div>
@@ -506,6 +588,14 @@ const AdminDashboard = () => {
               View all <ArrowRight size={16} />
             </Link>
           </div>
+
+          {ordersError && (
+            <ErrorState
+              variant="inline"
+              error={ordersError}
+              onRetry={fetchAdminOrders}
+            />
+          )}
 
           {orders?.items && orders.items.length > 0 ? (
             <div className="w-full overflow-x-auto">
@@ -668,6 +758,13 @@ const AdminDashboard = () => {
                 </tr>
               </thead>
               <tbody>
+                {resError && (
+                  <ErrorState
+                    variant="inline"
+                    error={resError}
+                    onRetry={fetchRestaurants}
+                  />
+                )}
                 {restaurants &&
                   restaurants.items.map((restaurant) => {
                     return (

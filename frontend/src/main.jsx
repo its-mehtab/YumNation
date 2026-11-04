@@ -23,6 +23,7 @@ import { CouponProvider } from "./context/admin/CouponContext.jsx";
 import { AdminOrdersProvider } from "./context/admin/AdminOrdersContext.jsx";
 import { AllUsersProvider } from "./context/admin/AllUsersContext.jsx";
 import { CategoryAdminPovider } from "./context/admin/CategoryAdminContext.jsx";
+import { AdminDashboardProvider } from "./context/admin/AdminDashboardContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -37,22 +38,24 @@ createRoot(document.getElementById("root")).render(
                     <AddressContextProvider>
                       <ValidateProvider>
                         <OrderContextProvider>
-                          <AdminOrdersProvider>
-                            <OwnerOrdersProvider>
-                              <RestaurantProvider>
-                              <AdminRestaurantsProvider>
-                                <AllUsersProvider>
-                                  <CouponProvider>
-                                    <Theme accentColor="orange">
-                                      <AppInit />
-                                      <App />
-                                    </Theme>
-                                  </CouponProvider>
-                                </AllUsersProvider>
-                              </AdminRestaurantsProvider>
-                            </RestaurantProvider>
-                            </OwnerOrdersProvider>
-                          </AdminOrdersProvider>
+                          <AdminDashboardProvider>
+                            <AdminOrdersProvider>
+                              <OwnerOrdersProvider>
+                                <RestaurantProvider>
+                                  <AdminRestaurantsProvider>
+                                    <AllUsersProvider>
+                                      <CouponProvider>
+                                        <Theme accentColor="orange">
+                                          <AppInit />
+                                          <App />
+                                        </Theme>
+                                      </CouponProvider>
+                                    </AllUsersProvider>
+                                  </AdminRestaurantsProvider>
+                                </RestaurantProvider>
+                              </OwnerOrdersProvider>
+                            </AdminOrdersProvider>
+                          </AdminDashboardProvider>
                         </OrderContextProvider>
                       </ValidateProvider>
                     </AddressContextProvider>

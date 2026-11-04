@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { notifyError, notifySuccess } from "../../utils/toast";
-import { useCategories } from "../../context/admin/CategoryAdminContext";
+import { useCategories } from "../../context/admin";
 import dayjs from "dayjs";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";

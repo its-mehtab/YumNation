@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
-import { useRestaurants } from "../../context/admin/RestaurantsContext";
+import { useRestaurants } from "../../context/admin";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import AdminRestaurantsSkeleton from "../../components/skeleton/admin/AdminRestaurantsSkeleton";
 import { ErrorState } from "../../components/common";

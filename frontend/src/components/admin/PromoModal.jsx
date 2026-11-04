@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useCoupon } from "../../context/admin/CouponContext";
+import { useCoupon } from "../../context/admin";
 import { useAuth } from "../../context/user/AuthContext";
 import dayjs from "dayjs";
 import axios from "axios";

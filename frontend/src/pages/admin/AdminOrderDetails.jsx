@@ -26,7 +26,7 @@ import { Skeleton } from "@radix-ui/themes";
 import { notifyError } from "../../utils/toast";
 import { AdminOrderDetailsSkeleton } from "../../components/skeleton/admin";
 import { ErrorState } from "../../components/common";
-import { useAdminOrders } from "../../context/admin/AdminOrdersContext";
+import { useAdminOrders } from "../../context/admin";
 
 // ── Status config ─────────────────────────────────────────────────────────────
 const STATUSES = [

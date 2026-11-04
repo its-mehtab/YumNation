@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
-import { useAdminOrders } from "../../context/admin/AdminOrdersContext";
+import { useAdminOrders } from "../../context/admin";
 import Pagination from "@mui/material/Pagination";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";

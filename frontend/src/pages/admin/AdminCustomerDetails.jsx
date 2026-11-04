@@ -28,7 +28,7 @@ import {
 import { AdminCustomerDetailsSkeleton } from "../../components/skeleton/admin";
 import { ConfirmationModal, ErrorState } from "../../components/common";
 import { notifyError, notifySuccess } from "../../utils/toast";
-import { useAllUsers } from "../../context/admin/AllUsersContext";
+import { useAllUsers } from "../../context/admin";
 
 // ─── Small reusable pieces ────────────────────────────────────────────────────
 

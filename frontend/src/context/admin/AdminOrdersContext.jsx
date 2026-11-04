@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { useAuth } from "../user/AuthContext";
 
 const AdminOrdersContext = createContext();
@@ -35,7 +35,7 @@ export const AdminOrdersProvider = ({ children }) => {
 
       setOrders(data);
     } catch (error) {
-      setError(error?.response?.data || error.message);
+      setError(error?.response?.data.message || error.message);
       console.log("Order Error:", error?.response?.data || error.message);
     } finally {
       setLoading(false);
@@ -61,4 +61,4 @@ export const AdminOrdersProvider = ({ children }) => {
   );
 };
 
-export const useAdminOrders = () => useContext(AdminOrdersContext);
+export default AdminOrdersContext;

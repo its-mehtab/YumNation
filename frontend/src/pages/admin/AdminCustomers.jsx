@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import dayjs from "dayjs";
 import { useAuth } from "../../context/user/AuthContext";
-import { useAllUsers } from "../../context/admin/AllUsersContext";
+import { useAllUsers } from "../../context/admin";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { notifyError, notifySuccess } from "../../utils/toast";
