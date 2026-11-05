@@ -35,6 +35,7 @@ import {
 } from "../../context/admin";
 import AdminDashboardSkeleton from "../../components/skeleton/admin/AdminDashboardSkeleton";
 import { ErrorState } from "../../components/common";
+import DateSelectorModal from "../../components/common/DateSelectorModal";
 
 const orderStatusConfig = {
   placed: "bg-indigo-50 text-indigo-700 border-indigo-200",
@@ -67,12 +68,6 @@ const dateDropdown = [
     endDate: today.endOf("day").toISOString(),
   },
   {
-    name: "Last month",
-    dayDetails: `Last month (${today.subtract(1, "month").startOf("month").format(format)} - ${today.subtract(1, "month").endOf("month").format(format)})`,
-    startDate: today.subtract(1, "month").startOf("month").toISOString(),
-    endDate: today.subtract(1, "month").endOf("month").toISOString(),
-  },
-  {
     name: "This year",
     dayDetails: `This year (${today.startOf("year").format(format)} - ${today.format(format)})`,
     startDate: today.startOf("year").toISOString(),
@@ -89,13 +84,12 @@ const dateDropdown = [
 const AdminDashboard = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isOverviewDropdownOpen, setIsOverviewDropdownOpen] = useState(false);
-  const [analaticsDropdown, setAnalaticsDropdown] = useState(dateDropdown[0]);
 
   const {
     dashboardStats,
     fetchDashboardStats,
-    // searchParams,
-    setSearchParams,
+    analaticsDropdown,
+    setAnalaticsDropdown,
     loading,
     error,
   } = useAdminDashboard();
@@ -155,15 +149,8 @@ const AdminDashboard = () => {
     { value: 30 },
   ];
 
-  useEffect(() => {
-    const params = {};
-    params.startDate = analaticsDropdown.startDate;
-    params.endDate = analaticsDropdown.endDate;
-    setSearchParams(params);
-  }, [analaticsDropdown]);
-
-  if (error) return <ErrorState error={error} onRetry={fetchDashboardStats} />;
   if ((loading, !dashboardStats)) return <AdminDashboardSkeleton />;
+  if (error) return <ErrorState error={error} onRetry={fetchDashboardStats} />;
 
   return (
     <div className="space-y-6 max-w-400 mx-auto">
@@ -209,6 +196,17 @@ const AdminDashboard = () => {
                   </button>
                 );
               })}
+              <DateSelectorModal
+                onApply={({ startDate, endDate }) => {
+                  setIsDropdownOpen(false);
+                  setAnalaticsDropdown({
+                    name: "Custom Range",
+                    dayDetails: `(${dayjs(startDate).format(format)} - ${dayjs(endDate).format(format)})`,
+                    startDate,
+                    endDate,
+                  });
+                }}
+              />
             </div>
           </div>
         </div>
@@ -415,13 +413,26 @@ const AdminDashboard = () => {
                 }`}
               >
                 <div className="py-1">
-                  <button
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setIsOverviewDropdownOpen(false)}
-                  >
-                    Today
-                  </button>
-                  <button
+                  {/* <DateSelectorModal
+                  onApply={({ startDate, endDate }) => {
+                    setIsDropdownOpen(false);
+                    setAnalaticsDropdown({
+                      name: "Custom Range",
+                      dayDetails: `(${dayjs(startDate).format(format)} - ${dayjs(endDate).format(format)})`,
+                      startDate,
+                      endDate,
+                    });
+                  }}
+                /> */}
+                  {orderStatusConfig.map((item) => {
+                    <button
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => setIsOverviewDropdownOpen(false)}
+                    >
+                      {item.name}
+                    </button>;
+                  })}
+                  {/* <button
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     onClick={() => setIsOverviewDropdownOpen(false)}
                   >
@@ -438,7 +449,7 @@ const AdminDashboard = () => {
                     onClick={() => setIsOverviewDropdownOpen(false)}
                   >
                     This Month
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>

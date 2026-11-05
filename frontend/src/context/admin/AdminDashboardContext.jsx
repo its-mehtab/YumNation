@@ -1,10 +1,7 @@
 import axios from "axios";
-import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
-import { createContext } from "react";
-import { useSearchParams } from "react-router-dom";
+import React, { useState, createContext } from "react";
 import { useAuth } from "../user/AuthContext";
+import dayjs from "dayjs";
 
 const AdminDashboardContext = createContext();
 
@@ -12,7 +9,12 @@ export const AdminDashboardProvider = ({ children }) => {
   const [dashboardStats, setDashboardStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [analaticsDropdown, setAnalaticsDropdown] = useState({
+    name: "Today",
+    dayDetails: `Today (${dayjs().format("MMM DD YYYY")})`,
+    startDate: dayjs().startOf("day").toISOString(),
+    endDate: dayjs().endOf("day").toISOString(),
+  });
 
   const { serverURL } = useAuth();
 
@@ -22,7 +24,10 @@ export const AdminDashboardProvider = ({ children }) => {
 
     try {
       const { data } = await axios.get(`${serverURL}/api/admin/dashboard`, {
-        params: searchParams,
+        params: {
+          startDate: analaticsDropdown.startDate,
+          endDate: analaticsDropdown.endDate,
+        },
         withCredentials: true,
       });
 
@@ -45,8 +50,8 @@ export const AdminDashboardProvider = ({ children }) => {
         setLoading,
         error,
         setError,
-        searchParams,
-        setSearchParams,
+        analaticsDropdown,
+        setAnalaticsDropdown,
       }}
     >
       {children}

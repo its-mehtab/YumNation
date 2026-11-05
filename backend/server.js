@@ -23,7 +23,7 @@ import usersAdminRouter from "./routes/admin/usersAdmin.routes.js";
 import orderAdminRouter from "./routes/admin/orderAdmin.routes.js";
 import categoryAdminRouter from "./routes/admin/categoryAdmin.routes.js";
 import orderOwnerRouter from "./routes/owner/orderOwner.routes.js";
-import dashboardAdminRouter from "./routes/admin/dashboard.routes.js";
+import dashboardAdminRouter from "./routes/admin/dashboardAdmin.routes.js";
 
 const app = express();
 const port = process.env.PORT || 8000;

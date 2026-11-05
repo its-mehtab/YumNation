@@ -30,7 +30,7 @@ const AppInit = () => {
   const { fetchCoupon } = useCoupon();
   const { fetchCategories } = useCategories();
   const { fetchAllUsers, filter: userFilter } = useAllUsers();
-  const { fetchDashboardStats, searchParams } = useAdminDashboard();
+  const { fetchDashboardStats, analaticsDropdown } = useAdminDashboard();
 
   useEffect(() => {
     if (!user) return;
@@ -58,7 +58,7 @@ const AppInit = () => {
     if (!user || user.role !== "admin") return;
 
     fetchDashboardStats();
-  }, [user, searchParams]);
+  }, [user, analaticsDropdown]);
 
   useEffect(() => {
     if (!user) return;
