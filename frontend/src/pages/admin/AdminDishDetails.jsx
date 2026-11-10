@@ -104,9 +104,9 @@ const AdminDishDetails = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* ── Left — images + quick info ── */}
-        <div className="col-span-4 space-y-5">
+        <div className="col-span-1 lg:col-span-4 space-y-5">
           {/* Image gallery */}
           <Card>
             <div className="aspect-square rounded-md bg-[#fff2e8] border border-orange-100 flex items-center justify-center overflow-hidden mb-3">
@@ -182,7 +182,7 @@ const AdminDishDetails = () => {
         </div>
 
         {/* ── Right — Details ── */}
-        <div className="col-span-8 space-y-5">
+        <div className="col-span-1 lg:col-span-8 space-y-5">
           <Card title="Dish Information">
             <div className="space-y-6">
               <div className="flex justify-between items-start gap-4">

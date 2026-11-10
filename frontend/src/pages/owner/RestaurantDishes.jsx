@@ -65,20 +65,20 @@ const RestaurantDishes = () => {
       {/* ── Table card ── */}
       <div className="bg-white rounded-md border border-gray-200 transition-all overflow-hidden">
         {/* Card header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-200 gap-3">
           <div className="flex items-center gap-2">
             <h2 className="text-base font-bold text-gray-700">All Dishes</h2>
             <span className="text-xs bg-[#fff2e8] text-[#fc8019] font-semibold px-2 py-0.5 rounded-md">
               {sorted?.length}
             </span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 justify-between sm:justify-end">
             {/* Sort */}
-            <div className="relative">
+            <div className="relative flex-1 sm:flex-none">
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
-                className="appearance-none border border-gray-200 rounded-md px-4 py-2 pr-8 text-sm text-gray-600 font-medium bg-white focus:outline-none cursor-pointer"
+                className="w-full sm:w-auto appearance-none border border-gray-200 rounded-md px-3 sm:px-4 py-2 pr-8 text-xs sm:text-sm text-gray-600 font-medium bg-white focus:outline-none cursor-pointer"
               >
                 <option value="asc">Sort: A → Z</option>
                 <option value="desc">Sort: Z → A</option>
@@ -88,7 +88,7 @@ const RestaurantDishes = () => {
             {/* Add dish */}
             <Link
               to="/owner/dish/add"
-              className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-bold px-4 py-2.5 rounded-md shadow-md shadow-orange-500/20 transition-all"
+              className="flex items-center justify-center gap-1.5 sm:gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-xs sm:text-sm font-bold px-3 sm:px-4 py-2 sm:py-2.5 rounded-md shadow-md shadow-orange-500/20 transition-all whitespace-nowrap"
             >
               <Plus size={16} strokeWidth={1.5} />
               Add Dish

@@ -23,7 +23,7 @@ const RestaurantRejectedPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12 fade-up">
       <div className="max-w-lg w-full space-y-4">
-        <div className="bg-white rounded-md shadow-[0_0_2.3125rem_rgba(8,21,66,0.08)] p-8 text-center">
+        <div className="bg-white rounded-md shadow-[0_0_2.3125rem_rgba(8,21,66,0.08)] p-4 sm:p-8 text-center">
           <div className="w-20 h-20 rounded-md bg-red-50 border-2 border-red-100 flex items-center justify-center mx-auto mb-5">
             <Frown size={40} className="text-red-400" />
           </div>

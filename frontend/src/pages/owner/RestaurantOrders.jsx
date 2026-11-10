@@ -167,7 +167,7 @@ const RestaurantOrders = () => {
       </div>
 
       {/* ── Stats ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5 mb-5">
         {[
           {
             label: "Total Orders",
@@ -231,10 +231,10 @@ const RestaurantOrders = () => {
       {/* ── Table card ── */}
       <div className="bg-white rounded-md border border-gray-200 transition-all overflow-hidden">
         {/* ── Card header ── */}
-        <div className="px-6 py-4 border-b border-gray-200 space-y-3">
-          <div className="flex items-center justify-between">
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-200 space-y-3">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <h2 className="text-base font-bold text-gray-700">All Orders</h2>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
               {/* Search */}
               <input
                 value={filter.search}
@@ -242,7 +242,7 @@ const RestaurantOrders = () => {
                   setFilter((prev) => ({ ...prev, search: e.target.value }))
                 }
                 placeholder="Search by name, order ID..."
-                className="border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors w-56"
+                className="border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors w-full sm:w-56"
               />
               {/* Sort */}
               <select
@@ -250,7 +250,7 @@ const RestaurantOrders = () => {
                 onChange={(e) =>
                   setFilter((prev) => ({ ...prev, sortBy: e.target.value }))
                 }
-                className="border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] bg-white"
+                className="border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-600 outline-none focus:border-[#fc8019] bg-white w-full sm:w-auto"
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>

@@ -139,40 +139,42 @@ const RestaurantApply = () => {
         </div>
 
         {/* ── Stepper ── */}
-        <div className="flex items-center mb-8">
-          {STEPS.map((s, i) => (
-            <React.Fragment key={s.id}>
-              <div className="flex flex-col items-center">
-                <div
-                  className={`w-9 h-9 rounded-md flex items-center justify-center text-sm font-bold border-2 transition-all
-                  ${
-                    step > s.id
-                      ? "bg-[#fc8019] border-[#fc8019] text-white"
-                      : step === s.id
-                        ? "border-[#fc8019] bg-white text-[#fc8019]"
-                        : "border-gray-200 bg-white text-gray-300"
-                  }`}
-                >
-                  {step > s.id ? "✓" : s.id}
+        <div className="overflow-x-auto pb-2 mb-6 sm:mb-8">
+          <div className="flex items-center min-w-[360px] sm:min-w-0 w-full">
+            {STEPS.map((s, i) => (
+              <React.Fragment key={s.id}>
+                <div className="flex flex-col items-center">
+                  <div
+                    className={`w-9 h-9 rounded-md flex items-center justify-center text-sm font-bold border-2 transition-all
+                    ${
+                      step > s.id
+                        ? "bg-[#fc8019] border-[#fc8019] text-white"
+                        : step === s.id
+                          ? "border-[#fc8019] bg-white text-[#fc8019]"
+                          : "border-gray-200 bg-white text-gray-300"
+                    }`}
+                  >
+                    {step > s.id ? "✓" : s.id}
+                  </div>
+                  <p
+                    className={`text-xs mt-1.5 font-semibold whitespace-nowrap ${step >= s.id ? "text-gray-600" : "text-gray-300"}`}
+                  >
+                    {s.title}
+                  </p>
                 </div>
-                <p
-                  className={`text-xs mt-1.5 font-semibold whitespace-nowrap ${step >= s.id ? "text-gray-600" : "text-gray-300"}`}
-                >
-                  {s.title}
-                </p>
-              </div>
-              {i < STEPS.length - 1 && (
-                <div
-                  className={`flex-1 h-0.5 mx-2 mb-4 transition-all ${step > s.id ? "bg-[#fc8019]" : "bg-gray-200"}`}
-                />
-              )}
-            </React.Fragment>
-          ))}
+                {i < STEPS.length - 1 && (
+                  <div
+                    className={`flex-1 h-0.5 mx-2 mb-4 transition-all ${step > s.id ? "bg-[#fc8019]" : "bg-gray-200"}`}
+                  />
+                )}
+              </React.Fragment>
+            ))}
+          </div>
         </div>
 
         {/* ── Card ── */}
         <div className="bg-white rounded-md shadow-[0_0_2.3125rem_rgba(8,21,66,0.08)] overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200 bg-orange-50">
+          <div className="px-4 sm:px-6 py-4 border-b border-gray-200 bg-orange-50">
             <p className="text-sm font-bold text-gray-700">
               {STEPS[step - 1].title}
             </p>
@@ -181,7 +183,7 @@ const RestaurantApply = () => {
             </p>
           </div>
 
-          <div className="p-6 space-y-4">
+          <div className="p-4 sm:p-6 space-y-4">
             {/* ── Step 1 — Basic Info ── */}
             {step === 1 && (
               <>
@@ -241,7 +243,7 @@ const RestaurantApply = () => {
                   </div> */}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Field label="Restaurant Name" required>
                     <Input
                       value={form.name}
@@ -336,7 +338,7 @@ const RestaurantApply = () => {
                     placeholder="Floor, landmark..."
                   />
                 </Field>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <Field label="City" required>
                     <Input
                       value={form.city}
@@ -378,7 +380,7 @@ const RestaurantApply = () => {
             {/* ── Step 3 — Hours & Delivery ── */}
             {step === 3 && (
               <>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Field label="Opens At">
                     <Input
                       type="time"
@@ -394,7 +396,7 @@ const RestaurantApply = () => {
                     />
                   </Field>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <Field
                     label="Delivery Time (min)"
                     hint="Estimated delivery time"

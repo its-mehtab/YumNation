@@ -109,8 +109,8 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
 
   return (
     <form onSubmit={submit}>
-      <div className="grid grid-cols-12 gap-5">
-        <div className="col-span-3 space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <div className="col-span-1 lg:col-span-3 space-y-4">
           <div
             onClick={() => dishImageRef.current.click()}
             className="aspect-square rounded-md border-2 border-dashed border-[#fc8019] bg-[#fff2e8] flex flex-col items-center justify-center cursor-pointer hover:bg-orange-100 transition-colors overflow-hidden"
@@ -163,12 +163,12 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
           </div>
         </div>
 
-        <div className="col-span-9 space-y-5">
+        <div className="col-span-1 lg:col-span-9 space-y-5">
           <div className="bg-white rounded-md border border-gray-200 transition-all p-6 space-y-4">
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
               Basic Info
             </p>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Field label="Dish Name" required>
                 <Input
                   name="name"
@@ -222,7 +222,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
             <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
               Pricing
             </p>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Field label="Selling Price ($)" required>
                 <Input
                   name="price"
@@ -327,7 +327,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
               </div>
             )}
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
               <input
                 value={variantInput.name}
                 onChange={(e) =>
@@ -344,15 +344,15 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                 placeholder="Price ($)"
                 type="number"
                 min="0"
-                className="w-28 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
+                className="w-full sm:w-28 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
               />
               <button
                 type="button"
                 onClick={addVariant}
                 disabled={!variantInput.name.trim() || !variantInput.price}
-                className="flex gap-1 items-center px-4 py-2 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors whitespace-nowrap disabled:opacity-40"
+                className="flex justify-center gap-1 items-center px-4 py-2 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors whitespace-nowrap disabled:opacity-40"
               >
-                <Plus  color={"#fff"} />
+                <Plus color={"#fff"} />
                 Add
               </button>
             </div>
@@ -403,7 +403,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
               </div>
             )}
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
               <input
                 value={addOnInput.name}
                 onChange={(e) =>
@@ -420,31 +420,31 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                 placeholder="Price ($)"
                 type="number"
                 min="0"
-                className="w-28 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
+                className="w-full sm:w-28 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
               />
               <button
                 type="button"
                 onClick={addAddOn}
                 disabled={!addOnInput.name.trim() || !addOnInput.price}
-                className="flex gap-1 items-center px-4 py-2 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors whitespace-nowrap disabled:opacity-40"
+                className="flex justify-center gap-1 items-center px-4 py-2 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors whitespace-nowrap disabled:opacity-40"
               >
-                <Plus  color={"#fff"} /> Add
+                <Plus color={"#fff"} /> Add
               </button>
             </div>
           </div>
 
-          <div className="flex justify-end gap-3">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-3">
             <button
               type="button"
               onClick={handleClear}
-              className="px-5 py-2.5 rounded-md border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors flex items-center gap-1"
+              className="w-full sm:w-auto justify-center px-5 py-2.5 rounded-md border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors flex items-center gap-1"
             >
               <Trash size={16} /> Clear
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2.5 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors disabled:opacity-60 flex items-center gap-1"
+              className="w-full sm:w-auto justify-center px-6 py-2.5 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors disabled:opacity-60 flex items-center gap-1"
             >
               <Save size={16} /> {loading ? "Saving..." : "Save Dish"}
             </button>

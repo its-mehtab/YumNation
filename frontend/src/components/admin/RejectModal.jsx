@@ -32,7 +32,7 @@ const RejectModal = ({ restaurant, setRejectTarget, updateStatus }) => {
   return (
     <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 px-4">
       <div
-        className="bg-white rounded-md shadow-xl w-full max-w-md p-6"
+        className="bg-white rounded-md shadow-xl w-full max-w-md p-4 sm:p-6 max-h-[90vh] overflow-y-auto"
         style={{ animation: "fadeUp 0.2s ease both" }}
       >
         <style>{`@keyframes fadeUp { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:translateY(0) } }`}</style>

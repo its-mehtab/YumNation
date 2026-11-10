@@ -40,6 +40,12 @@ export const getRestaurants = async (req, res) => {
   const filter = {};
   if (statusFilter) filter.status = statusFilter;
 
+  if (search) {
+    const regex = new RegExp(search.trim(), "i");
+
+    filter.$or = [{ name: regex }, { email: regex }, { phone: regex }];
+  }
+
   try {
     const restaurant = await Restaurant.find(filter).populate("owner");
 

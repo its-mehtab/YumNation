@@ -158,7 +158,7 @@ const AdminCustomers = () => {
       </div>
 
       {/* ── Stats ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {[
           {
             label: "Total Customers",
@@ -215,7 +215,7 @@ const AdminCustomers = () => {
       {/* ── Table Card ── */}
       <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
         {/* Toolbar */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-6 py-5 border-b border-gray-200 gap-4">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200 gap-4">
           <h2 className="text-lg font-bold text-gray-800">All Customers</h2>
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto">
             <div className="relative w-full sm:w-64">

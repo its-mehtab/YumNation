@@ -131,8 +131,7 @@ const AdminOrders = () => {
 
   if (loading && !orders) return <AdminOrderDetailsSkeleton />;
 
-  if (!orders || error)
-    return <ErrorState error={error} onRetry={fetchAdminOrders} />;
+  if (error) return <ErrorState error={error} onRetry={fetchAdminOrders} />;
 
   const handleStatusChange = async (orderId, newStatus) => {
     setOrders((prev) => {
@@ -204,7 +203,7 @@ const AdminOrders = () => {
       </div>
 
       {/* ── Stats ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         {[
           {
             label: "Total Orders",
@@ -261,7 +260,7 @@ const AdminOrders = () => {
       {/* ── Table card ── */}
       <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
         {/* ── Card header ── */}
-        <div className="px-6 py-5 border-b border-gray-50 space-y-4">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-50 space-y-4">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
             <h2 className="text-base font-semibold text-gray-900">
               All Orders

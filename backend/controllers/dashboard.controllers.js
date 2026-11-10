@@ -5,8 +5,6 @@ import User from "../models/user.modal.js";
 export const getDashboardStats = async (req, res) => {
   const { startDate, endDate } = req.query;
 
-  console.log(startDate, endDate);
-
   if (!startDate || !endDate) {
     return res
       .status(400)
@@ -28,6 +26,23 @@ export const getDashboardStats = async (req, res) => {
     });
   }
 
+  const difference = end - start + 1;
+
+  const hours = difference / (1000 * 60 * 60);
+  const days = difference / (1000 * 60 * 60 * 24);
+
+  let unit;
+
+  if (hours <= 24) {
+    unit = "hour";
+  } else if (days <= 30) {
+    unit = "day";
+  } else if (days <= 365) {
+    unit = "month";
+  } else {
+    unit = "year";
+  }
+
   const match = {};
   match.createdAt = {
     $gte: start,
@@ -36,6 +51,7 @@ export const getDashboardStats = async (req, res) => {
 
   try {
     const [
+      chartData,
       totalRestaurants,
       totalOrders,
       totalCustomers,
@@ -47,6 +63,45 @@ export const getDashboardStats = async (req, res) => {
       delivered,
       cancelled,
     ] = await Promise.all([
+      Order.aggregate([
+        {
+          $match: {
+            createdAt: { $gte: start, $lte: end },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              $dateTrunc: {
+                date: "$createdAt",
+                unit,
+                timezone: "Asia/Kolkata",
+              },
+            },
+            totalOrders: { $sum: 1 },
+          },
+        },
+        { $sort: { _id: 1 } },
+        {
+          $densify: {
+            field: "_id",
+            range: {
+              step: 1,
+              unit,
+              bounds: [start, end],
+            },
+          },
+        },
+        {
+          $fill: {
+            output: {
+              totalOrders: { value: 0 },
+            },
+          },
+        },
+        { $sort: { _id: 1 } },
+      ]),
+
       Restaurant.countDocuments(match),
       Order.countDocuments(match),
       User.countDocuments({
@@ -76,6 +131,8 @@ export const getDashboardStats = async (req, res) => {
     ]);
 
     return res.status(200).json({
+      interval: unit,
+      orderChartData: chartData,
       totalRestaurants,
       totalOrders,
       totalCustomers,

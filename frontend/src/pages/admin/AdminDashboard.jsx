@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Calendar,
   ChevronDown,
@@ -13,6 +13,7 @@ import {
   Crown,
   ArrowRight,
   Inbox,
+  RotateCw,
 } from "lucide-react";
 import {
   LineChart,
@@ -83,7 +84,7 @@ const dateDropdown = [
 
 const AdminDashboard = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isOverviewDropdownOpen, setIsOverviewDropdownOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const {
     dashboardStats,
@@ -96,60 +97,84 @@ const AdminDashboard = () => {
   const { orders, fetchAdminOrders, error: ordersError } = useAdminOrders();
   const { restaurants, fetchRestaurants, error: resError } = useRestaurants();
 
-  const lineChartData = [
-    { name: "Nov 20", value: 116 },
-    { name: "Nov 21", value: 281 },
-    { name: "Nov 22", value: 249 },
-    { name: "Nov 23", value: 299 },
-    { name: "Nov 24", value: 819 },
-    { name: "Nov 25", value: 128 },
-    { name: "Nov 26", value: 927 },
-  ];
+  const handleRefresh = async () => {
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+    try {
+      await Promise.allSettled([
+        fetchDashboardStats(),
+        fetchAdminOrders(),
+        fetchRestaurants(),
+      ]);
+    } catch (err) {
+      console.error("Refresh dashboard error:", err);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  const formatChartDate = (date, interval) => {
+    switch (interval) {
+      case "hour":
+        return dayjs(date).format("h A");
+
+      case "day":
+        return dayjs(date).format("MMM DD");
+
+      case "month":
+        return dayjs(date).format("MMM YYYY");
+
+      case "year":
+        return dayjs(date).format("YYYY");
+
+      default:
+        return dayjs(date).format("MMM DD");
+    }
+  };
+
+  const lineChartData =
+    dashboardStats &&
+    dashboardStats.orderChartData?.map((item) => ({
+      name: formatChartDate(item._id, dashboardStats.interval),
+      value: item.totalOrders,
+    }));
 
   const pieData = [
     {
       name: "Pending",
-      value: dashboardStats?.orderStats.pending || 0,
+      value: dashboardStats?.orderStats?.pending || 0,
       color: "#f97316",
     },
     {
       name: "Confirmed",
-      value: dashboardStats?.orderStats.confirmed || 0,
+      value: dashboardStats?.orderStats?.confirmed || 0,
       color: "#eab308",
     },
     {
       name: "Preparing",
-      value: dashboardStats?.orderStats.preparing || 0,
+      value: dashboardStats?.orderStats?.preparing || 0,
       color: "#3b82f6",
     },
     {
       name: "Out for Delivery",
-      value: dashboardStats?.orderStats.outForDelivery || 0,
+      value: dashboardStats?.orderStats?.outForDelivery || 0,
       color: "#22c55e",
     },
     {
       name: "Delivered",
-      value: dashboardStats?.orderStats.delivered || 0,
+      value: dashboardStats?.orderStats?.delivered || 0,
       color: "#4ade80",
     },
     {
       name: "Cancelled",
-      value: dashboardStats?.orderStats.cancelled || 0,
+      value: dashboardStats?.orderStats?.cancelled || 0,
       color: "#ef4444",
     },
   ];
   const hasPieOrders = pieData.some((item) => item.value > 0);
+  // console.log(pieData, hasPieOrders);
 
-  const miniChartData = [
-    { value: 10 },
-    { value: 20 },
-    { value: 15 },
-    { value: 25 },
-    { value: 20 },
-    { value: 30 },
-  ];
-
-  if ((loading, !dashboardStats)) return <AdminDashboardSkeleton />;
+  if (loading && !dashboardStats) return <AdminDashboardSkeleton />;
   if (error) return <ErrorState error={error} onRetry={fetchDashboardStats} />;
 
   return (
@@ -157,63 +182,80 @@ const AdminDashboard = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2">
             Good morning, Admin 👋
           </h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <p className="text-gray-500 text-xs sm:text-sm mt-1">
             Here's what's happening with your platform today.
           </p>
         </div>
-        <div className="relative">
-          <div
-            className="bg-white border border-gray-200 px-4 py-2.5 rounded-lg flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-50"
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
+          <button
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="bg-white border border-gray-200 px-3.5 py-2.5 rounded-lg flex items-center gap-2 text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-50 hover:text-[#fc8019] hover:border-orange-200 transition-all shadow-xs disabled:opacity-60"
+            title="Refresh dashboard data"
           >
-            <Calendar size={16} className="text-gray-500" />
-            {analaticsDropdown.dayDetails}
-            <ChevronDown size={16} className="text-gray-500 ml-1" />
-          </div>
+            <RotateCw
+              size={16}
+              className={`transition-transform duration-500 ${
+                isRefreshing ? "animate-spin text-[#fc8019]" : "text-gray-500"
+              }`}
+            />
+            <span className="hidden sm:inline">Refresh</span>
+          </button>
 
-          <div
-            className={`absolute right-0 mt-2 w-48 bg-white rounded-md border border-gray-200 shadow-lg z-50 overflow-hidden transition-all duration-200 origin-top-right ${
-              isDropdownOpen
-                ? "scale-100 opacity-100 visible"
-                : "scale-95 opacity-0 invisible"
-            }`}
-          >
-            <div className="py-1">
-              {dateDropdown.map((item) => {
-                return (
-                  <button
-                    key={item.name}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => {
-                      setAnalaticsDropdown(item);
-                      setIsDropdownOpen(false);
-                    }}
-                  >
-                    {item.name}
-                  </button>
-                );
-              })}
-              <DateSelectorModal
-                onApply={({ startDate, endDate }) => {
-                  setIsDropdownOpen(false);
-                  setAnalaticsDropdown({
-                    name: "Custom Range",
-                    dayDetails: `(${dayjs(startDate).format(format)} - ${dayjs(endDate).format(format)})`,
-                    startDate,
-                    endDate,
-                  });
-                }}
-              />
+          <div className="relative flex-1 sm:flex-none">
+            <div
+              className="bg-white border border-gray-200 px-3 sm:px-4 py-2.5 rounded-lg flex items-center justify-between sm:justify-start gap-2 text-xs sm:text-sm font-medium text-gray-700 cursor-pointer hover:bg-gray-50"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              <Calendar size={16} className="text-gray-500 shrink-0" />
+              <span className="truncate">{analaticsDropdown.dayDetails}</span>
+              <ChevronDown size={16} className="text-gray-500 ml-1 shrink-0" />
+            </div>
+
+            <div
+              className={`absolute right-0 mt-2 w-48 max-w-[calc(100vw-32px)] bg-white rounded-md border border-gray-200 shadow-lg z-50 overflow-hidden transition-all duration-200 origin-top-right ${
+                isDropdownOpen
+                  ? "scale-100 opacity-100 visible"
+                  : "scale-95 opacity-0 invisible"
+              }`}
+            >
+              <div className="py-1">
+                {dateDropdown.map((item) => {
+                  return (
+                    <button
+                      key={item.name}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      onClick={() => {
+                        setAnalaticsDropdown(item);
+                        setIsDropdownOpen(false);
+                      }}
+                    >
+                      {item.name}
+                    </button>
+                  );
+                })}
+                <DateSelectorModal
+                  onApply={({ startDate, endDate }) => {
+                    setIsDropdownOpen(false);
+                    setAnalaticsDropdown({
+                      name: "Custom Range",
+                      dayDetails: `(${dayjs(startDate).format(format)} - ${dayjs(endDate).format(format)})`,
+                      startDate,
+                      endDate,
+                    });
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Metric Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {/* Total Restaurants */}
         <div className="bg-white p-5 rounded-md border border-gray-200">
           <div className="flex justify-between items-start">
@@ -229,27 +271,6 @@ const AdminDashboard = () => {
                   {dashboardStats.totalRestaurants}
                 </h3>
               </div>
-            </div>
-          </div>
-          <div className="flex justify-between items-end mt-4">
-            <p className="text-xs font-medium text-green-600 flex items-center gap-1">
-              <ArrowUp size={12} strokeWidth={3} /> 0%{" "}
-              <span className="text-gray-400 font-normal ml-1">
-                vs. yesterday
-              </span>
-            </p>
-            <div className="w-20 h-8">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={miniChartData}>
-                  <Line
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#f97316"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
             </div>
           </div>
         </div>
@@ -271,27 +292,6 @@ const AdminDashboard = () => {
               </div>
             </div>
           </div>
-          <div className="flex justify-between items-end mt-4">
-            <p className="text-xs font-medium text-green-600 flex items-center gap-1">
-              <ArrowUp size={12} strokeWidth={3} /> 0%{" "}
-              <span className="text-gray-400 font-normal ml-1">
-                vs. yesterday
-              </span>
-            </p>
-            <div className="w-20 h-8">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={miniChartData}>
-                  <Line
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#eab308"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
         </div>
 
         {/* Total Customers */}
@@ -309,27 +309,6 @@ const AdminDashboard = () => {
                   {dashboardStats.totalCustomers}
                 </h3>
               </div>
-            </div>
-          </div>
-          <div className="flex justify-between items-end mt-4">
-            <p className="text-xs font-medium text-green-600 flex items-center gap-1">
-              <ArrowUp size={12} strokeWidth={3} /> 0%{" "}
-              <span className="text-gray-400 font-normal ml-1">
-                vs. yesterday
-              </span>
-            </p>
-            <div className="w-20 h-8">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={miniChartData}>
-                  <Line
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#ef4444"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
             </div>
           </div>
         </div>
@@ -351,35 +330,14 @@ const AdminDashboard = () => {
               </div>
             </div>
           </div>
-          <div className="flex justify-between items-end mt-4">
-            <p className="text-xs font-medium text-green-600 flex items-center gap-1">
-              <ArrowUp size={12} strokeWidth={3} /> 0%{" "}
-              <span className="text-gray-400 font-normal ml-1">
-                vs. yesterday
-              </span>
-            </p>
-            <div className="w-20 h-8">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={miniChartData}>
-                  <Line
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#22c55e"
-                    strokeWidth={2}
-                    dot={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
         </div>
       </div>
 
       {/* Middle Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Orders Overview */}
-        <div className="lg:col-span-2 bg-white rounded-md border border-gray-200 p-6">
-          <div className="flex justify-between items-center mb-8">
+        <div className="lg:col-span-2 bg-white rounded-md border border-gray-200 p-4 sm:p-6">
+          <div className="flex justify-between items-center mb-6 sm:mb-8">
             <div className="flex items-center gap-3">
               <BarChart2
                 className="text-orange-500"
@@ -393,64 +351,6 @@ const AdminDashboard = () => {
                 <p className="text-xs text-gray-500">
                   Track your platform performance over time.
                 </p>
-              </div>
-            </div>
-            <div className="relative">
-              <div
-                className="border border-gray-200 px-3 py-1.5 rounded-md text-xs font-medium text-gray-600 cursor-pointer flex items-center gap-2 hover:bg-gray-50"
-                onClick={() =>
-                  setIsOverviewDropdownOpen(!isOverviewDropdownOpen)
-                }
-              >
-                Last 7 Days <ChevronDown size={14} />
-              </div>
-
-              <div
-                className={`absolute right-0 mt-2 w-40 bg-white rounded-md border border-gray-200 shadow-lg z-50 overflow-hidden transition-all duration-200 origin-top-right ${
-                  isOverviewDropdownOpen
-                    ? "scale-100 opacity-100 visible"
-                    : "scale-95 opacity-0 invisible"
-                }`}
-              >
-                <div className="py-1">
-                  {/* <DateSelectorModal
-                  onApply={({ startDate, endDate }) => {
-                    setIsDropdownOpen(false);
-                    setAnalaticsDropdown({
-                      name: "Custom Range",
-                      dayDetails: `(${dayjs(startDate).format(format)} - ${dayjs(endDate).format(format)})`,
-                      startDate,
-                      endDate,
-                    });
-                  }}
-                /> */}
-                  {orderStatusConfig.map((item) => {
-                    <button
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={() => setIsOverviewDropdownOpen(false)}
-                    >
-                      {item.name}
-                    </button>;
-                  })}
-                  {/* <button
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setIsOverviewDropdownOpen(false)}
-                  >
-                    Yesterday
-                  </button>
-                  <button
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setIsOverviewDropdownOpen(false)}
-                  >
-                    Last 7 Days
-                  </button>
-                  <button
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setIsOverviewDropdownOpen(false)}
-                  >
-                    This Month
-                  </button> */}
-                </div>
               </div>
             </div>
           </div>
@@ -476,7 +376,7 @@ const AdminDashboard = () => {
                   axisLine={false}
                   tickLine={false}
                   tick={{ fill: "#9ca3af", fontSize: 12 }}
-                  domain={[0, 4]}
+                  domain={[0, "dataMax + 1"]}
                   ticks={[0, 1, 2, 3, 4]}
                 />
                 <Tooltip />
@@ -494,10 +394,10 @@ const AdminDashboard = () => {
         </div>
 
         {/* Order Status */}
-        <div className="lg:col-span-1 bg-white rounded-md border border-gray-200 p-6 h-full">
-          <div className="flex items-center gap-3 mb-8">
+        <div className="lg:col-span-1 bg-white rounded-md border border-gray-200 p-4 sm:p-6 h-full">
+          <div className="flex items-center gap-3 mb-6 sm:mb-8">
             <PieChartIcon
-              className="text-orange-500"
+              className="text-orange-500 shrink-0"
               size={24}
               strokeWidth={2}
             />
@@ -511,8 +411,8 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between gap-4 h-52">
-            <div className="relative w-1/2 h-full flex justify-center items-center">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 h-auto sm:h-52">
+            <div className="relative w-full sm:w-1/2 h-44 sm:h-full flex justify-center items-center">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -541,6 +441,7 @@ const AdminDashboard = () => {
                   {hasPieOrders && <Tooltip />}
                 </PieChart>
               </ResponsiveContainer>
+
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                 <span className="text-2xl font-bold text-gray-800">
                   {dashboardStats.totalOrders}
@@ -549,21 +450,22 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            <div className="w-1/2 flex flex-col gap-3">
-              {pieData.map((item, index) => (
+            <div className="w-full sm:w-1/2 flex flex-col gap-2.5 sm:gap-3">
+              {pieData.map((item) => (
                 <div
-                  key={index}
+                  key={item.name}
                   className="flex justify-between items-center text-xs"
                 >
                   <div className="flex items-center gap-2">
                     <span
                       className="w-2.5 h-2.5 rounded-full"
                       style={{ backgroundColor: item.color }}
-                    ></span>
+                    />
                     <span className="text-gray-600 font-medium">
                       {item.name}
                     </span>
                   </div>
+
                   <span className="font-bold text-gray-800">{item.value}</span>
                 </div>
               ))}
@@ -575,7 +477,7 @@ const AdminDashboard = () => {
       {/* Bottom Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Orders */}
-        <div className="lg:col-span-2 bg-white rounded-md border border-gray-200 p-6 h-full">
+        <div className="lg:col-span-2 bg-white rounded-md border border-gray-200 p-4 sm:p-6 h-full">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-3">
               <ListOrdered
@@ -734,7 +636,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Top Restaurants */}
-        <div className="lg:col-span-1 bg-white rounded-md border border-gray-200 p-6 h-full">
+        <div className="lg:col-span-1 bg-white rounded-md border border-gray-200 p-4 sm:p-6 h-full">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-3">
               <Crown className="text-orange-500" size={24} strokeWidth={2} />

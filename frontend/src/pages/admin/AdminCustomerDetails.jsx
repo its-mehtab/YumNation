@@ -323,9 +323,9 @@ const AdminCustomerDetails = () => {
       </div>
 
       {/* ── Top Header Card ── */}
-      <div className="bg-white rounded-md  border border-gray-200 p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="flex items-center gap-6">
-          <div className="w-20 h-20 rounded-md bg-orange-100 flex items-center justify-center text-[#fc8019] text-3xl font-bold shadow-sm border border-orange-200">
+      <div className="bg-white rounded-md  border border-gray-200 p-4 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+          <div className="w-20 h-20 rounded-md bg-orange-100 flex items-center justify-center text-[#fc8019] text-3xl font-bold shadow-sm border border-orange-200 shrink-0">
             {customer?.firstName?.slice(0, 1).toUpperCase()}
             {customer?.lastName?.slice(0, 1).toUpperCase()}
           </div>
@@ -367,7 +367,7 @@ const AdminCustomerDetails = () => {
       </div>
 
       {/* ── Stats Row ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <StatBox
           label="Total Orders"
           value={customer?.totalOrders || 0}

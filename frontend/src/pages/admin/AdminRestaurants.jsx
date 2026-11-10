@@ -1,5 +1,5 @@
 import { Skeleton } from "@radix-ui/themes";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useRestaurants } from "../../context/admin";
 import AdminRestaurantsItem from "../../components/admin/AdminRestaurantItem";
@@ -20,11 +20,6 @@ const AdminRestaurants = () => {
 
   const { serverURL } = useAuth();
 
-  if (loading) return <AdminRestaurantsSkeleton />;
-
-  if (!restaurants || error)
-    return <ErrorState error={error} onRetry={fetchRestaurants} />;
-
   const tabs = [
     { key: "all", label: "All" },
     { key: "pending", label: "Pending" },
@@ -33,8 +28,8 @@ const AdminRestaurants = () => {
     { key: "suspended", label: "Suspended" },
   ];
 
-  const handleFilter = async (t) => {
-    setFilter(t.key);
+  const handleFilter = async (key) => {
+    setFilter(key);
 
     try {
       const { data } = await axios.get(
@@ -42,7 +37,7 @@ const AdminRestaurants = () => {
 
         {
           params: {
-            statusFilter: t.key === "all" ? "" : t.key,
+            statusFilter: key === "all" ? "" : key,
             search,
             page: 1,
             limit: 12,
@@ -64,8 +59,19 @@ const AdminRestaurants = () => {
         r._id === id ? { ...r, status, ...extra } : r,
       ),
     }));
-  const pendingCount = restaurants.statusCount.pending;
-  const totalRevenue = restaurants.restaurantAnalatics.totalRevenue;
+  const pendingCount = restaurants?.statusCount?.pending || 0;
+  const totalRevenue = restaurants?.restaurantAnalatics?.totalRevenue || 0;
+
+  useEffect(() => {
+    const clear = setTimeout(() => {
+      handleFilter(filter);
+    }, 400);
+    return () => clearInterval(clear);
+  }, [search]);
+
+  if (loading) return <AdminRestaurantsSkeleton />;
+  if (!restaurants || error)
+    return <ErrorState error={error} onRetry={fetchRestaurants} />;
 
   return (
     <div className="space-y-6">
@@ -90,7 +96,7 @@ const AdminRestaurants = () => {
       </div>
 
       {/* ── Stats ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {[
           {
             label: "Total Restaurants",
@@ -152,7 +158,7 @@ const AdminRestaurants = () => {
       {/* ── Table card ── */}
       <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
         {/* Card header */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-6 py-5 border-b border-gray-200 gap-4">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200 gap-4">
           <div className="flex items-center gap-3">
             <h2 className="text-lg font-bold text-gray-800">All Restaurants</h2>
             <span className="text-xs bg-[#fff2e8] text-[#fc8019] font-bold px-2.5 py-1 rounded-md">
@@ -169,7 +175,7 @@ const AdminRestaurants = () => {
                 return (
                   <button
                     key={t.key}
-                    onClick={() => handleFilter(t)}
+                    onClick={() => handleFilter(t.key)}
                     className={`px-4 py-2 rounded-md transition-all flex items-center justify-center min-w-[100px] gap-2 text-sm font-semibold whitespace-nowrap
                       ${filter === t.key ? "bg-white text-[#fc8019] shadow-sm ring-1 ring-gray-200" : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"}`}
                   >

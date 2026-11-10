@@ -23,6 +23,7 @@ import RestaurantAddDish from "./pages/owner/RestaurantAddDish";
 import RestaurantDishDetails from "./pages/owner/RestaurantDishDetails";
 import RestaurantSettings from "./pages/owner/RestaurantSettings";
 import RestaurantEditDish from "./pages/owner/RestaurantEditDish";
+import ProfileSettings from "./pages/common/ProfileSettings";
 
 function App() {
   return (
@@ -41,6 +42,10 @@ function App() {
           <Route path="customers" element={<AdminCustomers />} />
           <Route path="customers/:id" element={<AdminCustomerDetails />} />
           <Route path="dishes/:id" element={<AdminDishDetails />} />
+          <Route
+            path="profile"
+            element={<ProfileSettings role="Administrator" />}
+          />
         </Route>
 
         <Route path="/owner" element={<RestaurantRoutes />}>
@@ -52,6 +57,10 @@ function App() {
           <Route path="dish/add" element={<RestaurantAddDish />} />
           <Route path="dish/edit/:id" element={<RestaurantEditDish />} />
           <Route path="settings" element={<RestaurantSettings />} />
+          <Route
+            path="profile"
+            element={<ProfileSettings role="Restaurant Owner" />}
+          />
         </Route>
       </Routes>
 

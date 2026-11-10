@@ -391,8 +391,8 @@ const AdminRestaurantDetails = () => {
           <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
         </div>
 
-        <div className="px-8 pb-6 pt-4 flex flex-col md:flex-row items-start md:items-end justify-between gap-6 relative">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+        <div className="px-4 sm:px-8 pb-6 pt-4 flex flex-col md:flex-row items-start md:items-end justify-between gap-4 sm:gap-6 relative">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
             <div className="w-24 h-24 rounded-md bg-white p-2 shadow-lg -mt-16 relative z-10">
               <div className="w-full h-full rounded-md bg-[#fff2e8] border border-orange-100 flex items-center justify-center text-orange-400 overflow-hidden">
                 {restaurant.logo ? (
@@ -538,12 +538,12 @@ const AdminRestaurantDetails = () => {
       </div>
 
       {/* ── Tabs ── */}
-      <div className="flex gap-2 bg-white border border-gray-200 p-1.5 rounded-md w-fit shadow-sm">
+      <div className="flex gap-2 bg-white border border-gray-200 p-1.5 rounded-md w-fit max-w-full overflow-x-auto shadow-sm">
         {tabs.map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-6 py-2.5 rounded-md text-sm font-bold capitalize transition-all
+            className={`px-4 sm:px-6 py-2 sm:py-2.5 rounded-md text-sm font-bold capitalize transition-all whitespace-nowrap
               ${activeTab === tab ? "bg-[#fc8019] text-white shadow-md shadow-orange-500/20" : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"}`}
           >
             {tab}

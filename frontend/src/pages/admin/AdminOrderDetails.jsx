@@ -96,7 +96,7 @@ const Card = ({ title, children, icon: Icon }) => (
         </h3>
       </div>
     )}
-    <div className={title ? "p-6" : "p-6"}>{children}</div>
+    <div className="p-4 sm:p-6">{children}</div>
   </div>
 );
 
@@ -244,7 +244,7 @@ const AdminOrderDetails = () => {
         {/* ── Left column ── */}
         <div className="lg:col-span-8 space-y-6">
           {/* Order meta */}
-          <div className="bg-white rounded-md  border border-gray-200 p-6 flex items-center justify-between flex-wrap gap-4">
+          <div className="bg-white rounded-md  border border-gray-200 p-4 sm:p-6 flex items-center justify-between flex-wrap gap-4">
             <div>
               <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">
                 Order ID
@@ -269,17 +269,19 @@ const AdminOrderDetails = () => {
           {/* Timeline */}
           {!isCancelled && (
             <Card title="Delivery Progress" icon={Truck}>
-              <div className="flex items-start pt-2">
-                {STATUSES.map((s, i) => (
-                  <TimelineStep
-                    key={s}
-                    label={s}
-                    icon={ICONS[i]}
-                    done={i <= currentIdx}
-                    active={i === currentIdx}
-                    last={i === STATUSES.length - 1}
-                  />
-                ))}
+              <div className="overflow-x-auto pb-2">
+                <div className="flex items-start pt-2 min-w-[420px] sm:min-w-0">
+                  {STATUSES.map((s, i) => (
+                    <TimelineStep
+                      key={s}
+                      label={s}
+                      icon={ICONS[i]}
+                      done={i <= currentIdx}
+                      active={i === currentIdx}
+                      last={i === STATUSES.length - 1}
+                    />
+                  ))}
+                </div>
               </div>
             </Card>
           )}

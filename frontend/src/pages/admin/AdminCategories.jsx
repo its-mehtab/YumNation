@@ -64,7 +64,7 @@ const CategoryModal = ({ category, onClose, onSave, miniLoading }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 backdrop-blur-sm">
-      <div className="bg-white rounded-md shadow-xl border border-gray-200 w-full max-w-md mx-4 overflow-hidden">
+      <div className="bg-white rounded-md shadow-xl border border-gray-200 w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto">
         {/* ── Header ── */}
         <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
           <div>
@@ -347,11 +347,11 @@ const AdminCategories = () => {
       {/* ── Table card ── */}
       <div className="bg-white rounded-md  border border-gray-200 overflow-hidden">
         {/* Card header */}
-        <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-5 border-b border-gray-50 gap-4">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-50 gap-4">
           <h2 className="text-base font-semibold text-gray-900">
             All Categories
           </h2>
-          <div className="flex items-center gap-4 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
             <div className="relative w-full sm:w-64">
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -367,7 +367,7 @@ const AdminCategories = () => {
             </div>
             <button
               onClick={() => setModal("add")}
-              className="flex items-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-4 py-2 rounded-md transition-all shadow-sm shadow-orange-500/10 whitespace-nowrap"
+              className="flex items-center justify-center gap-2 bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold px-4 py-2 rounded-md transition-all shadow-sm shadow-orange-500/10 whitespace-nowrap w-full sm:w-auto"
             >
               <Plus size={16} strokeWidth={1.5} />
               Add Category

@@ -252,9 +252,9 @@ const RestaurantOrderDetails = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* ── Left column ── */}
-        <div className="col-span-8 space-y-5">
+        <div className="col-span-1 lg:col-span-8 space-y-5">
           {/* Order meta */}
           <Card>
             <div className="flex items-center justify-between flex-wrap gap-4">
@@ -281,17 +281,19 @@ const RestaurantOrderDetails = () => {
           {/* Timeline */}
           {!isCancelled && (
             <Card title="Delivery Progress">
-              <div className="flex items-start">
-                {STATUSES.map((s, i) => (
-                  <TimelineStep
-                    key={s}
-                    label={s}
-                    icon={ICONS[i]}
-                    done={i <= currentIdx}
-                    active={i === currentIdx}
-                    last={i === STATUSES.length - 1}
-                  />
-                ))}
+              <div className="overflow-x-auto pb-2">
+                <div className="flex items-start min-w-[420px] sm:min-w-0">
+                  {STATUSES.map((s, i) => (
+                    <TimelineStep
+                      key={s}
+                      label={s}
+                      icon={ICONS[i]}
+                      done={i <= currentIdx}
+                      active={i === currentIdx}
+                      last={i === STATUSES.length - 1}
+                    />
+                  ))}
+                </div>
               </div>
             </Card>
           )}
@@ -372,7 +374,7 @@ const RestaurantOrderDetails = () => {
         </div>
 
         {/* ── Right column ── */}
-        <div className="col-span-4 space-y-5">
+        <div className="col-span-1 lg:col-span-4 space-y-5">
           {/* Update status */}
           <Card title="Update Status">
             <div className="space-y-2">
