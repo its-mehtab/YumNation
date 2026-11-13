@@ -6,7 +6,7 @@ import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import ConfirmationModal from "../../components/common/ConfirmationModal";
-import { useDish } from "../../context/owner/DishContext";
+import { useDish } from "../../context/owner";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const Toggle = ({ checked, onChange }) => (

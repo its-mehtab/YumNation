@@ -24,6 +24,7 @@ import { AdminOrdersProvider } from "./context/admin/AdminOrdersContext.jsx";
 import { AllUsersProvider } from "./context/admin/AllUsersContext.jsx";
 import { CategoryAdminPovider } from "./context/admin/CategoryAdminContext.jsx";
 import { AdminDashboardProvider } from "./context/admin/AdminDashboardContext.jsx";
+import { OwnerDashboardProvider } from "./context/owner/OwnerDashboardContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -39,22 +40,24 @@ createRoot(document.getElementById("root")).render(
                       <ValidateProvider>
                         <OrderContextProvider>
                           <AdminDashboardProvider>
-                            <AdminOrdersProvider>
-                              <OwnerOrdersProvider>
-                                <RestaurantProvider>
-                                  <AdminRestaurantsProvider>
-                                    <AllUsersProvider>
-                                      <CouponProvider>
-                                        <Theme accentColor="orange">
-                                          <AppInit />
-                                          <App />
-                                        </Theme>
-                                      </CouponProvider>
-                                    </AllUsersProvider>
-                                  </AdminRestaurantsProvider>
-                                </RestaurantProvider>
-                              </OwnerOrdersProvider>
-                            </AdminOrdersProvider>
+                            <OwnerDashboardProvider>
+                              <AdminOrdersProvider>
+                                <OwnerOrdersProvider>
+                                  <RestaurantProvider>
+                                    <AdminRestaurantsProvider>
+                                      <AllUsersProvider>
+                                        <CouponProvider>
+                                          <Theme accentColor="orange">
+                                            <AppInit />
+                                            <App />
+                                          </Theme>
+                                        </CouponProvider>
+                                      </AllUsersProvider>
+                                    </AdminRestaurantsProvider>
+                                  </RestaurantProvider>
+                                </OwnerOrdersProvider>
+                              </AdminOrdersProvider>
+                            </OwnerDashboardProvider>
                           </AdminDashboardProvider>
                         </OrderContextProvider>
                       </ValidateProvider>

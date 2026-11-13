@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
 import { notifySuccess } from "../../utils/toast";
-import { useDish } from "../../context/owner/DishContext";
+import { useDish } from "../../context/owner";
 import DishForm from "../../components/owner/DishForm";
 
 // ── Initial state ─────────────────────────────────────────────────────────────

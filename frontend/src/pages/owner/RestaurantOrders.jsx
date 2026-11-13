@@ -9,10 +9,12 @@ import {
   CheckCircle,
   Banknote,
 } from "lucide-react";
-import { useOwnerOrders } from "../../context/owner/OwnerOrdersContext";
+import { useOwnerOrders } from "../../context/owner/";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
 import { notifyError } from "../../utils/toast";
+import { ErrorState } from "../../components/common";
+import OwnerOrderDetailsSkeleton from "../../components/skeleton/owner/OwnerOrderDetailsSkeleton";
 
 const STATUS_OPTIONS = [
   "all",
@@ -113,7 +115,15 @@ const StatusDropdown = ({ orderId, current, onChange }) => (
 
 // ── Main Component ───────────────────────────────────────────────────────────
 const RestaurantOrders = () => {
-  const { orders, setOrders, filter, setFilter } = useOwnerOrders();
+  const {
+    orders,
+    setOrders,
+    filter,
+    setFilter,
+    loading,
+    error,
+    fetchRestaurantOrders,
+  } = useOwnerOrders();
   const { serverURL } = useAuth();
 
   const handleStatusChange = async (orderId, newStatus) => {
@@ -151,8 +161,11 @@ const RestaurantOrders = () => {
     pending: orders?.statusCount?.placed || 0,
     preparing: orders?.statusCount?.preparing || 0,
     delivered: orders?.statusCount?.delivered || 0,
-    revenue: orders?.totalRevenue || 0,
   };
+
+  if (loading && !orders) return <OwnerOrderDetailsSkeleton />;
+  if (error)
+    return <ErrorState error={error} onRetry={fetchRestaurantOrders} />;
 
   return (
     <div>
@@ -167,7 +180,7 @@ const RestaurantOrders = () => {
       </div>
 
       {/* ── Stats ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-5">
         {[
           {
             label: "Total Orders",
@@ -196,13 +209,6 @@ const RestaurantOrders = () => {
             icon: CheckCircle,
             color: "text-green-600",
             bg: "bg-green-100",
-          },
-          {
-            label: "Revenue",
-            value: `$${stats.revenue.toFixed(2)}`,
-            icon: Banknote,
-            color: "text-emerald-600",
-            bg: "bg-emerald-100",
           },
         ].map((s) => (
           <div

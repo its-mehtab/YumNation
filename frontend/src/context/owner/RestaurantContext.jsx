@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { createContext } from "react";
 import { useAuth } from "../user/AuthContext";
 
@@ -7,7 +7,7 @@ const RestaurantContext = createContext();
 
 export const RestaurantProvider = ({ children }) => {
   const [restaurant, setRestaurant] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const { serverURL } = useAuth();
@@ -24,9 +24,7 @@ export const RestaurantProvider = ({ children }) => {
       setRestaurant(data);
     } catch (error) {
       setError(error?.response?.data.message || error.message);
-      console.log("Restaurant Error:", error?.response?.data || error.message);
-      setRestaurant(null);
-      console.log(error.message);
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -49,4 +47,4 @@ export const RestaurantProvider = ({ children }) => {
   );
 };
 
-export const useRestaurant = () => useContext(RestaurantContext);
+export default RestaurantContext;

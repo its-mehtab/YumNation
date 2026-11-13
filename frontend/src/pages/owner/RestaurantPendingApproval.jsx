@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/user/AuthContext";
-import { useRestaurant } from "../../context/owner/RestaurantContext";
+import { useRestaurant } from "../../context/owner";
 import {
   ClipboardList,
   Search,
@@ -20,7 +20,7 @@ const steps = [
     done: true,
   },
   {
-    icon: <Search size={20}  strokeWidth={1.5} />,
+    icon: <Search size={20} strokeWidth={1.5} />,
     label: "Under Review",
     done: false,
     active: true,
@@ -112,11 +112,11 @@ const RestaurantPendingApproval = () => {
                 text: "You'll get an email when your application is approved or rejected",
               },
               {
-                icon: <Clock size={16}  strokeWidth={1.5} />,
+                icon: <Clock size={16} strokeWidth={1.5} />,
                 text: "Review usually takes 2–3 business days",
               },
               {
-                icon: <Phone size={16}  strokeWidth={1.5} />,
+                icon: <Phone size={16} strokeWidth={1.5} />,
                 text: "Our team may contact you for additional information",
               },
               {

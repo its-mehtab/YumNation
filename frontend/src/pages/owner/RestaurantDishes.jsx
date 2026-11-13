@@ -3,38 +3,30 @@ import { Trash2, Edit, Plus, Eye, ChevronDown } from "lucide-react";
 
 import { Link } from "react-router-dom";
 
-import { useDish } from "../../context/owner/DishContext";
+import { useDish } from "../../context/owner";
 import ConfirmationModal from "../../components/common/ConfirmationModal";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
 import { notifyError, notifySuccess } from "../../utils/toast";
 import { Utensils } from "lucide-react";
-
-// ── Status Badge ──────────────────────────────────────────────────────────────
-const StatusBadge = ({ isAvailable }) => (
-  <span
-    className={`inline-flex items-center text-xs font-bold px-3 py-1 rounded-md border ${
-      isAvailable
-        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-        : "bg-gray-100 text-gray-500 border-gray-200"
-    }`}
-  >
-    {isAvailable ? "Published" : "Draft"}
-  </span>
-);
+import { ErrorState } from "../../components/common";
+import OwnerDishesSkeleton from "../../components/skeleton/owner/OwnerDishesSkeleton";
+import StatusBadge from "../../components/common/StatusBadge";
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 const RestaurantDishes = () => {
   const [sort, setSort] = useState("asc");
 
   const { serverURL } = useAuth();
-  const { dishes, setDishes, loading } = useDish();
+  const { dishes, setDishes, loading, error, getRestaurantDishes } = useDish();
 
-  const sorted = [...dishes]?.sort((a, b) =>
-    sort === "asc"
-      ? a.name.localeCompare(b.name)
-      : b.name.localeCompare(a.name),
-  );
+  const sorted =
+    dishes &&
+    [...dishes]?.sort((a, b) =>
+      sort === "asc"
+        ? a.name.localeCompare(b.name)
+        : b.name.localeCompare(a.name),
+    );
 
   const handleDelete = async (id, name) => {
     setDishes((prev) => prev.filter((d) => d._id !== id));
@@ -50,6 +42,8 @@ const RestaurantDishes = () => {
     }
   };
 
+  if (loading && !dishes) return <OwnerDishesSkeleton />;
+  if (error) return <ErrorState error={error} onRetry={getRestaurantDishes} />;
   return (
     <div>
       {/* ── Page header ── */}
@@ -83,7 +77,10 @@ const RestaurantDishes = () => {
                 <option value="asc">Sort: A → Z</option>
                 <option value="desc">Sort: Z → A</option>
               </select>
-              <ChevronDown size={14} className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
+              <ChevronDown
+                size={14}
+                className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400"
+              />
             </div>
             {/* Add dish */}
             <Link
@@ -129,7 +126,11 @@ const RestaurantDishes = () => {
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <Utensils size={20} className="text-gray-400"  strokeWidth={1.5} />
+                          <Utensils
+                            size={20}
+                            className="text-gray-400"
+                            strokeWidth={1.5}
+                          />
                         )}
                       </div>
                       <span className="font-medium text-gray-700">
@@ -153,14 +154,14 @@ const RestaurantDishes = () => {
                         className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
                         title="Edit"
                       >
-                        <Edit  size={15} />
+                        <Edit size={15} />
                       </Link>
                       <Link
                         to={`/owner/dish/${dish._id}`}
                         className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#fc8019] transition-colors"
                         title="View"
                       >
-                        <Eye  size={15} />
+                        <Eye size={15} />
                       </Link>
 
                       <ConfirmationModal
@@ -169,7 +170,7 @@ const RestaurantDishes = () => {
                             className="p-1.5 rounded-md hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
                             title="Delete"
                           >
-                            <Trash2  size={15} />
+                            <Trash2 size={15} />
                           </button>
                         }
                         heading="Delete This Dish"
@@ -189,7 +190,9 @@ const RestaurantDishes = () => {
         {/* Empty state */}
         {sorted?.length === 0 && (
           <div className="text-center py-16 text-gray-400">
-            <div className="flex justify-center mb-3 text-gray-300"><Utensils size={40}  strokeWidth={1.5} /></div>
+            <div className="flex justify-center mb-3 text-gray-300">
+              <Utensils size={40} strokeWidth={1.5} />
+            </div>
             {loading ? (
               <p className="text-sm font-medium mb-3">Dishes Loading...</p>
             ) : (

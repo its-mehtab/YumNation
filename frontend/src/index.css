@@ -166,3 +166,9 @@ input:-webkit-autofill:focus {
 .recharts-wrapper *:focus {
   outline: none !important;
 }
+
+/* React Day Picker  */
+.rdp-root {
+  --rdp-accent-color: #fc8019 !important;
+  --rdp-accent-background-color: #fff0e6 !important;
+}

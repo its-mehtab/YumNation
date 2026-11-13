@@ -10,9 +10,9 @@ export const AdminDashboardProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [analaticsDropdown, setAnalaticsDropdown] = useState({
-    name: "Today",
-    dayDetails: `Today (${dayjs().format("MMM DD YYYY")})`,
-    startDate: dayjs().startOf("day").toISOString(),
+    name: "This year",
+    dayDetails: `This year (${dayjs().startOf("year").format("MMM DD YYYY")} - ${dayjs().format("MMM DD YYYY")})`,
+    startDate: dayjs().startOf("year").toISOString(),
     endDate: dayjs().endOf("day").toISOString(),
   });
 

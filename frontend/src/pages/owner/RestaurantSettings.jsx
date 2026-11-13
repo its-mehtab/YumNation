@@ -1,37 +1,14 @@
 import { Switch } from "@radix-ui/themes";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Field from "../../components/common/Field";
 import Input from "../../components/common/Input";
-import { useRestaurant } from "../../context/owner/RestaurantContext";
+import { useRestaurant } from "../../context/owner";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
 import slugify from "slugify";
 import { Utensils, Image as ImageIcon, Save, CheckCircle } from "lucide-react";
-
-// ── Mock data ─────────────────────────────────────────────────────────────────
-const mockSettings = {
-  name: "Pizza Palace",
-  slug: "pizza-palace",
-  description:
-    "Authentic Italian pizza made with fresh ingredients and wood-fired ovens.",
-  email: "contact@pizzapalace.com",
-  phone: "+91 9876543210",
-  logo: null,
-  coverImage: null,
-  address: {
-    addressLine1: "42 Park Street",
-    addressLine2: "Ground Floor",
-    city: "Kolkata",
-    state: "West Bengal",
-    pinCode: "700016",
-  },
-  openingHours: { open: "10:00", close: "23:00" },
-  deliveryTime: 35,
-  minOrderAmount: 10,
-  deliveryFee: 2.5,
-  isPureVeg: false,
-  isOpen: true,
-};
+import { ErrorState } from "../../components/common";
+import OwnerSettingsSkeleton from "../../components/skeleton/owner/OwnerSettingsSkeleton";
 
 const Section = ({ title, desc, children }) => (
   <div className="bg-white rounded-md border border-gray-200 transition-all overflow-hidden">
@@ -43,12 +20,38 @@ const Section = ({ title, desc, children }) => (
   </div>
 );
 
+const initialForm = {
+  name: "",
+  slug: "",
+  description: "",
+  email: "",
+  phone: "",
+  logo: "",
+  coverImage: "",
+  isPureVeg: false,
+  isOpen: true,
+  address: {
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    state: "",
+    pinCode: "",
+  },
+  openingHours: {
+    open: "",
+    close: "",
+  },
+  deliveryTime: "",
+  deliveryFee: "",
+  minOrderAmount: "",
+};
+
 const tabs = ["General", "Address", "Hours & Delivery", "Danger Zone"];
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 const RestaurantSettings = () => {
-  const { restaurant } = useRestaurant();
-  const [form, setForm] = useState(restaurant);
+  const { restaurant, loading, error, fetchRestaurant } = useRestaurant();
+  const [form, setForm] = useState(initialForm);
   const [activeTab, setActiveTab] = useState("General");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -94,6 +97,14 @@ const RestaurantSettings = () => {
     }
   };
 
+  useEffect(() => {
+    if (!restaurant) return;
+    setForm(restaurant);
+  }, [restaurant]);
+
+  if (loading && !restaurant) return <OwnerSettingsSkeleton />;
+  if (error) return <ErrorState error={error} onRetry={fetchRestaurant} />;
+
   return (
     <div>
       {/* ── Page header ── */}
@@ -113,7 +124,7 @@ const RestaurantSettings = () => {
             "Saving..."
           ) : saved ? (
             <>
-              <CheckCircle size={16}  strokeWidth={1.5} /> Saved!
+              <CheckCircle size={16} strokeWidth={1.5} /> Saved!
             </>
           ) : (
             <>
@@ -161,14 +172,18 @@ const RestaurantSettings = () => {
                     onClick={() => logoRef.current.click()}
                     className="w-24 h-24 rounded-md border-2 border-dashed border-[#fc8019] bg-[#fff2e8] flex items-center justify-center cursor-pointer hover:bg-orange-100 transition-colors overflow-hidden"
                   >
-                    {form.logo ? (
+                    {form?.logo ? (
                       <img
-                        src={form.logo}
+                        src={form?.logo}
                         alt=""
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <Utensils size={30} className="text-gray-400"  strokeWidth={1.5} />
+                      <Utensils
+                        size={30}
+                        className="text-gray-400"
+                        strokeWidth={1.5}
+                      />
                     )}
                   </div>
                   <p className="text-xs text-gray-400 mt-2">Logo</p>
@@ -186,9 +201,9 @@ const RestaurantSettings = () => {
                     onClick={() => coverRef.current.click()}
                     className="w-full h-32 rounded-md border-2 border-dashed border-orange-200 bg-[#fff2e8] flex flex-col items-center justify-center cursor-pointer hover:bg-orange-100 transition-colors overflow-hidden"
                   >
-                    {form.coverImage ? (
+                    {form?.coverImage ? (
                       <img
-                        src={form.coverImage}
+                        src={form?.coverImage}
                         alt=""
                         className="w-full h-full object-cover"
                       />
@@ -223,7 +238,7 @@ const RestaurantSettings = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Field label="Restaurant Name">
                   <Input
-                    value={form.name}
+                    value={form?.name}
                     onChange={(e) => {
                       const slug = slugify(e.target.value, {
                         lower: true,
@@ -241,13 +256,13 @@ const RestaurantSettings = () => {
                   hint="Auto-generated from name — used in your URL"
                 >
                   <div className="w-full border border-gray-200 rounded-md px-3.5 py-2.5 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors bg-white">
-                    {form.slug || "..."}
+                    {form?.slug || "..."}
                   </div>
                 </Field>
               </div>
               <Field label="Description">
                 <textarea
-                  value={form.description}
+                  value={form?.description}
                   onChange={(e) => set("description", e.target.value)}
                   placeholder="Tell customers about your restaurant..."
                   rows={3}
@@ -258,14 +273,14 @@ const RestaurantSettings = () => {
                 <Field label="Email">
                   <Input
                     type="email"
-                    value={form.email}
+                    value={form?.email}
                     onChange={(e) => set("email", e.target.value)}
                     placeholder="contact@restaurant.com"
                   />
                 </Field>
                 <Field label="Phone">
                   <Input
-                    value={form.phone}
+                    value={form?.phone}
                     onChange={(e) => set("phone", e.target.value)}
                     placeholder="+91 9876543210"
                   />
@@ -286,8 +301,8 @@ const RestaurantSettings = () => {
                     </p>
                   </div>
                   <Switch
-                    checked={form.isPureVeg}
-                    onCheckedChange={() => set("isPureVeg", !form.isPureVeg)}
+                    checked={form?.isPureVeg}
+                    onCheckedChange={() => set("isPureVeg", !form?.isPureVeg)}
                   />
                 </div>
                 <div className="flex items-center justify-between py-2 border-t border-gray-50">
@@ -300,8 +315,8 @@ const RestaurantSettings = () => {
                     </p>
                   </div>
                   <Switch
-                    checked={form.isOpen}
-                    onCheckedChange={() => set("isOpen", !form.isOpen)}
+                    checked={form?.isOpen}
+                    onCheckedChange={() => set("isOpen", !form?.isOpen)}
                   />
                 </div>
               </div>
@@ -317,14 +332,14 @@ const RestaurantSettings = () => {
           >
             <Field label="Address Line 1">
               <Input
-                value={form.address.addressLine1}
+                value={form?.address.addressLine1}
                 onChange={(e) => set("address.addressLine1", e.target.value)}
                 placeholder="Street address"
               />
             </Field>
             <Field label="Address Line 2 (Optional)">
               <Input
-                value={form.address.addressLine2}
+                value={form?.address.addressLine2}
                 onChange={(e) => set("address.addressLine2", e.target.value)}
                 placeholder="Apartment, floor, etc."
               />
@@ -332,21 +347,21 @@ const RestaurantSettings = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Field label="City">
                 <Input
-                  value={form.address.city}
+                  value={form?.address.city}
                   onChange={(e) => set("address.city", e.target.value)}
                   placeholder="City"
                 />
               </Field>
               <Field label="State">
                 <Input
-                  value={form.address.state}
+                  value={form?.address.state}
                   onChange={(e) => set("address.state", e.target.value)}
                   placeholder="State"
                 />
               </Field>
               <Field label="Pin Code">
                 <Input
-                  value={form.address.pinCode}
+                  value={form?.address.pinCode}
                   onChange={(e) => set("address.pinCode", e.target.value)}
                   placeholder="700016"
                 />
@@ -366,14 +381,14 @@ const RestaurantSettings = () => {
                 <Field label="Opens At">
                   <Input
                     type="time"
-                    value={form.openingHours.open}
+                    value={form?.openingHours.open}
                     onChange={(e) => set("openingHours.open", e.target.value)}
                   />
                 </Field>
                 <Field label="Closes At">
                   <Input
                     type="time"
-                    value={form.openingHours.close}
+                    value={form?.openingHours.close}
                     onChange={(e) => set("openingHours.close", e.target.value)}
                   />
                 </Field>
@@ -391,7 +406,7 @@ const RestaurantSettings = () => {
                 >
                   <Input
                     type="number"
-                    value={form.deliveryTime}
+                    value={form?.deliveryTime}
                     onChange={(e) => set("deliveryTime", e.target.value)}
                     placeholder="30"
                   />
@@ -399,7 +414,7 @@ const RestaurantSettings = () => {
                 <Field label="Delivery Fee ($)" hint="Charged per order">
                   <Input
                     type="number"
-                    value={form.deliveryFee}
+                    value={form?.deliveryFee}
                     onChange={(e) => set("deliveryFee", e.target.value)}
                     placeholder="2.50"
                     step="0.5"
@@ -411,7 +426,7 @@ const RestaurantSettings = () => {
                 >
                   <Input
                     type="number"
-                    value={form.minOrderAmount}
+                    value={form?.minOrderAmount}
                     onChange={(e) => set("minOrderAmount", e.target.value)}
                     placeholder="10"
                   />
@@ -511,7 +526,7 @@ const RestaurantSettings = () => {
                 "Saving..."
               ) : saved ? (
                 <>
-                  <CheckCircle size={16}  strokeWidth={1.5} /> Saved!
+                  <CheckCircle size={16} strokeWidth={1.5} /> Saved!
                 </>
               ) : (
                 <>

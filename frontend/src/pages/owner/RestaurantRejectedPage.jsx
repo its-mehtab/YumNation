@@ -1,8 +1,18 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/user/AuthContext";
-import { useRestaurant } from "../../context/owner/RestaurantContext";
-import { FileText, MapPin, Image as ImageIcon, Phone, Frown, RefreshCw, PenTool, Camera, Mail } from "lucide-react";
+import { useRestaurant } from "../../context/owner";
+import {
+  FileText,
+  MapPin,
+  Image as ImageIcon,
+  Phone,
+  Frown,
+  RefreshCw,
+  PenTool,
+  Camera,
+  Mail,
+} from "lucide-react";
 
 const RestaurantRejectedPage = () => {
   const { user, logout } = useAuth();
@@ -14,10 +24,22 @@ const RestaurantRejectedPage = () => {
   const reason = restaurant?.rejectionReason || null;
 
   const commonReasons = [
-    { icon: <FileText size={16} className="text-gray-400" />, text: "Incomplete or inaccurate information provided" },
-    { icon: <MapPin size={16} className="text-gray-400"  strokeWidth={1.5} />, text: "Address could not be verified" },
-    { icon: <ImageIcon size={16} className="text-gray-400" />, text: "Missing or low quality images" },
-    { icon: <Phone size={16} className="text-gray-400"  strokeWidth={1.5} />, text: "Contact details could not be verified" },
+    {
+      icon: <FileText size={16} className="text-gray-400" />,
+      text: "Incomplete or inaccurate information provided",
+    },
+    {
+      icon: <MapPin size={16} className="text-gray-400" strokeWidth={1.5} />,
+      text: "Address could not be verified",
+    },
+    {
+      icon: <ImageIcon size={16} className="text-gray-400" />,
+      text: "Missing or low quality images",
+    },
+    {
+      icon: <Phone size={16} className="text-gray-400" strokeWidth={1.5} />,
+      text: "Contact details could not be verified",
+    },
   ];
 
   return (
@@ -68,7 +90,9 @@ const RestaurantRejectedPage = () => {
               to={"/restaurant"}
               className="block w-full bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold py-3 rounded-md transition-colors"
             >
-              <span className="flex items-center justify-center gap-2"><RefreshCw size={16} /> Reapply Now</span>
+              <span className="flex items-center justify-center gap-2">
+                <RefreshCw size={16} /> Reapply Now
+              </span>
             </Link>
             <p className="text-xs text-gray-400">
               Fix the issues above and submit a new application.
@@ -91,11 +115,23 @@ const RestaurantRejectedPage = () => {
                 text: "Upload a high quality logo and cover image",
               },
               {
-                icon: <MapPin size={18} className="text-gray-400"  strokeWidth={1.5} />,
+                icon: (
+                  <MapPin
+                    size={18}
+                    className="text-gray-400"
+                    strokeWidth={1.5}
+                  />
+                ),
                 text: "Make sure your address is complete and accurate",
               },
               {
-                icon: <Phone size={18} className="text-gray-400"  strokeWidth={1.5} />,
+                icon: (
+                  <Phone
+                    size={18}
+                    className="text-gray-400"
+                    strokeWidth={1.5}
+                  />
+                ),
                 text: "Use a valid phone number and email you have access to",
               },
             ].map((tip, i) => (
@@ -114,7 +150,9 @@ const RestaurantRejectedPage = () => {
             href="mailto:support@yourapp.com"
             className="py-3 rounded-md border border-gray-200 text-sm font-semibold text-gray-500 hover:bg-gray-50 transition-colors text-center"
           >
-            <span className="flex items-center justify-center gap-2"><Mail size={16} /> Contact Support</span>
+            <span className="flex items-center justify-center gap-2">
+              <Mail size={16} /> Contact Support
+            </span>
           </a>
           <button
             onClick={logout}

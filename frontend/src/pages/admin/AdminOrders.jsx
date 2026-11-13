@@ -315,10 +315,10 @@ const AdminOrders = () => {
                     orderStatus: s,
                   }))
                 }
-                className={`text-xs font-bold px-4 py-2 rounded-md capitalize transition-all ${
+                className={`text-xs font-bold px-4 py-2 rounded-md capitalize border transition-all ${
                   filter.orderStatus === s
                     ? "bg-[#fc8019] text-white shadow-md shadow-orange-500/20"
-                    : "bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200"
+                    : "bg-gray-50 text-gray-600 hover:bg-gray-100 border-gray-200"
                 }`}
               >
                 {s}

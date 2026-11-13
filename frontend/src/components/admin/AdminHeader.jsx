@@ -52,10 +52,10 @@ const AdminHeader = ({ onToggleSidebar }) => {
 
       {/* Right Actions */}
       <div className="flex items-center gap-3 sm:gap-6 ml-auto">
-        <button className="text-white hover:text-white/80 transition-colors relative p-1">
+        {/* <button className="text-white hover:text-white/80 transition-colors relative p-1">
           <Bell size={20} strokeWidth={1.5} />
           <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500 border-2 border-white"></span>
-        </button>
+        </button> */}
 
         {user && (
           <div className="relative" ref={dropdownRef}>
@@ -102,14 +102,6 @@ const AdminHeader = ({ onToggleSidebar }) => {
                   >
                     <User size={16} />
                     Profile
-                  </Link>
-                  <Link
-                    to="/admin/settings"
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2 text-sm text-gray-600 hover:bg-[#fff2e8] hover:text-[#fc8019] transition-colors"
-                  >
-                    <Settings size={16} strokeWidth={1.5} />
-                    Settings
                   </Link>
 
                   <div className="h-px bg-gray-100 my-2"></div>

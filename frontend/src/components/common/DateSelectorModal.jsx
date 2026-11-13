@@ -27,34 +27,6 @@ const DateSelectorModal = ({ onApply }) => {
     setIsModalOpen(false);
   };
 
-  const calendarClassNames = {
-    root: "w-full text-sm",
-    months: "flex flex-col sm:flex-row justify-center gap-8",
-    month: "space-y-4",
-    month_caption: "flex justify-center items-center h-9 relative",
-    caption_label: "text-sm font-semibold text-gray-800",
-    nav: "absolute inset-x-0 top-0 ml-auto pe-5 pt-5 max-w-26 flex items-center justify-between",
-    button_previous:
-      "h-8 w-8 inline-flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors",
-    button_next:
-      "h-8 w-8 inline-flex items-center justify-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 hover:text-gray-900 transition-colors",
-    month_grid: "w-full border-collapse",
-    weekdays: "flex",
-    weekday: "w-10 text-center text-xs font-medium text-gray-400",
-    week: "flex w-full mt-1",
-    day: "relative h-10 w-10 p-0 text-center text-sm",
-    day_button:
-      "h-10 w-10 rounded-lg inline-flex items-center justify-center text-gray-700 hover:bg-orange-50 hover:text-[#fc8019] transition-colors focus:outline-none focus:ring-2 focus:ring-orange-200",
-    selected: "bg-[#fc8019] text-white rounded-lg",
-    range_start: "bg-[#fc8019] text-white rounded-l-lg rounded-r-none",
-    range_end: "bg-[#fc8019] text-white rounded-r-lg rounded-l-none",
-    range_middle: "bg-orange-50 text-[#fc8019] rounded-none",
-    today: "font-bold text-[#fc8019]",
-    outside: "text-gray-300",
-    disabled: "text-gray-300 opacity-40 cursor-not-allowed",
-    hidden: "invisible",
-  };
-
   return (
     <DialogBox
       isModalOpen={isModalOpen}
@@ -85,6 +57,7 @@ const DateSelectorModal = ({ onApply }) => {
 
       <div className="px-5 py-5 overflow-x-auto">
         <DayPicker
+          animate
           mode="range"
           selected={dateRange}
           onSelect={(range) => setDateRange(range || {})}
@@ -92,7 +65,7 @@ const DateSelectorModal = ({ onApply }) => {
           disabled={{ after: new Date() }}
           defaultMonth={dateRange.from}
           showOutsideDays
-          classNames={calendarClassNames}
+          // classNames={calendarClassNames}
         />
       </div>
 

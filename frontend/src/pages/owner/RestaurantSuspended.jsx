@@ -1,7 +1,15 @@
 import React from "react";
 import { useAuth } from "../../context/user/AuthContext";
-import { useRestaurant } from "../../context/owner/RestaurantContext";
-import { Ban, OctagonAlert, PackageX, Lock, Mail, ClipboardList, RefreshCcw } from "lucide-react";
+import { useRestaurant } from "../../context/owner";
+import {
+  Ban,
+  OctagonAlert,
+  PackageX,
+  Lock,
+  Mail,
+  ClipboardList,
+  RefreshCcw,
+} from "lucide-react";
 
 const RestaurantSuspended = () => {
   const { user, logout } = useAuth();
@@ -19,7 +27,7 @@ const RestaurantSuspended = () => {
         {/* ── Main card ── */}
         <div className="bg-white rounded-md shadow-[0_0_2.3125rem_rgba(8,21,66,0.08)] p-4 sm:p-8 text-center">
           <div className="w-20 h-20 rounded-md bg-gray-100 border-2 border-gray-200 flex items-center justify-center mx-auto mb-5">
-            <Ban size={40} className="text-gray-400"  strokeWidth={1.5} />
+            <Ban size={40} className="text-gray-400" strokeWidth={1.5} />
           </div>
 
           <h1 className="text-xl font-bold text-gray-700 mb-2">
@@ -44,8 +52,14 @@ const RestaurantSuspended = () => {
                   icon: <OctagonAlert size={20} className="text-gray-500" />,
                   text: "Your restaurant is hidden from customers",
                 },
-                { icon: <PackageX size={20} className="text-gray-500" />, text: "No new orders can be placed" },
-                { icon: <Lock size={20} className="text-gray-500" />, text: "Dashboard access is restricted" },
+                {
+                  icon: <PackageX size={20} className="text-gray-500" />,
+                  text: "No new orders can be placed",
+                },
+                {
+                  icon: <Lock size={20} className="text-gray-500" />,
+                  text: "Dashboard access is restricted",
+                },
                 {
                   icon: <Mail size={20} className="text-gray-500" />,
                   text: "You will be notified when the suspension is lifted",

@@ -1,12 +1,13 @@
 import axios from "axios";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { useAuth } from "../user/AuthContext";
 
 const OwnerOrdersContext = createContext();
 
 export const OwnerOrdersProvider = ({ children }) => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [orders, setOrders] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [filter, setFilter] = useState({
     status: "all",
@@ -21,6 +22,7 @@ export const OwnerOrdersProvider = ({ children }) => {
   const fetchRestaurantOrders = async () => {
     if (user?.role !== "restaurant") return;
     setLoading(true);
+    setError(null);
     try {
       const { data } = await axios(`${serverURL}/api/owner/order`, {
         params: {
@@ -35,6 +37,7 @@ export const OwnerOrdersProvider = ({ children }) => {
 
       setOrders(data);
     } catch (error) {
+      setError(error?.response?.data.message || error.message);
       console.log(error);
     } finally {
       setLoading(false);
@@ -66,6 +69,8 @@ export const OwnerOrdersProvider = ({ children }) => {
         fetchRestaurantOrders,
         filter,
         setFilter,
+        error,
+        setError,
       }}
     >
       {children}
@@ -73,4 +78,4 @@ export const OwnerOrdersProvider = ({ children }) => {
   );
 };
 
-export const useOwnerOrders = () => useContext(OwnerOrdersContext);
+export default OwnerOrdersContext;

@@ -24,6 +24,7 @@ import orderAdminRouter from "./routes/admin/orderAdmin.routes.js";
 import categoryAdminRouter from "./routes/admin/categoryAdmin.routes.js";
 import orderOwnerRouter from "./routes/owner/orderOwner.routes.js";
 import dashboardAdminRouter from "./routes/admin/dashboardAdmin.routes.js";
+import dashboardOwnerRouter from "./routes/owner/dashboardOwner.routes.js";
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -38,6 +39,7 @@ app.use(
 );
 app.use("/api", authRouter);
 app.use("/api/admin/dashboard", dashboardAdminRouter);
+app.use("/api/owner/dashboard", dashboardOwnerRouter);
 app.use("/api/admin", usersAdminRouter);
 app.use("/api/categories", categoryRouter);
 app.use("/api/admin/categories", categoryAdminRouter);
