@@ -2,14 +2,17 @@ import Dish from "../models/dish.modal.js";
 import Restaurant from "../models/restaurant.modal.js";
 import Category from "../models/category.modal.js";
 import User from "../models/user.modal.js";
+import mongoose from "mongoose";
+import {
+  deleteFromCloudinary,
+  uploadToCloudinary,
+} from "../services/cloudinaryService.js";
 
 export const getDishes = async (req, res) => {
   try {
     const dishes = await Dish.find({ restaurant: req.restaurantId })
       .populate("category", "name slug")
       .select(req.hideFields || "");
-
-    // console.log(dishes);
 
     res.status(200).json(dishes);
   } catch (error) {
@@ -38,10 +41,9 @@ export const getDishBySlug = async (req, res) => {
 
 export const getDishById = async (req, res) => {
   try {
-    const dish = await Dish.findById(req.params.id).populate(
-      "category",
-      "name slug",
-    );
+    const dish = await Dish.findById(req.params.id)
+      .populate("category", "name slug")
+      .populate("restaurant");
 
     if (!dish) return res.status(404).json({ message: "Dish not found" });
 
@@ -70,7 +72,6 @@ export const createDish = async (req, res) => {
     cost,
     shortDescription,
     longDescription,
-    image,
     category,
     variants,
     addOns,
@@ -80,53 +81,106 @@ export const createDish = async (req, res) => {
 
   const owner = req.userId;
 
+  if (!req.file) {
+    return res.status(400).json({
+      message: "No image uploaded",
+    });
+  }
+
   if (!name || !price || !shortDescription || !longDescription || !category) {
     return res.status(400).json({
       message: "name, price, description, category is required",
     });
   }
 
+  const session = await mongoose.startSession();
+
+  let imagePublicId = null;
   try {
-    const restaurant = await Restaurant.findOne({ owner });
+    let populatedDish;
 
-    if (!restaurant) {
-      return res.status(404).json("Restaurant not found");
-    }
+    const uploadedImage = await uploadToCloudinary(req.file.buffer);
+    imagePublicId = uploadedImage.publicId;
 
-    if (restaurant.status !== "active") {
-      return res.status(403).json({ message: "Your restaurant is not active" });
-    }
+    await session.withTransaction(async () => {
+      const restaurant = await Restaurant.findOne({ owner }).session(session);
 
-    const categoryExists = await Category.findById(category);
-    if (!categoryExists) {
-      return res.status(404).json({ message: "Invalid category" });
-    }
+      if (!restaurant) {
+        throw new Error("RESTAURANT_NOT_FOUND");
+      }
 
-    const dish = await Dish.create({
-      name,
-      price,
-      cost,
-      shortDescription,
-      longDescription,
-      image,
-      category,
-      variants,
-      addOns,
-      foodType,
-      isFeatured,
-      restaurant: restaurant._id,
+      if (restaurant.status !== "active") {
+        throw new Error("RESTAURANT_NOT_ACTIVE");
+      }
+
+      const categoryExists = await Category.findById(category).session(session);
+
+      if (!categoryExists) {
+        throw new Error("INVALID_CATEGORY");
+      }
+
+      const [dish] = await Dish.create(
+        [
+          {
+            name,
+            price,
+            cost,
+            shortDescription,
+            longDescription,
+            image: uploadedImage?.imageUrl,
+            imagePublicId: uploadedImage?.publicId,
+            category,
+            variants,
+            addOns,
+            foodType,
+            isFeatured,
+            restaurant: restaurant._id,
+          },
+        ],
+        { session },
+      );
+
+      await Restaurant.updateOne(
+        { _id: restaurant._id },
+        { $inc: { totalDishes: 1 } },
+        { session },
+      );
+
+      populatedDish = await Dish.findById(dish._id)
+        .populate("category", "name slug")
+        .session(session);
     });
-
-    const populatedDish = await Dish.findById(dish._id).populate(
-      "category",
-      "name slug",
-    );
 
     return res.status(201).json(populatedDish);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
+    if (imagePublicId) {
+      try {
+        await deleteFromCloudinary(imagePublicId);
+      } catch (cleanupError) {
+        console.error("Cloudinary cleanup failed:", cleanupError);
+      }
+    }
+
+    if (error.message === "RESTAURANT_NOT_FOUND") {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    if (error.message === "RESTAURANT_NOT_ACTIVE") {
+      return res.status(403).json({
+        message: "Your restaurant is not active",
+      });
+    }
+
+    if (error.message === "INVALID_CATEGORY") {
+      return res.status(404).json({ message: "Invalid category" });
+    }
+
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  } finally {
+    await session.endSession();
   }
 };
 
@@ -162,27 +216,61 @@ export const updateDish = async (req, res) => {
 
 export const deleteDish = async (req, res) => {
   const { id } = req.params;
+  const owner = req.userId;
 
   if (!id) {
     return res.status(400).json({ message: "ID is required" });
   }
 
+  const session = await mongoose.startSession();
+
   try {
-    const dish = await Dish.findOneAndDelete({
-      _id: id,
-      restaurant: req.restaurantId,
+    let deletedDish;
+
+    await session.withTransaction(async () => {
+      deletedDish = await Dish.findOneAndDelete({
+        _id: id,
+        restaurant: req.restaurantId,
+        totalDishes: { $gt: 0 },
+      }).session(session);
+
+      if (!deletedDish) {
+        throw new Error("DISH_NOT_FOUND");
+      }
+
+      const restaurant = await Restaurant.findOneAndUpdate(
+        { owner, _id: req.restaurantId },
+        { $inc: { totalDishes: -1 } },
+        { session, new: true },
+      );
+
+      if (!restaurant) {
+        throw new Error("RESTAURANT_NOT_FOUND");
+      }
     });
 
-    if (!dish) {
-      return res
-        .status(404)
-        .json({ message: "Dish not found. Nothing deleted" });
+    return res.status(200).json({
+      message: "Dish deleted successfully",
+      dish: deletedDish,
+    });
+  } catch (error) {
+    if (error.message === "DISH_NOT_FOUND") {
+      return res.status(404).json({
+        message: "Dish not found. Nothing deleted",
+      });
     }
 
-    return res.status(200).json({ message: "Dish deleted successfully", dish });
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "internal server error", error: error.message });
+    if (error.message === "RESTAURANT_NOT_FOUND") {
+      return res.status(404).json({
+        message: "Restaurant not found",
+      });
+    }
+
+    return res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  } finally {
+    await session.endSession();
   }
 };

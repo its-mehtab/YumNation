@@ -94,10 +94,10 @@ const AdminDishDetails = () => {
           </Link>
           <span className="text-gray-300">›</span>
           <Link
-            to={`/admin/restaurants/${dish.restaurant}`}
+            to={`/admin/restaurants/${dish.restaurant._id}`}
             className="hover:text-[#ea6a12] transition-colors"
           >
-            {dish.restaurant}
+            {dish.restaurant.name}
           </Link>
           <span className="text-gray-300">›</span>
           <span className="text-[#ea6a12] font-medium">{dish.name}</span>

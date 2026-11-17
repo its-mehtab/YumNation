@@ -37,6 +37,7 @@ import {
 import AdminDashboardSkeleton from "../../components/skeleton/admin/AdminDashboardSkeleton";
 import { ErrorState } from "../../components/common";
 import DateSelectorModal from "../../components/common/DateSelectorModal";
+import RestaurantStatusBadge from "../../components/common/RestaurantStatusBadge";
 
 const orderStatusConfig = {
   placed: "bg-indigo-50 text-indigo-700 border-indigo-200",
@@ -686,7 +687,7 @@ const AdminDashboard = () => {
                         className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition"
                       >
                         <td className="p-3 text-sm text-gray-600 font-medium">
-                          #{(restaurant._id + 1).slice(0, 6)}
+                          #{restaurant._id.slice(0, 6)}
                         </td>
                         <td className="p-3">
                           <div className="flex items-center gap-3">
@@ -710,9 +711,7 @@ const AdminDashboard = () => {
                           ${restaurant.revenue}
                         </td>
                         <td className="p-3 text-right">
-                          <span className="inline-block px-2.5 py-1 bg-green-100 text-green-700 text-xs font-semibold rounded-md capitalize">
-                            {restaurant.status}
-                          </span>
+                          <RestaurantStatusBadge status={restaurant.status} />
                         </td>
                       </tr>
                     );

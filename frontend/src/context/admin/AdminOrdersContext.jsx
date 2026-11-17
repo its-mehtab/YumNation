@@ -6,7 +6,7 @@ const AdminOrdersContext = createContext();
 
 export const AdminOrdersProvider = ({ children }) => {
   const [orders, setOrders] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [filter, setFilter] = useState({
@@ -20,6 +20,7 @@ export const AdminOrdersProvider = ({ children }) => {
   const { serverURL } = useAuth();
 
   const fetchAdminOrders = async () => {
+    setError(null);
     setLoading(true);
     try {
       const { data } = await axios.get(`${serverURL}/api/admin/order`, {

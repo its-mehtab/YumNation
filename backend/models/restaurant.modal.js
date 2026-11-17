@@ -80,6 +80,8 @@ const restaurantSchema = new Schema(
 
     totalReviews: { type: Number, default: 0 },
 
+    totalDishes: { type: Number, default: 0 },
+
     totalOrders: { type: Number, default: 0 },
 
     revenue: { type: Number, default: 0 },

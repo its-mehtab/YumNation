@@ -78,12 +78,13 @@ export const createCategory = async (req, res) => {
   }
 
   try {
-    const imageUrl = await uploadToCloudinary(req.file.buffer);
+    const uploadedImage = await uploadToCloudinary(req.file.buffer);
 
     const category = await Category.create({
       name,
       description,
-      image: imageUrl,
+      image: uploadedImage?.imageUrl,
+      imagePublicId: uploadedImage?.publicId,
       createdBy: userId,
     });
 
@@ -120,8 +121,9 @@ export const updateCategory = async (req, res) => {
       category.description = description;
 
     if (req.file) {
-      const imageUrl = await uploadToCloudinary(req.file.buffer);
-      category.image = imageUrl;
+      const uploadedImage = await uploadToCloudinary(req.file.buffer);
+      category.image = uploadedImage.imageUrl;
+      category.imagePublicId = uploadedImage.publicId;
     }
 
     if (isActive !== undefined) category.isActive = isActive;
@@ -188,11 +190,19 @@ export const hardDeleteCategory = async (req, res) => {
 
     if (dishCount > 0) {
       return res.status(400).json({
-        message: `Cannot delete category. ${dishCount} dishs still use it.`,
+        message: `Cannot delete category. ${dishCount} dishes still use it.`,
       });
     }
 
     await Category.findByIdAndDelete(id);
+
+    if (category?.imagePublicId) {
+      try {
+        await deleteFromCloudinary(category.imagePublicId);
+      } catch (cleanupError) {
+        console.error("Cloudinary cleanup failed:", cleanupError);
+      }
+    }
 
     return res.status(200).json({
       message: "Category permanently deleted",

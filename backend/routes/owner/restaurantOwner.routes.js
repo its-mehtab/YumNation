@@ -17,12 +17,7 @@ restaurantOwnerRouter.get(
   setRestaurantFromOwner,
   getRestaurant,
 );
-restaurantOwnerRouter.post(
-  "/apply",
-  checkAuth,
-  restaurantOnly,
-  createRestaurant,
-);
+restaurantOwnerRouter.post("/apply", checkAuth, createRestaurant);
 restaurantOwnerRouter.patch(
   "/",
   checkAuth,

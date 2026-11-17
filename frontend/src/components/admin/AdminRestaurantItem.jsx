@@ -15,44 +15,7 @@ import {
   X,
   ShieldAlert,
 } from "lucide-react";
-
-const statusConfig = {
-  active: {
-    label: "Active",
-    bg: "bg-green-50",
-    text: "text-green-700",
-    border: "border-green-200",
-  },
-  pending: {
-    label: "Pending",
-    bg: "bg-yellow-50",
-    text: "text-yellow-700",
-    border: "border-yellow-200",
-  },
-  rejected: {
-    label: "Rejected",
-    bg: "bg-red-50",
-    text: "text-red-700",
-    border: "border-red-200",
-  },
-  suspended: {
-    label: "Suspended",
-    bg: "bg-gray-100",
-    text: "text-gray-600",
-    border: "border-gray-200",
-  },
-};
-
-const StatusBadge = ({ status }) => {
-  const cfg = statusConfig[status] || statusConfig.pending;
-  return (
-    <span
-      className={`text-xs font-bold px-3 py-1.5 rounded-md border ${cfg.bg} ${cfg.text} ${cfg.border}`}
-    >
-      {cfg.label}
-    </span>
-  );
-};
+import RestaurantStatusBadge from "../common/RestaurantStatusBadge";
 
 const StarRating = ({ rating }) => (
   <div className="flex items-center gap-1.5 px-2.5 py-1 bg-yellow-50 text-yellow-700 rounded-md w-fit border border-yellow-100">
@@ -66,28 +29,8 @@ const StarRating = ({ rating }) => (
 );
 
 const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
-  const [restaurantDishes, setRestaurantDishes] = useState(null);
-
   const { restaurants, setRestaurants } = useRestaurants();
   const { serverURL } = useAuth();
-
-  const fetchRestaurantDishes = async () => {
-    try {
-      const { data } = await axios.get(
-        `${serverURL}/api/admin/dish?restaurantId=${r._id}`,
-        {
-          withCredentials: true,
-        },
-      );
-
-      setRestaurantDishes(data);
-    } catch (error) {
-      console.log(
-        "Restaurant Dishes Error:",
-        error?.response?.data || error.message,
-      );
-    }
-  };
 
   const handleApprove = async (id) => {
     updateStatus(id, "active");
@@ -121,10 +64,6 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
     }
   };
 
-  useEffect(() => {
-    fetchRestaurantDishes();
-  }, []);
-
   return (
     <tr key={r._id} className="hover:bg-gray-50/80 transition-colors group">
       <td className="px-6 py-4">
@@ -146,7 +85,7 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
         </div>
       </td>
       <td className="px-4 py-4 text-gray-600 font-medium">
-        {restaurantDishes?.length || "—"}
+        {r.totalDishes.toLocaleString()}
       </td>
       <td className="px-4 py-4 text-gray-600 font-medium">
         {r.totalOrders.toLocaleString()}
@@ -158,7 +97,7 @@ const AdminRestaurantItem = ({ r, setRejectTarget, updateStatus }) => {
         <StarRating rating={r.rating} />
       </td>
       <td className="px-4 py-4">
-        <StatusBadge status={r.status} />
+        <RestaurantStatusBadge status={r.status} />
       </td>
       <td className="px-4 py-4">
         <div className="flex items-center gap-1.5 flex-wrap justify-end">

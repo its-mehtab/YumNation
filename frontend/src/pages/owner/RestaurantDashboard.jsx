@@ -408,7 +408,7 @@ const RestaurantDashboard = () => {
                   {hasPieOrders && <Tooltip />}
                 </PieChart>
               </ResponsiveContainer>
-              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z">
                 <span className="text-2xl font-bold text-gray-800">
                   {ownerDashboardData.totalOrders}
                 </span>
@@ -507,7 +507,7 @@ const RestaurantDashboard = () => {
                     >
                       <td className="p-3 whitespace-nowrap">
                         <Link
-                          to={`/admin/orders/${order._id}`}
+                          to={`/owner/orders/${order._id}`}
                           className="text-xs font-mono font-bold text-gray-600 bg-gray-100 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 border border-gray-200 px-2 py-1 rounded-md transition"
                         >
                           #{order._id.slice(0, 6).toUpperCase()}
@@ -614,9 +614,12 @@ const RestaurantDashboard = () => {
                 </p>
               </div>
             </div>
-            <button className="text-orange-500 text-sm font-semibold flex items-center gap-1 hover:text-orange-600 transition">
+            <Link
+              to={"/dishes"}
+              className="text-orange-500 text-sm font-semibold flex items-center gap-1 hover:text-orange-600 transition"
+            >
               View all <ArrowRight size={16} />
-            </button>
+            </Link>
           </div>
 
           <div className="w-full overflow-x-auto">

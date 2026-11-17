@@ -6,6 +6,7 @@ export const uploadToCloudinary = (buffer) => {
     const stream = cloudinary.uploader.upload_stream(
       {
         folder: "products",
+        resource_type: "image",
       },
       (error, result) => {
         if (error) {
@@ -13,10 +14,17 @@ export const uploadToCloudinary = (buffer) => {
           return;
         }
 
-        resolve(result.secure_url);
+        resolve({
+          imageUrl: result.secure_url,
+          publicId: result.public_id,
+        });
       },
     );
 
     streamifier.createReadStream(buffer).pipe(stream);
   });
+};
+
+export const deleteFromCloudinary = async (publicId) => {
+  return cloudinary.uploader.destroy(publicId);
 };

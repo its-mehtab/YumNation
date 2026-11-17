@@ -172,3 +172,12 @@ input:-webkit-autofill:focus {
   --rdp-accent-color: #fc8019 !important;
   --rdp-accent-background-color: #fff0e6 !important;
 }
+
+.recharts-tooltip-wrapper {
+  z-index: 9999 !important;
+}
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  font-size: 14px !important;
+  padding: 0px 10px !important;
+  border-radius: 5px !important;
+}

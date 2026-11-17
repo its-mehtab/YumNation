@@ -57,11 +57,9 @@ const SearchBox = () => {
     }
 
     try {
-      const { data } = await axios.get(
-        `${serverURL}/api/dishs?search=${query}`,
-      );
+      const { data } = await axios.get(`${serverURL}/api/dish?search=${query}`);
 
-      setResults(data.dishs);
+      setResults(data.dishes);
       setRecentSearches((prev) => {
         return [query, ...prev];
       });

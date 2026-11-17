@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 
-
 import { Link, useParams } from "react-router-dom";
 
 import "./dish.css";
@@ -38,7 +37,7 @@ const Dish = () => {
   const getMainDish = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`${serverURL}/api/dishs/${slug}`);
+      const { data } = await axios.get(`${serverURL}/api/dish/${slug}`);
 
       setMainDish(data);
 
@@ -109,9 +108,14 @@ const Dish = () => {
       setWishlist(data);
 
       notifySuccess(
-        !wishlistActive
-          ? <span className="flex items-center gap-1.5">{mainDish.name} Added to wishlist <Heart size={16} className="text-red-500 fill-current inline" /></span>
-          : `${mainDish.name} Removed from wishlist`,
+        !wishlistActive ? (
+          <span className="flex items-center gap-1.5">
+            {mainDish.name} Added to wishlist{" "}
+            <Heart size={16} className="text-red-500 fill-current inline" />
+          </span>
+        ) : (
+          `${mainDish.name} Removed from wishlist`
+        ),
       );
     } catch (error) {
       console.log("Cart Error:", error?.response?.data || error.message);
@@ -330,7 +334,7 @@ const Dish = () => {
               onClick={handleWishlist}
               className="bg-lime-100 p-3 rounded-lg text-gray-700 hover:text-[#027a36] cursor-pointer"
             >
-              {!wishlistActive ? <Heart  /> : <Heart  />}
+              {!wishlistActive ? <Heart /> : <Heart />}
             </span>
           </div>
           <ul className="text-md">

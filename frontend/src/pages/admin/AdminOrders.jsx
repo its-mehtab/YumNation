@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { useAdminOrders } from "../../context/admin";
@@ -16,7 +16,7 @@ import {
   Eye,
   PackageOpen,
 } from "lucide-react";
-import { AdminOrderDetailsSkeleton } from "../../components/skeleton/admin";
+import { AdminOrdersSkeleton } from "../../components/skeleton/admin";
 import { ErrorState } from "../../components/common";
 
 const STATUS_OPTIONS = [
@@ -129,7 +129,7 @@ const AdminOrders = () => {
     setFilter,
   } = useAdminOrders();
 
-  if (loading && !orders) return <AdminOrderDetailsSkeleton />;
+  if (loading && !orders) return <AdminOrdersSkeleton />;
 
   if (error) return <ErrorState error={error} onRetry={fetchAdminOrders} />;
 

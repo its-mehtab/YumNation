@@ -34,6 +34,8 @@ const dishSchema = new Schema(
 
     image: { type: String, default: null },
 
+    imagePublicId: { type: String, default: null },
+
     restaurant: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Restaurant",
