@@ -61,6 +61,11 @@ const dishSchema = new Schema(
           type: String,
           required: false,
         },
+        cost: {
+          type: Number,
+          required: false,
+          min: 0,
+        },
         price: {
           type: Number,
           required: false,
@@ -74,6 +79,11 @@ const dishSchema = new Schema(
         name: {
           type: String,
           required: false,
+        },
+        cost: {
+          type: Number,
+          required: false,
+          min: 0,
         },
         price: {
           type: Number,

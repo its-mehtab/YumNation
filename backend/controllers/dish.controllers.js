@@ -7,6 +7,7 @@ import {
   deleteFromCloudinary,
   uploadToCloudinary,
 } from "../services/cloudinaryService.js";
+import { parseArrayField } from "../services/arrayService.js";
 
 export const getDishes = async (req, res) => {
   try {
@@ -66,30 +67,15 @@ export const getDishById = async (req, res) => {
 };
 
 export const createDish = async (req, res) => {
-  const {
-    name,
-    price,
-    cost,
-    shortDescription,
-    longDescription,
-    category,
-    variants,
-    addOns,
-    isFeatured,
-    foodType,
-  } = req.body;
+  console.log(JSON.parse(req.body.data));
+
+  const dishData = JSON.parse(req.body.data);
 
   const owner = req.userId;
 
   if (!req.file) {
     return res.status(400).json({
       message: "No image uploaded",
-    });
-  }
-
-  if (!name || !price || !shortDescription || !longDescription || !category) {
-    return res.status(400).json({
-      message: "name, price, description, category is required",
     });
   }
 
@@ -113,7 +99,9 @@ export const createDish = async (req, res) => {
         throw new Error("RESTAURANT_NOT_ACTIVE");
       }
 
-      const categoryExists = await Category.findById(category).session(session);
+      const categoryExists = await Category.findById(req.body.category).session(
+        session,
+      );
 
       if (!categoryExists) {
         throw new Error("INVALID_CATEGORY");
@@ -122,18 +110,9 @@ export const createDish = async (req, res) => {
       const [dish] = await Dish.create(
         [
           {
-            name,
-            price,
-            cost,
-            shortDescription,
-            longDescription,
+            ...dishData,
             image: uploadedImage?.imageUrl,
             imagePublicId: uploadedImage?.publicId,
-            category,
-            variants,
-            addOns,
-            foodType,
-            isFeatured,
             restaurant: restaurant._id,
           },
         ],
@@ -185,31 +164,45 @@ export const createDish = async (req, res) => {
 };
 
 export const updateDish = async (req, res) => {
-  const { id } = req.params;
-
-  if (!id) {
-    return res.status(400).json({ message: "ID is required" });
-  }
-
   try {
-    const dish = await Dish.findOneAndUpdate(
-      {
-        _id: id,
-        restaurant: req.restaurantId,
-      },
-      { $set: req.body },
-      { new: true, runValidators: true },
-    ).populate("category", "name slug");
+    const { id } = req.params;
 
-    if (!dish) {
-      return res.status(404).json({ message: "Dish not found" });
+    if (!id) {
+      return res.status(400).json({
+        message: "Dish ID is required",
+      });
     }
 
-    return res.status(200).json(dish);
+    // Parse all form data
+    const dishData = JSON.parse(req.body.data);
+
+    // Upload new image only if provided
+    if (req.file) {
+      const result = await uploadToCloudinary(req.file.buffer);
+
+      dishData.image = result.secure_url;
+      dishData.imagePublicId = result.public_id;
+    }
+
+    const updatedDish = await Dish.findByIdAndUpdate(
+      id,
+      { $set: dishData },
+      { new: true, runValidators: true },
+    );
+
+    if (!updatedDish) {
+      return res.status(404).json({
+        message: "Dish not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Dish updated successfully",
+      dish: updatedDish,
+    });
   } catch (error) {
     return res.status(500).json({
-      message: "Internal server error",
-      error: error.message,
+      message: error.message,
     });
   }
 };
@@ -231,7 +224,6 @@ export const deleteDish = async (req, res) => {
       deletedDish = await Dish.findOneAndDelete({
         _id: id,
         restaurant: req.restaurantId,
-        totalDishes: { $gt: 0 },
       }).session(session);
 
       if (!deletedDish) {
@@ -248,6 +240,14 @@ export const deleteDish = async (req, res) => {
         throw new Error("RESTAURANT_NOT_FOUND");
       }
     });
+
+    if (deletedDish.imagePublicId) {
+      try {
+        await deleteFromCloudinary(deletedDish.imagePublicId);
+      } catch (cleanupError) {
+        console.error("Cloudinary cleanup failed:", cleanupError);
+      }
+    }
 
     return res.status(200).json({
       message: "Dish deleted successfully",

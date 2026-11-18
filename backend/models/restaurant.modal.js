@@ -35,7 +35,11 @@ const restaurantSchema = new Schema(
 
     logo: { type: String },
 
+    logoPublicId: { type: String },
+
     coverImage: { type: String },
+
+    coverImagePublicId: { type: String },
 
     address: {
       type: {

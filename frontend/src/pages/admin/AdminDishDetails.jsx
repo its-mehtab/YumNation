@@ -39,7 +39,6 @@ const AdminDishDetails = () => {
   const [dish, setDish] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeImage, setActiveImage] = useState(0);
 
   const { serverURL } = useAuth();
 
@@ -120,28 +119,6 @@ const AdminDishDetails = () => {
                 <Pizza size={40} className="text-gray-400" />
               )}
             </div>
-            {dish.images && (
-              <div className="flex gap-2">
-                {dish.images.map((img, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveImage(i)}
-                    className={`flex-1 aspect-square rounded-md border-2 flex items-center justify-center text-xl transition-all
-                      ${activeImage === i ? "border-[#ea6a12] bg-orange-50" : "border-gray-200 bg-gray-50 hover:border-orange-200"}`}
-                  >
-                    {img ? (
-                      <img
-                        src={img}
-                        alt=""
-                        className="w-full h-full object-cover rounded-md"
-                      />
-                    ) : (
-                      <Pizza size={24} className="text-gray-400" />
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
           </Card>
 
           {/* Quick Details */}
@@ -179,6 +156,51 @@ const AdminDishDetails = () => {
               </div>
             </div>
           </Card>
+
+          {/* Restaurant Info */}
+          {dish.restaurant && (
+            <Card title="Restaurant">
+              <div className="space-y-2">
+                <Link
+                  to={`/admin/restaurants/${dish.restaurant._id}`}
+                  className="font-semibold text-gray-800 hover:text-[#ea6a12] transition-colors text-sm block"
+                >
+                  {dish.restaurant.name}
+                </Link>
+                {dish.restaurant.email && (
+                  <p className="text-xs text-gray-500">
+                    {dish.restaurant.email}
+                  </p>
+                )}
+                {dish.restaurant.phone && (
+                  <p className="text-xs text-gray-500">
+                    {dish.restaurant.phone}
+                  </p>
+                )}
+              </div>
+            </Card>
+          )}
+
+          {/* Meta Info */}
+          <Card title="Meta">
+            <InfoRow
+              label="Slug"
+              value={
+                <span className="font-mono text-xs break-all">{dish.slug}</span>
+              }
+            />
+            <InfoRow label="Category" value={dish.category?.name || "—"} />
+            <InfoRow
+              label="Created On"
+              value={dayjs(dish.createdAt).format("MMM DD, YYYY")}
+            />
+            {dish.updatedAt && (
+              <InfoRow
+                label="Updated On"
+                value={dayjs(dish.updatedAt).format("MMM DD, YYYY")}
+              />
+            )}
+          </Card>
         </div>
 
         {/* ── Right — Details ── */}
@@ -186,33 +208,50 @@ const AdminDishDetails = () => {
           <Card title="Dish Information">
             <div className="space-y-6">
               <div className="flex justify-between items-start gap-4">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                <div className="flex-1">
+                  <h2 className="text-2xl font-bold text-gray-800 mb-1">
                     {dish.name}
                   </h2>
-                  <p className="text-sm text-gray-500 max-w-2xl leading-relaxed">
-                    {dish.longDescription}
-                  </p>
+                  {dish.shortDescription && (
+                    <p className="text-sm text-gray-500 max-w-2xl leading-relaxed">
+                      {dish.shortDescription}
+                    </p>
+                  )}
                 </div>
-                <div className="flex flex-col items-end gap-2 text-right">
+                <div className="flex flex-col items-end gap-2 text-right shrink-0">
                   <div className="text-2xl font-black text-[#ea6a12]">
                     ${dish.price.toFixed(2)}
                   </div>
                   <span
-                    className={`inline-block px-3 py-1 rounded-md text-xs font-bold border ${dish.foodType === "veg" ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-700 border-red-200"}`}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-bold border ${
+                      dish.foodType === "veg"
+                        ? "bg-green-50 text-green-700 border-green-200"
+                        : dish.foodType === "vegan"
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          : "bg-red-50 text-red-700 border-red-200"
+                    }`}
                   >
-                    {dish.foodType === "veg" ? "Veg" : "Non-Veg"}
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        dish.foodType === "veg"
+                          ? "bg-green-600"
+                          : dish.foodType === "vegan"
+                            ? "bg-emerald-600"
+                            : "bg-red-600"
+                      }`}
+                    />
+                    <span className="capitalize">{dish.foodType}</span>
                   </span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4 py-4 border-y border-gray-100">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-4 border-y border-gray-100">
                 <div>
                   <p className="text-xs font-medium text-gray-400 mb-1">
                     Category
                   </p>
                   <p className="text-sm font-semibold text-gray-700">
-                    {dish.category.name}
+                    {dish.category?.name || "—"}
                   </p>
                 </div>
                 <div>
@@ -228,16 +267,59 @@ const AdminDishDetails = () => {
                     Total Orders
                   </p>
                   <p className="text-sm font-semibold text-gray-700">
-                    {dish.totalOrders}
+                    {dish.totalOrders ?? 0}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-gray-400 mb-1">
+                    Cost Price
+                  </p>
+                  <p className="text-sm font-semibold text-gray-700">
+                    {dish.cost != null
+                      ? `$${Number(dish.cost).toFixed(2)}`
+                      : "—"}
                   </p>
                 </div>
               </div>
+
+              {/* Margin row */}
+              {dish.cost != null && (
+                <div className="flex flex-wrap gap-4 pt-1">
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-gray-400 font-medium">Margin:</span>
+                    <span
+                      className={`font-bold ${dish.price - dish.cost >= 0 ? "text-green-600" : "text-red-500"}`}
+                    >
+                      ${(dish.price - dish.cost).toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="text-gray-400 font-medium">Margin %:</span>
+                    <span
+                      className={`font-bold ${dish.price - dish.cost >= 0 ? "text-green-600" : "text-red-500"}`}
+                    >
+                      {dish.price > 0
+                        ? `${(((dish.price - dish.cost) / dish.price) * 100).toFixed(1)}%`
+                        : "—"}
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
           </Card>
 
-          <div className="grid grid-cols-2 gap-5">
+          {/* Long description if available */}
+          {dish.longDescription && (
+            <Card title="Detailed Description">
+              <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
+                {dish.longDescription}
+              </p>
+            </Card>
+          )}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {/* Variants */}
-            <Card title="Variants">
+            <Card title={`Variants (${dish.variants?.length || 0})`}>
               {dish.variants?.length > 0 ? (
                 <div className="space-y-1">
                   {dish.variants.map((v, i) => (
@@ -249,13 +331,25 @@ const AdminDishDetails = () => {
                         <div className="w-8 h-8 rounded-md bg-orange-50 flex items-center justify-center text-[#ea6a12] font-bold text-xs">
                           {v.name[0]}
                         </div>
-                        <span className="text-sm font-semibold text-gray-700">
-                          {v.name}
-                        </span>
+                        <div>
+                          <p className="text-sm font-semibold text-gray-700">
+                            {v.name}
+                          </p>
+                          {v.cost != null && v.cost > 0 && (
+                            <p className="text-xs text-gray-400">
+                              cost: ${Number(v.cost).toFixed(2)}
+                              {v.price > v.cost && (
+                                <span className="text-green-600 ml-1">
+                                  (+${(v.price - v.cost).toFixed(2)} margin)
+                                </span>
+                              )}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                      <div className="flex items-center gap-6">
+                      <div className="text-right">
                         <span className="text-sm font-bold text-gray-800">
-                          +${v.price.toFixed(2)}
+                          +${Number(v.price).toFixed(2)}
                         </span>
                       </div>
                     </div>
@@ -269,7 +363,7 @@ const AdminDishDetails = () => {
             </Card>
 
             {/* Add-ons */}
-            <Card title="Add-ons">
+            <Card title={`Add-ons (${dish.addOns?.length || 0})`}>
               {dish.addOns?.length > 0 ? (
                 <div className="space-y-1">
                   {dish.addOns.map((add, i) => (
@@ -277,11 +371,18 @@ const AdminDishDetails = () => {
                       key={i}
                       className="flex justify-between items-center p-3 rounded-md hover:bg-gray-50 border border-transparent transition-colors"
                     >
-                      <span className="text-sm font-semibold text-gray-700">
-                        {add.name}
-                      </span>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-700">
+                          {add.name}
+                        </p>
+                        {add.cost != null && add.cost > 0 && (
+                          <p className="text-xs text-gray-400">
+                            cost: ${Number(add.cost).toFixed(2)}
+                          </p>
+                        )}
+                      </div>
                       <span className="text-sm font-bold text-gray-800">
-                        +${add.price.toFixed(2)}
+                        +${Number(add.price).toFixed(2)}
                       </span>
                     </div>
                   ))}

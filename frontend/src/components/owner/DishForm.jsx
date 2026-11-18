@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { Trash2, Edit, Plus } from "lucide-react";
+import { Trash2, Edit, Plus, Check, X } from "lucide-react";
 
 import { useCategory } from "../../context/public/CategoryContext";
 import { Switch } from "@radix-ui/themes";
@@ -12,12 +12,20 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
   const [dishImage, setDishImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const [editingVariantIndex, setEditingVariantIndex] = useState(null);
+  const [editingAddOnIndex, setEditingAddOnIndex] = useState(null);
+
   const [variantInput, setVariantInput] = useState({
     name: "",
     price: "",
+    cost: "",
   });
 
-  const [addOnInput, setAddOnInput] = useState({ name: "", price: "" });
+  const [addOnInput, setAddOnInput] = useState({
+    name: "",
+    price: "",
+    cost: "",
+  });
 
   const { categories } = useCategory();
   const dishImageRef = useRef();
@@ -35,71 +43,249 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
 
   const handleDishImage = (e) => {
     const file = e.target.files[0];
-    if (file) setDishImage({ file, preview: URL.createObjectURL(file) });
-  };
 
-  // ── Variants ──
-  const addVariant = () => {
-    if (!variantInput.name.trim() || !variantInput.price) return;
+    if (!file) return;
 
-    setForm((prev) => ({
-      ...prev,
-      ["variants"]: [...prev.variants, variantInput],
-    }));
-    setVariantInput({ name: "", price: "" });
-  };
-
-  const removeVariant = (name) =>
-    setForm((prev) => ({
-      ...prev,
-      ["variants"]: prev.variants.filter((v) => v.name !== name),
-    }));
-
-  const editVariant = (name, price) => {
-    setForm((prev) => ({
-      ...prev,
-      ["variants"]: prev.variants.filter((v) => v.name !== name),
-    }));
-
-    setVariantInput({
-      name,
-      price,
+    setDishImage({
+      file,
+      preview: URL.createObjectURL(file),
     });
   };
 
-  const addAddOn = () => {
-    if (!addOnInput.name.trim() || !addOnInput.price) return;
-    setForm((prev) => ({
-      ...prev,
-      ["addOns"]: [...prev.addOns, addOnInput],
-    }));
-    setAddOnInput({ name: "", price: "" });
+  // ── Variants ──
+  const saveVariant = () => {
+    if (!variantInput.name.trim() || !variantInput.price) return;
+
+    const formatted = {
+      name: variantInput.name.trim(),
+      price: Number(variantInput.price),
+      cost: variantInput.cost !== "" ? Number(variantInput.cost) : 0,
+    };
+
+    setForm((prev) => {
+      const updated = [...prev.variants];
+      if (
+        editingVariantIndex !== null &&
+        editingVariantIndex >= 0 &&
+        editingVariantIndex < updated.length
+      ) {
+        updated[editingVariantIndex] = formatted;
+      } else {
+        updated.push(formatted);
+      }
+      return { ...prev, variants: updated };
+    });
+
+    setVariantInput({ name: "", price: "", cost: "" });
+    setEditingVariantIndex(null);
   };
 
-  const removeAddOn = (name) =>
+  const cancelEditVariant = () => {
+    setVariantInput({ name: "", price: "", cost: "" });
+    setEditingVariantIndex(null);
+  };
+
+  const removeVariant = (index) => {
     setForm((prev) => ({
       ...prev,
-      ["addOns"]: prev.addOns.filter((a) => a.name !== name),
+      variants: prev.variants.filter((_, i) => i !== index),
     }));
 
-  const editAddOn = (name, price) => {
+    if (editingVariantIndex === index) {
+      setVariantInput({ name: "", price: "", cost: "" });
+      setEditingVariantIndex(null);
+    } else if (editingVariantIndex !== null && index < editingVariantIndex) {
+      setEditingVariantIndex((prev) => prev - 1);
+    }
+  };
+
+  const editVariant = (index) => {
+    const target = form.variants[index];
+    if (!target) return;
+
+    // If already editing another variant and there is valid input, save previous one first
+    if (variantInput.name.trim() && variantInput.price) {
+      const prevFormatted = {
+        name: variantInput.name.trim(),
+        price: Number(variantInput.price),
+        cost: variantInput.cost !== "" ? Number(variantInput.cost) : 0,
+      };
+
+      setForm((prev) => {
+        const updated = [...prev.variants];
+        if (
+          editingVariantIndex !== null &&
+          editingVariantIndex >= 0 &&
+          editingVariantIndex < updated.length
+        ) {
+          updated[editingVariantIndex] = prevFormatted;
+        } else {
+          updated.push(prevFormatted);
+        }
+        return { ...prev, variants: updated };
+      });
+    }
+
+    setEditingVariantIndex(index);
+    setVariantInput({
+      name: target.name || "",
+      price: target.price ?? "",
+      cost: target.cost ?? "",
+    });
+  };
+
+  // ── Add-ons ──
+  const saveAddOn = () => {
+    if (!addOnInput.name.trim() || !addOnInput.price) return;
+
+    const formatted = {
+      name: addOnInput.name.trim(),
+      price: Number(addOnInput.price),
+      cost: addOnInput.cost !== "" ? Number(addOnInput.cost) : 0,
+    };
+
+    setForm((prev) => {
+      const updated = [...prev.addOns];
+      if (
+        editingAddOnIndex !== null &&
+        editingAddOnIndex >= 0 &&
+        editingAddOnIndex < updated.length
+      ) {
+        updated[editingAddOnIndex] = formatted;
+      } else {
+        updated.push(formatted);
+      }
+      return { ...prev, addOns: updated };
+    });
+
+    setAddOnInput({ name: "", price: "", cost: "" });
+    setEditingAddOnIndex(null);
+  };
+
+  const cancelEditAddOn = () => {
+    setAddOnInput({ name: "", price: "", cost: "" });
+    setEditingAddOnIndex(null);
+  };
+
+  const removeAddOn = (index) => {
     setForm((prev) => ({
       ...prev,
-      ["addOns"]: prev.addOns.filter((a) => a.name !== name),
+      addOns: prev.addOns.filter((_, i) => i !== index),
     }));
 
-    setAddOnInput({ name, price });
+    if (editingAddOnIndex === index) {
+      setAddOnInput({ name: "", price: "", cost: "" });
+      setEditingAddOnIndex(null);
+    } else if (editingAddOnIndex !== null && index < editingAddOnIndex) {
+      setEditingAddOnIndex((prev) => prev - 1);
+    }
+  };
+
+  const editAddOn = (index) => {
+    const target = form.addOns[index];
+    if (!target) return;
+
+    // If already editing another add-on and there is valid input, save previous one first
+    if (addOnInput.name.trim() && addOnInput.price) {
+      const prevFormatted = {
+        name: addOnInput.name.trim(),
+        price: Number(addOnInput.price),
+        cost: addOnInput.cost !== "" ? Number(addOnInput.cost) : 0,
+      };
+
+      setForm((prev) => {
+        const updated = [...prev.addOns];
+        if (
+          editingAddOnIndex !== null &&
+          editingAddOnIndex >= 0 &&
+          editingAddOnIndex < updated.length
+        ) {
+          updated[editingAddOnIndex] = prevFormatted;
+        } else {
+          updated.push(prevFormatted);
+        }
+        return { ...prev, addOns: updated };
+      });
+    }
+
+    setEditingAddOnIndex(index);
+    setAddOnInput({
+      name: target.name || "",
+      price: target.price ?? "",
+      cost: target.cost ?? "",
+    });
   };
 
   const handleClear = () => {
     setForm(initialForm);
     setDishImage(null);
+    setVariantInput({ name: "", price: "", cost: "" });
+    setAddOnInput({ name: "", price: "", cost: "" });
+    setEditingVariantIndex(null);
+    setEditingAddOnIndex(null);
   };
 
   const submit = async (e) => {
+    e.preventDefault();
     setLoading(true);
+
+    let updatedForm = { ...form };
+    let hasChanges = false;
+
+    if (variantInput.name.trim() && variantInput.price) {
+      const formattedV = {
+        name: variantInput.name.trim(),
+        price: Number(variantInput.price),
+        cost: variantInput.cost !== "" ? Number(variantInput.cost) : 0,
+      };
+      const vList = [...(updatedForm.variants || [])];
+      if (
+        editingVariantIndex !== null &&
+        editingVariantIndex >= 0 &&
+        editingVariantIndex < vList.length
+      ) {
+        vList[editingVariantIndex] = formattedV;
+      } else {
+        vList.push(formattedV);
+      }
+      updatedForm.variants = vList;
+      hasChanges = true;
+    }
+
+    if (addOnInput.name.trim() && addOnInput.price) {
+      const formattedA = {
+        name: addOnInput.name.trim(),
+        price: Number(addOnInput.price),
+        cost: addOnInput.cost !== "" ? Number(addOnInput.cost) : 0,
+      };
+      const aList = [...(updatedForm.addOns || [])];
+      if (
+        editingAddOnIndex !== null &&
+        editingAddOnIndex >= 0 &&
+        editingAddOnIndex < aList.length
+      ) {
+        aList[editingAddOnIndex] = formattedA;
+      } else {
+        aList.push(formattedA);
+      }
+      updatedForm.addOns = aList;
+      hasChanges = true;
+    }
+
+    if (hasChanges) {
+      setForm(updatedForm);
+      setEditingVariantIndex(null);
+      setEditingAddOnIndex(null);
+      setVariantInput({ name: "", price: "", cost: "" });
+      setAddOnInput({ name: "", price: "", cost: "" });
+    }
+
     try {
-      await handleSubmit(e);
+      await handleSubmit(
+        e,
+        dishImage?.file || null,
+        hasChanges ? updatedForm : form,
+      );
     } catch (error) {
       console.log(error);
     } finally {
@@ -115,10 +301,10 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
             onClick={() => dishImageRef.current.click()}
             className="aspect-square rounded-md border-2 border-dashed border-[#fc8019] bg-[#fff2e8] flex flex-col items-center justify-center cursor-pointer hover:bg-orange-100 transition-colors overflow-hidden"
           >
-            {dishImage ? (
+            {dishImage?.preview || form.image ? (
               <img
-                src={dishImage.preview}
-                alt="main"
+                src={dishImage?.preview || form.image}
+                alt="Dish"
                 className="w-full h-full object-cover"
               />
             ) : (
@@ -180,7 +366,7 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
               <Field label="Category" required>
                 <select
                   name="category"
-                  value={form.category._id}
+                  value={form.category}
                   onChange={handleChange}
                   className="w-full border border-gray-200 rounded-md px-3 py-2.5 text-sm text-gray-600 outline-none focus:border-[#fc8019] transition-colors bg-white"
                 >
@@ -261,9 +447,17 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                       className="hidden"
                     />
                     {type === "veg" ? (
-                      <Circle size={14} className="text-green-500 fill-current"  strokeWidth={1.5} />
+                      <Circle
+                        size={14}
+                        className="text-green-500 fill-current"
+                        strokeWidth={1.5}
+                      />
                     ) : type === "non-veg" ? (
-                      <Circle size={14} className="text-red-500 fill-current"  strokeWidth={1.5} />
+                      <Circle
+                        size={14}
+                        className="text-red-500 fill-current"
+                        strokeWidth={1.5}
+                      />
                     ) : (
                       <Leaf size={14} className="text-[#fc8019] fill-current" />
                     )}{" "}
@@ -290,40 +484,68 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                   <p className="col-span-5 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                     Name
                   </p>
-                  <p className="col-span-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  <p className="col-span-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
                     Price
                   </p>
-                  <p className="col-span-1" />
+                  <p className="col-span-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                    Cost
+                  </p>
+                  <p className="col-span-3 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                    Actions
+                  </p>
                 </div>
-                {form.variants.map((v, i) => (
-                  <div
-                    key={v.name}
-                    className={`grid grid-cols-12 items-center px-4 py-3 ${i !== form.variants.length - 1 ? "border-b border-gray-50" : ""}`}
-                  >
-                    <p className="col-span-5 text-sm font-semibold text-gray-700">
-                      {v.name}
-                    </p>
-                    <p className="col-span-3 text-sm font-bold text-[#fc8019]">
-                      ${v.price}
-                    </p>
-                    <div className="col-span-4 flex justify-end gap-2">
-                      <button
-                        type="button"
-                        onClick={() => removeVariant(v.name)}
-                        className="text-red-400 hover:text-red-500 hover:bg-red-50 p-1 rounded-md transition-colors"
-                      >
-                        <Trash2  size="13" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => editVariant(v.name, v.price)}
-                        className="text-red-400 hover:text-red-500 hover:bg-red-50 p-1 rounded-md transition-colors"
-                      >
-                        <Edit  size="13" />
-                      </button>
+                {form.variants.map((v, i) => {
+                  const isEditing = editingVariantIndex === i;
+                  return (
+                    <div
+                      key={i}
+                      className={`grid grid-cols-12 items-center px-4 py-3 transition-colors ${
+                        isEditing
+                          ? "bg-[#fff2e8] border-l-4 border-l-[#fc8019]"
+                          : ""
+                      } ${i !== form.variants.length - 1 ? "border-b border-gray-50" : ""}`}
+                    >
+                      <div className="col-span-5 flex items-center gap-2">
+                        <p className="text-sm font-semibold text-gray-700">
+                          {v.name}
+                        </p>
+                        {isEditing && (
+                          <span className="text-[10px] bg-orange-200 text-[#fc8019] font-bold px-1.5 py-0.5 rounded">
+                            Editing
+                          </span>
+                        )}
+                      </div>
+                      <p className="col-span-2 text-sm font-bold text-[#fc8019]">
+                        ${v.price}
+                      </p>
+                      <p className="col-span-2 text-sm text-gray-500">
+                        {v.cost ? `$${v.cost}` : "—"}
+                      </p>
+                      <div className="col-span-3 flex justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => removeVariant(i)}
+                          className="text-red-400 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-md transition-colors"
+                          title="Delete"
+                        >
+                          <Trash2 size="14" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => editVariant(i)}
+                          className={`p-1.5 rounded-md transition-colors ${
+                            isEditing
+                              ? "text-[#fc8019] bg-orange-100"
+                              : "text-blue-500 hover:text-blue-600 hover:bg-blue-50"
+                          }`}
+                          title="Edit"
+                        >
+                          <Edit size="14" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
 
@@ -346,14 +568,40 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                 min="0"
                 className="w-full sm:w-28 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
               />
+              <input
+                value={variantInput.cost}
+                onChange={(e) =>
+                  setVariantInput((p) => ({ ...p, cost: e.target.value }))
+                }
+                placeholder="Cost ($)"
+                type="number"
+                min="0"
+                className="w-full sm:w-28 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
+              />
+              {editingVariantIndex !== null && (
+                <button
+                  type="button"
+                  onClick={cancelEditVariant}
+                  className="px-3 py-2 rounded-md border border-gray-200 text-gray-500 hover:bg-gray-50 text-sm font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+              )}
               <button
                 type="button"
-                onClick={addVariant}
+                onClick={saveVariant}
                 disabled={!variantInput.name.trim() || !variantInput.price}
-                className="flex justify-center gap-1 items-center px-4 py-2 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors whitespace-nowrap disabled:opacity-40"
+                className="flex justify-center gap-1.5 items-center px-4 py-2 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors whitespace-nowrap disabled:opacity-40"
               >
-                <Plus color={"#fff"} />
-                Add
+                {editingVariantIndex !== null ? (
+                  <>
+                    <Check size={16} /> Update
+                  </>
+                ) : (
+                  <>
+                    <Plus size={16} /> Add
+                  </>
+                )}
               </button>
             </div>
           </div>
@@ -373,33 +621,56 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
             {/* Existing add-ons */}
             {form?.addOns?.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {form.addOns.map((a) => (
-                  <div
-                    key={a.name}
-                    className="flex items-center gap-2 bg-[#fff2e8] border border-orange-100 rounded-md px-3 py-2"
-                  >
-                    <span className="text-xs font-semibold text-gray-700">
-                      {a.name}
-                    </span>
-                    <span className="text-xs font-bold text-[#fc8019]">
-                      +${a.price}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => removeAddOn(a.name)}
-                      className="text-red-400 hover:text-red-500 transition-colors ml-1"
+                {form.addOns.map((a, i) => {
+                  const isEditing = editingAddOnIndex === i;
+                  return (
+                    <div
+                      key={i}
+                      className={`flex items-center gap-2 border rounded-md px-3 py-2 transition-all ${
+                        isEditing
+                          ? "bg-[#fff2e8] border-[#fc8019] ring-2 ring-orange-200"
+                          : "bg-[#fff2e8] border-orange-100"
+                      }`}
                     >
-                      <Trash2  size="13" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => editAddOn(a.name, a.price)}
-                      className="text-red-400 hover:text-red-500 transition-colors ml-1"
-                    >
-                      <Edit  size="13" />
-                    </button>
-                  </div>
-                ))}
+                      <span className="text-xs font-semibold text-gray-700">
+                        {a.name}
+                      </span>
+                      <span className="text-xs font-bold text-[#fc8019]">
+                        +${a.price}
+                      </span>
+                      {a.cost && (
+                        <span className="text-xs text-gray-400">
+                          (cost: ${a.cost})
+                        </span>
+                      )}
+                      {isEditing && (
+                        <span className="text-[10px] bg-orange-200 text-[#fc8019] font-bold px-1 py-0.5 rounded">
+                          Editing
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => removeAddOn(i)}
+                        className="text-red-400 hover:text-red-500 transition-colors ml-1"
+                        title="Delete"
+                      >
+                        <Trash2 size="13" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => editAddOn(i)}
+                        className={`transition-colors ml-1 ${
+                          isEditing
+                            ? "text-[#fc8019]"
+                            : "text-blue-500 hover:text-blue-600"
+                        }`}
+                        title="Edit"
+                      >
+                        <Edit size="13" />
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             )}
 
@@ -422,13 +693,40 @@ const DishForm = ({ handleSubmit, form, setForm, initialForm }) => {
                 min="0"
                 className="w-full sm:w-28 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
               />
+              <input
+                value={addOnInput.cost}
+                onChange={(e) =>
+                  setAddOnInput((p) => ({ ...p, cost: e.target.value }))
+                }
+                placeholder="Cost ($)"
+                type="number"
+                min="0"
+                className="w-full sm:w-28 border border-gray-200 rounded-md px-3 py-2 text-sm text-gray-700 outline-none focus:border-[#fc8019] transition-colors"
+              />
+              {editingAddOnIndex !== null && (
+                <button
+                  type="button"
+                  onClick={cancelEditAddOn}
+                  className="px-3 py-2 rounded-md border border-gray-200 text-gray-500 hover:bg-gray-50 text-sm font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+              )}
               <button
                 type="button"
-                onClick={addAddOn}
+                onClick={saveAddOn}
                 disabled={!addOnInput.name.trim() || !addOnInput.price}
-                className="flex justify-center gap-1 items-center px-4 py-2 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors whitespace-nowrap disabled:opacity-40"
+                className="flex justify-center gap-1.5 items-center px-4 py-2 rounded-md bg-[#fc8019] hover:bg-[#e5721f] text-white text-sm font-semibold transition-colors whitespace-nowrap disabled:opacity-40"
               >
-                <Plus color={"#fff"} /> Add
+                {editingAddOnIndex !== null ? (
+                  <>
+                    <Check size={16} /> Update
+                  </>
+                ) : (
+                  <>
+                    <Plus size={16} /> Add
+                  </>
+                )}
               </button>
             </div>
           </div>

@@ -37,6 +37,7 @@ const RestaurantDishes = () => {
 
       notifySuccess(`${name} is deleted`);
     } catch (error) {
+      setDishes(dishes);
       notifyError(`deletion failed`);
       console.log("Delete Dish Error:", error?.response?.data || error.message);
     }

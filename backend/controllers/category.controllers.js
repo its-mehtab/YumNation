@@ -1,6 +1,9 @@
 import Category from "../models/category.modal.js";
 import Dish from "../models/dish.modal.js";
-import { uploadToCloudinary } from "../services/cloudinaryService.js";
+import {
+  deleteFromCloudinary,
+  uploadToCloudinary,
+} from "../services/cloudinaryService.js";
 
 export const getCategories = async (req, res) => {
   try {
@@ -196,7 +199,7 @@ export const hardDeleteCategory = async (req, res) => {
 
     await Category.findByIdAndDelete(id);
 
-    if (category?.imagePublicId) {
+    if (category.imagePublicId) {
       try {
         await deleteFromCloudinary(category.imagePublicId);
       } catch (cleanupError) {

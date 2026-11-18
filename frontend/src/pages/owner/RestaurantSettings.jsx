@@ -27,7 +27,9 @@ const initialForm = {
   email: "",
   phone: "",
   logo: "",
+  logoPublicId: "",
   coverImage: "",
+  coverImagePublicId: "",
   isPureVeg: false,
   isOpen: true,
   address: {

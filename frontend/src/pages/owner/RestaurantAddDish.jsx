@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/user/AuthContext";
-import { notifySuccess } from "../../utils/toast";
+import { notifyError, notifySuccess } from "../../utils/toast";
 import { useDish } from "../../context/owner";
 import DishForm from "../../components/owner/DishForm";
 
 // ── Initial state ─────────────────────────────────────────────────────────────
 const initialForm = {
   name: "",
-  image: "https://via.placeholder.com/150",
+  image: "",
   shortDescription: "",
   longDescription: "",
   category: "",
@@ -30,20 +30,32 @@ const RestaurantAddDish = () => {
   const { serverURL } = useAuth();
   const { setDishes } = useDish();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, imageFile, customForm) => {
     e.preventDefault();
+
+    const dataToSubmit = customForm || form;
+    const formData = new FormData();
+
+    formData.append("data", JSON.stringify(dataToSubmit));
+
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
+    console.log(formData);
 
     try {
       const { data } = await axios.post(
         `${serverURL}/api/owner/dish`,
-        { ...form },
+        formData,
         { withCredentials: true },
       );
 
       setDishes((prev) => [...prev, { ...data }]);
       navigate("/owner/dishes");
-      notifySuccess(`${form.name} added successfully`);
+      notifySuccess(`${dataToSubmit.name} added successfully`);
     } catch (error) {
+      notifyError(error?.response?.data.message || error.message);
       console.log("Add Dish Error:", error?.response?.data || error.message);
     }
   };

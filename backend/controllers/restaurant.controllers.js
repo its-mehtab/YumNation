@@ -206,10 +206,18 @@ export const createRestaurant = async (req, res) => {
 };
 
 export const updateRestaurant = async (req, res) => {
+  const updateData = { ...req.body };
+
+  let uploadedImage;
+  if (req.file) {
+    uploadedImage = await uploadToCloudinary(req.file.buffer);
+    updateData.logo = uploadedImage.imageUrl;
+    updateData.logoPublicId = uploadedImage.publicId;
+  }
   try {
     const restaurant = await Restaurant.findByIdAndUpdate(
       req.restaurantId,
-      { $set: req.body },
+      { $set: updateData },
       { new: true, runValidators: true },
     );
 
@@ -219,6 +227,13 @@ export const updateRestaurant = async (req, res) => {
 
     return res.status(200).json(restaurant);
   } catch (error) {
+    if (uploadedImage.publicId) {
+      try {
+        await deleteFromCloudinary(uploadedImage.publicId);
+      } catch (cleanupError) {
+        console.error("Cloudinary cleanup failed:", cleanupError);
+      }
+    }
     return res
       .status(500)
       .json({ message: "internal server error", error: error.message });

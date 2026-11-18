@@ -7,6 +7,7 @@ import {
 import { restaurantOnly } from "../../middleware/restaurantOnly.js";
 import { checkAuth } from "../../middleware/checkAuth.js";
 import { setRestaurantFromOwner } from "../../middleware/restaurant.middleware.js";
+import { upload } from "../../middleware/upload.js";
 
 const restaurantOwnerRouter = Router();
 
@@ -17,12 +18,18 @@ restaurantOwnerRouter.get(
   setRestaurantFromOwner,
   getRestaurant,
 );
-restaurantOwnerRouter.post("/apply", checkAuth, createRestaurant);
+restaurantOwnerRouter.post(
+  "/apply",
+  checkAuth,
+  upload.single("image"),
+  createRestaurant,
+);
 restaurantOwnerRouter.patch(
   "/",
   checkAuth,
   restaurantOnly,
   setRestaurantFromOwner,
+  upload.single("image"),
   updateRestaurant,
 );
 

@@ -173,7 +173,7 @@ const RestaurantDishDetails = () => {
           {/* Image gallery */}
           <Card>
             <div className="aspect-square rounded-md bg-[#fff2e8] border border-orange-100 flex items-center justify-center overflow-hidden mb-3">
-              {dish?.images ? (
+              {dish?.image ? (
                 <img
                   src={dish.image}
                   alt={dish.name}
@@ -255,10 +255,22 @@ const RestaurantDishDetails = () => {
                   </h2>
                   {/* Food type indicator */}
                   <div
-                    className={`w-4 h-4 rounded-sm border-2 flex items-center justify-center ${dish.foodType === "veg" ? "border-green-600" : "border-red-500"}`}
+                    className={`w-4 h-4 rounded-sm border-2 flex items-center justify-center ${
+                      dish.foodType === "veg"
+                        ? "border-green-600"
+                        : dish.foodType === "vegan"
+                        ? "border-emerald-600"
+                        : "border-red-500"
+                    }`}
                   >
                     <div
-                      className={`w-2 h-2 rounded-full ${dish.foodType === "veg" ? "bg-green-600" : "bg-red-500"}`}
+                      className={`w-2 h-2 rounded-full ${
+                        dish.foodType === "veg"
+                          ? "bg-green-600"
+                          : dish.foodType === "vegan"
+                          ? "bg-emerald-600"
+                          : "bg-red-500"
+                      }`}
                     />
                   </div>
                   {dish.isFeatured && (
@@ -273,13 +285,30 @@ const RestaurantDishDetails = () => {
                   )}
                 </div>
                 <p className="text-sm text-gray-500 leading-relaxed">
-                  {dish.description}
+                  {dish.shortDescription || dish.description}
                 </p>
               </div>
               <div className="text-right shrink-0">
                 <p className="text-2xl font-bold text-[#fc8019]">
                   ${dish.price}
                 </p>
+                {dish.cost != null && (
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    Cost: ${dish.cost}
+                  </p>
+                )}
+                {dish.cost != null && (
+                  <p
+                    className={`text-xs font-semibold mt-0.5 ${dish.price - dish.cost >= 0 ? "text-green-600" : "text-red-500"}`}
+                  >
+                    Margin: ${(dish.price - dish.cost).toFixed(2)}
+                    {dish.price > 0 && (
+                      <span className="text-gray-400 font-normal ml-1">
+                        ({(((dish.price - dish.cost) / dish.price) * 100).toFixed(0)}%)
+                      </span>
+                    )}
+                  </p>
+                )}
                 <p className="text-xs text-gray-400 mt-1">
                   {dish.category?.name}
                 </p>
@@ -310,30 +339,48 @@ const RestaurantDishDetails = () => {
           )}
 
           {/* Variants */}
-          <Card title={`Variants (${dish?.variants?.length})`}>
+          <Card title={`Variants (${dish?.variants?.length || 0})`}>
             {dish?.variants?.length === 0 ? (
               <p className="text-xs text-gray-400">No variants added.</p>
             ) : (
               <div className="overflow-hidden rounded-md border border-gray-200">
                 {/* Header */}
-                <div className="grid grid-cols-12 px-4 py-2 bg-gray-50 border-b border-gray-200">
-                  <p className="col-span-8 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                    Name
-                  </p>
-                  <p className="col-span-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                    Price
-                  </p>
+                <div className="grid grid-cols-12 px-4 py-2 bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  <p className="col-span-5">Name</p>
+                  <p className="col-span-2 text-right">Price</p>
+                  <p className="col-span-2 text-right">Cost</p>
+                  <p className="col-span-3 text-right">Margin</p>
                 </div>
                 {dish?.variants?.map((v, i) => (
                   <div
                     key={i}
-                    className={`grid grid-cols-12 items-center px-4 py-3 ${i !== dish.variants.length - 1 ? "border-b border-gray-50" : ""}`}
+                    className={`grid grid-cols-12 items-center px-4 py-3 ${
+                      i !== dish.variants.length - 1 ? "border-b border-gray-50" : ""
+                    }`}
                   >
-                    <p className="col-span-8 text-sm font-semibold text-gray-700">
+                    <p className="col-span-5 text-sm font-semibold text-gray-700">
                       {v.name}
                     </p>
-                    <p className="col-span-4 text-sm font-bold text-[#fc8019]">
+                    <p className="col-span-2 text-sm font-bold text-[#fc8019] text-right">
                       ${v.price}
+                    </p>
+                    <p className="col-span-2 text-sm text-gray-500 text-right">
+                      {v.cost != null ? `$${v.cost}` : "—"}
+                    </p>
+                    <p className="col-span-3 text-sm text-right font-medium">
+                      {v.cost != null ? (
+                        <span
+                          className={
+                            v.price - v.cost >= 0
+                              ? "text-green-600"
+                              : "text-red-500"
+                          }
+                        >
+                          ${(v.price - v.cost).toFixed(2)}
+                        </span>
+                      ) : (
+                        "—"
+                      )}
                     </p>
                   </div>
                 ))}
@@ -342,7 +389,7 @@ const RestaurantDishDetails = () => {
           </Card>
 
           {/* Add-ons */}
-          <Card title={`Add-ons (${dish?.addOns?.length})`}>
+          <Card title={`Add-ons (${dish?.addOns?.length || 0})`}>
             {dish?.addOns?.length === 0 ? (
               <p className="text-xs text-gray-400">No add-ons added.</p>
             ) : (
@@ -358,6 +405,16 @@ const RestaurantDishDetails = () => {
                     <span className="text-xs font-bold text-[#fc8019]">
                       +${a.price}
                     </span>
+                    {a.cost != null && a.cost > 0 && (
+                      <span className="text-xs text-gray-400">
+                        (cost: ${a.cost})
+                      </span>
+                    )}
+                    {a.cost != null && a.price > a.cost && (
+                      <span className="text-xs text-green-600 font-medium">
+                        +${(a.price - a.cost).toFixed(2)}
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
@@ -368,17 +425,23 @@ const RestaurantDishDetails = () => {
           <Card title="Meta">
             <InfoRow
               label="Slug"
-              value={<span className="font-mono text-xs">{dish.slug}</span>}
-            />
-            <InfoRow
-              label="Created On"
-              value={dayjs(dish.createdAt).format("MMM D, YYYY")}
+              value={<span className="font-mono text-xs break-all">{dish.slug}</span>}
             />
             <InfoRow
               label="Food Type"
               value={<span className="capitalize">{dish.foodType}</span>}
             />
-            <InfoRow label="Category" value={dish.category?.name} />
+            <InfoRow label="Category" value={dish.category?.name || "—"} />
+            <InfoRow
+              label="Created On"
+              value={dayjs(dish.createdAt).format("MMM D, YYYY")}
+            />
+            {dish.updatedAt && (
+              <InfoRow
+                label="Updated On"
+                value={dayjs(dish.updatedAt).format("MMM D, YYYY")}
+              />
+            )}
           </Card>
         </div>
       </div>
